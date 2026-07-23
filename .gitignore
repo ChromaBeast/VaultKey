@@ -20,8 +20,9 @@ vaultkey_arm64
 
 # Node / Web Build Outputs
 web/node_modules/
-web/dist/
-web/build/
+web/dist/*
+!web/dist/.gitkeep
+.npm/build/
 .npm/
 
 # Local Environment & Secrets

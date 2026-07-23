@@ -25,14 +25,14 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Run Backend Tests
-        run: go test ./... -v
-
       - name: Build Web Frontend
         run: |
           cd web
           npm ci
           npm run build
+
+      - name: Run Backend Tests
+        run: go test ./... -v
 
       - name: Verify Single-Binary Compilation
         run: go build -o server ./cmd/server
