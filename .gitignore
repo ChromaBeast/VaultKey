@@ -3,6 +3,7 @@
 *.db-journal
 *.db-shm
 *.db-wal
+*.tar.gz
 
 # Binaries & Executables
 server
