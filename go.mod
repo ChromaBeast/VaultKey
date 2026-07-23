@@ -1,6 +1,6 @@
 module vaultkey
 
-go 1.22
+go 1.25.5
 
 require (
 	github.com/gofiber/fiber/v2 v2.52.13
