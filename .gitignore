@@ -6,12 +6,12 @@
 *.tar.gz
 
 # Binaries & Executables
-server
-server.exe
-server_arm64
-vaultkey
-vaultkey.exe
-vaultkey_arm64
+/server
+/server.exe
+/server_arm64
+/vaultkey
+/vaultkey.exe
+/vaultkey_arm64
 *.exe
 *.exe.stackdump
 *.dll
