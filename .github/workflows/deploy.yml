@@ -7,6 +7,10 @@ on:
   pull_request:
     branches: [ main, master ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test-and-build:
     name: Test & Build Verification
@@ -19,11 +23,15 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.25'
+          cache: true
+          cache-dependency-path: go.sum
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
 
       - name: Build Web Frontend
         run: |
@@ -52,7 +60,7 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: "."
+          source: "cmd,internal,web/src,web/public,web/index.html,web/package.json,web/package-lock.json,web/vite.config.ts,web/tsconfig*.json,Dockerfile,docker-compose.yml,Caddyfile,embed.go,go.mod,go.sum,vaultkey.yaml"
           target: /opt/vaultkey
           overwrite: true
 
