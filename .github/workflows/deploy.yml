@@ -94,4 +94,5 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd /opt/vaultkey
-            sudo docker compose up -d --build
+            sudo docker compose build
+            sudo docker compose up -d
