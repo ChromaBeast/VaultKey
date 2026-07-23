@@ -1,3 +1,9 @@
+# Web UI Dashboard
 vaultkey.sheershjaiswal.in {
+    reverse_proxy vaultkey:8080
+}
+
+# API Endpoint for CLI & SDK integrations
+api.vaultkey.sheershjaiswal.in {
     reverse_proxy vaultkey:8080
 }
