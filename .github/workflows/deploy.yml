@@ -1,0 +1,54 @@
+name: VaultKey CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test-and-build:
+    name: Test & Build Verification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Backend Tests
+        run: go test ./... -v
+
+      - name: Build Web Frontend
+        run: |
+          cd web
+          npm ci
+          npm run build
+
+      - name: Verify Single-Binary Compilation
+        run: go build -o server ./cmd/server
+
+  deploy-to-vps:
+    name: Deploy to VPS
+    needs: test-and-build
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd /opt/vaultkey || cd ~/vaultkey
+            git pull origin main || git pull origin master
+            docker compose up -d --build

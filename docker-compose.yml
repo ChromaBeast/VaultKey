@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  vaultkey:
+    image: ghcr.io/vaultkey/vaultkey:latest
+    container_name: vaultkey
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/var/lib/vaultkey
+    environment:
+      - VAULTKEY_PORT=8080
+      - VAULTKEY_DB_PATH=/var/lib/vaultkey/vaultkey.db
+      - VAULTKEY_AUTO_LOCK=30m
+      - VAULTKEY_AUDIT_SIGNING_KEY=prod-vaultkey-hmac-audit-signing-secret-key-change-me
+    restart: unless-stopped

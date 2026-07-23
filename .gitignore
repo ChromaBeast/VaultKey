@@ -1,0 +1,40 @@
+# Database files
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Binaries & Executables
+server
+server.exe
+server_arm64
+vaultkey
+vaultkey.exe
+vaultkey_arm64
+*.exe
+*.exe.stackdump
+*.dll
+*.so
+*.dylib
+
+# Node / Web Build Outputs
+web/node_modules/
+web/dist/
+web/build/
+.npm/
+
+# Local Environment & Secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+
+# IDE / OS Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

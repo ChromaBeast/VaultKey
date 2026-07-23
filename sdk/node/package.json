@@ -1,0 +1,23 @@
+{
+  "name": "vaultkey-js",
+  "version": "1.0.0",
+  "description": "Node.js SDK for VaultKey secure secrets manager",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "vaultkey",
+    "secrets",
+    "secrets-manager",
+    "security",
+    "env"
+  ],
+  "author": "VaultKey Authors",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "typescript": "^5.0.0"
+  }
+}

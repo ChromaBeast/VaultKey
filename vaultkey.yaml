@@ -1,0 +1,4 @@
+port: 8080
+database_path: vaultkey.db
+auto_lock_duration: 30m
+audit_signing_key: vaultkey-default-audit-signing-hmac-key-1234567890
