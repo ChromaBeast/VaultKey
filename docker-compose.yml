@@ -2,8 +2,7 @@ version: '3.8'
 
 services:
   vaultkey:
-    build: .
-    image: vaultkey:latest
+    image: ghcr.io/chromabeast/vaultkey:latest
     container_name: vaultkey
     ports:
       - "8080:8080"
