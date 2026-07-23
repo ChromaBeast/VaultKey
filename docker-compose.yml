@@ -16,3 +16,21 @@ services:
       - VAULTKEY_AUDIT_SIGNING_KEY=prod-vaultkey-hmac-audit-signing-secret-key-change-me
     restart: unless-stopped
 
+  caddy:
+    image: caddy:2-alpine
+    container_name: vaultkey_caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - vaultkey
+
+volumes:
+  caddy_data:
+  caddy_config:
+

@@ -1,0 +1,3 @@
+vaultkey.sheershjaiswal.in {
+    reverse_proxy vaultkey:8080
+}
