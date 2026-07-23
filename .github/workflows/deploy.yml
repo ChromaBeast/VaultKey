@@ -79,12 +79,10 @@ jobs:
       - name: Configure SSH Key
         run: |
           mkdir -p ~/.ssh
-          cat << 'EOF' > ~/.ssh/id_ed25519
-          ${{ secrets.VPS_SSH_KEY }}
-          EOF
-          chmod 600 ~/.ssh/id_ed25519
+          echo "${{ secrets.VPS_SSH_KEY }}" | base64 -d > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
       - name: Fast Transfer & Instant Deploy
         run: |
-          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 server Dockerfile docker-compose.yml Caddyfile vaultkey.yaml ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:/opt/vaultkey/
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} "cd /opt/vaultkey && sudo docker compose build && sudo docker compose up -d"
+          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa server Dockerfile docker-compose.yml Caddyfile vaultkey.yaml ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:/opt/vaultkey/
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} "cd /opt/vaultkey && sudo docker compose build && sudo docker compose up -d"
