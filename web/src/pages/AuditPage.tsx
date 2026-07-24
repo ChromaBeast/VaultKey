@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { AuditItem } from '../lib/api';
 import { apiFetch } from '../lib/api';
+import { StatCard } from '../components/StatCard';
 
 export const AuditPage: React.FC = () => {
   const [logs, setLogs] = useState<AuditItem[]>([]);
@@ -25,18 +26,40 @@ export const AuditPage: React.FC = () => {
 
   return (
     <div className="animate-fade" style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+      {/* Header Banner */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Tamper-Evident Audit Ledger</h1>
-          <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>HMAC-SHA256 chained audit entries guarantee ledger integrity</p>
+          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#f8fafc' }}>Tamper-Evident Audit Ledger</h1>
+          <p style={{ color: '#94a3b8', fontSize: '0.875rem', marginTop: '2px' }}>
+            HMAC-SHA256 chained audit entries guarantee immutable security log integrity
+          </p>
         </div>
         {verified !== null && (
-          <div style={{ padding: '8px 16px', borderRadius: '999px', background: verified ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)', border: '1px solid ' + (verified ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'), color: verified ? '#10b981' : '#f87171', fontWeight: 600, fontSize: '0.85rem' }}>
+          <div
+            style={{
+              padding: '10px 20px',
+              borderRadius: '999px',
+              background: verified ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+              border: '1px solid ' + (verified ? 'rgba(16, 185, 129, 0.4)' : 'rgba(239, 68, 68, 0.4)'),
+              color: verified ? '#34d399' : '#f87171',
+              fontWeight: 700,
+              fontSize: '0.875rem',
+              boxShadow: verified ? '0 4px 16px rgba(16, 185, 129, 0.2)' : 'none',
+            }}
+          >
             {verified ? '✓ HMAC Chain Cryptographically Verified' : '⚠️ Tamper Detected in HMAC Chain!'}
           </div>
         )}
       </div>
 
+      {/* Metrics Row */}
+      <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
+        <StatCard icon="📜" title="Total Events" value={logs.length} subtitle="Recorded activity" accentColor="#8b5cf6" />
+        <StatCard icon="🔗" title="Ledger Type" value="HMAC Chain" subtitle="Cryptographically linked" accentColor="#06b6d4" />
+        <StatCard icon="🛡️" title="Chain Status" value={verified ? 'Valid' : 'Tampered'} subtitle="Zero-Trust Audit" accentColor={verified ? '#10b981' : '#ef4444'} />
+      </div>
+
+      {/* Audit Logs Table */}
       <div className="glass" style={{ overflow: 'hidden' }}>
         <table>
           <thead>
@@ -50,18 +73,18 @@ export const AuditPage: React.FC = () => {
                     {l.action}
                   </span>
                 </td>
-                <td className="code-font">{l.secret_key || '-'}</td>
-                <td>{l.project || 'default'}</td>
-                <td className="code-font" style={{ fontSize: '0.8rem', color: '#94a3b8' }}>{l.actor}</td>
+                <td className="code-font" style={{ fontWeight: 600, color: '#f8fafc' }}>{l.secret_key || '-'}</td>
+                <td><span className="badge badge-read">{l.project || 'default'}</span></td>
+                <td className="code-font" style={{ fontSize: '0.8rem', color: '#cbd5e1' }}>{l.actor}</td>
                 <td style={{ color: '#94a3b8', fontSize: '0.8rem' }}>{l.ip_address || '127.0.0.1'}</td>
                 <td style={{ color: '#94a3b8', fontSize: '0.8rem' }}>{new Date(l.created_at).toLocaleString()}</td>
-                <td className="code-font" style={{ fontSize: '0.7rem', color: '#6366f1', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={l.hmac}>
+                <td className="code-font" style={{ fontSize: '0.7rem', color: '#c084fc', maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={l.hmac}>
                   {l.hmac}
                 </td>
               </tr>
             ))}
             {logs.length === 0 && !loading && (
-              <tr><td colSpan={7} style={{ textAlign: 'center', color: '#94a3b8', padding: '32px' }}>No audit entries logged yet.</td></tr>
+              <tr><td colSpan={7} style={{ textAlign: 'center', color: '#94a3b8', padding: '48px' }}>No audit entries logged yet.</td></tr>
             )}
           </tbody>
         </table>
