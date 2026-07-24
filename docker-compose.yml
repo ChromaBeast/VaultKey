@@ -29,7 +29,21 @@ services:
     depends_on:
       - vaultkey
 
+  # Watchtower: auto-detects new ghcr.io image pushes and restarts vaultkey
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: vaultkey_watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root/.docker/config.json:/config.json:ro
+    environment:
+      - WATCHTOWER_POLL_INTERVAL=300      # check every 5 minutes
+      - WATCHTOWER_CLEANUP=true           # remove old images automatically
+      - WATCHTOWER_INCLUDE_STOPPED=false
+      - WATCHTOWER_SCOPE=vaultkey         # only watch containers with this scope label
+    command: --interval 300 vaultkey      # only watch the vaultkey container
+
 volumes:
   caddy_data:
   caddy_config:
-

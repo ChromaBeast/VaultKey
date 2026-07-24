@@ -44,10 +44,11 @@ jobs:
         run: go test ./... -v
 
   # ─────────────────────────────────────────────
-  # Job 2: Build Docker image & push to ghcr.io
+  # Job 2: Build & push image → Watchtower
+  #         auto-deploys to VPS within 5 min
   # ─────────────────────────────────────────────
-  build-image:
-    name: Build & Push Docker Image
+  build-and-deploy:
+    name: Build & Push Image (Auto-deploys via Watchtower)
     needs: test
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
     runs-on: ubuntu-latest
@@ -90,61 +91,7 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
 
-  # ─────────────────────────────────────────────
-  # Job 3: SSH into VPS — pull image & restart
-  # ─────────────────────────────────────────────
-  deploy:
-    name: Deploy to VPS
-    needs: build-image
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4.2.2
-
-      - name: Setup SSH
+      - name: Deployment Summary
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_SSH_KEY }}" | base64 -d > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          printf 'Host vps\n  HostName %s\n  User %s\n  IdentityFile ~/.ssh/id_rsa\n  StrictHostKeyChecking no\n  ServerAliveInterval 15\n  ServerAliveCountMax 8\n  ConnectTimeout 30\n' \
-            "${{ secrets.VPS_HOST }}" "${{ secrets.VPS_USERNAME }}" > ~/.ssh/config
-          chmod 600 ~/.ssh/config
-
-      - name: Bootstrap VPS (idempotent)
-        run: ssh vps "sudo mkdir -p /opt/vaultkey/data && sudo chown -R \$(whoami) /opt/vaultkey"
-
-      - name: Copy Config Files to VPS
-        run: scp -F ~/.ssh/config docker-compose.yml Caddyfile vaultkey.yaml vps:/opt/vaultkey/
-
-      - name: Pull Image & Restart Containers
-        run: |
-          # Build deploy script with secrets injected at render time (runner-side)
-          cat > /tmp/deploy.sh << 'SCRIPT'
-          #!/bin/bash
-          set -euo pipefail
-          GHCR_TOKEN="__TOKEN__"
-          ACTOR="__ACTOR__"
-
-          echo "==> Logging into ghcr.io"
-          echo "${GHCR_TOKEN}" | sudo docker login ghcr.io -u "${ACTOR}" --password-stdin 2>&1
-
-          echo "==> Pulling latest image"
-          sudo docker pull ghcr.io/chromabeast/vaultkey:latest
-
-          echo "==> Restarting containers"
-          cd /opt/vaultkey
-          sudo docker compose up -d --no-build --remove-orphans
-
-          echo "==> Cleaning up old images"
-          sudo docker image prune -f
-
-          echo ""
-          echo "==> Deployment complete. Running containers:"
-          sudo docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
-          SCRIPT
-
-          # Inject secrets into the script (no secrets in env, injected as string literals)
-          sed -i "s|__TOKEN__|${{ secrets.GITHUB_TOKEN }}|g" /tmp/deploy.sh
-          sed -i "s|__ACTOR__|${{ github.actor }}|g" /tmp/deploy.sh
-
-          # Stream the script to the VPS via SSH stdin
-          ssh vps 'bash -s' < /tmp/deploy.sh
+          echo "✅ Image pushed to ghcr.io/${{ env.IMAGE_NAME }}:latest"
+          echo "🔄 Watchtower will auto-pull & restart VPS containers within 5 minutes"
