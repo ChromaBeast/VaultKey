@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   vaultkey:
     image: ghcr.io/chromabeast/vaultkey:latest
@@ -30,19 +28,17 @@ services:
       - vaultkey
 
   # Watchtower: auto-detects new ghcr.io image pushes and restarts vaultkey
+  # Uses host Docker socket to watch and update the vaultkey container
   watchtower:
     image: containrrr/watchtower:1.7.1
     container_name: vaultkey_watchtower
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /root/.docker/config.json:/config.json:ro
     environment:
-      - WATCHTOWER_POLL_INTERVAL=300      # check every 5 minutes
-      - WATCHTOWER_CLEANUP=true           # remove old images automatically
-      - WATCHTOWER_INCLUDE_STOPPED=false
-      - WATCHTOWER_SCOPE=vaultkey         # only watch containers with this scope label
-    command: --interval 300 vaultkey      # only watch the vaultkey container
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=300
+    command: vaultkey
 
 volumes:
   caddy_data:
