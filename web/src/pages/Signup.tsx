@@ -39,27 +39,52 @@ export const Signup: React.FC<SignupProps> = ({ onSuccess, onSwitchToLogin }) =>
   };
 
   return (
-    <div className="animate-fade" style={{ maxWidth: '460px', margin: '50px auto', padding: '32px' }}>
-      <div className="glass" style={{ padding: '36px', borderRadius: '20px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-          <div style={{ width: '48px', height: '48px', margin: '0 auto 12px', borderRadius: '12px', background: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>
+    <div className="animate-fade" style={{ maxWidth: '480px', margin: '30px auto', padding: '16px' }}>
+      <div className="glass-glow" style={{ padding: '36px 32px', borderRadius: '24px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+          <div
+            style={{
+              width: '56px',
+              height: '56px',
+              margin: '0 auto 14px',
+              borderRadius: '16px',
+              background: 'linear-gradient(135deg, #10b981 0%, #06b6d4 50%, #3b82f6 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '28px',
+              boxShadow: '0 8px 24px rgba(16, 185, 129, 0.4)',
+            }}
+          >
             ✨
           </div>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 700, letterSpacing: '-0.02em' }}>Create Team Vault</h2>
+          <h2 style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.025em', color: '#f8fafc' }}>
+            Create Team Vault
+          </h2>
           <p style={{ color: '#94a3b8', fontSize: '0.875rem', marginTop: '4px' }}>
             Set up isolated zero-trust secrets management for your team
           </p>
         </div>
 
         {error && (
-          <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', color: '#f87171', padding: '10px 14px', borderRadius: '8px', fontSize: '0.85rem', marginBottom: '20px' }}>
-            {error}
+          <div
+            style={{
+              background: 'rgba(239, 68, 68, 0.12)',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              color: '#f87171',
+              padding: '12px 16px',
+              borderRadius: '12px',
+              fontSize: '0.85rem',
+              marginBottom: '20px',
+            }}
+          >
+            ⚠️ {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '4px' }}>
+            <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '6px' }}>
               Organization / Team Name
             </label>
             <input
@@ -76,7 +101,7 @@ export const Signup: React.FC<SignupProps> = ({ onSuccess, onSwitchToLogin }) =>
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '4px' }}>
+            <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '6px' }}>
               Team Identifier (Slug)
             </label>
             <input
@@ -90,7 +115,7 @@ export const Signup: React.FC<SignupProps> = ({ onSuccess, onSwitchToLogin }) =>
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '4px' }}>
+            <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '6px' }}>
               Admin Email
             </label>
             <input
@@ -104,7 +129,7 @@ export const Signup: React.FC<SignupProps> = ({ onSuccess, onSwitchToLogin }) =>
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '4px' }}>
+            <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '6px' }}>
               Master Password (Derived in RAM)
             </label>
             <input
@@ -122,20 +147,34 @@ export const Signup: React.FC<SignupProps> = ({ onSuccess, onSwitchToLogin }) =>
             type="submit"
             disabled={loading}
             className="btn btn-primary"
-            style={{ marginTop: '10px', justifyContent: 'center', padding: '12px', fontSize: '0.95rem', background: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)', color: '#fff' }}
+            style={{
+              marginTop: '12px',
+              justifyContent: 'center',
+              padding: '14px',
+              fontSize: '0.95rem',
+              borderRadius: '12px',
+              background: 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)',
+            }}
           >
-            {loading ? 'Initializing Vault...' : 'Initialize Vault & Register'}
+            {loading ? 'Initializing Vault...' : 'Initialize Vault & Register →'}
           </button>
         </form>
 
-        <div style={{ textAlign: 'center', marginTop: '20px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          <span style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
+        <div style={{ textAlign: 'center', marginTop: '24px', paddingTop: '20px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+          <span style={{ fontSize: '0.875rem', color: '#94a3b8' }}>
             Already registered?{' '}
           </span>
           <button
             type="button"
             onClick={onSwitchToLogin}
-            style={{ background: 'none', border: 'none', color: '#3b82f6', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#38bdf8',
+              cursor: 'pointer',
+              fontWeight: 600,
+              fontSize: '0.875rem',
+            }}
           >
             Sign In
           </button>
