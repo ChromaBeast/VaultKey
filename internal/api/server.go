@@ -93,7 +93,9 @@ func (s *Server) setupRoutes() {
 	authGroup.Get("/projects", s.handleListProjects)
 
 	s.App.Use("/", filesystem.New(filesystem.Config{
-		Root:       http.FS(s.WebFS),
-		PathPrefix: "web/dist",
+		Root:         http.FS(s.WebFS),
+		PathPrefix:   "web/dist",
+		Index:        "index.html",
+		NotFoundFile: "index.html",
 	}))
 }
