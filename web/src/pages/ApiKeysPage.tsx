@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import type { APIKeyItem, Org } from '../lib/api';
+import { useAuth } from '../context/AuthContext';
+import type { APIKeyItem } from '../lib/api';
 import { apiFetch } from '../lib/api';
 import { StatCard } from '../components/StatCard';
 import { CreateApiKeyModal } from '../components/CreateApiKeyModal';
 import { TokenCreatedModal } from '../components/TokenCreatedModal';
 
-export const ApiKeysPage: React.FC<{ org: Org | null }> = ({ org }) => {
+export const ApiKeysPage: React.FC = () => {
+  const { org } = useAuth();
   const [keys, setKeys] = useState<APIKeyItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -57,7 +59,7 @@ export const ApiKeysPage: React.FC<{ org: Org | null }> = ({ org }) => {
   const activeKeys = keys.filter(k => k.active);
 
   return (
-    <div className="animate-fade" style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px' }}>
+    <div className="animate-fade" style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px' }}>
       {/* Header Banner */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div>
@@ -88,7 +90,7 @@ export const ApiKeysPage: React.FC<{ org: Org | null }> = ({ org }) => {
             {keys.map((k) => (
               <tr key={k.id}>
                 <td style={{ fontWeight: 600, color: '#f8fafc', fontSize: '0.95rem' }}>{k.name}</td>
-                <td className="code-font" style={{ color: '#c084fc', fontSize: '0.85rem' }}>{k.id}</td>
+                <td className="code-font" style={{ color: '#818cf8', fontSize: '0.85rem' }}>{k.id}</td>
                 <td><span className={`badge badge-${k.permissions}`}>{k.permissions}</span></td>
                 <td style={{ color: '#94a3b8', fontSize: '0.85rem' }}>{k.last_used ? new Date(k.last_used).toLocaleString() : 'Never'}</td>
                 <td style={{ color: '#94a3b8', fontSize: '0.85rem' }}>{new Date(k.created_at).toLocaleDateString()}</td>

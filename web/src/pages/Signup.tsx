@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import type { Org, User } from '../lib/api';
 import { apiFetch } from '../lib/api';
 
-interface SignupProps {
-  onSuccess: (token: string, user: User, org: Org) => void;
-  onSwitchToLogin: () => void;
-}
-
-export const Signup: React.FC<SignupProps> = ({ onSuccess, onSwitchToLogin }) => {
+export const Signup: React.FC = () => {
   const [orgName, setOrgName] = useState('');
   const [orgSlug, setOrgSlug] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +30,8 @@ export const Signup: React.FC<SignupProps> = ({ onSuccess, onSwitchToLogin }) =>
           password,
         }),
       });
-      onSuccess(res.token, res.user, res.org);
+      login(res.token, res.user, res.org);
+      navigate('/secrets');
     } catch (err: any) {
       setError(err.message || 'Signup failed');
     } finally {
@@ -39,7 +40,7 @@ export const Signup: React.FC<SignupProps> = ({ onSuccess, onSwitchToLogin }) =>
   };
 
   return (
-    <div className="animate-fade" style={{ maxWidth: '480px', margin: '30px auto', padding: '16px' }}>
+    <div className="animate-fade" style={{ maxWidth: '480px', margin: '40px auto', padding: '16px' }}>
       <div className="glass-glow" style={{ padding: '36px 32px', borderRadius: '24px' }}>
         <div style={{ textAlign: 'center', marginBottom: '28px' }}>
           <div
@@ -164,20 +165,17 @@ export const Signup: React.FC<SignupProps> = ({ onSuccess, onSwitchToLogin }) =>
           <span style={{ fontSize: '0.875rem', color: '#94a3b8' }}>
             Already registered?{' '}
           </span>
-          <button
-            type="button"
-            onClick={onSwitchToLogin}
+          <Link
+            to="/login"
             style={{
-              background: 'none',
-              border: 'none',
               color: '#38bdf8',
-              cursor: 'pointer',
               fontWeight: 600,
               fontSize: '0.875rem',
+              textDecoration: 'none',
             }}
           >
             Sign In
-          </button>
+          </Link>
         </div>
       </div>
     </div>

@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import type { Org, User } from '../lib/api';
 import { apiFetch } from '../lib/api';
 
-interface LoginProps {
-  onSuccess: (token: string, user: User, org: Org) => void;
-  onSwitchToSignup: () => void;
-}
-
-export const Login: React.FC<LoginProps> = ({ onSuccess, onSwitchToSignup }) => {
+export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +23,8 @@ export const Login: React.FC<LoginProps> = ({ onSuccess, onSwitchToSignup }) => 
         method: 'POST',
         body: JSON.stringify({ email, password }),
       });
-      onSuccess(res.token, res.user, res.org);
+      login(res.token, res.user, res.org);
+      navigate('/secrets');
     } catch (err: any) {
       setError(err.message || 'Login failed');
     } finally {
@@ -32,7 +33,7 @@ export const Login: React.FC<LoginProps> = ({ onSuccess, onSwitchToSignup }) => 
   };
 
   return (
-    <div className="animate-fade" style={{ maxWidth: '440px', margin: '40px auto', padding: '16px' }}>
+    <div className="animate-fade" style={{ maxWidth: '440px', margin: '60px auto', padding: '16px' }}>
       <div className="glass-glow" style={{ padding: '40px 36px', borderRadius: '24px' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div
@@ -69,12 +70,9 @@ export const Login: React.FC<LoginProps> = ({ onSuccess, onSwitchToSignup }) => 
               borderRadius: '12px',
               fontSize: '0.85rem',
               marginBottom: '24px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
             }}
           >
-            <span>⚠️</span> {error}
+            ⚠️ {error}
           </div>
         )}
 
@@ -132,20 +130,17 @@ export const Login: React.FC<LoginProps> = ({ onSuccess, onSwitchToSignup }) => 
           <span style={{ fontSize: '0.875rem', color: '#94a3b8' }}>
             Need a new team vault?{' '}
           </span>
-          <button
-            type="button"
-            onClick={onSwitchToSignup}
+          <Link
+            to="/signup"
             style={{
-              background: 'none',
-              border: 'none',
               color: '#c084fc',
-              cursor: 'pointer',
               fontWeight: 600,
               fontSize: '0.875rem',
+              textDecoration: 'none',
             }}
           >
             Create Team Account
-          </button>
+          </Link>
         </div>
       </div>
     </div>

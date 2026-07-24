@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import type { Org, SecretItem } from '../lib/api';
+import { useAuth } from '../context/AuthContext';
+import type { SecretItem } from '../lib/api';
 import { apiFetch } from '../lib/api';
 import { SecretGeneratorModal } from '../components/SecretGeneratorModal';
 import { Toast } from '../components/Toast';
@@ -7,7 +8,8 @@ import { StatCard } from '../components/StatCard';
 import { CreateSecretModal } from '../components/CreateSecretModal';
 import { RevealSecretModal } from '../components/RevealSecretModal';
 
-export const SecretsPage: React.FC<{ org: Org | null }> = ({ org }) => {
+export const SecretsPage: React.FC = () => {
+  const { org } = useAuth();
   const [secrets, setSecrets] = useState<SecretItem[]>([]);
   const [search, setSearch] = useState('');
   const [project, setProject] = useState('default');
@@ -83,7 +85,7 @@ export const SecretsPage: React.FC<{ org: Org | null }> = ({ org }) => {
   const filtered = secrets.filter((s) => s.key.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="animate-fade" style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px' }}>
+    <div className="animate-fade" style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px' }}>
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       
       {/* Header Banner */}

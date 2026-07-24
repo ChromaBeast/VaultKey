@@ -47,6 +47,8 @@ export interface AuditItem {
 
 const getBaseUrl = () => '';
 
+export const AUTH_UNAUTHORIZED_EVENT = 'vk_auth_unauthorized';
+
 export const apiFetch = async <T>(path: string, options: RequestInit = {}): Promise<T> => {
   const token = localStorage.getItem('vk_token');
   const headers: Record<string, string> = {
@@ -62,6 +64,15 @@ export const apiFetch = async <T>(path: string, options: RequestInit = {}): Prom
     ...options,
     headers,
   });
+
+  if (res.status === 401) {
+    // Clear invalid session state and dispatch global event
+    localStorage.removeItem('vk_token');
+    localStorage.removeItem('vk_user');
+    localStorage.removeItem('vk_org');
+    window.dispatchEvent(new CustomEvent(AUTH_UNAUTHORIZED_EVENT));
+    throw new Error('Session expired. Please log in again.');
+  }
 
   const data = await res.json();
   if (!res.ok) {

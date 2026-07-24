@@ -1,11 +1,12 @@
 import React from 'react';
-import type { Org } from '../lib/api';
+import { useAuth } from '../context/AuthContext';
 
-export const BillingPage: React.FC<{ org: Org | null }> = ({ org }) => {
+export const BillingPage: React.FC = () => {
+  const { org } = useAuth();
   const currentPlan = org?.plan || 'free';
 
   return (
-    <div className="animate-fade" style={{ maxWidth: '1140px', margin: '0 auto', padding: '24px' }}>
+    <div className="animate-fade" style={{ maxWidth: '1140px', margin: '0 auto', padding: '16px' }}>
       <div style={{ textAlign: 'center', marginBottom: '40px' }}>
         <h1 style={{ fontSize: '2.25rem', fontWeight: 800, letterSpacing: '-0.025em', color: '#f8fafc' }}>
           SaaS Team Plans & Pricing
@@ -17,7 +18,7 @@ export const BillingPage: React.FC<{ org: Org | null }> = ({ org }) => {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(310px, 1fr))', gap: '24px' }}>
         {/* Free Starter Plan */}
-        <div className="glass" style={{ padding: '32px', borderRadius: '24px', border: currentPlan === 'free' ? '2px solid #6366f1' : '1px solid rgba(255,255,255,0.08)' }}>
+        <div className="glass" style={{ padding: '32px', borderRadius: '20px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#f8fafc' }}>Free Starter</h3>
             {currentPlan === 'free' && <span className="badge badge-read">Active</span>}
@@ -38,12 +39,12 @@ export const BillingPage: React.FC<{ org: Org | null }> = ({ org }) => {
         </div>
 
         {/* Pro Team Plan */}
-        <div className="glass-glow" style={{ padding: '32px', borderRadius: '24px', border: '2px solid #8b5cf6', position: 'relative' }}>
-          <div style={{ position: 'absolute', top: '-12px', right: '24px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #d946ef)', color: '#fff', fontSize: '0.65rem', fontWeight: 800, padding: '4px 14px', borderRadius: '999px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <div className="glass-glow" style={{ padding: '32px', borderRadius: '20px', position: 'relative' }}>
+          <div style={{ position: 'absolute', top: '-12px', right: '24px', background: '#6366f1', color: '#fff', fontSize: '0.65rem', fontWeight: 800, padding: '4px 14px', borderRadius: '999px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Most Popular
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#c084fc' }}>Pro Team</h3>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#818cf8' }}>Pro Team</h3>
             {currentPlan === 'pro' && <span className="badge badge-admin">Active</span>}
           </div>
           <div style={{ fontSize: '2.5rem', fontWeight: 800, margin: '16px 0 8px', color: '#f8fafc', fontFamily: 'Outfit, sans-serif' }}>
@@ -63,7 +64,7 @@ export const BillingPage: React.FC<{ org: Org | null }> = ({ org }) => {
         </div>
 
         {/* Enterprise Plan */}
-        <div className="glass" style={{ padding: '32px', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <div className="glass" style={{ padding: '32px', borderRadius: '20px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#f8fafc' }}>Enterprise</h3>
           </div>
