@@ -35,13 +35,18 @@
   padding: 0;
 }
 
-/* Global interactive transitions — only color/shadow, not layout */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Global interactive transitions — hardware accelerated */
 a, button, input, select, textarea {
   transition: color var(--duration-fast) ease,
               background-color var(--duration-fast) ease,
               border-color var(--duration-fast) ease,
               box-shadow var(--duration-fast) ease,
-              opacity var(--duration-fast) ease;
+              opacity var(--duration-fast) ease,
+              transform var(--duration-fast) var(--ease-spring);
 }
 
 a, button, nav a, nav button, .btn {
@@ -67,19 +72,21 @@ h1, h2, h3, h4, h5, .brand-text {
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* ─── Glass Surfaces ──────────────────────────────────────── */
+/* ─── Glass Surfaces & Micro-elevation ────────────────────── */
 .glass {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), var(--sheen);
   border-radius: var(--radius-card);
-  transition: border-color var(--duration-base) var(--ease-spring),
+  transition: transform var(--duration-base) var(--ease-spring),
+              border-color var(--duration-base) var(--ease-spring),
               box-shadow var(--duration-base) var(--ease-spring);
 }
 
 .glass:hover {
+  transform: translateY(-2px);
   border-color: var(--border-highlight);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), var(--sheen);
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.55), var(--sheen);
 }
 
 .glass-glow {
@@ -87,8 +94,15 @@ h1, h2, h3, h4, h5, .brand-text {
   border: 1px solid rgba(99, 102, 241, 0.35);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), var(--sheen);
   border-radius: 16px;
-  transition: border-color var(--duration-base) var(--ease-spring),
+  transition: transform var(--duration-base) var(--ease-spring),
+              border-color var(--duration-base) var(--ease-spring),
               box-shadow var(--duration-base) var(--ease-spring);
+}
+
+.glass-glow:hover {
+  transform: translateY(-2px);
+  border-color: rgba(99, 102, 241, 0.55);
+  box-shadow: 0 12px 40px rgba(99, 102, 241, 0.2), var(--sheen);
 }
 
 /* ─── Buttons ─────────────────────────────────────────────── */
@@ -110,8 +124,12 @@ h1, h2, h3, h4, h5, .brand-text {
               border-color var(--duration-fast) ease;
 }
 
+.btn:hover {
+  transform: translateY(-1px);
+}
+
 .btn:active {
-  transform: scale(0.97);
+  transform: translateY(0) scale(0.97);
 }
 
 .btn-primary {
@@ -122,7 +140,7 @@ h1, h2, h3, h4, h5, .brand-text {
 }
 .btn-primary:hover {
   background: #4f46e5;
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.45);
+  box-shadow: 0 4px 18px rgba(99, 102, 241, 0.5);
 }
 
 .btn-secondary {
@@ -156,16 +174,19 @@ h1, h2, h3, h4, h5, .brand-text {
   font-size: 0.9rem;
   font-family: 'Inter', sans-serif;
   outline: none;
+  transition: border-color var(--duration-fast) ease,
+              box-shadow var(--duration-fast) var(--ease-spring),
+              background-color var(--duration-fast) ease;
 }
 .input:focus {
   border-color: var(--border-focus);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
 }
 .input::placeholder {
   color: var(--text-muted);
 }
 
-/* ─── Badges ──────────────────────────────────────────────── */
+/* ─── Badges & Micro-hover ────────────────────────────────── */
 .badge {
   padding: 3px 10px;
   border-radius: var(--radius-badge);
@@ -176,6 +197,12 @@ h1, h2, h3, h4, h5, .brand-text {
   letter-spacing: 0.04em;
   display: inline-flex;
   align-items: center;
+  transition: transform var(--duration-fast) var(--ease-spring),
+              filter var(--duration-fast) ease;
+}
+.badge:hover {
+  transform: scale(1.04);
+  filter: brightness(1.15);
 }
 .badge-admin { background: rgba(245, 158, 11, 0.12); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.25); }
 .badge-write { background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.25); }
@@ -183,6 +210,7 @@ h1, h2, h3, h4, h5, .brand-text {
 
 /* ─── Tables ──────────────────────────────────────────────── */
 table { width: 100%; border-collapse: collapse; }
+tr { transition: background-color var(--duration-fast) ease; }
 th, td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--border-subtle); }
 th {
   font-family: 'Inter', sans-serif;
@@ -192,16 +220,16 @@ th {
   text-transform: uppercase;
   letter-spacing: 0.07em;
 }
-tr:hover td { background: rgba(255, 255, 255, 0.02); }
+tr:hover td { background: rgba(99, 102, 241, 0.04); }
 
-/* ─── Animations ──────────────────────────────────────────── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* ─── Animations (Fixed: No Y-Shift Push on Reload) ────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.995); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 .animate-fade {
-  animation: fadeUp 0.3s var(--ease-spring) forwards;
+  animation: fadeIn 0.2s var(--ease-spring) forwards;
 }
 
 /* ─── Scrollbar ───────────────────────────────────────────── */
