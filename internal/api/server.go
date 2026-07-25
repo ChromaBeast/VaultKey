@@ -104,22 +104,25 @@ func (s *Server) setupRoutes() {
 	authGroup.Post("/subscriptions/verify", s.handleVerifySubscription)
 	authGroup.Post("/subscriptions/cancel", s.handleCancelSubscription)
 
-	s.App.Use(func(c *fiber.Ctx) error {
-		path := c.Path()
-		if path == "/" || !strings.Contains(path, ".") {
-			c.Set("Cache-Control", "no-cache, no-store, must-revalidate")
-			c.Set("Pragma", "no-cache")
-			c.Set("Expires", "0")
-		} else if strings.HasPrefix(path, "/assets/") {
-			c.Set("Cache-Control", "public, max-age=31536000, immutable")
-		}
-		return c.Next()
-	})
-
+	// Serve static asset files (/assets/index-xxx.js, /favicon.svg, etc.)
 	s.App.Use("/", filesystem.New(filesystem.Config{
-		Root:         http.FS(s.WebFS),
-		PathPrefix:   "web/dist",
-		Index:        "index.html",
-		NotFoundFile: "index.html",
+		Root:       http.FS(s.WebFS),
+		PathPrefix: "web/dist",
+		MaxAge:     31536000,
 	}))
+
+	// SPA Fallback Handler for React Router client-side routes (/secrets, /billing, /keys, /audit, /docs, etc.)
+	s.App.Get("*", func(c *fiber.Ctx) error {
+		path := c.Path()
+		if strings.HasPrefix(path, "/v1/") {
+			return c.Status(404).JSON(fiber.Map{"error": "endpoint not found"})
+		}
+		c.Set("Cache-Control", "no-cache, no-store, must-revalidate")
+		c.Set("Content-Type", "text/html; charset=utf-8")
+		indexBytes, err := s.WebFS.ReadFile("web/dist/index.html")
+		if err != nil {
+			return c.Status(500).SendString("Index file missing")
+		}
+		return c.Send(indexBytes)
+	})
 }
