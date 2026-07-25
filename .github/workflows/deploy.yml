@@ -44,11 +44,10 @@ jobs:
         run: go test ./... -v
 
   # ─────────────────────────────────────────────
-  # Job 2: Build & push image → Watchtower
-  #         auto-deploys to VPS within 5 min
+  # Job 2: Build & push image to ghcr.io
   # ─────────────────────────────────────────────
-  build-and-deploy:
-    name: Build & Push Image (Auto-deploys via Watchtower)
+  build-and-push:
+    name: Build & Push Docker Image
     needs: test
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
     runs-on: ubuntu-latest
@@ -91,7 +90,29 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
 
-      - name: Deployment Summary
+  # ─────────────────────────────────────────────
+  # Job 3: Instant SSH Deployment (Fallback to Watchtower)
+  # ─────────────────────────────────────────────
+  deploy-to-vps:
+    name: Instant VPS Deployment
+    needs: build-and-push
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Setup SSH Config
         run: |
-          echo "✅ Image pushed to ghcr.io/${{ env.IMAGE_NAME }}:latest"
-          echo "🔄 Watchtower will auto-pull & restart VPS containers within 5 minutes"
+          if [ -z "${{ secrets.VPS_HOST }}" ] || [ -z "${{ secrets.VPS_SSH_KEY }}" ]; then
+            echo "SSH secrets not set, relying on Watchtower auto-poll."
+            exit 0
+          fi
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" | base64 -d > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          printf 'Host vps\n  HostName %s\n  User %s\n  IdentityFile ~/.ssh/id_rsa\n  StrictHostKeyChecking no\n  ConnectTimeout 15\n' \
+            "${{ secrets.VPS_HOST }}" "${{ secrets.VPS_USERNAME || 'ubuntu' }}" > ~/.ssh/config
+          chmod 600 ~/.ssh/config
+
+      - name: SSH Pull & Restart
+        run: |
+          ssh vps "cd /opt/vaultkey && docker pull ghcr.io/chromabeast/vaultkey:latest && docker compose up -d" || true
