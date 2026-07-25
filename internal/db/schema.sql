@@ -1,11 +1,14 @@
 CREATE TABLE IF NOT EXISTS organizations (
-    id          TEXT PRIMARY KEY,
-    name        TEXT NOT NULL,
-    slug        TEXT NOT NULL UNIQUE,
-    argon2_salt TEXT NOT NULL,
-    sentinel    TEXT NOT NULL,
-    plan        TEXT NOT NULL DEFAULT 'free',
-    created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
+    id                  TEXT PRIMARY KEY,
+    name                TEXT NOT NULL,
+    slug                TEXT NOT NULL UNIQUE,
+    argon2_salt         TEXT NOT NULL,
+    sentinel            TEXT NOT NULL,
+    plan                TEXT NOT NULL DEFAULT 'free',
+    subscription_id     TEXT,
+    subscription_status TEXT NOT NULL DEFAULT 'none',
+    current_period_end  DATETIME,
+    created_at          DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS users (
@@ -90,4 +93,21 @@ CREATE INDEX IF NOT EXISTS idx_api_keys_hash ON api_keys(key_hash);
 CREATE INDEX IF NOT EXISTS idx_api_keys_org ON api_keys(org_id);
 CREATE INDEX IF NOT EXISTS idx_secrets_org ON secrets(org_id);
 CREATE INDEX IF NOT EXISTS idx_audit_org_created ON audit_log(org_id, created_at);
+
+CREATE TABLE IF NOT EXISTS payments (
+    id                  TEXT PRIMARY KEY,
+    org_id              TEXT NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    razorpay_order_id   TEXT NOT NULL UNIQUE,
+    razorpay_payment_id TEXT,
+    razorpay_signature  TEXT,
+    amount              INTEGER NOT NULL,
+    currency            TEXT NOT NULL DEFAULT 'INR',
+    status              TEXT NOT NULL DEFAULT 'created',
+    plan                TEXT NOT NULL DEFAULT 'pro',
+    created_at          DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_payments_org ON payments(org_id);
+
 

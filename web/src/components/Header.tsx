@@ -145,6 +145,7 @@ export const Header: React.FC<HeaderProps> = ({
                   color: isActive ? '#ffffff' : '#94a3b8',
                   border: '1px solid ' + (isActive ? 'rgba(168, 85, 247, 0.4)' : 'transparent'),
                   boxShadow: isActive ? '0 4px 12px rgba(168, 85, 247, 0.15)' : 'none',
+                  textDecoration: 'none',
                 }}
               >
                 {tab.label}

@@ -4,9 +4,11 @@ import type { SecretItem } from '../lib/api';
 import { apiFetch } from '../lib/api';
 import { SecretGeneratorModal } from '../components/SecretGeneratorModal';
 import { Toast } from '../components/Toast';
-import { StatCard } from '../components/StatCard';
+import { BentoGridMetrics } from '../components/BentoGridMetrics';
 import { CreateSecretModal } from '../components/CreateSecretModal';
 import { RevealSecretModal } from '../components/RevealSecretModal';
+import { SecretVersionHistoryModal } from '../components/SecretVersionHistoryModal';
+import { CommandPaletteModal } from '../components/CommandPaletteModal';
 
 export const SecretsPage: React.FC = () => {
   const { org } = useAuth();
@@ -17,6 +19,8 @@ export const SecretsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [genOpen, setGenOpen] = useState(false);
+  const [cmdOpen, setCmdOpen] = useState(false);
+  const [historyItem, setHistoryItem] = useState<{ key: string; version: number } | null>(null);
   const [revealedVal, setRevealedVal] = useState<{ key: string; val: string } | null>(null);
   const [copied, setCopied] = useState(false);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
@@ -74,21 +78,12 @@ export const SecretsPage: React.FC = () => {
     }
   };
 
-  const handleCopy = () => {
-    if (revealedVal) {
-      navigator.clipboard.writeText(revealedVal.val);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
-
   const filtered = secrets.filter((s) => s.key.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className="animate-fade" style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px' }}>
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
-      
-      {/* Header Banner */}
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -104,30 +99,25 @@ export const SecretsPage: React.FC = () => {
           </p>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <button onClick={() => setGenOpen(true)} className="btn btn-secondary">
-            🎲 Generator
-          </button>
-          <button onClick={() => setModalOpen(true)} className="btn btn-primary">
-            + New Secret
-          </button>
+          <button onClick={() => setGenOpen(true)} className="btn btn-secondary">🎲 Generator</button>
+          <button onClick={() => setModalOpen(true)} className="btn btn-primary">+ New Secret</button>
         </div>
       </div>
 
-      {/* Metrics Row */}
-      <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
-        <StatCard icon="🔐" title="Total Secrets" value={secrets.length} subtitle={`In ${project} project`} accentColor="#8b5cf6" />
-        <StatCard icon="📁" title="Projects" value={projects.length} subtitle="Active environments" accentColor="#06b6d4" />
-        <StatCard icon="🛡️" title="Encryption" value="AES-256-GCM" subtitle="Zero-Knowledge RAM" accentColor="#10b981" />
-      </div>
+      <BentoGridMetrics
+        totalSecrets={secrets.length}
+        activeProject={project}
+        projectCount={projects.length}
+        onOpenCmdPalette={() => setCmdOpen(true)}
+      />
 
-      {/* Search & Project Filter Bar */}
       <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', alignItems: 'center', justifyContent: 'space-between' }}>
         <input
           className="input"
-          placeholder="🔍 Search secrets by key name..."
+          placeholder="🔍 Search secrets... (⌘K for command palette)"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          style={{ maxWidth: '360px' }}
+          style={{ maxWidth: '380px' }}
         />
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 500 }}>Project:</span>
@@ -137,23 +127,36 @@ export const SecretsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Secrets Table */}
       <div className="glass" style={{ overflow: 'hidden' }}>
         <table>
           <thead>
-            <tr><th>KEY NAME</th><th>PROJECT</th><th>VERSION</th><th>LAST UPDATED</th><th>ACTION</th></tr>
+            <tr><th>KEY NAME</th><th>PROJECT</th><th>VERSION</th><th>LAST UPDATED</th><th>ACTIONS</th></tr>
           </thead>
           <tbody>
             {filtered.map((s) => (
               <tr key={s.id}>
                 <td className="code-font" style={{ fontWeight: 600, color: '#f8fafc', fontSize: '0.95rem' }}>{s.key}</td>
                 <td><span className="badge badge-admin">{s.project}</span></td>
-                <td><span className="code-font" style={{ color: '#c084fc', fontSize: '0.85rem' }}>v{s.version}</span></td>
+                <td>
+                  <span
+                    onClick={() => setHistoryItem({ key: s.key, version: s.version })}
+                    className="code-font"
+                    style={{ color: '#c084fc', fontSize: '0.85rem', cursor: 'pointer', textDecoration: 'none' }}
+                    title="View Version History & Rollback"
+                  >
+                    v{s.version} 📜
+                  </span>
+                </td>
                 <td style={{ color: '#94a3b8', fontSize: '0.85rem' }}>{new Date(s.updated_at).toLocaleDateString()}</td>
                 <td>
-                  <button onClick={() => handleReveal(s.key)} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '0.8rem' }}>
-                    👁️ Reveal
-                  </button>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button onClick={() => handleReveal(s.key)} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '0.8rem' }}>
+                      👁️ Reveal
+                    </button>
+                    <button onClick={() => setHistoryItem({ key: s.key, version: s.version })} className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '0.8rem' }}>
+                      ↩️ Rollback
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -164,9 +167,19 @@ export const SecretsPage: React.FC = () => {
         </table>
       </div>
 
-      {/* Modals */}
       <SecretGeneratorModal isOpen={genOpen} onClose={() => setGenOpen(false)} onUseSecret={() => setModalOpen(true)} />
       <CreateSecretModal isOpen={modalOpen} project={project} onClose={() => setModalOpen(false)} onSubmit={handleCreateSecret} onOpenGenerator={() => setGenOpen(true)} />
+      <CommandPaletteModal isOpen={cmdOpen} onClose={() => setCmdOpen(false)} onOpenCreateSecret={() => setModalOpen(true)} />
+      {historyItem && (
+        <SecretVersionHistoryModal
+          secretKey={historyItem.key}
+          project={project}
+          currentVersion={historyItem.version}
+          isOpen={!!historyItem}
+          onClose={() => setHistoryItem(null)}
+          onRollbackSuccess={loadSecrets}
+        />
+      )}
       {revealedVal && (
         <RevealSecretModal
           secretKey={revealedVal.key}
@@ -174,7 +187,7 @@ export const SecretsPage: React.FC = () => {
           shareUrl={shareUrl}
           copied={copied}
           onClose={() => { setRevealedVal(null); setShareUrl(null); }}
-          onCopy={handleCopy}
+          onCopy={() => { navigator.clipboard.writeText(revealedVal.val); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
           onCreateShareLink={handleCreateShareLink}
         />
       )}

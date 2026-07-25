@@ -70,6 +70,7 @@ func (s *Server) setupRoutes() {
 	v1.Post("/auth/login", authLimiter, s.handleLogin)
 	v1.Get("/vault/status", s.handleStatus)
 	v1.Get("/shares/:id", s.handleGetShare)
+	v1.Post("/payments/webhook", s.handleRazorpayWebhook)
 
 	authGroup := v1.Group("", s.AuthMiddleware())
 
@@ -83,6 +84,7 @@ func (s *Server) setupRoutes() {
 	authGroup.Put("/secrets/:key", s.handleUpdateSecret)
 	authGroup.Delete("/secrets/:key", s.handleDeleteSecret)
 	authGroup.Get("/secrets/:key/versions", s.handleGetSecretVersions)
+	authGroup.Post("/secrets/:key/rollback", s.handleRollbackSecret)
 
 	authGroup.Post("/api-keys", s.handleCreateAPIKey)
 	authGroup.Get("/api-keys", s.handleListAPIKeys)
@@ -91,6 +93,16 @@ func (s *Server) setupRoutes() {
 	authGroup.Get("/audit", s.handleListAudit)
 	authGroup.Get("/audit/verify", s.handleVerifyAudit)
 	authGroup.Get("/projects", s.handleListProjects)
+
+	authGroup.Get("/payments/config", s.handleGetRazorpayConfig)
+	authGroup.Post("/payments/create-order", s.handleCreateRazorpayOrder)
+	authGroup.Post("/payments/verify", s.handleVerifyRazorpayPayment)
+	authGroup.Get("/payments/history", s.handleListPayments)
+
+	authGroup.Post("/subscriptions/create", s.handleCreateSubscription)
+	authGroup.Post("/subscriptions/verify", s.handleVerifySubscription)
+	authGroup.Post("/subscriptions/cancel", s.handleCancelSubscription)
+
 
 	s.App.Use("/", filesystem.New(filesystem.Config{
 		Root:         http.FS(s.WebFS),

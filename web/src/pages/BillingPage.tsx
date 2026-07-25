@@ -1,9 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { RazorpayCheckoutButton } from '../components/RazorpayCheckoutButton';
+import { CancelSubscriptionButton } from '../components/CancelSubscriptionButton';
+import { PaymentHistoryTable } from '../components/PaymentHistoryTable';
+import { fetchPaymentHistory } from '../lib/api';
+import type { PaymentRecord } from '../types/payment';
 
 export const BillingPage: React.FC = () => {
   const { org } = useAuth();
   const currentPlan = org?.plan || 'free';
+  const subStatus = org?.subscription_status || 'none';
+  const [payments, setPayments] = useState<PaymentRecord[]>([]);
+
+  const loadHistory = async () => {
+    try {
+      const data = await fetchPaymentHistory();
+      setPayments(data || []);
+    } catch {
+      // Ignore if unauthorized or empty
+    }
+  };
+
+  useEffect(() => {
+    loadHistory();
+  }, [org?.plan, org?.subscription_status]);
 
   return (
     <div className="animate-fade" style={{ maxWidth: '1140px', margin: '0 auto', padding: '16px' }}>
@@ -12,9 +32,53 @@ export const BillingPage: React.FC = () => {
           SaaS Team Plans & Pricing
         </h1>
         <p style={{ color: '#94a3b8', fontSize: '0.95rem', marginTop: '6px' }}>
-          Scale your enterprise zero-trust secret management with active team isolation
+          Scale your enterprise zero-trust secret management with active team isolation & Razorpay AutoPay Subscriptions
         </p>
       </div>
+
+      {org?.subscription_id && (
+        <div
+          className="glass-glow"
+          style={{
+            padding: '20px 24px',
+            borderRadius: '16px',
+            marginBottom: '32px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '16px',
+          }}
+        >
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f8fafc' }}>Active Subscription</h3>
+              <span
+                style={{
+                  padding: '3px 10px',
+                  borderRadius: '999px',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  background: subStatus === 'active' ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                  color: subStatus === 'active' ? '#4ade80' : '#f87171',
+                }}
+              >
+                {subStatus}
+              </span>
+            </div>
+            <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginTop: '4px' }}>
+              Subscription ID: <code style={{ color: '#818cf8' }}>{org.subscription_id}</code>
+              {org.current_period_end && (
+                <span style={{ marginLeft: '12px' }}>
+                  Renews: {new Date(org.current_period_end).toLocaleDateString()}
+                </span>
+              )}
+            </p>
+          </div>
+          {subStatus === 'active' && <CancelSubscriptionButton onSuccess={loadHistory} />}
+        </div>
+      )}
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(310px, 1fr))', gap: '24px' }}>
         {/* Free Starter Plan */}
@@ -48,9 +112,9 @@ export const BillingPage: React.FC = () => {
             {currentPlan === 'pro' && <span className="badge badge-admin">Active</span>}
           </div>
           <div style={{ fontSize: '2.5rem', fontWeight: 800, margin: '16px 0 8px', color: '#f8fafc', fontFamily: 'Outfit, sans-serif' }}>
-            $19 <span style={{ fontSize: '0.9rem', color: '#94a3b8', fontWeight: 400 }}>/ team / mo</span>
+            ₹1,499 <span style={{ fontSize: '0.9rem', color: '#94a3b8', fontWeight: 400 }}>($19) / team / mo</span>
           </div>
-          <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginBottom: '24px' }}>For growing engineering teams requiring full capacity</p>
+          <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginBottom: '24px' }}>Auto-renewing monthly subscription via UPI AutoPay / Card</p>
           <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.875rem', color: '#cbd5e1', marginBottom: '32px' }}>
             <li>✨ <strong>Unlimited secrets</strong></li>
             <li>⚡ <strong>Unlimited API access keys</strong></li>
@@ -58,15 +122,20 @@ export const BillingPage: React.FC = () => {
             <li>📜 90-day HMAC audit ledger history</li>
             <li>💬 Priority support</li>
           </ul>
-          <button className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }} onClick={() => alert('Stripe Billing Hook Triggered!')}>
-            {currentPlan === 'pro' ? 'Current Active Plan' : 'Upgrade to Pro ✨'}
-          </button>
+          <RazorpayCheckoutButton
+            plan="pro"
+            planName="Pro Team"
+            amountLabel="₹1,499"
+            isCurrentPlan={currentPlan === 'pro'}
+            onSuccess={loadHistory}
+          />
         </div>
 
         {/* Enterprise Plan */}
         <div className="glass" style={{ padding: '32px', borderRadius: '20px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#f8fafc' }}>Enterprise</h3>
+            {currentPlan === 'enterprise' && <span className="badge badge-admin">Active</span>}
           </div>
           <div style={{ fontSize: '2.5rem', fontWeight: 800, margin: '16px 0 8px', color: '#f8fafc', fontFamily: 'Outfit, sans-serif' }}>Custom</div>
           <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginBottom: '24px' }}>Dedicated infrastructure & SLA compliance</p>
@@ -79,6 +148,15 @@ export const BillingPage: React.FC = () => {
           <button className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }} onClick={() => alert('Sales inquiry recorded!')}>
             Contact Sales
           </button>
+        </div>
+      </div>
+
+      <div style={{ marginTop: '56px' }}>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f8fafc', marginBottom: '16px' }}>
+          Billing & Payment History
+        </h2>
+        <div className="glass" style={{ padding: '24px', borderRadius: '16px' }}>
+          <PaymentHistoryTable payments={payments} />
         </div>
       </div>
     </div>

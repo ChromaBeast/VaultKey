@@ -9,19 +9,25 @@ import (
 
 // Config represents the application settings.
 type Config struct {
-	Port             int    `yaml:"port"`
-	DatabasePath     string `yaml:"database_path"`
-	AutoLockDuration string `yaml:"auto_lock_duration"`
-	AuditSigningKey  string `yaml:"audit_signing_key"`
+	Port                 int    `yaml:"port"`
+	DatabasePath         string `yaml:"database_path"`
+	AutoLockDuration     string `yaml:"auto_lock_duration"`
+	AuditSigningKey      string `yaml:"audit_signing_key"`
+	RazorpayKeyID        string `yaml:"razorpay_key_id"`
+	RazorpayKeySecret    string `yaml:"razorpay_key_secret"`
+	RazorpayWebhookSecret string `yaml:"razorpay_webhook_secret"`
 }
 
 // Default returns a Config populated with default values.
 func Default() *Config {
 	return &Config{
-		Port:             8080,
-		DatabasePath:     "vaultkey.db",
-		AutoLockDuration: "30m",
-		AuditSigningKey:  "vaultkey-default-audit-signing-hmac-key-1234567890",
+		Port:                  8080,
+		DatabasePath:          "vaultkey.db",
+		AutoLockDuration:      "30m",
+		AuditSigningKey:       "vaultkey-default-audit-signing-hmac-key-1234567890",
+		RazorpayKeyID:         "rzp_test_vaultkey_demo",
+		RazorpayKeySecret:     "razorpay_secret_vaultkey_demo",
+		RazorpayWebhookSecret: "razorpay_webhook_secret_demo",
 	}
 }
 
@@ -57,6 +63,16 @@ func Load(path string) (*Config, error) {
 	if envSigning := os.Getenv("VAULTKEY_AUDIT_SIGNING_KEY"); envSigning != "" {
 		cfg.AuditSigningKey = envSigning
 	}
+	if rzpKey := os.Getenv("RAZORPAY_KEY_ID"); rzpKey != "" {
+		cfg.RazorpayKeyID = rzpKey
+	}
+	if rzpSecret := os.Getenv("RAZORPAY_KEY_SECRET"); rzpSecret != "" {
+		cfg.RazorpayKeySecret = rzpSecret
+	}
+	if rzpWebhook := os.Getenv("RAZORPAY_WEBHOOK_SECRET"); rzpWebhook != "" {
+		cfg.RazorpayWebhookSecret = rzpWebhook
+	}
+
 
 	return cfg, nil
 }

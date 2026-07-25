@@ -51,6 +51,7 @@ export const DocsPage: React.FC = () => {
                 color: '#ffffff',
                 border: '1px solid ' + (isActive ? 'rgba(168, 85, 247, 0.5)' : 'rgba(255, 255, 255, 0.08)'),
                 boxShadow: isActive ? '0 4px 20px rgba(139, 92, 246, 0.35)' : 'none',
+                textDecoration: 'none',
               }}
             >
               {tab.label}

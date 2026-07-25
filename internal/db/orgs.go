@@ -7,13 +7,16 @@ import (
 )
 
 type Organization struct {
-	ID         string    `json:"id"`
-	Name       string    `json:"name"`
-	Slug       string    `json:"slug"`
-	Argon2Salt string    `json:"-"`
-	Sentinel   string    `json:"-"`
-	Plan       string    `json:"plan"`
-	CreatedAt  time.Time `json:"created_at"`
+	ID                 string     `json:"id"`
+	Name               string     `json:"name"`
+	Slug               string     `json:"slug"`
+	Argon2Salt         string     `json:"-"`
+	Sentinel           string     `json:"-"`
+	Plan               string     `json:"plan"`
+	SubscriptionID     *string    `json:"subscription_id,omitempty"`
+	SubscriptionStatus string     `json:"subscription_status"`
+	CurrentPeriodEnd   *time.Time `json:"current_period_end,omitempty"`
+	CreatedAt          time.Time  `json:"created_at"`
 }
 
 func (db *DB) CreateOrganization(org Organization) error {
@@ -29,17 +32,23 @@ func (db *DB) CreateOrganization(org Organization) error {
 }
 
 func (db *DB) GetOrganizationByID(id string) (*Organization, error) {
-	query := `SELECT id, name, slug, argon2_salt, sentinel, plan, created_at FROM organizations WHERE id = ?;`
+	query := `SELECT id, name, slug, argon2_salt, sentinel, plan, subscription_id, subscription_status, current_period_end, created_at FROM organizations WHERE id = ?;`
 	row := db.QueryRow(query, id)
 
 	var org Organization
-	err := row.Scan(&org.ID, &org.Name, &org.Slug, &org.Argon2Salt, &org.Sentinel, &org.Plan, &org.CreatedAt)
+	var subID *string
+	var subStatus string
+	var periodEnd *time.Time
+	err := row.Scan(&org.ID, &org.Name, &org.Slug, &org.Argon2Salt, &org.Sentinel, &org.Plan, &subID, &subStatus, &periodEnd, &org.CreatedAt)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
 	if err != nil {
 		return nil, fmt.Errorf("failed to get org by id: %w", err)
 	}
+	org.SubscriptionID = subID
+	org.SubscriptionStatus = subStatus
+	org.CurrentPeriodEnd = periodEnd
 	return &org, nil
 }
 
@@ -76,3 +85,13 @@ func (db *DB) ListOrganizations() ([]Organization, error) {
 	}
 	return orgs, nil
 }
+
+func (db *DB) UpdateOrganizationPlan(id string, plan string) error {
+	query := `UPDATE organizations SET plan = ? WHERE id = ?;`
+	_, err := db.Exec(query, plan, id)
+	if err != nil {
+		return fmt.Errorf("failed to update org plan: %w", err)
+	}
+	return nil
+}
+

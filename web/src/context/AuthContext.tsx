@@ -8,6 +8,7 @@ interface AuthContextType {
   token: string | null;
   loading: boolean;
   login: (token: string, user: User, org: Org) => void;
+  updateOrg: (newOrg: Org) => void;
   logout: () => Promise<void>;
   lockVault: () => Promise<void>;
 }
@@ -52,6 +53,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setOrg(newOrg);
   };
 
+  const updateOrg = (newOrg: Org) => {
+    localStorage.setItem('vk_org', JSON.stringify(newOrg));
+    setOrg(newOrg);
+  };
+
   const logout = async () => {
     try {
       await apiFetch('/v1/vault/lock', { method: 'POST' });
@@ -69,11 +75,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, org, token, loading, login, logout, lockVault }}>
+    <AuthContext.Provider value={{ user, org, token, loading, login, updateOrg, logout, lockVault }}>
       {children}
     </AuthContext.Provider>
   );
 };
+
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
