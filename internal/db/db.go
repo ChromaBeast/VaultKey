@@ -23,11 +23,12 @@ func Open(dataSourceName string) (*DB, error) {
 		return nil, fmt.Errorf("failed to open sqlite database: %w", err)
 	}
 
-	// Enable WAL mode and foreign keys for high performance and integrity
-	if _, err := db.Exec("PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON;"); err != nil {
+	// Enable WAL mode, foreign keys, and 5s busy timeout for high concurrency safety
+	if _, err := db.Exec("PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;"); err != nil {
 		db.Close()
 		return nil, fmt.Errorf("failed to configure sqlite: %w", err)
 	}
+	db.SetMaxOpenConns(1)
 
 	// Run migration schema
 	if _, err := db.Exec(schemaSQL); err != nil {

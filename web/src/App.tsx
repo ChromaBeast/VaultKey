@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AppLayout } from './components/AppLayout';
@@ -48,7 +48,7 @@ export const App: React.FC = () => {
 };
 
 const SharePageWrapper: React.FC = () => {
-  const shareId = window.location.pathname.split('/share/')[1] || '';
+  const { shareId = '' } = useParams<{ shareId: string }>();
   return (
     <div style={{ minHeight: '100vh', background: '#0b0e14', padding: '20px' }}>
       <SharePage shareId={shareId} />
