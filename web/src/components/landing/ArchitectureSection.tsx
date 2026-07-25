@@ -5,9 +5,9 @@ const SPEC_ROWS = [
   ['Key Derivation', 'Argon2id (m=64MB, t=3, p=4)'],
   ['Nonce', '12-byte CSPRNG per secret'],
   ['Audit Integrity', 'HMAC-SHA256 chain'],
-  ['Runtime', 'Go 1.26.5 · single binary'],
+  ['Architecture', 'Self-contained compiled binary'],
   ['Storage Engine', 'SQLite WAL mode'],
-  ['Container size', '< 25 MB Docker image'],
+  ['Container Size', '< 25 MB Docker image'],
 ];
 
 export const ArchitectureSection: React.FC = () => {
@@ -49,7 +49,7 @@ export const ArchitectureSection: React.FC = () => {
               marginBottom: '28px',
             }}
           >
-            VaultKey ships as a single compiled Go binary with the React frontend embedded.
+            VaultKey ships as a single compiled binary with the React frontend embedded.
             No Node.js runtime, no Redis sidecar, no managed KMS you don't control.
             Drop it in a Docker container and it runs.
           </p>

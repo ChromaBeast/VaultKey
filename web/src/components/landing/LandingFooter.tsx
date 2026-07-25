@@ -69,15 +69,17 @@ export const LandingFooter: React.FC = () => {
           <span
             className="code-font"
             style={{
-              fontSize: '0.7rem',
-              color: '#6366f1',
-              background: 'rgba(99, 102, 241, 0.1)',
-              border: '1px solid rgba(99, 102, 241, 0.2)',
-              padding: '3px 8px',
+              fontSize: '0.68rem',
+              color: '#34d399',
+              background: 'rgba(16, 185, 129, 0.1)',
+              border: '1px solid rgba(16, 185, 129, 0.25)',
+              padding: '3px 9px',
               borderRadius: '5px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.04em',
             }}
           >
-            v2.0 · Go 1.26.5
+            SOC 2 Ready
           </span>
         </nav>
       </div>
