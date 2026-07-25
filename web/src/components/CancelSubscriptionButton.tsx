@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import { cancelRazorpaySubscription } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 
-export const CancelSubscriptionButton: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
+interface CancelSubscriptionButtonProps {
+  onSuccess?: () => void;
+  onShowToast?: (msg: string, type?: 'success' | 'error') => void;
+}
+
+export const CancelSubscriptionButton: React.FC<CancelSubscriptionButtonProps> = ({ onSuccess, onShowToast }) => {
   const { updateOrg } = useAuth();
   const [loading, setLoading] = useState(false);
 
@@ -17,10 +22,14 @@ export const CancelSubscriptionButton: React.FC<{ onSuccess?: () => void }> = ({
       if (res.org) {
         updateOrg(res.org);
       }
-      alert('Auto-renewal has been cancelled.');
+      if (onShowToast) {
+        onShowToast('Auto-renewal has been cancelled.', 'success');
+      }
       if (onSuccess) onSuccess();
     } catch (err: any) {
-      alert(err.message || 'Failed to cancel subscription');
+      if (onShowToast) {
+        onShowToast(err.message || 'Failed to cancel subscription', 'error');
+      }
     } finally {
       setLoading(false);
     }

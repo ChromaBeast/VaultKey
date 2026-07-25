@@ -35,5 +35,10 @@ func Open(dataSourceName string) (*DB, error) {
 		return nil, fmt.Errorf("failed to execute schema: %w", err)
 	}
 
+	// Migrations for existing database schemas
+	_, _ = db.Exec("ALTER TABLE organizations ADD COLUMN subscription_id TEXT;")
+	_, _ = db.Exec("ALTER TABLE organizations ADD COLUMN subscription_status TEXT NOT NULL DEFAULT 'none';")
+	_, _ = db.Exec("ALTER TABLE organizations ADD COLUMN current_period_end DATETIME;")
+
 	return &DB{db}, nil
 }

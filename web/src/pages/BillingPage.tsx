@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { RazorpayCheckoutButton } from '../components/RazorpayCheckoutButton';
 import { CancelSubscriptionButton } from '../components/CancelSubscriptionButton';
 import { PaymentHistoryTable } from '../components/PaymentHistoryTable';
+import { Toast } from '../components/Toast';
 import { fetchPaymentHistory } from '../lib/api';
 import type { PaymentRecord } from '../types/payment';
 
@@ -11,6 +12,7 @@ export const BillingPage: React.FC = () => {
   const currentPlan = org?.plan || 'free';
   const subStatus = org?.subscription_status || 'none';
   const [payments, setPayments] = useState<PaymentRecord[]>([]);
+  const [toast, setToast] = useState<{ message: string; type?: 'success' | 'error' } | null>(null);
 
   const loadHistory = async () => {
     try {
@@ -25,8 +27,14 @@ export const BillingPage: React.FC = () => {
     loadHistory();
   }, [org?.plan, org?.subscription_status]);
 
+  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+    setToast({ message, type });
+  };
+
   return (
     <div className="animate-fade" style={{ maxWidth: '1140px', margin: '0 auto', padding: '16px' }}>
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+
       <div style={{ textAlign: 'center', marginBottom: '40px' }}>
         <h1 style={{ fontSize: '2.25rem', fontWeight: 800, letterSpacing: '-0.025em', color: '#f8fafc' }}>
           SaaS Team Plans & Pricing
@@ -76,7 +84,7 @@ export const BillingPage: React.FC = () => {
               )}
             </p>
           </div>
-          {subStatus === 'active' && <CancelSubscriptionButton onSuccess={loadHistory} />}
+          {subStatus === 'active' && <CancelSubscriptionButton onSuccess={loadHistory} onShowToast={showToast} />}
         </div>
       )}
 
@@ -128,6 +136,7 @@ export const BillingPage: React.FC = () => {
             amountLabel="₹1,499"
             isCurrentPlan={currentPlan === 'pro'}
             onSuccess={loadHistory}
+            onShowToast={showToast}
           />
         </div>
 
@@ -145,7 +154,7 @@ export const BillingPage: React.FC = () => {
             <li>🌐 Custom domain SSL termination</li>
             <li>⏱️ 99.99% Uptime SLA Guarantee</li>
           </ul>
-          <button className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }} onClick={() => alert('Sales inquiry recorded!')}>
+          <button className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }} onClick={() => showToast('Sales inquiry recorded! We will reach out within 24h.', 'success')}>
             Contact Sales
           </button>
         </div>

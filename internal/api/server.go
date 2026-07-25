@@ -4,6 +4,7 @@ import (
 	"embed"
 	"fmt"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 	"vaultkey/internal/config"
@@ -103,6 +104,17 @@ func (s *Server) setupRoutes() {
 	authGroup.Post("/subscriptions/verify", s.handleVerifySubscription)
 	authGroup.Post("/subscriptions/cancel", s.handleCancelSubscription)
 
+	s.App.Use(func(c *fiber.Ctx) error {
+		path := c.Path()
+		if path == "/" || !strings.Contains(path, ".") {
+			c.Set("Cache-Control", "no-cache, no-store, must-revalidate")
+			c.Set("Pragma", "no-cache")
+			c.Set("Expires", "0")
+		} else if strings.HasPrefix(path, "/assets/") {
+			c.Set("Cache-Control", "public, max-age=31536000, immutable")
+		}
+		return c.Next()
+	})
 
 	s.App.Use("/", filesystem.New(filesystem.Config{
 		Root:         http.FS(s.WebFS),

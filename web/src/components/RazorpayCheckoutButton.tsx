@@ -9,6 +9,7 @@ interface RazorpayCheckoutButtonProps {
   amountLabel: string;
   isCurrentPlan: boolean;
   onSuccess?: () => void;
+  onShowToast?: (msg: string, type?: 'success' | 'error') => void;
 }
 
 export const RazorpayCheckoutButton: React.FC<RazorpayCheckoutButtonProps> = ({
@@ -16,6 +17,7 @@ export const RazorpayCheckoutButton: React.FC<RazorpayCheckoutButtonProps> = ({
   planName,
   isCurrentPlan,
   onSuccess,
+  onShowToast,
 }) => {
   const { user, org, updateOrg } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -37,9 +39,7 @@ export const RazorpayCheckoutButton: React.FC<RazorpayCheckoutButtonProps> = ({
           email: user?.email || '',
           name: org?.name || '',
         },
-        theme: {
-          color: '#6366f1',
-        },
+        theme: { color: '#6366f1' },
         handler: async (response) => {
           try {
             const verifyRes = await verifyRazorpaySubscription({
@@ -52,7 +52,9 @@ export const RazorpayCheckoutButton: React.FC<RazorpayCheckoutButtonProps> = ({
             if (verifyRes.org) {
               updateOrg(verifyRes.org);
             }
-            alert(`🎉 Success! VaultKey auto-renewing subscription activated for ${planName}`);
+            if (onShowToast) {
+              onShowToast(`VaultKey auto-renewing subscription activated for ${planName}!`, 'success');
+            }
             if (onSuccess) onSuccess();
           } catch (err: any) {
             setError(err.message || 'Subscription verification failed');
