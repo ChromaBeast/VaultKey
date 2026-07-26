@@ -15,21 +15,27 @@ import (
 )
 
 type SignupRequest struct {
-	OrgName  string `json:"org_name"`
-	OrgSlug  string `json:"org_slug"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	OrgName        string `json:"org_name"`
+	OrgSlug        string `json:"org_slug"`
+	Email          string `json:"email"`
+	Password       string `json:"password"`
+	TurnstileToken string `json:"turnstile_token"`
 }
 
 type LoginRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email          string `json:"email"`
+	Password       string `json:"password"`
+	TurnstileToken string `json:"turnstile_token"`
 }
 
 func (s *Server) handleSignup(c *fiber.Ctx) error {
 	var req SignupRequest
 	if err := c.BodyParser(&req); err != nil || req.OrgName == "" || req.Email == "" || req.Password == "" {
 		return c.Status(400).JSON(fiber.Map{"error": "org_name, email, and password are required"})
+	}
+
+	if !s.VerifyTurnstileToken(req.TurnstileToken, c.IP()) {
+		return c.Status(403).JSON(fiber.Map{"error": "security verification failed, please complete the captcha"})
 	}
 
 	slug := strings.ToLower(strings.TrimSpace(req.OrgSlug))
@@ -111,14 +117,42 @@ func (s *Server) handleLogin(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "email and password are required"})
 	}
 
+	if !s.VerifyTurnstileToken(req.TurnstileToken, c.IP()) {
+		return c.Status(403).JSON(fiber.Map{"error": "security verification failed, please complete the captcha"})
+	}
+
 	user, err := s.DB.GetUserByEmail(req.Email)
 	if err != nil || user == nil {
 		return c.Status(401).JSON(fiber.Map{"error": "invalid email or password"})
 	}
 
+	if user.LockedUntil != nil && user.LockedUntil.After(time.Now()) {
+		remaining := time.Until(*user.LockedUntil).Round(time.Second)
+		return c.Status(429).JSON(fiber.Map{
+			"error": fmt.Sprintf("account is temporarily locked due to failed login attempts. Try again in %v", remaining),
+		})
+	}
+
+	lockoutDur, parseErr := time.ParseDuration(s.Config.LockoutDuration)
+	if parseErr != nil {
+		lockoutDur = 5 * time.Minute
+	}
+	maxAttempts := s.Config.MaxLoginAttempts
+	if maxAttempts <= 0 {
+		maxAttempts = 5
+	}
+
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password)); err != nil {
+		_, isLocked, _ := s.DB.RecordFailedLogin(user.ID, maxAttempts, lockoutDur)
+		if isLocked {
+			return c.Status(429).JSON(fiber.Map{
+				"error": fmt.Sprintf("too many failed login attempts. Account locked for %v", lockoutDur),
+			})
+		}
 		return c.Status(401).JSON(fiber.Map{"error": "invalid email or password"})
 	}
+
+	_ = s.DB.ResetFailedLogins(user.ID)
 
 	org, err := s.DB.GetOrganizationByID(user.OrgID)
 	if err != nil || org == nil {

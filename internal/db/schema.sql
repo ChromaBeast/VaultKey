@@ -12,12 +12,14 @@ CREATE TABLE IF NOT EXISTS organizations (
 );
 
 CREATE TABLE IF NOT EXISTS users (
-    id            TEXT PRIMARY KEY,
-    org_id        TEXT NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
-    email         TEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL,
-    role          TEXT NOT NULL DEFAULT 'member',
-    created_at    DATETIME DEFAULT CURRENT_TIMESTAMP
+    id              TEXT PRIMARY KEY,
+    org_id          TEXT NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    email           TEXT NOT NULL UNIQUE,
+    password_hash   TEXT NOT NULL,
+    role            TEXT NOT NULL DEFAULT 'member',
+    failed_attempts INTEGER DEFAULT 0,
+    locked_until    DATETIME,
+    created_at      DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS secrets (

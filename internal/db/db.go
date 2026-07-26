@@ -40,6 +40,8 @@ func Open(dataSourceName string) (*DB, error) {
 	_, _ = db.Exec("ALTER TABLE organizations ADD COLUMN subscription_id TEXT;")
 	_, _ = db.Exec("ALTER TABLE organizations ADD COLUMN subscription_status TEXT NOT NULL DEFAULT 'none';")
 	_, _ = db.Exec("ALTER TABLE organizations ADD COLUMN current_period_end DATETIME;")
+	_, _ = db.Exec("ALTER TABLE users ADD COLUMN failed_attempts INTEGER DEFAULT 0;")
+	_, _ = db.Exec("ALTER TABLE users ADD COLUMN locked_until DATETIME;")
 
 	return &DB{db}, nil
 }

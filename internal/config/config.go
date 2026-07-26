@@ -9,13 +9,17 @@ import (
 
 // Config represents the application settings.
 type Config struct {
-	Port                 int    `yaml:"port"`
-	DatabasePath         string `yaml:"database_path"`
-	AutoLockDuration     string `yaml:"auto_lock_duration"`
-	AuditSigningKey      string `yaml:"audit_signing_key"`
-	RazorpayKeyID        string `yaml:"razorpay_key_id"`
-	RazorpayKeySecret    string `yaml:"razorpay_key_secret"`
+	Port                  int    `yaml:"port"`
+	DatabasePath          string `yaml:"database_path"`
+	AutoLockDuration      string `yaml:"auto_lock_duration"`
+	AuditSigningKey       string `yaml:"audit_signing_key"`
+	RazorpayKeyID         string `yaml:"razorpay_key_id"`
+	RazorpayKeySecret     string `yaml:"razorpay_key_secret"`
 	RazorpayWebhookSecret string `yaml:"razorpay_webhook_secret"`
+	AllowedOrigins        string `yaml:"allowed_origins"`
+	TurnstileSecretKey    string `yaml:"turnstile_secret_key"`
+	MaxLoginAttempts      int    `yaml:"max_login_attempts"`
+	LockoutDuration       string `yaml:"lockout_duration"`
 }
 
 // Default returns a Config populated with default values.
@@ -28,6 +32,10 @@ func Default() *Config {
 		RazorpayKeyID:         "rzp_test_vaultkey_demo",
 		RazorpayKeySecret:     "razorpay_secret_vaultkey_demo",
 		RazorpayWebhookSecret: "razorpay_webhook_secret_demo",
+		AllowedOrigins:        "http://localhost:8080,http://localhost:3000,http://localhost:5173,https://vaultkey.sheershjaiswal.in",
+		TurnstileSecretKey:    "1x0000000000000000000000000000000AA",
+		MaxLoginAttempts:      5,
+		LockoutDuration:       "5m",
 	}
 }
 
@@ -72,7 +80,12 @@ func Load(path string) (*Config, error) {
 	if rzpWebhook := os.Getenv("RAZORPAY_WEBHOOK_SECRET"); rzpWebhook != "" {
 		cfg.RazorpayWebhookSecret = rzpWebhook
 	}
-
+	if origins := os.Getenv("VAULTKEY_ALLOWED_ORIGINS"); origins != "" {
+		cfg.AllowedOrigins = origins
+	}
+	if turnstile := os.Getenv("VAULTKEY_TURNSTILE_SECRET_KEY"); turnstile != "" {
+		cfg.TurnstileSecretKey = turnstile
+	}
 
 	return cfg, nil
 }

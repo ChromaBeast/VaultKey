@@ -11,6 +11,7 @@ import (
 	"vaultkey/internal/db"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 )
@@ -52,6 +53,14 @@ func (s *Server) RecordActivity() {
 }
 
 func (s *Server) setupRoutes() {
+	s.App.Use(s.SecurityHeadersMiddleware())
+	s.App.Use(cors.New(cors.Config{
+		AllowOrigins:     s.Config.AllowedOrigins,
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
+		AllowMethods:     "GET, POST, PUT, DELETE, OPTIONS",
+		AllowCredentials: true,
+	}))
+
 	v1 := s.App.Group("/v1")
 
 	authLimiter := limiter.New(limiter.Config{

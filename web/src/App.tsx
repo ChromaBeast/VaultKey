@@ -12,6 +12,7 @@ import { AuditPage } from './pages/AuditPage';
 import { BillingPage } from './pages/BillingPage';
 import { SharePage } from './pages/SharePage';
 import { DocsPage } from './pages/DocsPage';
+import { PrivacyPolicy } from './pages/PrivacyPolicy';
 
 export const App: React.FC = () => {
   return (
@@ -22,6 +23,7 @@ export const App: React.FC = () => {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/share/:shareId" element={<SharePageWrapper />} />
 
           {/* Protected Application Routes (wrapped in AppLayout) */}
