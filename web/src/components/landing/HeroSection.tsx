@@ -1,36 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const snippets = {
-  cli: `$ vaultkey unlock
-[vaultkey] Deriving master key — Argon2id (64MB, t=3, p=4)...
-[vaultkey] Vault unlocked. Master key in RAM only.
-
-$ vaultkey run -- node index.js
-[vaultkey] Injected 14 secrets into process environment.
-[vaultkey] No plaintext written to disk.
-✓  Server listening on :8080`,
-
-  sdk: `import { Vaultkey } from 'vaultkey-js';
-
-const vk = new Vaultkey({ apiKey: process.env.VK_TOKEN });
-
-// Inject all project secrets into process.env — in RAM only
-await vk.inject('backend', 'production');
-
-// Or fetch a single secret on-demand
-const uri = await vk.get('DATABASE_URL');`,
-
-  go: `vk := client.NewClient(os.Getenv("VAULTKEY_SERVER"), token)
-
-secret, err := vk.GetSecret("DATABASE_URL")
-if err != nil {
-    log.Fatal(err)
-}
-// secret.Value exists only in this process scope
-// Nothing written to disk`,
-};
-
 export const HeroSection: React.FC = () => {
   const [tab, setTab] = useState<'cli' | 'sdk' | 'go'>('cli');
 
@@ -171,8 +141,8 @@ export const HeroSection: React.FC = () => {
             </div>
           </div>
 
-          {/* Code */}
-          <pre
+          {/* Code Container */}
+          <div
             className="code-font"
             style={{
               fontSize: '0.82rem',
@@ -180,13 +150,45 @@ export const HeroSection: React.FC = () => {
               margin: 0,
               padding: '20px 20px 24px',
               overflowX: 'auto',
-              lineHeight: 1.7,
-              minHeight: '160px',
+              lineHeight: 1.75,
+              minHeight: '165px',
               whiteSpace: 'pre',
+              background: '#090c14',
             }}
           >
-            <code style={{ color: '#34d399' }}>{snippets[tab]}</code>
-          </pre>
+            {tab === 'cli' && (
+              <>
+                <span style={{ color: '#6366f1' }}>$</span> <span style={{ color: '#f8fafc', fontWeight: 600 }}>vaultkey unlock</span>{'\n'}
+                <span style={{ color: '#34d399' }}>[vaultkey] Deriving master key — Argon2id (64MB, t=3, p=4)...</span>{'\n'}
+                <span style={{ color: '#34d399' }}>[vaultkey] Vault unlocked. Master key in RAM only.</span>{'\n\n'}
+                <span style={{ color: '#6366f1' }}>$</span> <span style={{ color: '#f8fafc', fontWeight: 600 }}>vaultkey run -- node index.js</span>{'\n'}
+                <span style={{ color: '#34d399' }}>[vaultkey] Injected 14 secrets into process environment.</span>{'\n'}
+                <span style={{ color: '#34d399' }}>[vaultkey] No plaintext written to disk.</span>{'\n'}
+                <span style={{ color: '#10b981', fontWeight: 700 }}>✓ Server listening on :8080</span>
+              </>
+            )}
+            {tab === 'sdk' && (
+              <>
+                <span style={{ color: '#c084fc' }}>import</span> {'{ Vaultkey }'} <span style={{ color: '#c084fc' }}>from</span> <span style={{ color: '#34d399' }}>'vaultkey-js'</span>;{'\n\n'}
+                <span style={{ color: '#c084fc' }}>const</span> <span style={{ color: '#f8fafc' }}>vk</span> = <span style={{ color: '#c084fc' }}>new</span> <span style={{ color: '#6366f1', fontWeight: 600 }}>Vaultkey</span>({'{ apiKey: process.env.VK_TOKEN }'});{'\n\n'}
+                <span style={{ color: '#64748b' }}>// Inject secrets into process.env — in RAM only</span>{'\n'}
+                <span style={{ color: '#c084fc' }}>await</span> vk.<span style={{ color: '#818cf8' }}>inject</span>(<span style={{ color: '#34d399' }}>'backend'</span>, <span style={{ color: '#34d399' }}>'production'</span>);{'\n\n'}
+                <span style={{ color: '#64748b' }}>// Or fetch a single secret on-demand</span>{'\n'}
+                <span style={{ color: '#c084fc' }}>const</span> <span style={{ color: '#f8fafc' }}>uri</span> = <span style={{ color: '#c084fc' }}>await</span> vk.<span style={{ color: '#818cf8' }}>get</span>(<span style={{ color: '#34d399' }}>'DATABASE_URL'</span>);
+              </>
+            )}
+            {tab === 'go' && (
+              <>
+                <span style={{ color: '#f8fafc' }}>vk</span> := client.<span style={{ color: '#818cf8' }}>NewClient</span>(os.<span style={{ color: '#818cf8' }}>Getenv</span>(<span style={{ color: '#34d399' }}>"VAULTKEY_SERVER"</span>), token){'\n\n'}
+                <span style={{ color: '#f8fafc' }}>secret</span>, <span style={{ color: '#f8fafc' }}>err</span> := vk.<span style={{ color: '#818cf8' }}>GetSecret</span>(<span style={{ color: '#34d399' }}>"DATABASE_URL"</span>){'\n'}
+                <span style={{ color: '#c084fc' }}>if</span> err != <span style={{ color: '#ef4444' }}>nil</span> {'{'}{'\n'}
+                {'    '}log.<span style={{ color: '#ef4444' }}>Fatal</span>(err){'\n'}
+                {'}'}{'\n'}
+                <span style={{ color: '#64748b' }}>// secret.Value exists only in this process scope</span>{'\n'}
+                <span style={{ color: '#64748b' }}>// Nothing written to disk</span>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </section>

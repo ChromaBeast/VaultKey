@@ -127,25 +127,27 @@ export const SecretsPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="glass" style={{ overflow: 'hidden' }}>
-        <table>
+      <div className="glass" style={{ overflowX: 'auto', borderRadius: '16px' }}>
+        <table style={{ width: '100%', minWidth: '700px' }}>
           <thead>
             <tr><th>KEY NAME</th><th>PROJECT</th><th>VERSION</th><th>LAST UPDATED</th><th>ACTIONS</th></tr>
           </thead>
           <tbody>
             {filtered.map((s) => (
               <tr key={s.id}>
-                <td className="code-font" style={{ fontWeight: 600, color: '#f8fafc', fontSize: '0.95rem' }}>{s.key}</td>
+                <td className="code-font" style={{ fontWeight: 600, color: '#f8fafc', fontSize: '0.925rem', maxWidth: '240px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={s.key}>
+                  {s.key}
+                </td>
                 <td><span className="badge badge-admin">{s.project}</span></td>
                 <td>
-                  <span
+                  <button
                     onClick={() => setHistoryItem({ key: s.key, version: s.version })}
-                    className="code-font"
-                    style={{ color: '#c084fc', fontSize: '0.85rem', cursor: 'pointer', textDecoration: 'none' }}
+                    className="code-font btn"
+                    style={{ color: '#c084fc', fontSize: '0.825rem', padding: '2px 8px', background: 'rgba(192, 132, 252, 0.1)', border: '1px solid rgba(192, 132, 252, 0.2)', borderRadius: '6px' }}
                     title="View Version History & Rollback"
                   >
                     v{s.version} 📜
-                  </span>
+                  </button>
                 </td>
                 <td style={{ color: '#94a3b8', fontSize: '0.85rem' }}>{new Date(s.updated_at).toLocaleDateString()}</td>
                 <td>
@@ -161,7 +163,20 @@ export const SecretsPage: React.FC = () => {
               </tr>
             ))}
             {filtered.length === 0 && !loading && (
-              <tr><td colSpan={5} style={{ textAlign: 'center', color: '#94a3b8', padding: '48px' }}>No secrets stored in project "{project}".</td></tr>
+              <tr>
+                <td colSpan={5} style={{ textAlign: 'center', padding: '56px 24px' }}>
+                  <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>🔒</div>
+                  <h3 style={{ fontSize: '1.1rem', color: '#f8fafc', fontWeight: 700, marginBottom: '6px', fontFamily: 'Outfit, sans-serif' }}>
+                    No secrets stored in "{project}"
+                  </h3>
+                  <p style={{ color: '#94a3b8', fontSize: '0.875rem', maxWidth: '360px', margin: '0 auto 20px' }}>
+                    Secrets are encrypted using AES-256-GCM under your derived master key before storage.
+                  </p>
+                  <button onClick={() => setModalOpen(true)} className="btn btn-primary" style={{ padding: '8px 18px', fontSize: '0.875rem' }}>
+                    + Create First Secret
+                  </button>
+                </td>
+              </tr>
             )}
           </tbody>
         </table>

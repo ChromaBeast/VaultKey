@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
   --bg-main: #0b0e14;
@@ -20,7 +21,7 @@
   --accent-red: #ef4444;
   --accent-cyan: #06b6d4;
 
-  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-fast: 0.15s;
   --duration-base: 0.2s;
   --radius-card: 14px;
@@ -46,7 +47,7 @@ a, button, input, select, textarea {
               border-color var(--duration-fast) ease,
               box-shadow var(--duration-fast) ease,
               opacity var(--duration-fast) ease,
-              transform var(--duration-fast) var(--ease-spring);
+              transform var(--duration-fast) var(--ease-smooth);
 }
 
 a, button, nav a, nav button, .btn {
@@ -54,7 +55,7 @@ a, button, nav a, nav button, .btn {
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'General Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: var(--bg-main);
   color: var(--text-main);
   min-height: 100vh;
@@ -78,9 +79,9 @@ h1, h2, h3, h4, h5, .brand-text {
   border: 1px solid var(--border-subtle);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), var(--sheen);
   border-radius: var(--radius-card);
-  transition: transform var(--duration-base) var(--ease-spring),
-              border-color var(--duration-base) var(--ease-spring),
-              box-shadow var(--duration-base) var(--ease-spring);
+  transition: transform var(--duration-base) var(--ease-smooth),
+              border-color var(--duration-base) var(--ease-smooth),
+              box-shadow var(--duration-base) var(--ease-smooth);
 }
 
 .glass:hover {
@@ -94,9 +95,9 @@ h1, h2, h3, h4, h5, .brand-text {
   border: 1px solid rgba(99, 102, 241, 0.35);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), var(--sheen);
   border-radius: 16px;
-  transition: transform var(--duration-base) var(--ease-spring),
-              border-color var(--duration-base) var(--ease-spring),
-              box-shadow var(--duration-base) var(--ease-spring);
+  transition: transform var(--duration-base) var(--ease-smooth),
+              border-color var(--duration-base) var(--ease-smooth),
+              box-shadow var(--duration-base) var(--ease-smooth);
 }
 
 .glass-glow:hover {
@@ -107,7 +108,7 @@ h1, h2, h3, h4, h5, .brand-text {
 
 /* ─── Buttons ─────────────────────────────────────────────── */
 .btn {
-  font-family: 'Inter', sans-serif;
+  font-family: 'General Sans', sans-serif;
   font-weight: 500;
   padding: 9px 16px;
   border-radius: var(--radius-btn);
@@ -118,7 +119,7 @@ h1, h2, h3, h4, h5, .brand-text {
   gap: 8px;
   font-size: 0.875rem;
   outline: none;
-  transition: transform var(--duration-fast) var(--ease-spring),
+  transition: transform var(--duration-fast) var(--ease-smooth),
               background-color var(--duration-fast) ease,
               box-shadow var(--duration-fast) ease,
               border-color var(--duration-fast) ease;
@@ -172,10 +173,10 @@ h1, h2, h3, h4, h5, .brand-text {
   padding: 10px 14px;
   color: var(--text-main);
   font-size: 0.9rem;
-  font-family: 'Inter', sans-serif;
+  font-family: 'General Sans', sans-serif;
   outline: none;
   transition: border-color var(--duration-fast) ease,
-              box-shadow var(--duration-fast) var(--ease-spring),
+              box-shadow var(--duration-fast) var(--ease-smooth),
               background-color var(--duration-fast) ease;
 }
 .input:focus {
@@ -197,7 +198,7 @@ h1, h2, h3, h4, h5, .brand-text {
   letter-spacing: 0.04em;
   display: inline-flex;
   align-items: center;
-  transition: transform var(--duration-fast) var(--ease-spring),
+  transition: transform var(--duration-fast) var(--ease-smooth),
               filter var(--duration-fast) ease;
 }
 .badge:hover {
@@ -213,7 +214,7 @@ table { width: 100%; border-collapse: collapse; }
 tr { transition: background-color var(--duration-fast) ease; }
 th, td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--border-subtle); }
 th {
-  font-family: 'Inter', sans-serif;
+  font-family: 'General Sans', sans-serif;
   color: var(--text-muted);
   font-size: 0.72rem;
   font-weight: 600;
@@ -229,7 +230,7 @@ tr:hover td { background: rgba(99, 102, 241, 0.04); }
 }
 
 .animate-fade {
-  animation: fadeIn 0.2s var(--ease-spring) forwards;
+  animation: fadeIn 0.2s var(--ease-smooth) forwards;
 }
 
 /* ─── Scrollbar ───────────────────────────────────────────── */

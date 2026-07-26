@@ -60,8 +60,8 @@ export const AuditPage: React.FC = () => {
       </div>
 
       {/* Audit Logs Table */}
-      <div className="glass" style={{ overflow: 'hidden' }}>
-        <table>
+      <div className="glass" style={{ overflowX: 'auto', borderRadius: '16px' }}>
+        <table style={{ width: '100%', minWidth: '850px' }}>
           <thead>
             <tr><th>ACTION</th><th>SECRET KEY</th><th>PROJECT</th><th>ACTOR</th><th>IP ADDRESS</th><th>TIMESTAMP</th><th>HMAC SIGNATURE</th></tr>
           </thead>
@@ -73,18 +73,32 @@ export const AuditPage: React.FC = () => {
                     {l.action}
                   </span>
                 </td>
-                <td className="code-font" style={{ fontWeight: 600, color: '#f8fafc' }}>{l.secret_key || '-'}</td>
+                <td className="code-font" style={{ fontWeight: 600, color: '#f8fafc', maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={l.secret_key || '-'}>
+                  {l.secret_key || '-'}
+                </td>
                 <td><span className="badge badge-read">{l.project || 'default'}</span></td>
-                <td className="code-font" style={{ fontSize: '0.8rem', color: '#cbd5e1' }}>{l.actor}</td>
+                <td className="code-font" style={{ fontSize: '0.8rem', color: '#cbd5e1', maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={l.actor}>
+                  {l.actor}
+                </td>
                 <td style={{ color: '#94a3b8', fontSize: '0.8rem' }}>{l.ip_address || '127.0.0.1'}</td>
                 <td style={{ color: '#94a3b8', fontSize: '0.8rem' }}>{new Date(l.created_at).toLocaleString()}</td>
-                <td className="code-font" style={{ fontSize: '0.7rem', color: '#c084fc', maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={l.hmac}>
+                <td className="code-font" style={{ fontSize: '0.725rem', color: '#c084fc', maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={l.hmac}>
                   {l.hmac}
                 </td>
               </tr>
             ))}
             {logs.length === 0 && !loading && (
-              <tr><td colSpan={7} style={{ textAlign: 'center', color: '#94a3b8', padding: '48px' }}>No audit entries logged yet.</td></tr>
+              <tr>
+                <td colSpan={7} style={{ textAlign: 'center', padding: '56px 24px' }}>
+                  <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>🛡️</div>
+                  <h3 style={{ fontSize: '1.1rem', color: '#f8fafc', fontWeight: 700, marginBottom: '6px', fontFamily: 'Outfit, sans-serif' }}>
+                    Audit Ledger Empty
+                  </h3>
+                  <p style={{ color: '#94a3b8', fontSize: '0.875rem', maxWidth: '380px', margin: '0 auto' }}>
+                    Every secret creation, reveal, and rotation will be cryptographically signed into the HMAC-SHA256 audit chain.
+                  </p>
+                </td>
+              </tr>
             )}
           </tbody>
         </table>

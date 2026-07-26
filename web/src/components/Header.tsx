@@ -48,8 +48,16 @@ export const Header: React.FC<HeaderProps> = ({
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
         <div
-          style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}
+          role="button"
+          tabIndex={0}
+          aria-label="VaultKey Home"
+          style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', outline: 'none' }}
           onClick={() => setActiveTab(user ? 'secrets' : 'docs')}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              setActiveTab(user ? 'secrets' : 'docs');
+            }
+          }}
         >
           <div
             style={{
@@ -128,13 +136,14 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        <nav style={{ display: 'flex', gap: '8px', marginLeft: '16px' }}>
+        <nav style={{ display: 'flex', gap: '8px', marginLeft: '16px' }} aria-label="Main Navigation">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
+                aria-selected={isActive}
                 className="btn"
                 style={{
                   padding: '8px 16px',
