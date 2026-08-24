@@ -1,58 +1,61 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { CircleCheck, Info, TriangleAlert, X } from 'lucide-react';
+import type { ToastItem, ToastType } from '../lib/toast';
+import { TOAST_EVENT } from '../lib/toast';
 
-export interface ToastProps {
-  message: string;
-  type?: 'error' | 'success' | 'info';
-  onClose: () => void;
-}
+const ICONS: Record<ToastType, React.ReactNode> = {
+  error: <TriangleAlert size={17} />,
+  success: <CircleCheck size={17} />,
+  info: <Info size={17} />,
+};
 
-export const Toast: React.FC<ToastProps> = ({ message, type = 'error', onClose }) => {
+const ToastCard: React.FC<{ item: ToastItem; onDismiss: (id: number) => void }> = ({
+  item,
+  onDismiss,
+}) => {
+  const [paused, setPaused] = useState(false);
+
   useEffect(() => {
-    const timer = setTimeout(() => onClose(), 4000);
-    return () => clearTimeout(timer);
-  }, [onClose]);
-
-  const bg = type === 'error' ? 'rgba(239, 68, 68, 0.2)' : type === 'success' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(99, 102, 241, 0.2)';
-  const border = type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#6366f1';
-  const icon = type === 'error' ? '⚠️' : type === 'success' ? '✓' : 'ℹ️';
+    if (paused) return;
+    const timer = window.setTimeout(() => onDismiss(item.id), 4200);
+    return () => window.clearTimeout(timer);
+  }, [paused, item.id, onDismiss]);
 
   return (
     <div
-      className="animate-fade"
-      style={{
-        position: 'fixed',
-        bottom: '24px',
-        right: '24px',
-        zIndex: 1000,
-        background: bg,
-        backdropFilter: 'blur(12px)',
-        border: `1px solid ${border}`,
-        borderRadius: '12px',
-        padding: '12px 20px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '10px',
-        color: '#fff',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
-        fontSize: '0.9rem',
-        maxWidth: '400px',
-      }}
+      className={`toast-card toast-${item.type}`}
+      role="status"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
     >
-      <span>{icon}</span>
-      <span style={{ flex: 1 }}>{message}</span>
-      <button
-        onClick={onClose}
-        style={{
-          background: 'transparent',
-          border: 'none',
-          color: '#94a3b8',
-          cursor: 'pointer',
-          fontSize: '1.1rem',
-          padding: '0 4px',
-        }}
-      >
-        ×
+      <span className="toast-icon">{ICONS[item.type]}</span>
+      <span className="toast-message">{item.message}</span>
+      <button className="toast-close" onClick={() => onDismiss(item.id)} aria-label="Dismiss notification">
+        <X size={14} />
       </button>
+    </div>
+  );
+};
+
+export const ToastHost: React.FC = () => {
+  const [toasts, setToasts] = useState<ToastItem[]>([]);
+
+  useEffect(() => {
+    const handle = (e: Event) => {
+      const detail = (e as CustomEvent<ToastItem>).detail;
+      setToasts((prev) => [...prev.slice(-3), detail]);
+    };
+    window.addEventListener(TOAST_EVENT, handle);
+    return () => window.removeEventListener(TOAST_EVENT, handle);
+  }, []);
+
+  const dismiss = (id: number) => setToasts((prev) => prev.filter((t) => t.id !== id));
+
+  return (
+    <div className="toast-stack" aria-live="assertive" aria-atomic="false">
+      {toasts.map((t) => (
+        <ToastCard key={t.id} item={t} onDismiss={dismiss} />
+      ))}
     </div>
   );
 };

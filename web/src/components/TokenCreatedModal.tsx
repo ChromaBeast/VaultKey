@@ -1,39 +1,25 @@
 import React from 'react';
+import { Modal } from './ui/Modal';
+import { useClipboard } from '../hooks/useClipboard';
 
 interface TokenCreatedModalProps {
   createdToken: string | null;
-  copied: boolean;
-  onCopy: () => void;
   onClose: () => void;
 }
 
-export const TokenCreatedModal: React.FC<TokenCreatedModalProps> = ({
-  createdToken,
-  copied,
-  onCopy,
-  onClose,
-}) => {
+export const TokenCreatedModal: React.FC<TokenCreatedModalProps> = ({ createdToken, onClose }) => {
+  const { copied, copy } = useClipboard();
+
   if (!createdToken) return null;
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0,0,0,0.75)',
-        backdropFilter: 'blur(10px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 100,
-      }}
-    >
-      <div className="glass-glow animate-fade" style={{ width: '460px', padding: '32px', borderRadius: '20px' }}>
+    <Modal isOpen onClose={onClose} width={460}>
+      <div style={{ padding: '32px' }}>
         <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#34d399', marginBottom: '8px' }}>
-          🔑 API Access Token Created!
+          API Access Token Created
         </h3>
         <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginBottom: '16px' }}>
-          Copy this token immediately. For zero-knowledge security, it will never be displayed again.
+          Copy this token now. It is shown only once and cannot be recovered.
         </p>
 
         <div
@@ -53,14 +39,18 @@ export const TokenCreatedModal: React.FC<TokenCreatedModalProps> = ({
         </div>
 
         <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-          <button onClick={onCopy} className="btn btn-primary" style={{ background: copied ? '#10b981' : undefined }}>
-            {copied ? '✓ Token Copied' : 'Copy Token'}
+          <button
+            onClick={() => void copy(createdToken)}
+            className="btn btn-primary"
+            style={copied ? { background: '#10b981' } : undefined}
+          >
+            {copied ? 'Token Copied' : 'Copy Token'}
           </button>
           <button onClick={onClose} className="btn btn-secondary">
             Done
           </button>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };

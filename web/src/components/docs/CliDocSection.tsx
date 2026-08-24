@@ -24,7 +24,7 @@ vaultkey run --project=backend -- npm start`;
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
         <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>CLI Integration Guide</h3>
         <button onClick={() => onCopy('cli', cliCode)} className="btn btn-secondary" style={{ padding: '4px 12px', fontSize: '0.75rem' }}>
-          {copiedSnippet === 'cli' ? '✓ Copied!' : 'Copy Commands'}
+          {copiedSnippet === 'cli' ? 'Copied' : 'Copy Commands'}
         </button>
       </div>
       <pre className="code-font" style={{ background: '#090d16', padding: '18px', borderRadius: '12px', overflowX: 'auto', border: '1px solid rgba(255,255,255,0.1)', color: '#10b981', fontSize: '0.85rem', lineHeight: '1.6' }}>

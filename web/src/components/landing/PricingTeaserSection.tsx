@@ -1,19 +1,18 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 const FREE_FEATURES = [
   '25 secrets across all projects',
   '2 API access tokens',
   'Argon2id RAM key derivation',
   'AES-256-GCM per-secret encryption',
-  'HMAC audit ledger (30 days)',
+  '7-day audit logs',
 ];
 
 const PRO_FEATURES = [
   'Unlimited secrets & projects',
   'Unlimited API tokens',
-  'Full HMAC audit ledger (90 days)',
-  'Secret version history & rollback',
+  '90-day HMAC audit ledger',
   '1-Time self-destruct share links',
   'UPI AutoPay / eNACH mandate',
 ];
@@ -39,8 +38,16 @@ const FeatureList: React.FC<FeatureListProps> = ({ items }) => (
 );
 
 export const PricingTeaserSection: React.FC = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === '#pricing') {
+      document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [location.hash]);
+
   return (
-    <section style={{ maxWidth: '1200px', margin: '100px auto 80px', padding: '0 24px' }}>
+    <section id="pricing" style={{ maxWidth: '1200px', margin: '100px auto 80px', padding: '0 24px' }}>
       <div style={{ marginBottom: '48px' }}>
         <h2 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.025em', color: '#f8fafc', marginBottom: '10px' }}>
           Transparent pricing
@@ -59,9 +66,9 @@ export const PricingTeaserSection: React.FC = () => {
             </h3>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
               <span style={{ fontSize: '2.5rem', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.03em' }}>₹0</span>
-              <span style={{ color: '#64748b', fontSize: '0.85rem' }}>/forever</span>
+              <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>/forever</span>
             </div>
-            <p style={{ color: '#64748b', fontSize: '0.825rem', marginTop: '6px' }}>
+            <p style={{ color: '#94a3b8', fontSize: '0.825rem', marginTop: '6px' }}>
               Individual devs &amp; side projects
             </p>
           </div>
@@ -106,9 +113,9 @@ export const PricingTeaserSection: React.FC = () => {
             </h3>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
               <span style={{ fontSize: '2.5rem', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.03em' }}>₹1,499</span>
-              <span style={{ color: '#64748b', fontSize: '0.85rem' }}>/mo</span>
+              <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>/mo</span>
             </div>
-            <p style={{ color: '#64748b', fontSize: '0.825rem', marginTop: '6px' }}>
+            <p style={{ color: '#94a3b8', fontSize: '0.825rem', marginTop: '6px' }}>
               Growing engineering teams
             </p>
           </div>
@@ -117,7 +124,7 @@ export const PricingTeaserSection: React.FC = () => {
             <FeatureList items={PRO_FEATURES} />
             <div style={{ marginTop: 'auto' }}>
               <Link to="/signup" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
-                Start 14-Day Trial
+                Subscribe ₹1,499/mo
               </Link>
             </div>
           </div>
@@ -132,7 +139,7 @@ export const PricingTeaserSection: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
               <span style={{ fontSize: '2.5rem', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.03em' }}>Custom</span>
             </div>
-            <p style={{ color: '#64748b', fontSize: '0.825rem', marginTop: '6px' }}>
+            <p style={{ color: '#94a3b8', fontSize: '0.825rem', marginTop: '6px' }}>
               Dedicated VPS &amp; compliance SLA
             </p>
           </div>
@@ -140,9 +147,9 @@ export const PricingTeaserSection: React.FC = () => {
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: '24px', flex: 1, display: 'flex', flexDirection: 'column' }}>
             <FeatureList items={ENT_FEATURES} />
             <div style={{ marginTop: 'auto' }}>
-              <Link to="/docs" className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
+              <a href="mailto:sheersh@vaultkey.dev?subject=VaultKey%20Enterprise%20inquiry" className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
                 Contact Sales
-              </Link>
+              </a>
             </div>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Sparkles, TriangleAlert } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import type { Org, User } from '../lib/api';
@@ -32,8 +33,8 @@ export const Signup: React.FC = () => {
       });
       login(res.token, res.user, res.org);
       navigate('/secrets');
-    } catch (err: any) {
-      setError(err.message || 'Signup failed');
+    } catch (err) {
+      setError(err instanceof Error && err.message ? err.message : 'Signup failed');
     } finally {
       setLoading(false);
     }
@@ -53,11 +54,10 @@ export const Signup: React.FC = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '28px',
               boxShadow: '0 8px 24px rgba(16, 185, 129, 0.4)',
             }}
           >
-            ✨
+            <Sparkles size={26} color="#fff" />
           </div>
           <h2 style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.025em', color: '#f8fafc' }}>
             Create Team Vault
@@ -79,7 +79,8 @@ export const Signup: React.FC = () => {
               marginBottom: '20px',
             }}
           >
-            ⚠️ {error}
+            <TriangleAlert size={15} style={{ display: 'inline', verticalAlign: '-2px', marginRight: '6px' }} />
+            {error}
           </div>
         )}
 
@@ -157,7 +158,7 @@ export const Signup: React.FC = () => {
               background: 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)',
             }}
           >
-            {loading ? 'Initializing Vault...' : 'Initialize Vault & Register →'}
+            {loading ? 'Initializing Vault...' : 'Initialize Vault & Register'}
           </button>
         </form>
 

@@ -44,7 +44,7 @@ export const LandingFooter: React.FC = () => {
           </div>
           <span
             className="code-font"
-            style={{ fontSize: '0.7rem', color: '#334155', borderLeft: '1px solid rgba(255,255,255,0.08)', paddingLeft: '16px' }}
+            style={{ fontSize: '0.7rem', color: '#94a3b8', borderLeft: '1px solid rgba(255,255,255,0.08)', paddingLeft: '16px' }}
           >
             © {new Date().getFullYear()} VaultKey Inc.
           </span>
@@ -53,15 +53,15 @@ export const LandingFooter: React.FC = () => {
         <nav style={{ display: 'flex', gap: '28px', alignItems: 'center', flexWrap: 'wrap' }}>
           {[
             { to: '/docs', label: 'Docs' },
-            { to: '/billing', label: 'Pricing' },
+            { to: '/#pricing', label: 'Pricing' },
             { to: '/login', label: 'Sign In' },
           ].map((link) => (
             <Link
               key={link.to}
               to={link.to}
-              style={{ color: '#64748b', fontSize: '0.85rem', fontWeight: 500, transition: 'color 0.15s ease' }}
-              onMouseOver={(e) => (e.currentTarget.style.color = '#94a3b8')}
-              onMouseOut={(e) => (e.currentTarget.style.color = '#64748b')}
+              style={{ color: '#94a3b8', fontSize: '0.85rem', fontWeight: 500, transition: 'color 0.15s ease' }}
+              onMouseOver={(e) => (e.currentTarget.style.color = '#f8fafc')}
+              onMouseOut={(e) => (e.currentTarget.style.color = '#94a3b8')}
             >
               {link.label}
             </Link>

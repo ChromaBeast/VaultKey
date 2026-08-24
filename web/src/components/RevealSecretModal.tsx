@@ -1,38 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Link2 } from 'lucide-react';
+import { createShareLink, errorMessage } from '../lib/api';
+import { pushToast } from '../lib/toast';
+import { Modal } from './ui/Modal';
+import { useClipboard } from '../hooks/useClipboard';
 
 interface RevealSecretModalProps {
   secretKey: string;
   secretVal: string;
-  shareUrl: string | null;
-  copied: boolean;
   onClose: () => void;
-  onCopy: () => void;
-  onCreateShareLink: (val: string) => void;
 }
 
-export const RevealSecretModal: React.FC<RevealSecretModalProps> = ({
-  secretKey,
-  secretVal,
-  shareUrl,
-  copied,
-  onClose,
-  onCopy,
-  onCreateShareLink,
-}) => {
+export const RevealSecretModal: React.FC<RevealSecretModalProps> = ({ secretKey, secretVal, onClose }) => {
+  const { copied, copy } = useClipboard();
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [sharing, setSharing] = useState(false);
+
+  const handleCreateShareLink = async () => {
+    setSharing(true);
+    try {
+      const res = await createShareLink(secretVal);
+      setShareUrl(`${window.location.origin}${res.share_url}`);
+      pushToast('1-time self-destructing link created', 'success');
+    } catch (err) {
+      pushToast(errorMessage(err), 'error');
+    } finally {
+      setSharing(false);
+    }
+  };
+
   return (
-    <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0,0,0,0.75)',
-        backdropFilter: 'blur(10px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 100,
-      }}
-    >
-      <div className="glass-glow animate-fade" style={{ width: '460px', padding: '32px', borderRadius: '20px' }}>
+    <Modal isOpen onClose={onClose} width={460}>
+      <div style={{ padding: '32px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <h3 className="code-font" style={{ fontSize: '1.2rem', color: '#c084fc', fontWeight: 700 }}>
             {secretKey}
@@ -68,7 +67,7 @@ export const RevealSecretModal: React.FC<RevealSecretModalProps> = ({
             }}
           >
             <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '4px', fontWeight: 600 }}>
-              🔥 Self-Destructing 1-Time Link:
+              Self-Destructing 1-Time Link:
             </div>
             <div className="code-font" style={{ fontSize: '0.825rem', color: '#c084fc', wordBreak: 'break-all' }}>
               {shareUrl}
@@ -77,25 +76,21 @@ export const RevealSecretModal: React.FC<RevealSecretModalProps> = ({
         )}
 
         <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-          <button
-            onClick={() => onCreateShareLink(secretVal)}
-            className="btn btn-secondary"
-            style={{ fontSize: '0.8rem' }}
-          >
-            🔗 1-Time Link
+          <button onClick={() => void handleCreateShareLink()} disabled={sharing} className="btn btn-secondary" style={{ fontSize: '0.8rem' }}>
+            <Link2 size={14} /> {sharing ? 'Creating...' : '1-Time Link'}
           </button>
           <button
-            onClick={onCopy}
+            onClick={() => void copy(secretVal)}
             className="btn btn-primary"
-            style={{ background: copied ? '#10b981' : undefined }}
+            style={copied ? { background: '#10b981' } : undefined}
           >
-            {copied ? '✓ Copied' : 'Copy Value'}
+            {copied ? 'Copied' : 'Copy Value'}
           </button>
           <button onClick={onClose} className="btn btn-secondary">
             Close
           </button>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };

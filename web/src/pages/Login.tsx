@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { KeyRound, TriangleAlert } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import type { Org, User } from '../lib/api';
 import { apiFetch } from '../lib/api';
@@ -9,9 +10,10 @@ export const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
+
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,9 +26,10 @@ export const Login: React.FC = () => {
         body: JSON.stringify({ email, password }),
       });
       login(res.token, res.user, res.org);
-      navigate('/secrets');
-    } catch (err: any) {
-      setError(err.message || 'Login failed');
+      const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname;
+      navigate(from && from.startsWith('/') ? from : '/secrets', { replace: true });
+    } catch (err) {
+      setError(err instanceof Error && err.message ? err.message : 'Login failed');
     } finally {
       setLoading(false);
     }
@@ -46,11 +49,10 @@ export const Login: React.FC = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '28px',
               boxShadow: '0 8px 24px rgba(139, 92, 246, 0.4)',
             }}
           >
-            🗝️
+            <KeyRound size={26} color="#fff" />
           </div>
           <h2 style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.025em', color: '#f8fafc' }}>
             Welcome Back
@@ -72,7 +74,8 @@ export const Login: React.FC = () => {
               marginBottom: '24px',
             }}
           >
-            ⚠️ {error}
+            <TriangleAlert size={15} style={{ display: 'inline', verticalAlign: '-2px', marginRight: '6px' }} />
+            {error}
           </div>
         )}
 
@@ -122,7 +125,7 @@ export const Login: React.FC = () => {
               borderRadius: '12px',
             }}
           >
-            {loading ? 'Unlocking Vault...' : 'Unlock Vault & Sign In →'}
+            {loading ? 'Unlocking Vault...' : 'Unlock Vault & Sign In'}
           </button>
         </form>
 

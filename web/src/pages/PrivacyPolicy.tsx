@@ -6,8 +6,8 @@ export const PrivacyPolicy: React.FC = () => {
     <div style={{ minHeight: '100vh', background: '#0b0e14', color: '#e2e8f0', fontFamily: 'Inter, sans-serif', padding: '40px 20px' }}>
       <div style={{ maxWidth: '800px', margin: '0 auto', background: '#131822', padding: '32px', borderRadius: '12px', border: '1px solid #1e293b' }}>
         <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h1 style={{ margin: 0, fontSize: '28px', color: '#38bdf8' }}>🔑 VaultKey Privacy & Compliance Policy</h1>
-          <Link to="/" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: '14px' }}>← Back to Home</Link>
+          <h1 style={{ margin: 0, fontSize: '28px', color: '#38bdf8' }}>VaultKey Privacy & Compliance Policy</h1>
+          <Link to="/" style={{ color: '#94a3b8', textDecoration: 'none', fontSize: '14px' }}>&larr; Back to Home</Link>
         </div>
 
         <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '24px' }}>

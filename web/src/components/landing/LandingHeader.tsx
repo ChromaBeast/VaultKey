@@ -73,7 +73,7 @@ export const LandingHeader: React.FC = () => {
             Docs
           </Link>
           <Link
-            to="/billing"
+            to="/#pricing"
             style={{ color: '#94a3b8', fontSize: '0.875rem', fontWeight: 500 }}
           >
             Pricing

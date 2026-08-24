@@ -41,14 +41,58 @@ export interface AuditItem {
   action: string;
   secret_key?: string;
   project?: string;
-  actor: string;
+  actor?: string;
   ip_address?: string;
   user_agent?: string;
   hmac: string;
+  prev_hmac?: string;
   created_at: string;
 }
 
-const getBaseUrl = () => '';
+export interface TeamUser {
+  id: string;
+  email: string;
+  role: 'admin' | 'write' | 'read' | string;
+  created_at?: string;
+}
+
+export class ApiError extends Error {
+  status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+  }
+}
+
+export const errorMessage = (err: unknown, fallback = 'Request failed'): string => {
+  if (err instanceof Error && err.message) return err.message;
+  return fallback;
+};
+
+export const isAbortError = (err: unknown): boolean =>
+  err instanceof Error && err.name === 'AbortError';
+
+export const encodePath = (segment: string): string => encodeURIComponent(segment);
+
+export const buildQuery = (params: Record<string, string | number | undefined>): string => {
+  const search = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined && value !== '') search.set(key, String(value));
+  }
+  const qs = search.toString();
+  return qs ? `?${qs}` : '';
+};
+
+export const safeJsonParse = <T,>(raw: string | null): T | null => {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return null;
+  }
+};
 
 export const AUTH_UNAUTHORIZED_EVENT = 'vk_auth_unauthorized';
 
@@ -58,81 +102,45 @@ export const apiFetch = async <T>(path: string, options: RequestInit = {}): Prom
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string>),
   };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
 
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+  let res: Response;
+  try {
+    res = await fetch(path, { ...options, headers });
+  } catch (err) {
+    if (isAbortError(err)) throw err;
+    throw new ApiError('Network request failed. Check your connection and try again.', 0);
   }
 
-  const res = await fetch(`${getBaseUrl()}${path}`, {
-    ...options,
-    headers,
-  });
-
   if (res.status === 401) {
-    // Clear invalid session state and dispatch global event
     localStorage.removeItem('vk_token');
     localStorage.removeItem('vk_user');
     localStorage.removeItem('vk_org');
     window.dispatchEvent(new CustomEvent(AUTH_UNAUTHORIZED_EVENT));
-    throw new Error('Session expired. Please log in again.');
+    throw new ApiError('Session expired. Please log in again.', 401);
   }
 
-  const data = await res.json();
+  if (res.status === 204) return undefined as T;
+
+  const contentType = res.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) {
+    throw new ApiError(`Unexpected server response (HTTP ${res.status})`, res.status);
+  }
+
+  let data: unknown;
+  try {
+    data = await res.json();
+  } catch {
+    throw new ApiError(`Malformed server response (HTTP ${res.status})`, res.status);
+  }
+
   if (!res.ok) {
-    throw new Error(data.error || `HTTP error ${res.status}`);
+    const message =
+      (data as { error?: string } | null)?.error || `Request failed with HTTP ${res.status}`;
+    throw new ApiError(message, res.status);
   }
 
   return data as T;
-};
-
-export const createRazorpayOrder = async (plan: string, currency = 'INR') => {
-  return apiFetch<{ order_id: string; key_id: string; amount: number; currency: string; plan: string }>(
-    '/v1/payments/create-order',
-    {
-      method: 'POST',
-      body: JSON.stringify({ plan, currency }),
-    }
-  );
-};
-
-export const verifyRazorpayPayment = async (payload: {
-  razorpay_order_id: string;
-  razorpay_payment_id: string;
-  razorpay_signature: string;
-}) => {
-  return apiFetch<{ message: string; status: string; org: Org }>('/v1/payments/verify', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  });
-};
-
-export const fetchPaymentHistory = async () => {
-  return apiFetch<import('../types/payment').PaymentRecord[]>('/v1/payments/history');
-};
-
-export const createRazorpaySubscription = async (plan: string) => {
-  return apiFetch<{ subscription_id: string; key_id: string; plan: string }>('/v1/subscriptions/create', {
-    method: 'POST',
-    body: JSON.stringify({ plan }),
-  });
-};
-
-export const verifyRazorpaySubscription = async (payload: {
-  razorpay_subscription_id: string;
-  razorpay_payment_id: string;
-  razorpay_signature: string;
-  plan: string;
-}) => {
-  return apiFetch<{ message: string; status: string; org: Org }>('/v1/subscriptions/verify', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  });
-};
-
-export const cancelRazorpaySubscription = async () => {
-  return apiFetch<{ message: string; org: Org }>('/v1/subscriptions/cancel', {
-    method: 'POST',
-  });
 };
 
 export interface SecretVersionItem {
@@ -141,16 +149,65 @@ export interface SecretVersionItem {
   created_at: string;
 }
 
-export const fetchSecretVersions = async (key: string, project = 'default') => {
-  return apiFetch<SecretVersionItem[]>(`/v1/secrets/${key}/versions?project=${project}`);
-};
+export const fetchSecrets = (project: string, signal?: AbortSignal) =>
+  apiFetch<SecretItem[]>(`/v1/secrets${buildQuery({ project })}`, { signal });
 
-export const rollbackSecretVersion = async (key: string, project: string, version: number) => {
-  return apiFetch<{ message: string; version: number }>(`/v1/secrets/${key}/rollback`, {
+export const fetchProjects = (signal?: AbortSignal) => apiFetch<string[]>('/v1/projects', { signal });
+
+export const createSecret = (key: string, value: string, project: string) =>
+  apiFetch<{ message?: string }>('/v1/secrets', {
     method: 'POST',
-    body: JSON.stringify({ project, version }),
+    body: JSON.stringify({ key, value, project }),
   });
+
+export const revealSecretValue = (key: string, project: string) =>
+  apiFetch<{ value: string }>(`/v1/secrets/${encodePath(key)}${buildQuery({ project })}`);
+
+export const updateSecretValue = (key: string, value: string, project: string) =>
+  apiFetch<{ message?: string }>(`/v1/secrets/${encodePath(key)}`, {
+    method: 'PUT',
+    body: JSON.stringify({ value, project }),
+  });
+
+export const deleteSecret = (key: string, project: string) =>
+  apiFetch<void>(`/v1/secrets/${encodePath(key)}${buildQuery({ project })}`, { method: 'DELETE' });
+
+export const fetchSecretVersions = (key: string, project = 'default') =>
+  apiFetch<SecretVersionItem[]>(
+    `/v1/secrets/${encodePath(key)}/versions${buildQuery({ project })}`
+  );
+
+export type RollbackParams = {
+  project: string;
+  environment?: string;
+  version: number;
 };
 
+export const rollbackSecretVersion = (key: string, params: RollbackParams) =>
+  apiFetch<{ message?: string; version?: number }>(
+    `/v1/secrets/${encodePath(key)}/rollback${buildQuery(params)}`,
+    { method: 'POST' }
+  );
 
+export const createShareLink = (value: string) =>
+  apiFetch<{ share_url: string }>('/v1/shares', {
+    method: 'POST',
+    body: JSON.stringify({ secret: value, max_views: 1, duration: '24h' }),
+  });
 
+export const fetchSharedSecret = (shareId: string, signal?: AbortSignal) =>
+  apiFetch<{ secret: string }>(`/v1/shares/${encodePath(shareId)}`, { signal });
+
+export const fetchUsers = () => apiFetch<TeamUser[]>('/v1/users');
+
+export const inviteUser = (payload: { email: string; password: string; role: string }) =>
+  apiFetch<TeamUser>('/v1/users/invite', { method: 'POST', body: JSON.stringify(payload) });
+
+export const deleteUser = (id: string) =>
+  apiFetch<void>(`/v1/users/${encodePath(id)}`, { method: 'DELETE' });
+
+export const changePassword = (current_password: string, new_password: string) =>
+  apiFetch<Record<string, never>>('/v1/account/password', {
+    method: 'POST',
+    body: JSON.stringify({ current_password, new_password }),
+  });

@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface StatCardProps {
-  icon: string;
+  icon: React.ReactNode;
   title: string;
   value: string | number;
   subtitle?: string;
@@ -37,8 +37,9 @@ export const StatCard: React.FC<StatCardProps> = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: '22px',
+          color: accentColor,
           boxShadow: `0 4px 16px ${accentColor}20`,
+          flexShrink: 0,
         }}
       >
         {icon}

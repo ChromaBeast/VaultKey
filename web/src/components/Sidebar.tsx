@@ -1,27 +1,42 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import {
+  BookOpen,
+  CreditCard,
+  KeyRound,
+  Lock,
+  ScrollText,
+  Settings,
+  X,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { SidebarUserPanel } from './SidebarUserPanel';
 
-const NAV_ITEMS = [
-  { path: '/secrets', label: 'Secrets',      tag: 'SEC' },
-  { path: '/keys',    label: 'API Keys',     tag: 'KEY' },
-  { path: '/audit',   label: 'Audit Ledger', tag: 'LOG' },
-  { path: '/billing', label: 'Billing',      tag: 'BILL' },
-  { path: '/docs',    label: 'Docs',         tag: 'DOC' },
+interface NavItem {
+  path: string;
+  label: string;
+  icon: LucideIcon;
+}
+
+const NAV_ITEMS: NavItem[] = [
+  { path: '/secrets', label: 'Secrets', icon: Lock },
+  { path: '/keys', label: 'API Keys', icon: KeyRound },
+  { path: '/audit', label: 'Audit Ledger', icon: ScrollText },
+  { path: '/billing', label: 'Billing', icon: CreditCard },
+  { path: '/settings', label: 'Settings', icon: Settings },
+  { path: '/docs', label: 'Docs', icon: BookOpen },
 ];
 
-export const Sidebar: React.FC = () => {
-  const { user, org, lockVault } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLock = async () => {
-    await lockVault();
-    navigate('/login');
-  };
+export const Sidebar: React.FC<{ mobileOpen: boolean; onMobileClose: () => void }> = ({
+  mobileOpen,
+  onMobileClose,
+}) => {
+  const { org } = useAuth();
 
   return (
     <aside
-      className="glass"
+      className="glass app-sidebar"
       style={{
         width: '220px',
         height: 'calc(100vh - 32px)',
@@ -36,7 +51,6 @@ export const Sidebar: React.FC = () => {
         flexShrink: 0,
       }}
     >
-      {/* Brand */}
       <div>
         <div
           style={{
@@ -57,14 +71,13 @@ export const Sidebar: React.FC = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '15px',
               boxShadow: '0 4px 10px rgba(99, 102, 246, 0.35)',
               flexShrink: 0,
             }}
           >
-            🗝️
+            <KeyRound size={15} color="#fff" />
           </div>
-          <div>
+          <div style={{ flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <span
                 className="brand-text"
@@ -92,19 +105,35 @@ export const Sidebar: React.FC = () => {
               )}
             </div>
             {org && (
-              <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 500 }}>
+              <span style={{ fontSize: '0.72rem', color: '#94a3b8', fontWeight: 500 }}>
                 {org.name}
               </span>
             )}
           </div>
+          <button
+            type="button"
+            aria-label="Close navigation"
+            onClick={onMobileClose}
+            className="app-sidebar-close"
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: '#94a3b8',
+              cursor: 'pointer',
+              display: mobileOpen ? 'inline-flex' : 'none',
+              padding: '2px',
+            }}
+          >
+            <X size={16} />
+          </button>
         </div>
 
-        {/* Nav */}
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: '2px' }} aria-label="Primary">
           {NAV_ITEMS.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
+              onClick={onMobileClose}
               style={({ isActive }) => ({
                 display: 'flex',
                 alignItems: 'center',
@@ -116,86 +145,16 @@ export const Sidebar: React.FC = () => {
                 background: isActive ? 'rgba(255, 255, 255, 0.07)' : 'transparent',
                 color: isActive ? '#f8fafc' : '#94a3b8',
                 border: `1px solid ${isActive ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}`,
-                textDecoration: 'none',
-                transition: 'all 0.15s ease',
               })}
             >
-              <span
-                className="code-font"
-                style={{
-                  fontSize: '0.6rem',
-                  fontWeight: 700,
-                  letterSpacing: '0.06em',
-                  color: 'inherit',
-                  opacity: 0.6,
-                  minWidth: '28px',
-                }}
-              >
-                {item.tag}
-              </span>
+              <item.icon size={15} style={{ opacity: 0.85, minWidth: '18px' }} />
               <span>{item.label}</span>
             </NavLink>
           ))}
         </nav>
       </div>
 
-      {/* User footer */}
-      {user && (
-        <div style={{ paddingTop: '14px', borderTop: '1px solid rgba(255,255,255,0.07)' }}>
-          <div
-            style={{
-              padding: '6px 8px 12px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-            }}
-          >
-            <div
-              style={{
-                width: '30px',
-                height: '30px',
-                borderRadius: '50%',
-                background: 'rgba(255, 255, 255, 0.07)',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#f8fafc',
-                fontFamily: 'JetBrains Mono, monospace',
-                fontWeight: 700,
-                fontSize: '0.75rem',
-                flexShrink: 0,
-              }}
-            >
-              {user.email.substring(0, 2).toUpperCase()}
-            </div>
-            <div style={{ overflow: 'hidden', flex: 1 }}>
-              <div
-                style={{
-                  fontSize: '0.78rem',
-                  fontWeight: 600,
-                  color: '#f8fafc',
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {user.email}
-              </div>
-              <div style={{ fontSize: '0.68rem', color: '#64748b', textTransform: 'capitalize' }}>
-                {user.role}
-              </div>
-            </div>
-          </div>
-          <button
-            onClick={handleLock}
-            className="btn btn-secondary"
-            style={{ width: '100%', justifyContent: 'center', fontSize: '0.8rem', padding: '8px' }}
-          >
-            Lock Vault
-          </button>
-        </div>
-      )}
+      <SidebarUserPanel />
     </aside>
   );
 };
