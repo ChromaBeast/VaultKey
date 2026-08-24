@@ -1,45 +1,51 @@
 package api
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
-type RollbackRequest struct {
-	Project string `json:"project"`
-	Version int    `json:"version"`
-}
-
 func (s *Server) handleRollbackSecret(c *fiber.Ctx) error {
-	orgID, ok := c.Locals("org_id").(string)
-	if !ok || orgID == "" {
-		return c.Status(401).JSON(fiber.Map{"error": "unauthorized"})
-	}
+	orgID := c.Locals("org_id").(string)
 	actor, _ := c.Locals("actor").(string)
 	key := c.Params("key")
 	if key == "" {
 		return c.Status(400).JSON(fiber.Map{"error": "secret key required"})
 	}
 
-	var req RollbackRequest
-	if err := c.BodyParser(&req); err != nil || req.Version <= 0 {
-		return c.Status(400).JSON(fiber.Map{"error": "valid target version required"})
-	}
-
-	project := strings.TrimSpace(req.Project)
+	project := strings.TrimSpace(c.Query("project", "default"))
 	if project == "" {
 		project = "default"
 	}
+	env := strings.TrimSpace(c.Query("environment"))
+	if env == "" {
+		env = "production"
+	}
+	version, err := queryInt(c, "version")
+	if err != nil || version <= 0 {
+		return c.Status(400).JSON(fiber.Map{"error": "valid target version required"})
+	}
 
-	secret, err := s.DB.GetSecret(orgID, project, "production", key)
-	if err != nil || secret == nil {
+	if !s.checkAuth(c, "write", project) {
+		return c.Status(403).JSON(fiber.Map{"error": "unauthorized"})
+	}
+
+	secret, err := s.DB.GetSecret(orgID, project, env, key)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "database failed"})
+	}
+	if secret == nil {
 		return c.Status(404).JSON(fiber.Map{"error": "secret not found"})
 	}
 
-	versionVal, err := s.DB.GetSecretVersionValue(orgID, secret.ID, req.Version)
-	if err != nil || len(versionVal) == 0 {
+	versionVal, err := s.DB.GetSecretVersionValue(orgID, secret.ID, version)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to load target version"})
+	}
+	if len(versionVal) == 0 {
 		return c.Status(404).JSON(fiber.Map{"error": "target version payload not found"})
 	}
 
@@ -47,16 +53,21 @@ func (s *Server) handleRollbackSecret(c *fiber.Ctx) error {
 	updatedSecret.Value = versionVal
 	updatedSecret.Version = secret.Version + 1
 
-	versionID := "ver_" + uuid.New().String()[:8]
-	if err := s.DB.UpdateSecret(updatedSecret, *secret, versionID); err != nil {
+	archiveIDBytes := make([]byte, 16)
+	if _, err := rand.Read(archiveIDBytes); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to generate archive ID"})
+	}
+
+	if err := s.DB.UpdateSecret(updatedSecret, *secret, hex.EncodeToString(archiveIDBytes)); err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "failed to rollback secret version"})
 	}
 
 	_ = s.LogAuditOrg(orgID, "SECRET_ROLLBACK", &key, &project, actor, c.IP(), c.Get("User-Agent"))
 
 	return c.JSON(fiber.Map{
-		"message": "secret successfully rolled back",
-		"key":     key,
-		"version": updatedSecret.Version,
+		"message":     "secret successfully rolled back",
+		"key":         key,
+		"environment": env,
+		"version":     updatedSecret.Version,
 	})
 }

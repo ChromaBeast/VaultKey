@@ -60,27 +60,24 @@ func (db *DB) GetUserByID(id string) (*User, error) {
 }
 
 func (db *DB) RecordFailedLogin(userID string, maxAttempts int, lockoutDuration time.Duration) (int, bool, error) {
-	user, err := db.GetUserByID(userID)
-	if err != nil || user == nil {
-		return 0, false, err
-	}
-
-	newCount := user.FailedAttempts + 1
-	var lockedUntil *time.Time
-	isLockedNow := false
-
-	if newCount >= maxAttempts {
-		until := time.Now().Add(lockoutDuration)
-		lockedUntil = &until
-		isLockedNow = true
-	}
-
-	query := `UPDATE users SET failed_attempts = ?, locked_until = ? WHERE id = ?;`
-	_, err = db.Exec(query, newCount, lockedUntil, userID)
+	until := time.Now().Add(lockoutDuration)
+	query := `
+		UPDATE users
+		SET failed_attempts = failed_attempts + 1,
+		    locked_until = CASE
+		        WHEN failed_attempts + 1 >= ? THEN ?
+		        ELSE locked_until
+		    END
+		WHERE id = ?
+		RETURNING failed_attempts, locked_until;
+	`
+	var newCount int
+	var lockedUntil sql.NullTime
+	err := db.QueryRow(query, maxAttempts, until, userID).Scan(&newCount, &lockedUntil)
 	if err != nil {
-		return newCount, false, fmt.Errorf("failed to record failed login: %w", err)
+		return 0, false, fmt.Errorf("failed to record failed login: %w", err)
 	}
-
+	isLockedNow := lockedUntil.Valid && lockedUntil.Time.After(time.Now())
 	return newCount, isLockedNow, nil
 }
 
@@ -109,5 +106,28 @@ func (db *DB) ListUsersByOrg(orgID string) ([]User, error) {
 		}
 		users = append(users, u)
 	}
-	return users, nil
+	return users, rows.Err()
+}
+
+func (db *DB) UpdateUserPassword(userID, passwordHash string) error {
+	_, err := db.Exec(`UPDATE users SET password_hash = ?, failed_attempts = 0, locked_until = NULL WHERE id = ?`, passwordHash, userID)
+	if err != nil {
+		return fmt.Errorf("failed to update password: %w", err)
+	}
+	return nil
+}
+
+func (db *DB) DeleteUser(orgID, userID string) (int64, error) {
+	res, err := db.Exec(`DELETE FROM users WHERE id = ? AND org_id = ? AND role != 'owner'`, userID, orgID)
+	if err != nil {
+		return 0, fmt.Errorf("failed to delete user: %w", err)
+	}
+	n, _ := res.RowsAffected()
+	return n, nil
+}
+
+func (db *DB) CountAdminsByOrg(orgID string) (int, error) {
+	var count int
+	err := db.QueryRow(`SELECT COUNT(*) FROM users WHERE org_id = ? AND role IN ('owner','admin')`, orgID).Scan(&count)
+	return count, err
 }

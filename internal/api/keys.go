@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
+	"strings"
 	"time"
 	"vaultkey/internal/db"
 
@@ -42,6 +43,10 @@ func (s *Server) handleCreateAPIKey(c *fiber.Ctx) error {
 
 	if req.Permissions == "" {
 		req.Permissions = "read"
+	}
+	req.Permissions = strings.ToLower(strings.TrimSpace(req.Permissions))
+	if !validPermissions[req.Permissions] {
+		return c.Status(400).JSON(fiber.Map{"error": "permissions must be one of: admin, write, read, list"})
 	}
 
 	idBytes := make([]byte, 8)
@@ -90,7 +95,7 @@ func (s *Server) handleCreateAPIKey(c *fiber.Ctx) error {
 	}
 
 	actor := c.Locals("actor").(string)
-	_ = s.LogAuditOrg(orgID, "CREATE_KEY", nil, nil, actor, c.IP(), c.Get("User-Agent"))
+	_ = s.LogAuditOrg(orgID, "CREATE_KEY", &id, nil, actor, c.IP(), c.Get("User-Agent"))
 
 	return c.Status(201).JSON(fiber.Map{
 		"id":          id,
@@ -138,12 +143,16 @@ func (s *Server) handleRevokeAPIKey(c *fiber.Ctx) error {
 	}
 
 	id := c.Params("id")
-	if err := s.DB.RevokeAPIKey(orgID, id); err != nil {
+	n, err := s.DB.RevokeAPIKey(orgID, id)
+	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "failed to revoke key"})
+	}
+	if n == 0 {
+		return c.Status(404).JSON(fiber.Map{"error": "key not found or already revoked"})
 	}
 
 	actor := c.Locals("actor").(string)
-	_ = s.LogAuditOrg(orgID, "REVOKE_KEY", nil, nil, actor, c.IP(), c.Get("User-Agent"))
+	_ = s.LogAuditOrg(orgID, "REVOKE_KEY", &id, nil, actor, c.IP(), c.Get("User-Agent"))
 
 	return c.JSON(fiber.Map{"status": "revoked"})
 }

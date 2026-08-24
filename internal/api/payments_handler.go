@@ -1,15 +1,21 @@
 package api
 
 import (
-	"crypto/hmac"
+	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"strings"
+	"time"
 	"vaultkey/internal/db"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
+
+func sha256Hex(b []byte) string {
+	h := sha256.Sum256(b)
+	return hex.EncodeToString(h[:])
+}
 
 type CreateOrderRequest struct {
 	Plan     string `json:"plan"`
@@ -22,17 +28,39 @@ type VerifyPaymentRequest struct {
 	RazorpaySignature string `json:"razorpay_signature"`
 }
 
+func planAmount(plan, currency string) (int, bool) {
+	if currency != "INR" {
+		return 0, false
+	}
+	switch plan {
+	case "pro":
+		return 149900, true
+	case "enterprise":
+		return 499900, true
+	default:
+		return 0, false
+	}
+}
+
+func newHexID(prefix string) string {
+	b := make([]byte, 16)
+	_, _ = rand.Read(b)
+	return prefix + hex.EncodeToString(b)
+}
+
+func signatureAllowed(s *Server, sig string) bool {
+	if strings.HasPrefix(sig, "mock_sig_") && s.Config.IsDev() {
+		return true
+	}
+	return false
+}
+
 func (s *Server) handleGetRazorpayConfig(c *fiber.Ctx) error {
-	return c.JSON(fiber.Map{
-		"key_id": s.Config.RazorpayKeyID,
-	})
+	return c.JSON(fiber.Map{"key_id": s.Config.RazorpayKeyID})
 }
 
 func (s *Server) handleCreateRazorpayOrder(c *fiber.Ctx) error {
-	orgID, ok := c.Locals("org_id").(string)
-	if !ok || orgID == "" {
-		return c.Status(401).JSON(fiber.Map{"error": "unauthorized"})
-	}
+	orgID := c.Locals("org_id").(string)
 
 	var req CreateOrderRequest
 	if err := c.BodyParser(&req); err != nil {
@@ -40,28 +68,24 @@ func (s *Server) handleCreateRazorpayOrder(c *fiber.Ctx) error {
 	}
 
 	plan := strings.ToLower(req.Plan)
-	if plan != "pro" && plan != "enterprise" {
-		plan = "pro"
-	}
-
 	currency := strings.ToUpper(req.Currency)
 	if currency == "" {
 		currency = "INR"
 	}
 
-	amount := 149900 // ₹1,499.00 in paise for Pro plan
-	if plan == "enterprise" {
-		amount = 499900 // ₹4,999.00 in paise
+	amount, ok := planAmount(plan, currency)
+	if !ok {
+		return c.Status(400).JSON(fiber.Map{"error": "plan must be pro or enterprise; only INR is supported"})
 	}
 
 	client := NewRazorpayClient(s.Config.RazorpayKeyID, s.Config.RazorpayKeySecret, s.Config.RazorpayWebhookSecret)
 	orderID, err := client.CreateOrder(amount, currency, orgID)
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "failed to create razorpay order"})
+		return c.Status(502).JSON(fiber.Map{"error": "failed to create razorpay order", "detail": err.Error()})
 	}
 
 	payment := db.Payment{
-		ID:              "pay_" + uuid.New().String()[:8],
+		ID:              newHexID("pay_"),
 		OrgID:           orgID,
 		RazorpayOrderID: orderID,
 		Amount:          amount,
@@ -74,6 +98,9 @@ func (s *Server) handleCreateRazorpayOrder(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "failed to save payment record"})
 	}
 
+	actor, _ := c.Locals("actor").(string)
+	_ = s.LogAuditOrg(orgID, "ORDER_CREATED", &orderID, &plan, actor, c.IP(), c.Get("User-Agent"))
+
 	return c.JSON(fiber.Map{
 		"order_id": orderID,
 		"key_id":   s.Config.RazorpayKeyID,
@@ -84,10 +111,7 @@ func (s *Server) handleCreateRazorpayOrder(c *fiber.Ctx) error {
 }
 
 func (s *Server) handleVerifyRazorpayPayment(c *fiber.Ctx) error {
-	orgID, ok := c.Locals("org_id").(string)
-	if !ok || orgID == "" {
-		return c.Status(401).JSON(fiber.Map{"error": "unauthorized"})
-	}
+	orgID := c.Locals("org_id").(string)
 	actor, _ := c.Locals("actor").(string)
 
 	var req VerifyPaymentRequest
@@ -96,18 +120,18 @@ func (s *Server) handleVerifyRazorpayPayment(c *fiber.Ctx) error {
 	}
 
 	payment, err := s.DB.GetPaymentByOrderID(req.RazorpayOrderID)
-	if err != nil || payment == nil {
+	if err != nil || payment == nil || payment.OrgID != orgID {
 		return c.Status(404).JSON(fiber.Map{"error": "payment order not found"})
 	}
 
-	client := NewRazorpayClient(s.Config.RazorpayKeyID, s.Config.RazorpayKeySecret, s.Config.RazorpayWebhookSecret)
-	isValid := client.VerifyPaymentSignature(req.RazorpayOrderID, req.RazorpayPaymentID, req.RazorpaySignature)
-	if !isValid && strings.HasPrefix(req.RazorpaySignature, "mock_sig_") {
-		isValid = true
-	}
+	isValid := NewRazorpayClient(
+		s.Config.RazorpayKeyID,
+		s.Config.RazorpayKeySecret,
+		s.Config.RazorpayWebhookSecret,
+	).VerifyPaymentSignature(req.RazorpayOrderID, req.RazorpayPaymentID, req.RazorpaySignature)
 
-	if !isValid {
-		_ = s.DB.UpdatePaymentStatus(req.RazorpayOrderID, req.RazorpayPaymentID, req.RazorpaySignature, "failed")
+	if !isValid && !signatureAllowed(s, req.RazorpaySignature) {
+		_ = s.DB.UpdatePaymentStatus(req.RazorpayOrderID, req.RazorpayPaymentID, "", "failed")
 		return c.Status(400).JSON(fiber.Map{"error": "invalid payment signature"})
 	}
 
@@ -119,10 +143,9 @@ func (s *Server) handleVerifyRazorpayPayment(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "failed to update organization plan"})
 	}
 
-	_ = s.LogAuditOrg(orgID, "PLAN_UPGRADED", nil, nil, actor, c.IP(), c.Get("User-Agent"))
+	_ = s.LogAuditOrg(orgID, "PLAN_UPGRADED", &req.RazorpayOrderID, &payment.Plan, actor, c.IP(), c.Get("User-Agent"))
 
 	updatedOrg, _ := s.DB.GetOrganizationByID(orgID)
-
 	return c.JSON(fiber.Map{
 		"message": "payment verified and plan upgraded successfully",
 		"status":  "paid",
@@ -131,33 +154,106 @@ func (s *Server) handleVerifyRazorpayPayment(c *fiber.Ctx) error {
 }
 
 func (s *Server) handleListPayments(c *fiber.Ctx) error {
-	orgID, ok := c.Locals("org_id").(string)
-	if !ok || orgID == "" {
-		return c.Status(401).JSON(fiber.Map{"error": "unauthorized"})
-	}
-
+	orgID := c.Locals("org_id").(string)
 	payments, err := s.DB.ListPaymentsByOrg(orgID)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "failed to retrieve payment history"})
 	}
-
 	return c.JSON(payments)
+}
+
+type webhookEvent struct {
+	Event   string `json:"event"`
+	Payload struct {
+		Subscription struct {
+			Entity struct {
+				ID         string `json:"id"`
+				Status     string `json:"status"`
+				CurrentEnd int64  `json:"current_end"`
+			} `json:"entity"`
+		} `json:"subscription"`
+		Payment struct {
+			Entity struct {
+				ID      string `json:"id"`
+				Status  string `json:"status"`
+				OrderID string `json:"order_id"`
+			} `json:"entity"`
+		} `json:"payment"`
+	} `json:"payload"`
 }
 
 func (s *Server) handleRazorpayWebhook(c *fiber.Ctx) error {
 	signature := c.Get("X-Razorpay-Signature")
 	body := c.Body()
 
-	client := NewRazorpayClient(s.Config.RazorpayKeyID, s.Config.RazorpayKeySecret, s.Config.RazorpayWebhookSecret)
-	if signature != "" && !client.VerifyWebhookSignature(body, signature) {
+	if signature == "" {
+		if !s.Config.IsDev() {
+			return c.Status(400).JSON(fiber.Map{"error": "missing webhook signature"})
+		}
+	} else if !NewRazorpayClient(
+		s.Config.RazorpayKeyID,
+		s.Config.RazorpayKeySecret,
+		s.Config.RazorpayWebhookSecret,
+	).VerifyWebhookSignature(body, signature) {
 		return c.Status(400).JSON(fiber.Map{"error": "invalid webhook signature"})
 	}
 
+	var event webhookEvent
+	eventID := c.Get("X-Razorpay-Event-Id")
+	if eventID == "" {
+		eventID = fmtEventFallback(body)
+	}
+	first, err := s.DB.RecordWebhookEvent(eventID)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "webhook processing failed"})
+	}
+	if !first {
+		return c.JSON(fiber.Map{"status": "duplicate ignored"})
+	}
+
+	if jsonErr := json.Unmarshal(body, &event); jsonErr != nil {
+		return c.JSON(fiber.Map{"status": "ignored unparseable payload"})
+	}
+
+	s.processWebhookEvent(&event)
 	return c.JSON(fiber.Map{"status": "ok"})
 }
 
-func computeHMAC(msg, secret string) string {
-	mac := hmac.New(sha256.New, []byte(secret))
-	mac.Write([]byte(msg))
-	return hex.EncodeToString(mac.Sum(nil))
+func fmtEventFallback(body []byte) string {
+	sum := sha256Hex(body)
+	return sum
+}
+
+func (s *Server) processWebhookEvent(e *webhookEvent) {
+	now := time.Now()
+	switch e.Event {
+	case "subscription.charged":
+		sub := e.Payload.Subscription.Entity
+		record, err := s.DB.GetSubscriptionByRazorpayID(sub.ID)
+		if err != nil || record == nil {
+			return
+		}
+		periodEnd := now.AddDate(0, 1, 0)
+		if sub.CurrentEnd > 0 {
+			periodEnd = time.Unix(sub.CurrentEnd, 0)
+		}
+		_ = s.DB.UpdateOrgSubscription(record.OrgID, record.Plan, sub.ID, "active", periodEnd)
+		_ = s.DB.SetSubscriptionStatus(record.ID, "active")
+	case "subscription.cancelled", "subscription.completed", "subscription.halted":
+		sub := e.Payload.Subscription.Entity
+		record, err := s.DB.GetSubscriptionByRazorpayID(sub.ID)
+		if err != nil || record == nil {
+			return
+		}
+		_ = s.DB.UpdateOrgSubscriptionStatus(record.OrgID, "cancelled")
+		_ = s.DB.SetSubscriptionStatus(record.ID, sub.Status)
+		_ = s.DB.UpdateOrganizationPlan(record.OrgID, "free")
+	case "payment.failed":
+		pay := e.Payload.Payment.Entity
+		if pay.OrderID != "" {
+			if p, err := s.DB.GetPaymentByOrderID(pay.OrderID); err == nil && p != nil {
+				_ = s.DB.UpdatePaymentStatus(pay.OrderID, pay.ID, "", "failed")
+			}
+		}
+	}
 }

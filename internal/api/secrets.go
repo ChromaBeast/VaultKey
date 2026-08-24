@@ -38,17 +38,40 @@ func (s *Server) checkAuth(c *fiber.Ctx, reqPerm, project string) bool {
 	return false
 }
 
+func isValidName(s string, maxLen int) bool {
+	if s == "" || len(s) > maxLen {
+		return false
+	}
+	for i := 0; i < len(s); i++ {
+		ch := s[i]
+		ok := ch >= 'a' && ch <= 'z' || ch >= 'A' && ch <= 'Z' || ch >= '0' && ch <= '9' || ch == '_' || ch == '-' || ch == '.'
+		if !ok {
+			return false
+		}
+	}
+	return true
+}
+
 func (s *Server) handleCreateSecret(c *fiber.Ctx) error {
 	orgID := c.Locals("org_id").(string)
 	var req SecretReq
 	if err := c.BodyParser(&req); err != nil || req.Key == "" || req.Value == "" {
 		return c.Status(400).JSON(fiber.Map{"error": "invalid request body"})
 	}
+	if !isValidName(req.Key, 256) {
+		return c.Status(400).JSON(fiber.Map{"error": "key must be 1-256 chars of [A-Za-z0-9_.-]"})
+	}
+	if len(req.Value) > 64*1024 {
+		return c.Status(400).JSON(fiber.Map{"error": "secret value too large (max 64KiB)"})
+	}
 	if req.Project == "" {
 		req.Project = "default"
 	}
 	if req.Environment == "" {
 		req.Environment = "production"
+	}
+	if !isValidName(req.Project, 64) || !isValidName(req.Environment, 64) {
+		return c.Status(400).JSON(fiber.Map{"error": "project/environment must be 1-64 chars of [A-Za-z0-9_.-]"})
 	}
 
 	if !s.checkAuth(c, "write", req.Project) {
@@ -88,10 +111,13 @@ func (s *Server) handleCreateSecret(c *fiber.Ctx) error {
 		CreatedBy:   actor,
 	})
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "database failed: " + err.Error()})
+		return c.Status(500).JSON(fiber.Map{"error": "failed to store secret"})
 	}
 
-	_ = s.LogAuditOrg(orgID, "WRITE", &req.Key, &req.Project, actor, c.IP(), c.Get("User-Agent"))
+	if auditErr := s.LogAuditOrg(orgID, "WRITE", &req.Key, &req.Project, actor, c.IP(), c.Get("User-Agent")); auditErr != nil {
+		_ = s.DB.DeleteSecret(orgID, id)
+		return c.Status(500).JSON(fiber.Map{"error": "audit log write failed; secret not stored"})
+	}
 	return c.Status(201).JSON(fiber.Map{"id": id, "key": req.Key})
 }
 

@@ -1,4 +1,15 @@
 port: 8080
 database_path: vaultkey.db
 auto_lock_duration: 30m
-audit_signing_key: vaultkey-default-audit-signing-hmac-key-1234567890
+# Production requires VAULTKEY_HMAC_KEY (64+ random chars); the server refuses
+# to boot with a default or short signing key unless VAULTKEY_ENV=dev.
+audit_signing_key:
+allowed_origins: http://localhost:8080,http://localhost:3000,http://localhost:5173
+turnstile_secret_key:
+razorpay_key_id:
+razorpay_key_secret:
+razorpay_webhook_secret:
+razorpay_plan_pro_id:
+razorpay_plan_enterprise_id:
+max_login_attempts: 5
+lockout_duration: 5m

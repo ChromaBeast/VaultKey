@@ -34,15 +34,24 @@ type RazorpayOrderResponse struct {
 }
 
 type RazorpaySubscriptionRequest struct {
-	PlanID     string `json:"plan_id"`
-	TotalCount int    `json:"total_count"`
-	CustomerNotify int `json:"customer_notify"`
+	PlanID         string `json:"plan_id"`
+	TotalCount     int    `json:"total_count"`
+	CustomerNotify int    `json:"customer_notify"`
 }
 
 type RazorpaySubscriptionResponse struct {
 	ID     string `json:"id"`
 	Entity string `json:"entity"`
 	Status string `json:"status"`
+}
+
+type RazorpayAPIError struct {
+	StatusCode int
+	Body       string
+}
+
+func (e *RazorpayAPIError) Error() string {
+	return fmt.Sprintf("razorpay api error (status %d): %s", e.StatusCode, e.Body)
 }
 
 func NewRazorpayClient(keyID, keySecret, webhookSecret string) *RazorpayClient {
@@ -54,62 +63,58 @@ func NewRazorpayClient(keyID, keySecret, webhookSecret string) *RazorpayClient {
 	}
 }
 
-func (c *RazorpayClient) CreateOrder(amount int, currency, receipt string) (string, error) {
-	reqBody := RazorpayOrderRequest{Amount: amount, Currency: currency, Receipt: receipt}
-	bodyBytes, err := json.Marshal(reqBody)
+func doRazorpayJSON(c *RazorpayClient, url string, payload any, out any) error {
+	bodyBytes, err := json.Marshal(payload)
 	if err != nil {
-		return "", fmt.Errorf("failed to marshal order request: %w", err)
+		return fmt.Errorf("failed to marshal request: %w", err)
 	}
-
-	req, err := http.NewRequest("POST", "https://api.razorpay.com/v1/orders", bytes.NewBuffer(bodyBytes))
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(bodyBytes))
 	if err != nil {
-		return "", fmt.Errorf("failed to create order http request: %w", err)
+		return err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.SetBasicAuth(c.KeyID, c.KeySecret)
 
 	resp, err := c.HTTPClient.Do(req)
-	if err == nil && resp.StatusCode == http.StatusOK {
-		defer resp.Body.Close()
-		var orderResp RazorpayOrderResponse
-		if err := json.NewDecoder(resp.Body).Decode(&orderResp); err == nil && orderResp.ID != "" {
-			return orderResp.ID, nil
-		}
+	if err != nil {
+		return fmt.Errorf("razorpay unreachable: %w", err)
 	}
-	if resp != nil {
-		defer resp.Body.Close()
-		_, _ = io.ReadAll(resp.Body)
-	}
+	defer resp.Body.Close()
 
-	return fmt.Sprintf("order_%x%d", time.Now().UnixNano(), amount%1000), nil
+	body, _ := io.ReadAll(io.LimitReader(resp.Body, 1<<20))
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return &RazorpayAPIError{StatusCode: resp.StatusCode, Body: string(body)}
+	}
+	if err := json.Unmarshal(body, out); err != nil {
+		return fmt.Errorf("razorpay response malformed: %w", err)
+	}
+	return nil
+}
+
+func (c *RazorpayClient) CreateOrder(amount int, currency, receipt string) (string, error) {
+	var out RazorpayOrderResponse
+	if err := doRazorpayJSON(c, "https://api.razorpay.com/v1/orders", RazorpayOrderRequest{
+		Amount: amount, Currency: currency, Receipt: receipt,
+	}, &out); err != nil {
+		return "", err
+	}
+	if out.ID == "" {
+		return "", fmt.Errorf("razorpay returned no order id")
+	}
+	return out.ID, nil
 }
 
 func (c *RazorpayClient) CreateSubscription(planID string, totalCount int) (string, error) {
-	reqBody := RazorpaySubscriptionRequest{
-		PlanID:         planID,
-		TotalCount:     totalCount,
-		CustomerNotify: 1,
+	var out RazorpaySubscriptionResponse
+	if err := doRazorpayJSON(c, "https://api.razorpay.com/v1/subscriptions", RazorpaySubscriptionRequest{
+		PlanID: planID, TotalCount: totalCount, CustomerNotify: 1,
+	}, &out); err != nil {
+		return "", err
 	}
-	bodyBytes, _ := json.Marshal(reqBody)
-
-	req, err := http.NewRequest("POST", "https://api.razorpay.com/v1/subscriptions", bytes.NewBuffer(bodyBytes))
-	if err == nil {
-		req.Header.Set("Content-Type", "application/json")
-		req.SetBasicAuth(c.KeyID, c.KeySecret)
-		resp, err := c.HTTPClient.Do(req)
-		if err == nil && resp.StatusCode == http.StatusOK {
-			defer resp.Body.Close()
-			var subResp RazorpaySubscriptionResponse
-			if err := json.NewDecoder(resp.Body).Decode(&subResp); err == nil && subResp.ID != "" {
-				return subResp.ID, nil
-			}
-		}
-		if resp != nil {
-			defer resp.Body.Close()
-		}
+	if out.ID == "" {
+		return "", fmt.Errorf("razorpay returned no subscription id")
 	}
-
-	return fmt.Sprintf("sub_%x", time.Now().UnixNano()), nil
+	return out.ID, nil
 }
 
 func (c *RazorpayClient) VerifyPaymentSignature(orderID, paymentID, signature string) bool {

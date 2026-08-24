@@ -12,9 +12,21 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+var validPermissions = map[string]bool{
+	"admin": true, "write": true, "read": true, "list": true,
+}
+
+func normalizeBearer(header string) string {
+	h := strings.TrimSpace(header)
+	if len(h) >= 7 && strings.EqualFold(h[:7], "bearer ") {
+		return strings.TrimSpace(h[7:])
+	}
+	return ""
+}
+
 func (s *Server) AuthMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		raw := strings.TrimPrefix(c.Get("Authorization"), "Bearer ")
+		raw := normalizeBearer(c.Get("Authorization"))
 		if raw == "" {
 			return c.Status(401).JSON(fiber.Map{"error": "missing api key"})
 		}
@@ -58,7 +70,7 @@ func (s *Server) AuthMiddleware() fiber.Handler {
 			_ = s.DB.UpdateKeyLastUsed(apiKey.ID)
 		}
 
-		s.RecordActivity()
+		s.RecordActivity(apiKey.OrgID)
 
 		c.Locals("org_id", apiKey.OrgID)
 		c.Locals("actor", apiKey.ID)
@@ -73,11 +85,9 @@ func (s *Server) SecurityHeadersMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		c.Set("X-Frame-Options", "DENY")
 		c.Set("X-Content-Type-Options", "nosniff")
-		c.Set("X-XSS-Protection", "1; mode=block")
 		c.Set("Referrer-Policy", "strict-origin-when-cross-origin")
 		c.Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
-		c.Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;")
+		c.Set("Content-Security-Policy", "default-src 'self'; script-src 'self' https://checkout.razorpay.com https://challenges.cloudflare.com; frame-src https://api.razorpay.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://api.razorpay.com https://lumberjack.razorpay.com;")
 		return c.Next()
 	}
 }
-

@@ -82,7 +82,11 @@ func (db *DB) UpdateKeyLastUsed(id string) error {
 	return err
 }
 
-func (db *DB) RevokeAPIKey(orgID, id string) error {
-	_, err := db.Exec("UPDATE api_keys SET active = 0 WHERE id = ? AND org_id = ?", id, orgID)
-	return err
+func (db *DB) RevokeAPIKey(orgID, id string) (int64, error) {
+	res, err := db.Exec("UPDATE api_keys SET active = 0 WHERE id = ? AND org_id = ? AND active = 1", id, orgID)
+	if err != nil {
+		return 0, err
+	}
+	n, _ := res.RowsAffected()
+	return n, nil
 }

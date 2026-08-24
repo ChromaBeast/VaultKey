@@ -19,6 +19,7 @@ func TestSecurityHeadersAndLockout(t *testing.T) {
 	defer database.Close()
 
 	cfg := config.Default()
+	cfg.Environment = "dev"
 	cfg.MaxLoginAttempts = 3 // Set to 3 for fast test execution
 	var mockFS embed.FS
 	server := NewServer(cfg, database, mockFS)

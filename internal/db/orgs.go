@@ -12,6 +12,7 @@ type Organization struct {
 	Slug               string     `json:"slug"`
 	Argon2Salt         string     `json:"-"`
 	Sentinel           string     `json:"-"`
+	KeyScheme          string     `json:"-"`
 	Plan               string     `json:"plan"`
 	SubscriptionID     *string    `json:"subscription_id,omitempty"`
 	SubscriptionStatus string     `json:"subscription_status"`
@@ -21,30 +22,69 @@ type Organization struct {
 
 func (db *DB) CreateOrganization(org Organization) error {
 	query := `
-		INSERT INTO organizations (id, name, slug, argon2_salt, sentinel, plan)
-		VALUES (?, ?, ?, ?, ?, ?);
+		INSERT INTO organizations (id, name, slug, argon2_salt, sentinel, key_scheme, plan)
+		VALUES (?, ?, ?, ?, ?, ?, ?);
 	`
-	_, err := db.Exec(query, org.ID, org.Name, org.Slug, org.Argon2Salt, org.Sentinel, org.Plan)
+	scheme := org.KeyScheme
+	if scheme == "" {
+		scheme = "envelope"
+	}
+	_, err := db.Exec(query, org.ID, org.Name, org.Slug, org.Argon2Salt, org.Sentinel, scheme, org.Plan)
 	if err != nil {
 		return fmt.Errorf("failed to create organization: %w", err)
 	}
 	return nil
 }
 
-func (db *DB) GetOrganizationByID(id string) (*Organization, error) {
-	query := `SELECT id, name, slug, argon2_salt, sentinel, plan, subscription_id, subscription_status, current_period_end, created_at FROM organizations WHERE id = ?;`
-	row := db.QueryRow(query, id)
+func (db *DB) CreateOrgWithFounderTx(org Organization, user User, wrap KeyWrap) error {
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
 
+	scheme := org.KeyScheme
+	if scheme == "" {
+		scheme = "envelope"
+	}
+	if _, err := tx.Exec(
+		`INSERT INTO organizations (id, name, slug, argon2_salt, sentinel, key_scheme, plan) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+		org.ID, org.Name, org.Slug, org.Argon2Salt, org.Sentinel, scheme, org.Plan,
+	); err != nil {
+		return fmt.Errorf("failed to create organization: %w", err)
+	}
+	if _, err := tx.Exec(
+		`INSERT INTO users (id, org_id, email, password_hash, role, failed_attempts, locked_until) VALUES (?, ?, ?, ?, ?, 0, NULL)`,
+		user.ID, user.OrgID, user.Email, user.PasswordHash, user.Role,
+	); err != nil {
+		return fmt.Errorf("failed to create user: %w", err)
+	}
+	if wrap.UserID != "" {
+		if _, err := tx.Exec(
+			`INSERT INTO key_wraps (org_id, user_id, wrapped_key, wrap_salt, kdf_params) VALUES (?, ?, ?, ?, ?)`,
+			wrap.OrgID, wrap.UserID, wrap.WrappedKey, wrap.WrapSalt, wrap.KDFParams,
+		); err != nil {
+			return fmt.Errorf("failed to store key wrap: %w", err)
+		}
+	}
+	return tx.Commit()
+}
+
+func orgScanColumns() string {
+	return `id, name, slug, argon2_salt, sentinel, COALESCE(key_scheme, 'legacy'), plan, subscription_id, subscription_status, current_period_end, created_at`
+}
+
+func scanOrganization(row *sql.Row) (*Organization, error) {
 	var org Organization
 	var subID *string
 	var subStatus string
 	var periodEnd *time.Time
-	err := row.Scan(&org.ID, &org.Name, &org.Slug, &org.Argon2Salt, &org.Sentinel, &org.Plan, &subID, &subStatus, &periodEnd, &org.CreatedAt)
+	err := row.Scan(&org.ID, &org.Name, &org.Slug, &org.Argon2Salt, &org.Sentinel, &org.KeyScheme, &org.Plan, &subID, &subStatus, &periodEnd, &org.CreatedAt)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
 	if err != nil {
-		return nil, fmt.Errorf("failed to get org by id: %w", err)
+		return nil, err
 	}
 	org.SubscriptionID = subID
 	org.SubscriptionStatus = subStatus
@@ -52,38 +92,22 @@ func (db *DB) GetOrganizationByID(id string) (*Organization, error) {
 	return &org, nil
 }
 
-func (db *DB) GetOrganizationBySlug(slug string) (*Organization, error) {
-	query := `SELECT id, name, slug, argon2_salt, sentinel, plan, created_at FROM organizations WHERE slug = ?;`
-	row := db.QueryRow(query, slug)
-
-	var org Organization
-	err := row.Scan(&org.ID, &org.Name, &org.Slug, &org.Argon2Salt, &org.Sentinel, &org.Plan, &org.CreatedAt)
-	if err == sql.ErrNoRows {
-		return nil, nil
+func (db *DB) GetOrganizationByID(id string) (*Organization, error) {
+	row := db.QueryRow(`SELECT `+orgScanColumns()+` FROM organizations WHERE id = ?;`, id)
+	org, err := scanOrganization(row)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get org by id: %w", err)
 	}
+	return org, nil
+}
+
+func (db *DB) GetOrganizationBySlug(slug string) (*Organization, error) {
+	row := db.QueryRow(`SELECT `+orgScanColumns()+` FROM organizations WHERE slug = ?;`, slug)
+	org, err := scanOrganization(row)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get org by slug: %w", err)
 	}
-	return &org, nil
-}
-
-func (db *DB) ListOrganizations() ([]Organization, error) {
-	query := `SELECT id, name, slug, plan, created_at FROM organizations ORDER BY name ASC;`
-	rows, err := db.Query(query)
-	if err != nil {
-		return nil, fmt.Errorf("failed to list orgs: %w", err)
-	}
-	defer rows.Close()
-
-	var orgs []Organization
-	for rows.Next() {
-		var o Organization
-		if err := rows.Scan(&o.ID, &o.Name, &o.Slug, &o.Plan, &o.CreatedAt); err != nil {
-			return nil, err
-		}
-		orgs = append(orgs, o)
-	}
-	return orgs, nil
+	return org, nil
 }
 
 func (db *DB) UpdateOrganizationPlan(id string, plan string) error {
@@ -95,3 +119,10 @@ func (db *DB) UpdateOrganizationPlan(id string, plan string) error {
 	return nil
 }
 
+func (db *DB) SetOrgKeyScheme(id, scheme string) error {
+	_, err := db.Exec(`UPDATE organizations SET key_scheme = ? WHERE id = ?`, scheme, id)
+	if err != nil {
+		return fmt.Errorf("failed to update key scheme: %w", err)
+	}
+	return nil
+}

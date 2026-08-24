@@ -47,6 +47,8 @@ func (db *DB) GetSecret(orgID, project, environment, key string) (*Secret, error
 	return &s, nil
 }
 
+var ErrVersionConflict = errors.New("secret was modified concurrently")
+
 func (db *DB) UpdateSecret(s Secret, oldSecret Secret, newVersionID string) error {
 	tx, err := db.Begin()
 	if err != nil {
@@ -54,21 +56,28 @@ func (db *DB) UpdateSecret(s Secret, oldSecret Secret, newVersionID string) erro
 	}
 	defer tx.Rollback()
 
-	_, err = tx.Exec(`
-		INSERT INTO secret_versions (id, secret_id, org_id, value, version, created_at)
+	archive := `
+		INSERT OR IGNORE INTO secret_versions (id, secret_id, org_id, value, version, created_at)
 		VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-	`, newVersionID, oldSecret.ID, oldSecret.OrgID, oldSecret.Value, oldSecret.Version)
-	if err != nil {
+	`
+	if _, err := tx.Exec(archive, newVersionID, oldSecret.ID, oldSecret.OrgID, oldSecret.Value, oldSecret.Version); err != nil {
 		return err
 	}
 
-	_, err = tx.Exec(`
+	res, err := tx.Exec(`
 		UPDATE secrets
 		SET value = ?, version = ?, updated_at = CURRENT_TIMESTAMP
-		WHERE id = ? AND org_id = ?
-	`, s.Value, s.Version, s.ID, s.OrgID)
+		WHERE id = ? AND org_id = ? AND version = ?
+	`, s.Value, s.Version, s.ID, s.OrgID, oldSecret.Version)
 	if err != nil {
 		return err
+	}
+	n, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if n == 0 {
+		return ErrVersionConflict
 	}
 
 	return tx.Commit()

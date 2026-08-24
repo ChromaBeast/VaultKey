@@ -10,32 +10,49 @@ import (
 	"vaultkey/internal/config"
 	"vaultkey/internal/db"
 
+	"vaultkey/internal/crypto"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
 type Server struct {
-	App            *fiber.App
-	DB             *db.DB
-	Config         *config.Config
-	WebFS          embed.FS
-	LastActiveTime time.Time
-	ActiveMutex    sync.Mutex
+	App          *fiber.App
+	DB           *db.DB
+	Config       *config.Config
+	WebFS        embed.FS
+	ActiveMutex  sync.Mutex
+	lastActivity map[string]time.Time
+	stopAutoLock chan struct{}
+	auditLocks   map[string]*sync.Mutex
+	auditLocksMu sync.Mutex
 }
 
 func NewServer(cfg *config.Config, database *db.DB, webFS embed.FS) *Server {
-	app := fiber.New(fiber.Config{
+	fiberCfg := fiber.Config{
 		DisableStartupMessage: true,
-	})
+		ReadTimeout:           15 * time.Second,
+		WriteTimeout:          15 * time.Second,
+		IdleTimeout:           60 * time.Second,
+		BodyLimit:             1 * 1024 * 1024,
+	}
+	if cfg.TrustedProxies != "" {
+		fiberCfg.EnableTrustedProxyCheck = true
+		fiberCfg.TrustedProxies = strings.Split(cfg.TrustedProxies, ",")
+	}
+	app := fiber.New(fiberCfg)
 
 	s := &Server{
-		App:            app,
-		DB:             database,
-		Config:         cfg,
-		WebFS:          webFS,
-		LastActiveTime: time.Now(),
+		App:          app,
+		DB:           database,
+		Config:       cfg,
+		WebFS:        webFS,
+		lastActivity: map[string]time.Time{},
+		stopAutoLock: make(chan struct{}),
+		auditLocks:   map[string]*sync.Mutex{},
 	}
 
 	s.setupRoutes()
@@ -43,16 +60,60 @@ func NewServer(cfg *config.Config, database *db.DB, webFS embed.FS) *Server {
 }
 
 func (s *Server) Start() error {
+	go s.autoLockLoop()
 	return s.App.Listen(fmt.Sprintf(":%d", s.Config.Port))
 }
 
-func (s *Server) RecordActivity() {
+func (s *Server) Shutdown() error {
+	close(s.stopAutoLock)
+	return s.App.ShutdownWithTimeout(10 * time.Second)
+}
+
+func (s *Server) autoLockLoop() {
+	ticker := time.NewTicker(30 * time.Second)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-s.stopAutoLock:
+			return
+		case <-ticker.C:
+			s.lockIdleOrgs()
+		}
+	}
+}
+
+func (s *Server) lockIdleOrgs() {
+	idleLimit := s.Config.AutoLock()
+	now := time.Now()
 	s.ActiveMutex.Lock()
-	s.LastActiveTime = time.Now()
+	defer s.ActiveMutex.Unlock()
+	for orgID, last := range s.lastActivity {
+		if now.Sub(last) > idleLimit && !crypto.Global.IsLocked(orgID) {
+			crypto.Global.Lock(orgID)
+			delete(s.lastActivity, orgID)
+		}
+	}
+}
+
+func (s *Server) RecordActivity(orgID string) {
+	s.ActiveMutex.Lock()
+	s.lastActivity[orgID] = time.Now()
 	s.ActiveMutex.Unlock()
 }
 
+func (s *Server) auditMutexFor(orgID string) *sync.Mutex {
+	s.auditLocksMu.Lock()
+	defer s.auditLocksMu.Unlock()
+	m, ok := s.auditLocks[orgID]
+	if !ok {
+		m = &sync.Mutex{}
+		s.auditLocks[orgID] = m
+	}
+	return m
+}
+
 func (s *Server) setupRoutes() {
+	s.App.Use(recover.New())
 	s.App.Use(s.SecurityHeadersMiddleware())
 	s.App.Use(cors.New(cors.Config{
 		AllowOrigins:     s.Config.AllowedOrigins,
@@ -76,25 +137,33 @@ func (s *Server) setupRoutes() {
 		},
 	})
 
+	s.App.Get("/healthz", func(c *fiber.Ctx) error {
+		if err := s.DB.Ping(); err != nil {
+			return c.Status(503).JSON(fiber.Map{"status": "unhealthy"})
+		}
+		return c.JSON(fiber.Map{"status": "ok"})
+	})
+
 	v1.Post("/auth/signup", authLimiter, s.handleSignup)
 	v1.Post("/auth/login", authLimiter, s.handleLogin)
-	v1.Get("/vault/status", s.handleStatus)
+	v1.Post("/vault/unlock", authLimiter, s.handleUnlock)
 	v1.Get("/shares/:id", s.handleGetShare)
 	v1.Post("/payments/webhook", s.handleRazorpayWebhook)
 
 	authGroup := v1.Group("", s.AuthMiddleware())
 
+	authGroup.Get("/vault/status", s.handleStatus)
 	authGroup.Post("/vault/lock", s.handleLock)
 	authGroup.Post("/shares", s.handleCreateShare)
 
 	authGroup.Post("/secrets", s.handleCreateSecret)
 	authGroup.Get("/secrets", s.handleListSecrets)
 	authGroup.Get("/secrets/values", s.handleBatchGetSecrets)
+	authGroup.Get("/secrets/:key/versions", s.handleGetSecretVersions)
+	authGroup.Post("/secrets/:key/rollback", s.handleRollbackSecret)
 	authGroup.Get("/secrets/:key", s.handleGetSecret)
 	authGroup.Put("/secrets/:key", s.handleUpdateSecret)
 	authGroup.Delete("/secrets/:key", s.handleDeleteSecret)
-	authGroup.Get("/secrets/:key/versions", s.handleGetSecretVersions)
-	authGroup.Post("/secrets/:key/rollback", s.handleRollbackSecret)
 
 	authGroup.Post("/api-keys", s.handleCreateAPIKey)
 	authGroup.Get("/api-keys", s.handleListAPIKeys)
@@ -103,6 +172,12 @@ func (s *Server) setupRoutes() {
 	authGroup.Get("/audit", s.handleListAudit)
 	authGroup.Get("/audit/verify", s.handleVerifyAudit)
 	authGroup.Get("/projects", s.handleListProjects)
+
+	authGroup.Get("/users", s.handleListUsers)
+	authGroup.Post("/users/invite", s.handleInviteUser)
+	authGroup.Delete("/users/:id", s.handleDeleteUser)
+
+	authGroup.Post("/account/password", s.handleChangePassword)
 
 	authGroup.Get("/payments/config", s.handleGetRazorpayConfig)
 	authGroup.Post("/payments/create-order", s.handleCreateRazorpayOrder)
@@ -113,25 +188,28 @@ func (s *Server) setupRoutes() {
 	authGroup.Post("/subscriptions/verify", s.handleVerifySubscription)
 	authGroup.Post("/subscriptions/cancel", s.handleCancelSubscription)
 
-	// Serve static asset files (/assets/index-xxx.js, /favicon.svg, etc.)
+	s.App.Get("/", s.serveIndex)
 	s.App.Use("/", filesystem.New(filesystem.Config{
 		Root:       http.FS(s.WebFS),
 		PathPrefix: "web/dist",
 		MaxAge:     31536000,
 	}))
 
-	// SPA Fallback Handler for React Router client-side routes (/secrets, /billing, /keys, /audit, /docs, etc.)
 	s.App.Get("*", func(c *fiber.Ctx) error {
 		path := c.Path()
 		if strings.HasPrefix(path, "/v1/") {
 			return c.Status(404).JSON(fiber.Map{"error": "endpoint not found"})
 		}
-		c.Set("Cache-Control", "no-cache, no-store, must-revalidate")
-		c.Set("Content-Type", "text/html; charset=utf-8")
-		indexBytes, err := s.WebFS.ReadFile("web/dist/index.html")
-		if err != nil {
-			return c.Status(500).SendString("Index file missing")
-		}
-		return c.Send(indexBytes)
+		return s.serveIndex(c)
 	})
+}
+
+func (s *Server) serveIndex(c *fiber.Ctx) error {
+	c.Set("Cache-Control", "no-cache, no-store, must-revalidate")
+	c.Set("Content-Type", "text/html; charset=utf-8")
+	indexBytes, err := s.WebFS.ReadFile("web/dist/index.html")
+	if err != nil {
+		return c.Status(500).SendString("Index file missing")
+	}
+	return c.Send(indexBytes)
 }

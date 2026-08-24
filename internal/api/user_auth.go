@@ -14,6 +14,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+func nowPlus24h() time.Time {
+	return time.Now().Add(24 * time.Hour)
+}
+
 type SignupRequest struct {
 	OrgName        string `json:"org_name"`
 	OrgSlug        string `json:"org_slug"`
@@ -28,10 +32,24 @@ type LoginRequest struct {
 	TurnstileToken string `json:"turnstile_token"`
 }
 
+func roleToPermission(role string) string {
+	switch role {
+	case "owner", "admin":
+		return "admin"
+	case "write":
+		return "write"
+	default:
+		return "read"
+	}
+}
+
 func (s *Server) handleSignup(c *fiber.Ctx) error {
 	var req SignupRequest
 	if err := c.BodyParser(&req); err != nil || req.OrgName == "" || req.Email == "" || req.Password == "" {
 		return c.Status(400).JSON(fiber.Map{"error": "org_name, email, and password are required"})
+	}
+	if len(req.Password) < 8 {
+		return c.Status(400).JSON(fiber.Map{"error": "password must be at least 8 characters"})
 	}
 
 	if !s.VerifyTurnstileToken(req.TurnstileToken, c.IP()) {
@@ -53,32 +71,24 @@ func (s *Server) handleSignup(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "email is already registered"})
 	}
 
-	salt := make([]byte, 32)
-	if _, err := rand.Read(salt); err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "failed to generate salt"})
+	idBytes := make([]byte, 64)
+	if _, err := rand.Read(idBytes); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to generate identifiers"})
 	}
-	saltHex := hex.EncodeToString(salt)
 
-	orgID := "org_" + hex.EncodeToString(salt[:8])
-	crypto.Global.Derive(orgID, req.Password, salt)
+	orgID := "org_" + hex.EncodeToString(idBytes[:8])
+	userID := "usr_" + hex.EncodeToString(idBytes[8:16])
+	orgSalt := idBytes[16:48]
 
-	sentinelCipher, err := crypto.Encrypt(orgID, "vaultkey_sentinel")
+	kek := make([]byte, 32)
+	if _, err := rand.Read(kek); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to generate vault key"})
+	}
+	defer crypto.Zero(kek)
+
+	wrap, err := crypto.WrapMasterKey(kek, req.Password)
 	if err != nil {
-		crypto.Global.Lock(orgID)
-		return c.Status(500).JSON(fiber.Map{"error": "failed to encrypt sentinel"})
-	}
-
-	org := db.Organization{
-		ID:         orgID,
-		Name:       req.OrgName,
-		Slug:       slug,
-		Argon2Salt: saltHex,
-		Sentinel:   hex.EncodeToString(sentinelCipher),
-		Plan:       "free",
-	}
-	if err := s.DB.CreateOrganization(org); err != nil {
-		crypto.Global.Lock(orgID)
-		return c.Status(500).JSON(fiber.Map{"error": "failed to create organization"})
+		return c.Status(500).JSON(fiber.Map{"error": "failed to wrap vault key"})
 	}
 
 	pwHash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
@@ -86,19 +96,37 @@ func (s *Server) handleSignup(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "failed to hash password"})
 	}
 
+	org := db.Organization{
+		ID:         orgID,
+		Name:       req.OrgName,
+		Slug:       slug,
+		Argon2Salt: hex.EncodeToString(orgSalt),
+		KeyScheme:  "envelope",
+		Plan:       "free",
+	}
 	user := db.User{
-		ID:           "usr_" + hex.EncodeToString(salt[8:16]),
+		ID:           userID,
 		OrgID:        orgID,
 		Email:        req.Email,
 		PasswordHash: string(pwHash),
 		Role:         "owner",
 	}
-	if err := s.DB.CreateUser(user); err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "failed to create user"})
+	wrapRow := db.KeyWrap{
+		OrgID:      orgID,
+		UserID:     userID,
+		WrappedKey: wrap.Ciphertext,
+		WrapSalt:   hex.EncodeToString(wrap.Salt),
+		KDFParams:  wrap.Params.Encode(),
 	}
 
-	token, err := s.createSessionToken(orgID, "Session: "+user.Email)
+	if err := s.DB.CreateOrgWithFounderTx(org, user, wrapRow); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to create organization"})
+	}
+
+	crypto.Global.Set(orgID, kek)
+	token, err := s.createSessionToken(orgID, "Session: "+user.Email, roleToPermission(user.Role))
 	if err != nil {
+		crypto.Global.Lock(orgID)
 		return c.Status(500).JSON(fiber.Map{"error": "failed to create session key"})
 	}
 
@@ -121,61 +149,16 @@ func (s *Server) handleLogin(c *fiber.Ctx) error {
 		return c.Status(403).JSON(fiber.Map{"error": "security verification failed, please complete the captcha"})
 	}
 
-	user, err := s.DB.GetUserByEmail(req.Email)
-	if err != nil || user == nil {
+	user, org, errCode, errMsg := s.authenticate(req.Email, req.Password, c)
+	if errMsg != "" {
+		return c.Status(errCode).JSON(fiber.Map{"error": errMsg})
+	}
+
+	if err := s.openVault(org, user, req.Password); err != nil {
 		return c.Status(401).JSON(fiber.Map{"error": "invalid email or password"})
 	}
 
-	if user.LockedUntil != nil && user.LockedUntil.After(time.Now()) {
-		remaining := time.Until(*user.LockedUntil).Round(time.Second)
-		return c.Status(429).JSON(fiber.Map{
-			"error": fmt.Sprintf("account is temporarily locked due to failed login attempts. Try again in %v", remaining),
-		})
-	}
-
-	lockoutDur, parseErr := time.ParseDuration(s.Config.LockoutDuration)
-	if parseErr != nil {
-		lockoutDur = 5 * time.Minute
-	}
-	maxAttempts := s.Config.MaxLoginAttempts
-	if maxAttempts <= 0 {
-		maxAttempts = 5
-	}
-
-	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password)); err != nil {
-		_, isLocked, _ := s.DB.RecordFailedLogin(user.ID, maxAttempts, lockoutDur)
-		if isLocked {
-			return c.Status(429).JSON(fiber.Map{
-				"error": fmt.Sprintf("too many failed login attempts. Account locked for %v", lockoutDur),
-			})
-		}
-		return c.Status(401).JSON(fiber.Map{"error": "invalid email or password"})
-	}
-
-	_ = s.DB.ResetFailedLogins(user.ID)
-
-	org, err := s.DB.GetOrganizationByID(user.OrgID)
-	if err != nil || org == nil {
-		return c.Status(500).JSON(fiber.Map{"error": "organization not found"})
-	}
-
-	salt, err := hex.DecodeString(org.Argon2Salt)
-	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "corrupted salt"})
-	}
-
-	crypto.Global.Derive(org.ID, req.Password, salt)
-
-	sentinelCipher, err := hex.DecodeString(org.Sentinel)
-	if err == nil {
-		decrypted, err := crypto.Decrypt(org.ID, sentinelCipher)
-		if err != nil || decrypted != "vaultkey_sentinel" {
-			crypto.Global.Lock(org.ID)
-			return c.Status(401).JSON(fiber.Map{"error": "incorrect password decryption check"})
-		}
-	}
-
-	token, err := s.createSessionToken(org.ID, "Session: "+user.Email)
+	token, err := s.createSessionToken(org.ID, "Session: "+user.Email, roleToPermission(user.Role))
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "failed to create session key"})
 	}
@@ -189,7 +172,7 @@ func (s *Server) handleLogin(c *fiber.Ctx) error {
 	})
 }
 
-func (s *Server) createSessionToken(orgID, name string) (string, error) {
+func (s *Server) createSessionToken(orgID, name, permissions string) (string, error) {
 	keyBytes := make([]byte, 16)
 	secBytes := make([]byte, 24)
 	if _, err := rand.Read(keyBytes); err != nil {
@@ -206,13 +189,13 @@ func (s *Server) createSessionToken(orgID, name string) (string, error) {
 	h := sha256.Sum256([]byte(rawToken))
 	hashed := hex.EncodeToString(h[:])
 
-	expiresAt := time.Now().Add(24 * time.Hour)
+	expiresAt := nowPlus24h()
 	apiKey := db.APIKey{
 		ID:          id,
 		OrgID:       orgID,
 		Name:        name,
 		KeyHash:     hashed,
-		Permissions: "admin",
+		Permissions: permissions,
 		ExpiresAt:   &expiresAt,
 		Active:      true,
 	}
@@ -221,4 +204,3 @@ func (s *Server) createSessionToken(orgID, name string) (string, error) {
 	}
 	return rawToken, nil
 }
-

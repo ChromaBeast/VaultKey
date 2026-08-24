@@ -37,7 +37,7 @@ func TestSignAndVerifyChain(t *testing.T) {
 
 	// Tamper entry 1 by changing actor
 	tamperedHmac1 := SignEntry(id1, act1, nil, nil, "attacker", ts1, prev1, key)
-	
+
 	// Verification of entry 2 with tampered entry 1 hash should mismatch
 	if SignEntry(id2, act2, &s2, &proj2, actor2, ts2, tamperedHmac1, key) == hmac2 {
 		t.Fatal("expected chain validation to fail after tampering previous entry")

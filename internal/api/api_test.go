@@ -19,14 +19,15 @@ func TestAPIServer(t *testing.T) {
 	defer database.Close()
 
 	cfg := config.Default()
+	cfg.Environment = "dev"
 	var mockFS embed.FS
 	server := NewServer(cfg, database, mockFS)
 
-	// 1. Vault Status
+	// 1. Vault Status requires auth now
 	req := httptest.NewRequest("GET", "/v1/vault/status", nil)
 	resp, _ := server.App.Test(req, 5000)
-	if resp.StatusCode != http.StatusOK {
-		t.Fatalf("expected status 200, got %d", resp.StatusCode)
+	if resp.StatusCode != http.StatusUnauthorized {
+		t.Fatalf("expected status 401 for unauthenticated status, got %d", resp.StatusCode)
 	}
 
 	// 2. Signup new SaaS Team

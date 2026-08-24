@@ -1,8 +1,8 @@
 package crypto
 
 import (
-	"sync"
 	"golang.org/x/crypto/argon2"
+	"sync"
 )
 
 type MasterKey struct {
@@ -29,21 +29,28 @@ func (t *TenantKeyManager) Derive(orgID, password string, salt []byte) {
 	}
 	t.mu.Unlock()
 
+	derived := argon2.IDKey([]byte(password), salt, 3, 64*1024, 4, 32)
+	t.Set(orgID, derived)
+}
+
+func (t *TenantKeyManager) Set(orgID string, key []byte) {
+	t.mu.Lock()
+	mk, exists := t.keys[orgID]
+	if !exists {
+		mk = &MasterKey{locked: true}
+		t.keys[orgID] = mk
+	}
+	t.mu.Unlock()
+
 	mk.mu.Lock()
 	defer mk.mu.Unlock()
 
 	for i := range mk.key {
 		mk.key[i] = 0
 	}
-
-	mk.key = argon2.IDKey(
-		[]byte(password),
-		salt,
-		3,
-		64*1024,
-		4,
-		32,
-	)
+	cp := make([]byte, len(key))
+	copy(cp, key)
+	mk.key = cp
 	mk.locked = false
 }
 
@@ -91,5 +98,7 @@ func (t *TenantKeyManager) Get(orgID string) ([]byte, error) {
 	if mk.locked {
 		return nil, ErrVaultLocked
 	}
-	return mk.key, nil
+	out := make([]byte, len(mk.key))
+	copy(out, mk.key)
+	return out, nil
 }

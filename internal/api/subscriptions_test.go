@@ -13,7 +13,7 @@ func TestSubscriptionSignatureVerification(t *testing.T) {
 	paymentID := "pay_11223344"
 
 	message := paymentID + "|" + subID
-	sig := computeHMAC(message, keySecret)
+	sig := testHMAC(message, keySecret)
 
 	if !client.VerifySubscriptionSignature(paymentID, subID, sig) {
 		t.Fatalf("expected subscription signature verification to succeed")

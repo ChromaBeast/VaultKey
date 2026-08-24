@@ -13,7 +13,7 @@ func TestRazorpaySignatureVerification(t *testing.T) {
 	paymentID := "pay_654321"
 
 	message := orderID + "|" + paymentID
-	sig := computeHMAC(message, keySecret)
+	sig := testHMAC(message, keySecret)
 
 	if !client.VerifyPaymentSignature(orderID, paymentID, sig) {
 		t.Fatalf("expected signature verification to succeed")
@@ -29,7 +29,7 @@ func TestRazorpayWebhookVerification(t *testing.T) {
 	client := NewRazorpayClient("key", "secret", webhookSecret)
 
 	body := []byte(`{"event":"order.paid"}`)
-	sig := computeHMAC(string(body), webhookSecret)
+	sig := testHMAC(string(body), webhookSecret)
 
 	if !client.VerifyWebhookSignature(body, sig) {
 		t.Fatalf("expected webhook signature verification to succeed")

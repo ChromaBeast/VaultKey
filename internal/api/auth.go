@@ -12,6 +12,11 @@ func (s *Server) handleLock(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "org_id context missing"})
 	}
 
+	p, _ := c.Locals("permissions").(string)
+	if p != "admin" {
+		return c.Status(403).JSON(fiber.Map{"error": "admin access required to lock the vault"})
+	}
+
 	if crypto.Global.IsLocked(orgID) {
 		return c.JSON(fiber.Map{"status": "already locked"})
 	}
@@ -24,21 +29,14 @@ func (s *Server) handleLock(c *fiber.Ctx) error {
 }
 
 func (s *Server) handleStatus(c *fiber.Ctx) error {
-	orgID := c.Query("org_id")
+	orgID, _ := c.Locals("org_id").(string)
 	if orgID == "" {
-		if val, ok := c.Locals("org_id").(string); ok {
-			orgID = val
-		}
-	}
-
-	locked := true
-	if orgID != "" {
-		locked = crypto.Global.IsLocked(orgID)
+		return c.Status(401).JSON(fiber.Map{"error": "unauthorized"})
 	}
 
 	return c.JSON(fiber.Map{
 		"org_id":  orgID,
-		"locked":  locked,
-		"version": "2.0.0-saas",
+		"locked":  crypto.Global.IsLocked(orgID),
+		"version": "2.1.0",
 	})
 }

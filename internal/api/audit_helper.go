@@ -9,9 +9,16 @@ import (
 )
 
 func (s *Server) LogAuditOrg(orgID, action string, secretKey, project *string, actor string, ip, ua string) error {
+	m := s.auditMutexFor(orgID)
+	m.Lock()
+	defer m.Unlock()
+
 	prevHMAC := ""
 	lastEntry, err := s.DB.GetLastAuditEntry(orgID)
-	if err == nil && lastEntry != nil {
+	if err != nil {
+		return err
+	}
+	if lastEntry != nil {
 		prevHMAC = lastEntry.HMAC
 	}
 
@@ -21,23 +28,26 @@ func (s *Server) LogAuditOrg(orgID, action string, secretKey, project *string, a
 	}
 	id := hex.EncodeToString(idBytes)
 
-	timestamp := time.Now().UTC().Format(time.RFC3339)
+	signedAt := time.Now().UTC().Format(time.RFC3339)
 	signingKey := []byte(s.Config.AuditSigningKey)
 
-	hmacSig := crypto.SignEntry(id, action, secretKey, project, actor, timestamp, prevHMAC, signingKey)
-	parsedTime, _ := time.Parse(time.RFC3339, timestamp)
+	hmacSig := crypto.SignEntryV2(id, action, secretKey, project, actor, signedAt, prevHMAC, signingKey)
+	parsedTime, _ := time.Parse(time.RFC3339, signedAt)
 
 	entry := db.AuditEntry{
-		ID:        id,
-		OrgID:     orgID,
-		Action:    action,
-		SecretKey: secretKey,
-		Project:   project,
-		Actor:     actor,
-		IPAddress: &ip,
-		UserAgent: &ua,
-		HMAC:      hmacSig,
-		CreatedAt: parsedTime,
+		ID:         id,
+		OrgID:      orgID,
+		Action:     action,
+		SecretKey:  secretKey,
+		Project:    project,
+		Actor:      actor,
+		IPAddress:  &ip,
+		UserAgent:  &ua,
+		HMAC:       hmacSig,
+		PrevHMAC:   &prevHMAC,
+		SignedAt:   &signedAt,
+		SigVersion: 2,
+		CreatedAt:  parsedTime,
 	}
 
 	return s.DB.CreateAuditEntry(entry)

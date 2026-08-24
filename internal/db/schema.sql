@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS organizations (
     name                TEXT NOT NULL,
     slug                TEXT NOT NULL UNIQUE,
     argon2_salt         TEXT NOT NULL,
-    sentinel            TEXT NOT NULL,
+    sentinel            TEXT NOT NULL DEFAULT '',
+    key_scheme          TEXT NOT NULL DEFAULT 'envelope',
     plan                TEXT NOT NULL DEFAULT 'free',
     subscription_id     TEXT,
     subscription_status TEXT NOT NULL DEFAULT 'none',
@@ -60,7 +61,7 @@ CREATE TABLE IF NOT EXISTS api_keys (
 
 CREATE TABLE IF NOT EXISTS audit_log (
     id          TEXT PRIMARY KEY,
-    org_id      TEXT NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    org_id      TEXT NOT NULL REFERENCES organizations(id) ON DELETE RESTRICT,
     action      TEXT NOT NULL,
     secret_key  TEXT,
     project     TEXT,
@@ -68,6 +69,9 @@ CREATE TABLE IF NOT EXISTS audit_log (
     ip_address  TEXT,
     user_agent  TEXT,
     hmac        TEXT NOT NULL,
+    prev_hmac   TEXT,
+    signed_at   TEXT,
+    sig_version INTEGER NOT NULL DEFAULT 2,
     created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -91,11 +95,6 @@ CREATE TABLE IF NOT EXISTS webhooks (
     created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_api_keys_hash ON api_keys(key_hash);
-CREATE INDEX IF NOT EXISTS idx_api_keys_org ON api_keys(org_id);
-CREATE INDEX IF NOT EXISTS idx_secrets_org ON secrets(org_id);
-CREATE INDEX IF NOT EXISTS idx_audit_org_created ON audit_log(org_id, created_at);
-
 CREATE TABLE IF NOT EXISTS payments (
     id                  TEXT PRIMARY KEY,
     org_id              TEXT NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
@@ -110,6 +109,45 @@ CREATE TABLE IF NOT EXISTS payments (
     updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS subscriptions (
+    id              TEXT PRIMARY KEY,
+    org_id          TEXT NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    razorpay_sub_id TEXT NOT NULL UNIQUE,
+    plan            TEXT NOT NULL,
+    status          TEXT NOT NULL DEFAULT 'created',
+    created_at      DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS key_wraps (
+    org_id      TEXT NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    user_id     TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    wrapped_key BLOB NOT NULL,
+    wrap_salt   TEXT NOT NULL,
+    kdf_params  TEXT NOT NULL DEFAULT '',
+    created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (org_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS vault_config (
+    key        TEXT PRIMARY KEY,
+    value      TEXT NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS webhook_events (
+    event_id    TEXT PRIMARY KEY,
+    received_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_api_keys_hash ON api_keys(key_hash);
+CREATE INDEX IF NOT EXISTS idx_api_keys_org ON api_keys(org_id);
+CREATE INDEX IF NOT EXISTS idx_api_keys_expires ON api_keys(expires_at);
+CREATE INDEX IF NOT EXISTS idx_secrets_org ON secrets(org_id);
+CREATE INDEX IF NOT EXISTS idx_secrets_scope ON secrets(org_id, project, environment);
+CREATE INDEX IF NOT EXISTS idx_secret_versions_secret ON secret_versions(secret_id);
+CREATE INDEX IF NOT EXISTS idx_audit_org_created ON audit_log(org_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_shares_expires ON shared_secrets(expires_at);
+CREATE INDEX IF NOT EXISTS idx_users_org ON users(org_id);
 CREATE INDEX IF NOT EXISTS idx_payments_org ON payments(org_id);
-
-
+CREATE INDEX IF NOT EXISTS idx_subscriptions_org ON subscriptions(org_id);

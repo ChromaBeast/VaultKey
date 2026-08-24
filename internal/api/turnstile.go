@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+const turnstileTestSecret = "1x0000000000000000000000000000000AA"
+
 type TurnstileResponse struct {
 	Success     bool     `json:"success"`
 	ErrorCodes  []string `json:"error-codes,omitempty"`
@@ -17,14 +19,14 @@ type TurnstileResponse struct {
 func (s *Server) VerifyTurnstileToken(token, clientIP string) bool {
 	secret := s.Config.TurnstileSecretKey
 	if secret == "" {
-		return true // Skip verification if not configured
+		return s.Config.IsDev()
 	}
 
-	// Always allow test secret key with test token or in offline dev mode
-	if secret == "1x0000000000000000000000000000000AA" {
-		if token == "" || token == "XXXX.DUMMY.TOKEN.XXXX" || token == "1x00000000000000000000AA" {
-			return true
-		}
+	if secret == turnstileTestSecret && !s.Config.IsDev() {
+		return false
+	}
+	if secret == turnstileTestSecret {
+		return true
 	}
 
 	if token == "" {
