@@ -1,6 +1,8 @@
 name: vaultkey
 description: Dart SDK for VaultKey, a secure, modern secret manager.
 version: 1.0.0
+homepage: https://github.com/chromabeast/vaultkey
+repository: https://github.com/chromabeast/vaultkey/tree/main/sdk/dart
 environment:
   sdk: '>=3.0.0 <4.0.0'
 

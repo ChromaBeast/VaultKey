@@ -1,19 +1,36 @@
 {
   "name": "vaultkey-js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Node.js SDK for VaultKey secure secrets manager",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "vaultkey",
     "secrets",
     "secrets-manager",
     "security",
-    "env"
+    "env",
+    "environment-variables",
+    "config"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chromabeast/vaultkey.git"
+  },
+  "homepage": "https://github.com/chromabeast/vaultkey#readme",
+  "bugs": {
+    "url": "https://github.com/chromabeast/vaultkey/issues"
+  },
   "author": "VaultKey Authors",
   "license": "MIT",
   "devDependencies": {
