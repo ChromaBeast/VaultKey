@@ -27,7 +27,7 @@ export VAULTKEY_SERVER="http://localhost:8080"
 export VAULTKEY_TOKEN="vk_admin.abc123xyz"
 
 # Vault control
-vaultkey unlock                  # Prompts for password securely (no terminal echo)
+vaultkey unlock                  # Prompts for EMAIL, then password securely (no terminal echo)
 vaultkey status                  # Check state (Locked/Unlocked)
 vaultkey lock                    # Instant memory zeroing
 
@@ -35,6 +35,12 @@ vaultkey lock                    # Instant memory zeroing
 vaultkey set DB_PASS s3cret      # Encrypts and stores
 vaultkey get DB_PASS             # Decrypts and prints
 vaultkey list                    # Lists keys and versions (never values)
+vaultkey versions DB_PASS        # Full version history of a secret
+vaultkey rollback DB_PASS 3      # Restore version 3 as the current value
+vaultkey delete DB_PASS          # Soft-delete a secret
+
+# Projects
+vaultkey projects                # List projects / active scope
 
 # Advanced CLI Features
 vaultkey run -- npm start        # In-memory child process env injection
@@ -42,11 +48,18 @@ vaultkey export > .env           # Export active scope variables to dotenv
 vaultkey audit                   # Lists logs and runs a live cryptographic verify check
 ```
 
+> **WARNING - plaintext on disk:** `vaultkey export` and `vaultkey pull`
+> write decrypted secrets as **PLAINTEXT** to disk. This directly contradicts
+> VaultKey's zero-trust posture ("secrets never exist in plaintext on disk").
+> Prefer `vaultkey run -- <cmd>` or SDK injection (`inject()`), which keep
+> secrets in memory only. Use `export`/`pull` solely for controlled,
+> one-off migration scenarios and delete the file immediately afterwards.
+
 ---
 
 ## 📦 Developer SDKs
 
-### Node.js SDK
+### Node.js SDK (requires Node >= 18)
 ```typescript
 import { Vaultkey } from 'vaultkey-js';
 
@@ -60,6 +73,9 @@ const dbUri = await vk.get('DATABASE_URL');
 ```
 
 ### Python SDK
+```bash
+pip install vaultkey
+```
 ```python
 from vaultkey import Vaultkey
 
@@ -69,19 +85,58 @@ vk = Vaultkey(api_key="vk_admin.abc123xyz")
 vk.inject(project="backend", env="production")
 ```
 
+### Dart SDK
+```dart
+import 'package:vaultkey/vaultkey.dart';
+```
+
+---
+
+## ⚙️ Configuration
+
+| Variable | Scope | Description |
+| --- | --- | --- |
+| `VAULTKEY_PORT` | Server | Port override (default `8080`) |
+| `VAULTKEY_HMAC_KEY` | Server | Audit-log HMAC signing key. **Required in production**; the server refuses to boot if it matches any shipped default |
+| `VAULTKEY_ENV` | Server | `dev` or `production` (default `production`). Production rejects demo/mock credentials; dev allows them |
+| `VAULTKEY_DB_PATH` | Server | SQLite database file path |
+| `VAULTKEY_AUTO_LOCK` | Server | Idle auto-lock duration, e.g. `30m` (**ENFORCED**: the server zeroizes the master key after this idle period) |
+| `VAULTKEY_TURNSTILE_SECRET_KEY` | Server | Cloudflare Turnstile secret for bot protection |
+| `RAZORPAY_KEY_ID` / `RAZORPAY_KEY_SECRET` | Server | Razorpay billing credentials (demo/test values rejected in production) |
+| `VAULTKEY_SERVER` | CLI | VaultKey server URL |
+| `VAULTKEY_TOKEN` | CLI | Session token used by CLI/SDK requests |
+| `VAULTKEY_TIMEOUT` | CLI | Request timeout for CLI commands |
+
+See `.env.example` for a ready-made Docker deployment template.
+
 ---
 
 ## 🐳 Docker Deployment
 
 ```yaml
-version: '3.8'
 services:
   vaultkey:
-    image: ghcr.io/vaultkey/vaultkey:latest
-    ports: ["8080:8080"]
+    image: ghcr.io/chromabeast/vaultkey:latest
+    ports: ["127.0.0.1:8080:8080"]
     volumes: ["./data:/var/lib/vaultkey"]
     environment:
+      - VAULTKEY_ENV=production
       - VAULTKEY_PORT=8080
+      - VAULTKEY_DB_PATH=/var/lib/vaultkey/vaultkey.db
       - VAULTKEY_AUTO_LOCK=30m
+      # REQUIRED: the container refuses to start without it.
+      # Create a .env file next to docker-compose.yml (see .env.example):
+      #   VAULTKEY_HMAC_KEY=<64+ random chars>
+      - VAULTKEY_HMAC_KEY=${VAULTKEY_HMAC_KEY:?set VAULTKEY_HMAC_KEY in .env}
     restart: unless-stopped
 ```
+
+The bundled `docker-compose.yml` additionally ships:
+
+- **Caddy** reverse proxy (ports 80/443, automatic HTTPS via `VAULTKEY_DOMAIN`)
+- **Watchtower** auto-updates, enabled via the
+  `com.centurylinklabs.watchtower.enable=true` label on the `vaultkey`
+  service. Watchtower polls every 5 minutes and replaces the container when a
+  new image is pushed to `ghcr.io/chromabeast/vaultkey`.
+- A container healthcheck against `GET /healthz`; Caddy only starts routing
+  once the backend reports healthy.

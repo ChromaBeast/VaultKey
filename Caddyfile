@@ -1,9 +1,30 @@
-# Web UI Dashboard
-vaultkey.sheershjaiswal.in {
-    reverse_proxy vaultkey:8080
+# VaultKey reverse proxy.
+# Site address is injected from the VAULTKEY_DOMAIN env var (see .env.example);
+# docker-compose passes it into the caddy container.
+
+# Optional: set an ACME account email via ACME_EMAIL in .env by uncommenting:
+# {
+# 	email {$ACME_EMAIL}
+# }
+
+{$VAULTKEY_DOMAIN} {
+	encode zstd gzip
+
+	reverse_proxy vaultkey:8080
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Content-Security-Policy "default-src 'self'; frame-ancestors 'none'"
+		-Server
+	}
 }
 
-# API Endpoint for CLI & SDK integrations
-api.vaultkey.sheershjaiswal.in {
-    reverse_proxy vaultkey:8080
-}
+# Local development without DNS/TLS requirements:
+# comment out the block above and uncomment this one.
+#:80 {
+#	encode zstd gzip
+#	reverse_proxy vaultkey:8080
+#}

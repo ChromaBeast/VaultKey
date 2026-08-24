@@ -19,6 +19,9 @@
 *.dylib
 
 # Node / Web Build Outputs
+**/node_modules/
+sdk/node/dist/
+sdk/dart/.dart_tool/
 web/node_modules/
 web/dist/*
 !web/dist/.gitkeep
@@ -31,6 +34,7 @@ web/dist/*
 .env.development.local
 .env.test.local
 .env.production.local
+data/
 *.pem
 *.key
 

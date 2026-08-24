@@ -1,7 +1,7 @@
 # VaultKey — PRODUCT.md
 
 ## Platform
-Web application + CLI + multi-language SDKs (Node.js, Python, Go).
+Web application + CLI + multi-language SDKs (Node.js, Python, Dart).
 Adaptive: the server is Docker-deployable SaaS; the CLI runs on developer machines;
 SDKs inject secrets into process memory at runtime.
 
@@ -43,6 +43,9 @@ database row at rest that is decrypted by a long-lived service key.
 
 2. **India-first pricing via Razorpay.** ₹1,499 / month (~$19) with AutoPay (UPI,
    eNACH, card mandate). No USD billing friction for Indian engineering teams.
+   Subscription activation, renewal (via signed webhooks), and period-end expiry
+   are enforced server-side; plan changes are derived from persisted subscription
+   records, never from client-supplied fields.
 
 3. **`vaultkey run -- <cmd>` process injection.** Secrets are injected directly into
    the child process environment in memory. The parent process never writes them to
@@ -59,17 +62,28 @@ database row at rest that is decrypted by a long-lived service key.
 
 - Argon2id key derivation (time=3, memory=64MB, threads=4) — non-negotiable, in the core.
 - AES-256-GCM per-secret encryption with random 12-byte nonce prepended.
-- HMAC-SHA256 chained audit log — every entry references the previous entry's hash.
+- HMAC-SHA256 chained audit log — every entry references the previous entry's hash,
+  serialized per-org so the chain cannot fork under concurrent writes; entries carry
+  explicit prev-hash + signed-timestamp fields for stable verification.
+- Envelope-encrypted org keys: a random per-org master key is wrapped per-user with
+  each user's password-derived key, enabling real multi-user orgs and password changes
+  without re-keying. Legacy single-password vaults migrate transparently on first unlock.
 - Secret versioning with 1-click rollback.
-- Self-destructing 1-time share links (max_views, TTL expiry).
+- Self-destructing 1-time share links (max_views, TTL expiry); payloads are encrypted
+  at rest with the org master key and can only be revealed while the vault is unlocked.
 - All source files < 200 LoC — enforced as a project constraint.
 
 ## Evidence on Hand
 
 - Full zero-trust Argon2id + AES-256-GCM + memory-zeroing implementation shipped.
-- Razorpay Recurring Subscription integration (AutoPay, UPI, eNACH) production-ready.
+- Razorpay integration: one-shot orders + subscription lifecycle (create/activate/
+  cancel) with signature verification, webhook event processing, and automatic
+  period-end downgrade. Production mode refuses demo credentials and mock signatures.
 - HMAC-chained audit ledger with live verification endpoint.
-- Docker deployment, Go CLI binary, Node.js + Python SDK stubs.
+- Docker deployment (multi-stage, non-root, healthcheck), Go CLI binary,
+  Node.js + Python SDKs.
+- Team management: member invites with per-user key wrapping and role-based
+  session permissions (admin/write/read).
 - Pre-launch: no external customer logos, no case studies, no press. Do not invent any.
 
 ## Design Principles

@@ -3,14 +3,31 @@ services:
     image: ghcr.io/chromabeast/vaultkey:latest
     container_name: vaultkey
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     volumes:
       - ./data:/var/lib/vaultkey
     environment:
-      - VAULTKEY_PORT=8080
-      - VAULTKEY_DB_PATH=/var/lib/vaultkey/vaultkey.db
-      - VAULTKEY_AUTO_LOCK=30m
-      - VAULTKEY_AUDIT_SIGNING_KEY=prod-vaultkey-hmac-audit-signing-secret-key-change-me
+      VAULTKEY_ENV: production
+      VAULTKEY_PORT: "8080"
+      VAULTKEY_DB_PATH: /var/lib/vaultkey/vaultkey.db
+      VAULTKEY_AUTO_LOCK: 30m
+      VAULTKEY_HMAC_KEY: "${VAULTKEY_HMAC_KEY:?set VAULTKEY_HMAC_KEY in .env (see .env.example)}"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: vaultkey_watchtower
+    command: --label-enable --interval 300
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: unless-stopped
 
   caddy:
@@ -20,12 +37,16 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    environment:
+      VAULTKEY_DOMAIN: ${VAULTKEY_DOMAIN:-localhost}
+      ACME_EMAIL: ${ACME_EMAIL:-}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
-      - vaultkey
+      vaultkey:
+        condition: service_healthy
 
 volumes:
   caddy_data:
