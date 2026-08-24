@@ -1,16 +1,15 @@
 package main
 
 import (
-	"flag"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
 	"vaultkey/internal/client"
 )
 
-// handleRun retrieves all decrypted secrets and spawns the target child command with injected env variables in-memory.
 func handleRun() error {
-	fs := flag.NewFlagSet("run", flag.ContinueOnError)
+	fs := newFlagSet("run")
 	proj := fs.String("project", "default", "scoped project name")
 	env := fs.String("env", "production", "scoped environment")
 	if err := fs.Parse(os.Args[2:]); err != nil {
@@ -19,23 +18,18 @@ func handleRun() error {
 
 	remaining := fs.Args()
 	if len(remaining) == 0 {
-		return fmt.Errorf("missing command to execute. Usage: vaultkey run [--project=p] [--env=e] -- <cmd> [args...]")
+		return fmt.Errorf("missing command to execute\n%s", commandUsage["run"])
 	}
 
 	c := client.NewClient()
-	list, err := c.ListSecrets(*proj, *env)
+	secrets, err := c.BatchGetSecrets(*proj, *env)
 	if err != nil {
-		return fmt.Errorf("failed to fetch secrets list: %w", err)
+		return fmt.Errorf("failed to fetch secrets: %w", err)
 	}
 
-	// Copy parent environment and append decrypted secrets
 	envVars := os.Environ()
-	for _, item := range list {
-		val, err := c.GetSecret(*proj, *env, item.Key)
-		if err != nil {
-			return fmt.Errorf("failed to decrypt secret %s: %w", item.Key, err)
-		}
-		envVars = append(envVars, fmt.Sprintf("%s=%s", item.Key, val))
+	for k, v := range secrets {
+		envVars = append(envVars, fmt.Sprintf("%s=%s", k, v))
 	}
 
 	childCmd := remaining[0]
@@ -48,7 +42,11 @@ func handleRun() error {
 	cmd.Stderr = os.Stderr
 
 	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("child process exited with error: %w", err)
+		var ee *exec.ExitError
+		if errors.As(err, &ee) {
+			return &exitError{code: ee.ExitCode()}
+		}
+		return err
 	}
 	return nil
 }

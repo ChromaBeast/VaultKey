@@ -1,21 +1,22 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"os"
 	"text/tabwriter"
 	"vaultkey/internal/client"
 )
 
-// handleKeys routes subcommands for api-keys management.
 func handleKeys() error {
 	if len(os.Args) < 3 {
-		return fmt.Errorf("missing keys subcommand. Usage: vaultkey keys <create|list|revoke> [args]")
+		return fmt.Errorf("missing keys subcommand\n%s", commandUsage["keys"])
 	}
 	sub := os.Args[2]
 
 	switch sub {
+	case "-h", "--help", "help":
+		fmt.Print(commandUsage["keys"])
+		return nil
 	case "create":
 		return handleCreateKey()
 	case "list":
@@ -23,23 +24,23 @@ func handleKeys() error {
 	case "revoke":
 		return handleRevokeKey()
 	default:
-		return fmt.Errorf("unknown keys subcommand: %s", sub)
+		return fmt.Errorf("unknown keys subcommand: %s\n%s", sub, commandUsage["keys"])
 	}
 }
 
-// handleCreateKey generates and prints the newly created key credentials.
 func handleCreateKey() error {
-	fs := flag.NewFlagSet("keys create", flag.ContinueOnError)
+	fs := newFlagSet("keys create")
 	perm := fs.String("permissions", "read", "permissions: list|read|write|admin")
 	proj := fs.String("project", "", "project scope (empty for all)")
 	expiry := fs.String("expires", "", "RFC3339 expiration date (optional)")
 	if err := fs.Parse(os.Args[3:]); err != nil {
 		return err
 	}
-	if len(fs.Args()) < 1 {
-		return fmt.Errorf("missing key name. Usage: vaultkey keys create <name>")
+	args, err := requireArgs(fs, 1, 1)
+	if err != nil {
+		return err
 	}
-	name := fs.Arg(0)
+	name := args[0]
 
 	c := client.NewClient()
 	res, err := c.CreateAPIKey(name, *perm, *proj, *expiry)
@@ -47,7 +48,7 @@ func handleCreateKey() error {
 		return err
 	}
 
-	fmt.Println("✓ API Key created successfully!")
+	fmt.Println("API Key created successfully!")
 	fmt.Println("-----------------------------------------------------------------")
 	fmt.Printf("ID:          %s\n", res.ID)
 	fmt.Printf("Name:        %s\n", res.Name)
@@ -57,8 +58,15 @@ func handleCreateKey() error {
 	return nil
 }
 
-// handleListKeys prints all key records.
 func handleListKeys() error {
+	fs := newFlagSet("keys list")
+	if err := fs.Parse(os.Args[3:]); err != nil {
+		return err
+	}
+	if _, err := requireArgs(fs, 0, 0); err != nil {
+		return err
+	}
+
 	c := client.NewClient()
 	list, err := c.ListAPIKeys()
 	if err != nil {
@@ -91,16 +99,16 @@ func handleListKeys() error {
 	return nil
 }
 
-// handleRevokeKey revokes API access.
 func handleRevokeKey() error {
-	fs := flag.NewFlagSet("keys revoke", flag.ContinueOnError)
+	fs := newFlagSet("keys revoke")
 	if err := fs.Parse(os.Args[3:]); err != nil {
 		return err
 	}
-	if len(fs.Args()) < 1 {
-		return fmt.Errorf("missing key ID. Usage: vaultkey keys revoke <id>")
+	args, err := requireArgs(fs, 1, 1)
+	if err != nil {
+		return err
 	}
-	id := fs.Arg(0)
+	id := args[0]
 
 	c := client.NewClient()
 	if err := c.RevokeAPIKey(id); err != nil {

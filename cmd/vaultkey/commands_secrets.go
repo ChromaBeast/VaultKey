@@ -1,26 +1,42 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"os"
+	"strings"
+	"syscall"
 	"text/tabwriter"
 	"vaultkey/internal/client"
+
+	"golang.org/x/term"
 )
 
-// handleSet encrypts and stores a secret.
 func handleSet() error {
-	fs := flag.NewFlagSet("set", flag.ContinueOnError)
+	fs := newFlagSet("set")
 	proj := fs.String("project", "default", "scoped project name")
 	env := fs.String("env", "production", "scoped environment")
 	if err := fs.Parse(os.Args[2:]); err != nil {
 		return err
 	}
-	if len(fs.Args()) < 2 {
-		return fmt.Errorf("missing key or value. Usage: vaultkey set <key> <value>")
+	args, err := requireArgs(fs, 1, 2)
+	if err != nil {
+		return err
 	}
-	key := fs.Arg(0)
-	val := fs.Arg(1)
+	key := args[0]
+
+	var val string
+	if len(args) == 2 {
+		val = args[1]
+	} else {
+		fmt.Printf("Enter value for %s: ", key)
+		byteValue, err := term.ReadPassword(int(syscall.Stdin))
+		if err != nil {
+			return fmt.Errorf("failed to read value: %w", err)
+		}
+		fmt.Println()
+		val = strings.TrimRight(string(byteValue), "\r\n")
+		clear(byteValue)
+	}
 
 	c := client.NewClient()
 	if err := c.SetSecret(*proj, *env, key, val); err != nil {
@@ -30,12 +46,14 @@ func handleSet() error {
 	return nil
 }
 
-// handleList lists all secret metadata in a tabular format.
 func handleList() error {
-	fs := flag.NewFlagSet("list", flag.ContinueOnError)
+	fs := newFlagSet("list")
 	proj := fs.String("project", "default", "scoped project name")
 	env := fs.String("env", "production", "scoped environment")
 	if err := fs.Parse(os.Args[2:]); err != nil {
+		return err
+	}
+	if _, err := requireArgs(fs, 0, 0); err != nil {
 		return err
 	}
 
@@ -59,72 +77,27 @@ func handleList() error {
 	return nil
 }
 
-// handleExport dumps secrets to a dotenv file format structure.
 func handleExport() error {
-	fs := flag.NewFlagSet("export", flag.ContinueOnError)
+	fs := newFlagSet("export")
 	proj := fs.String("project", "default", "scoped project name")
 	env := fs.String("env", "production", "scoped environment")
 	format := fs.String("format", "dotenv", "export format (dotenv)")
 	if err := fs.Parse(os.Args[2:]); err != nil {
 		return err
 	}
+	if _, err := requireArgs(fs, 0, 0); err != nil {
+		return err
+	}
+	if *format != "dotenv" {
+		return fmt.Errorf("unsupported export format %q: only \"dotenv\" is supported\n%s", *format, commandUsage["export"])
+	}
 
 	c := client.NewClient()
-	list, err := c.ListSecrets(*proj, *env)
+	secrets, err := c.BatchGetSecrets(*proj, *env)
 	if err != nil {
 		return err
 	}
 
-	for _, item := range list {
-		val, err := c.GetSecret(*proj, *env, item.Key)
-		if err != nil {
-			return err
-		}
-		if *format == "dotenv" {
-			fmt.Printf("%s=%s\n", item.Key, val)
-		}
-	}
-	return nil
-}
-
-// handleAudit retrieves log entries and prints verification stats.
-func handleAudit() error {
-	c := client.NewClient()
-
-	logs, err := c.ListAuditLogs(50, 0)
-	if err != nil {
-		return err
-	}
-
-	if len(logs) == 0 {
-		fmt.Println("No audit entries logged.")
-		return nil
-	}
-
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
-	fmt.Fprintln(w, "ACTION\tACTOR\tSECRET KEY\tPROJECT\tTIMESTAMP")
-	for _, e := range logs {
-		sKey := "-"
-		if e.SecretKey != nil {
-			sKey = *e.SecretKey
-		}
-		proj := "-"
-		if e.Project != nil {
-			proj = *e.Project
-		}
-
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n", e.Action, e.Actor, sKey, proj, e.CreatedAt.Format("2006-01-02 15:04:05"))
-	}
-	w.Flush()
-
-	// Verify whole signature chain
-	verified, count, err := c.VerifyAuditChain()
-	if err != nil {
-		fmt.Printf("\n[WARNING] Audit chain verification failed: %v\n", err)
-	} else if verified {
-		fmt.Printf("\n✓ Chained HMAC signature integrity verified across all %d entries.\n", count)
-	} else {
-		fmt.Println("\n❌ WARNING: Audit signature chain validation failed! Tampering detected!")
-	}
+	fmt.Print(formatDotenv(secrets))
 	return nil
 }

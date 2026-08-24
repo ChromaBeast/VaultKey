@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"os"
@@ -11,26 +12,79 @@ import (
 	"golang.org/x/term"
 )
 
-// handleUnlock prompts for password without echo and calls the API to derive keys in memory.
+type exitError struct{ code int }
+
+func (e *exitError) Error() string {
+	return fmt.Sprintf("child process exited with code %d", e.code)
+}
+
+func newFlagSet(name string) *flag.FlagSet {
+	fs := flag.NewFlagSet(name, flag.ContinueOnError)
+	fs.Usage = func() { fmt.Fprint(os.Stderr, commandUsage[name]) }
+	return fs
+}
+
+func requireArgs(fs *flag.FlagSet, min, max int) ([]string, error) {
+	args := fs.Args()
+	if len(args) < min || (max >= 0 && len(args) > max) {
+		return nil, fmt.Errorf("expected %s positional argument(s), got %d\n%s", argRange(min, max), len(args), commandUsage[fs.Name()])
+	}
+	return args, nil
+}
+
+func argRange(min, max int) string {
+	if max < 0 {
+		return fmt.Sprintf("at least %d", min)
+	}
+	if min == max {
+		return fmt.Sprintf("exactly %d", min)
+	}
+	return fmt.Sprintf("%d to %d", min, max)
+}
+
 func handleUnlock() error {
-	fmt.Print("Enter master password: ")
+	fs := newFlagSet("unlock")
+	if err := fs.Parse(os.Args[2:]); err != nil {
+		return err
+	}
+	if _, err := requireArgs(fs, 0, 0); err != nil {
+		return err
+	}
+
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Email: ")
+	emailLine, err := reader.ReadString('\n')
+	if err != nil && emailLine == "" {
+		return fmt.Errorf("failed to read email: %w", err)
+	}
+	email := strings.TrimRight(emailLine, "\r\n")
+
+	fmt.Print("Master password: ")
 	bytePassword, err := term.ReadPassword(int(syscall.Stdin))
 	if err != nil {
 		return fmt.Errorf("failed to read password: %w", err)
 	}
 	fmt.Println()
-	password := strings.TrimSpace(string(bytePassword))
+	password := strings.TrimRight(string(bytePassword), "\r\n")
+	clear(bytePassword)
 
 	c := client.NewClient()
-	if err := c.Unlock(password); err != nil {
+	if err := c.Unlock(email, password); err != nil {
 		return err
 	}
 	fmt.Println("Vault unlocked successfully.")
 	return nil
 }
 
-// handleLock zeroes out the in-memory keys.
 func handleLock() error {
+	fs := newFlagSet("lock")
+	if err := fs.Parse(os.Args[2:]); err != nil {
+		return err
+	}
+	if _, err := requireArgs(fs, 0, 0); err != nil {
+		return err
+	}
+
 	c := client.NewClient()
 	if err := c.Lock(); err != nil {
 		return err
@@ -39,8 +93,15 @@ func handleLock() error {
 	return nil
 }
 
-// handleStatus prints locking state and server version details.
 func handleStatus() error {
+	fs := newFlagSet("status")
+	if err := fs.Parse(os.Args[2:]); err != nil {
+		return err
+	}
+	if _, err := requireArgs(fs, 0, 0); err != nil {
+		return err
+	}
+
 	c := client.NewClient()
 	locked, version, err := c.Status()
 	if err != nil {
@@ -55,18 +116,18 @@ func handleStatus() error {
 	return nil
 }
 
-// handleGet retrieves and prints a single decrypted secret.
 func handleGet() error {
-	fs := flag.NewFlagSet("get", flag.ContinueOnError)
+	fs := newFlagSet("get")
 	proj := fs.String("project", "default", "scoped project name")
 	env := fs.String("env", "production", "scoped environment")
 	if err := fs.Parse(os.Args[2:]); err != nil {
 		return err
 	}
-	if len(fs.Args()) < 1 {
-		return fmt.Errorf("missing key name. Usage: vaultkey get <key>")
+	args, err := requireArgs(fs, 1, 1)
+	if err != nil {
+		return err
 	}
-	key := fs.Arg(0)
+	key := args[0]
 
 	c := client.NewClient()
 	val, err := c.GetSecret(*proj, *env, key)
