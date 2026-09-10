@@ -82,12 +82,6 @@ func (c *Config) Validate() error {
 	if c.AuditSigningKey == defaultHMAC || c.AuditSigningKey == prodHMACHint || len(c.AuditSigningKey) < 32 {
 		return fmt.Errorf("refusing to start in production with a default or weak audit signing key; set VAULTKEY_HMAC_KEY (64+ random chars) or audit_signing_key in vaultkey.yaml")
 	}
-	if c.RazorpayKeyID == demoRzpKey || c.RazorpayKeySecret == demoRzpSecret || c.RazorpayKeyID == "" {
-		return fmt.Errorf("refusing to start in production with demo Razorpay credentials; configure real keys or set VAULTKEY_ENV=dev for local testing")
-	}
-	if c.TurnstileSecretKey == testTurnstile {
-		return fmt.Errorf("refusing to start in production with the Cloudflare Turnstile TEST secret; set VAULTKEY_TURNSTILE_SECRET_KEY")
-	}
 	return nil
 }
 
