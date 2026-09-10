@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { KeyRound } from 'lucide-react';
 
@@ -9,6 +9,7 @@ export const LandingHeader: React.FC = () => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
+    handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -20,8 +21,11 @@ export const LandingHeader: React.FC = () => {
         top: 0,
         zIndex: 100,
         width: '100%',
+        height: '56px',
+        boxSizing: 'border-box',
         background: scrolled ? 'rgba(8, 10, 15, 0.85)' : 'transparent',
         backdropFilter: scrolled ? 'blur(10px)' : 'none',
+        WebkitBackdropFilter: scrolled ? 'blur(10px)' : 'none',
         borderBottom: `1px solid ${scrolled ? 'var(--vk-border)' : 'transparent'}`,
         transition: 'background var(--duration-fast) ease, border-color var(--duration-fast) ease',
       }}
@@ -29,8 +33,9 @@ export const LandingHeader: React.FC = () => {
       <div
         style={{
           maxWidth: '1240px',
+          height: '100%',
           margin: '0 auto',
-          padding: '14px 24px',
+          padding: '0 24px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -65,7 +70,7 @@ export const LandingHeader: React.FC = () => {
           <a href="#security" style={{ fontSize: '0.825rem', color: 'var(--vk-text-secondary)', fontWeight: 500 }}>
             Security
           </a>
-          <a href="#devex" style={{ fontSize: '0.825rem', color: 'var(--vk-text-secondary)', fontWeight: 500 }}>
+          <a href="#developers" style={{ fontSize: '0.825rem', color: 'var(--vk-text-secondary)', fontWeight: 500 }}>
             Developers
           </a>
           <a href="#pricing" style={{ fontSize: '0.825rem', color: 'var(--vk-text-secondary)', fontWeight: 500 }}>
