@@ -1,6 +1,4 @@
-/* VaultKey Main Stylesheet */
-@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@600,700,800&f[]=general-sans@400,500,600,700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import './styles/fonts.css';
 
 @import './styles/tokens.css';
 @import './styles/base.css';
