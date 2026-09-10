@@ -48,7 +48,7 @@ export const StatCard: React.FC<StatCardProps> = ({
         <div style={{ fontSize: '0.8rem', color: '#94a3b8', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
           {title}
         </div>
-        <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#f8fafc', fontFamily: 'Outfit, sans-serif', marginTop: '2px' }}>
+        <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#f8fafc', fontFamily: "'Cabinet Grotesk', 'Plus Jakarta Sans', sans-serif", marginTop: '2px' }}>
           {value}
         </div>
         {subtitle && (

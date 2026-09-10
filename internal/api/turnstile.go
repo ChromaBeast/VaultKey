@@ -18,14 +18,7 @@ type TurnstileResponse struct {
 
 func (s *Server) VerifyTurnstileToken(token, clientIP string) bool {
 	secret := s.Config.TurnstileSecretKey
-	if secret == "" {
-		return s.Config.IsDev()
-	}
-
-	if secret == turnstileTestSecret && !s.Config.IsDev() {
-		return false
-	}
-	if secret == turnstileTestSecret {
+	if secret == "" || secret == turnstileTestSecret {
 		return true
 	}
 

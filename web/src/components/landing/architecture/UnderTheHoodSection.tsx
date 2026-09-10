@@ -38,19 +38,6 @@ export const UnderTheHoodSection: React.FC = () => {
           }}
         >
           <div>
-            <div
-              style={{
-                fontSize: '0.72rem',
-                fontFamily: 'JetBrains Mono, monospace',
-                color: '#5ee7ff',
-                letterSpacing: '0.08em',
-                fontWeight: 700,
-                textTransform: 'uppercase',
-                marginBottom: '8px',
-              }}
-            >
-              UNDER THE HOOD
-            </div>
             <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f5f7fa', margin: 0 }}>
               Engineered for simplicity and data sovereignty.
             </h3>

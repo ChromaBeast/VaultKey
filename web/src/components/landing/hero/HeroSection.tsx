@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { HeroProductMockup } from './HeroProductMockup';
 
@@ -18,34 +18,6 @@ export const HeroSection: React.FC = () => {
       >
         {/* Left: Value Proposition */}
         <div>
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              background: 'var(--vk-accent-dim)',
-              border: '1px solid rgba(115, 230, 255, 0.25)',
-              padding: '5px 12px',
-              borderRadius: '999px',
-              fontSize: '0.72rem',
-              color: 'var(--vk-accent)',
-              fontWeight: 600,
-              fontFamily: 'JetBrains Mono, monospace',
-              letterSpacing: '0.04em',
-              marginBottom: '20px',
-            }}
-          >
-            <span
-              style={{
-                width: '6px',
-                height: '6px',
-                borderRadius: '50%',
-                background: 'var(--vk-accent)',
-              }}
-            />
-            SECRETS MANAGEMENT FOR ENGINEERING TEAMS
-          </div>
-
           <h1
             style={{
               fontSize: 'clamp(2.4rem, 4.2vw, 3.6rem)',

@@ -51,7 +51,7 @@ One accent family. Do not introduce secondary accents without a documented reaso
 
 | Role | Font | Weight | Notes |
 |---|---|---|---|
-| Display / Headings (h1–h5) | `Outfit, sans-serif` | 800 / 700 | Letter-spacing: `-0.025em` |
+| Display / Headings (h1–h5) | `Cabinet Grotesk, Plus Jakarta Sans, sans-serif` | 800 / 700 | Letter-spacing: `-0.03em` |
 | UI Body / Labels | `Inter, sans-serif` | 500 / 400 | Line-height: 1.5 |
 | Code / Secrets / Hashes | `JetBrains Mono, monospace` | 600 / 500 | Used for secret keys, version tags, API key strings, audit hashes |
 | Badge text | `JetBrains Mono` | 600 | `text-transform: uppercase; letter-spacing: 0.04em` |

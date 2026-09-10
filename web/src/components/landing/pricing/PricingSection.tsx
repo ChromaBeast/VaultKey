@@ -96,19 +96,6 @@ export const PricingSection: React.FC = () => {
       </div>
 
       <div style={{ maxWidth: '680px', marginBottom: '40px' }}>
-        <div
-          style={{
-            fontSize: '0.72rem',
-            fontFamily: 'JetBrains Mono, monospace',
-            color: '#5ee7ff',
-            letterSpacing: '0.08em',
-            fontWeight: 700,
-            textTransform: 'uppercase',
-            marginBottom: '12px',
-          }}
-        >
-          PREDICTABLE PRICING
-        </div>
         <h2
           style={{
             fontSize: 'clamp(1.8rem, 3.2vw, 2.5rem)',

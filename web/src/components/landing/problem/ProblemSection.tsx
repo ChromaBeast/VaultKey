@@ -11,19 +11,6 @@ export const ProblemSection: React.FC = () => {
       }}
     >
       <div style={{ maxWidth: '680px', marginBottom: '40px' }}>
-        <div
-          style={{
-            fontSize: '0.72rem',
-            fontFamily: 'JetBrains Mono, monospace',
-            color: '#f87171',
-            letterSpacing: '0.08em',
-            fontWeight: 700,
-            textTransform: 'uppercase',
-            marginBottom: '12px',
-          }}
-        >
-          THE SCATTERED REALITY
-        </div>
         <h2
           style={{
             fontSize: 'clamp(1.8rem, 3.2vw, 2.5rem)',

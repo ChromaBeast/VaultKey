@@ -13,19 +13,6 @@ export const SecurityArchitectureSec: React.FC = () => {
       }}
     >
       <div style={{ maxWidth: '680px', marginBottom: '32px' }}>
-        <div
-          style={{
-            fontSize: '0.72rem',
-            fontFamily: 'JetBrains Mono, monospace',
-            color: '#818cf8',
-            letterSpacing: '0.08em',
-            fontWeight: 700,
-            textTransform: 'uppercase',
-            marginBottom: '12px',
-          }}
-        >
-          CRYPTOGRAPHIC DESIGN
-        </div>
         <h2
           style={{
             fontSize: 'clamp(1.8rem, 3.2vw, 2.5rem)',

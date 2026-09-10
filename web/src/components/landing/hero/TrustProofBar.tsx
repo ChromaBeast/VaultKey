@@ -40,16 +40,7 @@ export const TrustProofBar: React.FC = () => {
       >
         {PILLARS.map((pillar) => (
           <div key={pillar.title} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span
-                style={{
-                  width: '6px',
-                  height: '6px',
-                  borderRadius: '50%',
-                  background: '#5ee7ff',
-                  boxShadow: '0 0 8px rgba(94, 231, 255, 0.6)',
-                }}
-              />
+            <div>
               <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#f5f7fa' }}>
                 {pillar.title}
               </span>
