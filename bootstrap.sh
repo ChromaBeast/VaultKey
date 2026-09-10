@@ -91,9 +91,16 @@ if [ ! -f /opt/vaultkey/.env ]; then
   else
     HMAC_KEY="$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')"
   fi
-  printf 'VAULTKEY_HMAC_KEY=%s\n' "$HMAC_KEY" > /opt/vaultkey/.env
+  cat << 'EOF' > /opt/vaultkey/.env
+VAULTKEY_HMAC_KEY=PLACEHOLDER
+EMAIL_PROVIDER=brevo
+BREVO_API_KEY=
+EMAIL_FROM=vaultkey-support@sheershjaiswal.in
+EMAIL_FROM_NAME="VaultKey Support"
+EOF
+  sed -i "s/VAULTKEY_HMAC_KEY=PLACEHOLDER/VAULTKEY_HMAC_KEY=$HMAC_KEY/" /opt/vaultkey/.env
   chmod 600 /opt/vaultkey/.env
-  echo "  [OK] Generated /opt/vaultkey/.env with a random audit signing key"
+  echo "  [OK] Generated /opt/vaultkey/.env with audit signing key & email config"
 fi
 
 # 6. Pull images and start all containers

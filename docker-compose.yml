@@ -15,6 +15,10 @@ services:
       VAULTKEY_TRUSTED_PROXIES: "127.0.0.1"
       VAULTKEY_DOMAIN: "${VAULTKEY_DOMAIN:-localhost}"
       VAULTKEY_ALLOWED_ORIGINS: "${VAULTKEY_ALLOWED_ORIGINS:-}"
+      EMAIL_PROVIDER: "${EMAIL_PROVIDER:-brevo}"
+      BREVO_API_KEY: "${BREVO_API_KEY:-}"
+      EMAIL_FROM: "${EMAIL_FROM:-}"
+      EMAIL_FROM_NAME: "${EMAIL_FROM_NAME:-VaultKey Security}"
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/healthz"]
       interval: 30s

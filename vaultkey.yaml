@@ -13,3 +13,9 @@ razorpay_plan_pro_id:
 razorpay_plan_enterprise_id:
 max_login_attempts: 5
 lockout_duration: 5m
+email:
+  provider: brevo
+  from_email: vaultkey-support@sheershjaiswal.in
+  from_name: "VaultKey Support"
+  brevo_api_key:
+

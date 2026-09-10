@@ -8,6 +8,7 @@ import (
 	"time"
 	"vaultkey/internal/config"
 	"vaultkey/internal/db"
+	"vaultkey/internal/email"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -20,6 +21,7 @@ type Server struct {
 	App          *fiber.App
 	DB           *db.DB
 	Config       *config.Config
+	Email        email.Service
 	WebFS        embed.FS
 	ActiveMutex  sync.Mutex
 	lastActivity map[string]time.Time
@@ -46,6 +48,7 @@ func NewServer(cfg *config.Config, database *db.DB, webFS embed.FS) *Server {
 		App:          app,
 		DB:           database,
 		Config:       cfg,
+		Email:        email.NewService(cfg.Email),
 		WebFS:        webFS,
 		lastActivity: map[string]time.Time{},
 		stopAutoLock: make(chan struct{}),
@@ -90,6 +93,9 @@ func (s *Server) setupRoutes() {
 
 	v1.Post("/auth/signup", authLimiter, s.handleSignup)
 	v1.Post("/auth/login", authLimiter, s.handleLogin)
+	v1.Post("/auth/forgot-password", authLimiter, s.handleForgotPassword)
+	v1.Post("/auth/verify-otp", authLimiter, s.handleVerifyOTP)
+	v1.Post("/auth/reset-password", authLimiter, s.handleResetPassword)
 	v1.Post("/vault/unlock", authLimiter, s.handleUnlock)
 	v1.Get("/invites/details", s.handleGetInviteDetails)
 	v1.Post("/auth/accept-invite", authLimiter, s.handleAcceptInvite)

@@ -41,3 +41,28 @@ func TestConfigExplicitAllowedOriginsOverride(t *testing.T) {
 		t.Fatalf("expected explicit AllowedOrigins override, got %q", cfg.AllowedOrigins)
 	}
 }
+
+func TestConfigEmailBrevoEnv(t *testing.T) {
+	os.Setenv("BREVO_API_KEY", "xkeysib-test-12345")
+	os.Setenv("EMAIL_FROM", "auth@test.com")
+	defer func() {
+		os.Unsetenv("BREVO_API_KEY")
+		os.Unsetenv("EMAIL_FROM")
+	}()
+
+	cfg := Default()
+	if err := applyEnv(cfg); err != nil {
+		t.Fatalf("applyEnv failed: %v", err)
+	}
+
+	if cfg.Email.Provider != "brevo" {
+		t.Fatalf("expected provider to be brevo, got %q", cfg.Email.Provider)
+	}
+	if cfg.Email.BrevoAPIKey != "xkeysib-test-12345" {
+		t.Fatalf("expected BrevoAPIKey to be set, got %q", cfg.Email.BrevoAPIKey)
+	}
+	if cfg.Email.FromEmail != "auth@test.com" {
+		t.Fatalf("expected FromEmail to be auth@test.com, got %q", cfg.Email.FromEmail)
+	}
+}
+

@@ -1,9 +1,9 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { KeyRound, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import type { Org, User } from '../lib/api';
 import { apiFetch } from '../lib/api';
+import { AuthSplitLayout } from '../components/auth/AuthSplitLayout';
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -36,116 +36,94 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="animate-fade" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px 16px', background: 'var(--vk-bg)' }}>
-      <div className="glass" style={{ width: '100%', maxWidth: '420px', padding: '36px 32px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-          <div
-            style={{
-              width: '44px',
-              height: '44px',
-              margin: '0 auto 14px',
-              borderRadius: 'var(--radius-sm)',
-              background: 'linear-gradient(135deg, rgba(115, 230, 255, 0.2) 0%, rgba(139, 124, 255, 0.2) 100%)',
-              border: '1px solid rgba(115, 230, 255, 0.35)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <KeyRound size={20} color="var(--vk-accent)" />
-          </div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--vk-text)', letterSpacing: '-0.02em' }}>
-            Sign in to your vault
-          </h1>
-          <p style={{ color: 'var(--vk-text-muted)', fontSize: '0.825rem', marginTop: '4px' }}>
-            Enter your credentials to derive your team master key
-          </p>
-        </div>
-
-        {error && (
-          <div
-            style={{
-              background: 'var(--vk-danger-dim)',
-              border: '1px solid rgba(255, 107, 122, 0.3)',
-              color: 'var(--vk-danger)',
-              padding: '10px 14px',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: '0.8rem',
-              marginBottom: '20px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-            }}
-          >
-            <AlertTriangle size={14} style={{ flexShrink: 0 }} />
-            <span>{error}</span>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div>
-            <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'var(--vk-text-secondary)', marginBottom: '5px' }}>
-              Work Email
-            </label>
-            <input
-              type="email"
-              required
-              className="input"
-              placeholder="engineer@company.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoComplete="email"
-            />
-          </div>
-
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
-              <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--vk-text-secondary)' }}>
-                Master Password
-              </label>
-            </div>
-            <input
-              type="password"
-              required
-              className="input"
-              placeholder="••••••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn btn-primary"
-            style={{
-              marginTop: '8px',
-              justifyContent: 'center',
-              padding: '11px',
-              fontSize: '0.875rem',
-            }}
-          >
-            {loading ? 'Deriving Key...' : 'Sign In →'}
-          </button>
-        </form>
-
-        <div style={{ textAlign: 'center', marginTop: '24px', paddingTop: '20px', borderTop: '1px solid var(--vk-border)' }}>
-          <span style={{ fontSize: '0.825rem', color: 'var(--vk-text-muted)' }}>
-            New to VaultKey?{' '}
-          </span>
+    <AuthSplitLayout
+      title="Sign in to your vault"
+      subtitle="Enter your credentials to derive your team master key in memory"
+      error={error}
+      footer={
+        <>
+          Don&apos;t have an account?{' '}
           <Link
             to="/signup"
             style={{
               color: 'var(--vk-accent)',
               fontWeight: 600,
-              fontSize: '0.825rem',
+              textDecoration: 'none',
             }}
           >
             Create your vault
           </Link>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div>
+          <label
+            htmlFor="login-email"
+            style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'var(--vk-text-secondary)', marginBottom: '6px' }}
+          >
+            Work Email
+          </label>
+          <input
+            id="login-email"
+            type="email"
+            required
+            className="input"
+            placeholder="engineer@company.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
+          />
         </div>
-      </div>
-    </div>
+
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+            <label
+              htmlFor="login-password"
+              style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--vk-text-secondary)' }}
+            >
+              Master Password
+            </label>
+            <Link
+              to="/forgot-password"
+              style={{
+                fontSize: '0.78rem',
+                color: 'var(--vk-accent)',
+                fontWeight: 500,
+                textDecoration: 'none',
+              }}
+            >
+              Forgot password?
+            </Link>
+          </div>
+          <input
+            id="login-password"
+            type="password"
+            required
+            className="input"
+            placeholder="••••••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="btn btn-primary"
+          style={{
+            marginTop: '8px',
+            width: '100%',
+            justifyContent: 'center',
+            padding: '12px',
+            fontSize: '0.9rem',
+            fontWeight: 600,
+          }}
+        >
+          {loading ? 'Deriving Key...' : 'Log in'}
+        </button>
+      </form>
+    </AuthSplitLayout>
   );
 };

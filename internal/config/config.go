@@ -31,8 +31,9 @@ type Config struct {
 	AllowedOrigins        string `yaml:"allowed_origins"`
 	TurnstileSecretKey    string `yaml:"turnstile_secret_key"`
 	TrustedProxies        string `yaml:"trusted_proxies"`
-	MaxLoginAttempts      int    `yaml:"max_login_attempts"`
-	LockoutDuration       string `yaml:"lockout_duration"`
+	MaxLoginAttempts      int         `yaml:"max_login_attempts"`
+	LockoutDuration       string      `yaml:"lockout_duration"`
+	Email                 EmailConfig `yaml:"email"`
 
 	Environment string `yaml:"-"`
 }
@@ -51,6 +52,7 @@ func Default() *Config {
 		TurnstileSecretKey: testTurnstile,
 		MaxLoginAttempts:   5,
 		LockoutDuration:    "5m",
+		Email:              DefaultEmailConfig(),
 		Environment:        "production",
 	}
 }
@@ -86,6 +88,7 @@ func (c *Config) Validate() error {
 }
 
 func Load(path string) (*Config, error) {
+	LoadDotEnv(".env")
 	cfg := Default()
 
 	if path == "" {
@@ -161,6 +164,7 @@ func applyEnv(cfg *Config) error {
 	if v := os.Getenv("VAULTKEY_TRUSTED_PROXIES"); v != "" {
 		cfg.TrustedProxies = v
 	}
+	ApplyEmailEnv(&cfg.Email)
 	return nil
 }
 

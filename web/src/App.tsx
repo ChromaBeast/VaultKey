@@ -9,6 +9,7 @@ import { ToastHost } from './components/Toast';
 import { LandingPage } from './pages/LandingPage';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { SecretsPage } from './pages/SecretsPage';
 import { ApiKeysPage } from './pages/ApiKeysPage';
 import { AuditPage } from './pages/AuditPage';
@@ -30,6 +31,8 @@ export const App: React.FC = () => {
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ForgotPasswordPage />} />
             <Route path="/accept-invite" element={<AcceptInvitePage />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/share/:shareId" element={<SharePageWrapper />} />
