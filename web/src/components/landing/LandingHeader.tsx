@@ -64,14 +64,14 @@ export const LandingHeader: React.FC = () => {
 
         {/* Center Nav */}
         <nav style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-          <a href="#product" style={{ fontSize: '0.825rem', color: 'var(--vk-text-secondary)', fontWeight: 500 }}>
-            Product
+          <a href="#architecture" style={{ fontSize: '0.825rem', color: 'var(--vk-text-secondary)', fontWeight: 500 }}>
+            Architecture
           </a>
-          <a href="#security" style={{ fontSize: '0.825rem', color: 'var(--vk-text-secondary)', fontWeight: 500 }}>
-            Security
+          <a href="#workflow" style={{ fontSize: '0.825rem', color: 'var(--vk-text-secondary)', fontWeight: 500 }}>
+            CLI & Workflows
           </a>
-          <a href="#developers" style={{ fontSize: '0.825rem', color: 'var(--vk-text-secondary)', fontWeight: 500 }}>
-            Developers
+          <a href="#comparison" style={{ fontSize: '0.825rem', color: 'var(--vk-text-secondary)', fontWeight: 500 }}>
+            Comparison
           </a>
           <a href="#pricing" style={{ fontSize: '0.825rem', color: 'var(--vk-text-secondary)', fontWeight: 500 }}>
             Pricing
@@ -94,7 +94,7 @@ export const LandingHeader: React.FC = () => {
             className="btn btn-primary"
             style={{ fontSize: '0.8rem', padding: '7px 14px' }}
           >
-            Get started →
+            Deploy VaultKey
           </Link>
         </div>
       </div>

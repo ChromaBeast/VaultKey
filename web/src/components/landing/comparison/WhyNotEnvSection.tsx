@@ -1,36 +1,49 @@
-import React from 'react';
+﻿import React from 'react';
 import { ComparisonTable } from './ComparisonTable';
-import { PositioningCards } from './PositioningCards';
 
 export const WhyNotEnvSection: React.FC = () => {
   return (
     <section
+      id="comparison"
       style={{
         maxWidth: '1200px',
         margin: '100px auto 0',
         padding: '0 24px',
       }}
     >
-      <div style={{ maxWidth: '680px', marginBottom: '36px' }}>
+      <div style={{ maxWidth: '720px', marginBottom: '36px' }}>
+        <span
+          style={{
+            fontSize: '0.75rem',
+            fontFamily: 'var(--font-mono)',
+            color: '#6366f1',
+            letterSpacing: '0.08em',
+            fontWeight: 700,
+            textTransform: 'uppercase',
+          }}
+        >
+          Tooling Comparison
+        </span>
         <h2
           style={{
-            fontSize: 'clamp(1.8rem, 3.2vw, 2.5rem)',
+            fontSize: 'clamp(1.8rem, 3.2vw, 2.4rem)',
             fontWeight: 800,
             letterSpacing: '-0.025em',
             color: '#f5f7fa',
-            lineHeight: 1.18,
+            lineHeight: 1.2,
+            marginTop: '8px',
             marginBottom: '16px',
           }}
         >
-          .env files were never designed for teams.
+          Built for teams that outgrew .env but don't need cluster ops.
         </h2>
-        <p style={{ color: '#8b93a3', fontSize: '0.95rem', lineHeight: 1.65 }}>
-          Traditional .env files create accidental leaks, zero auditability, and manual synchronization headaches. VaultKey bridges the gap between fragile text files and overly complex enterprise infrastructure.
+        <p style={{ color: '#8b93a3', fontSize: '0.95rem', lineHeight: 1.65, margin: 0 }}>
+          Plain .env files leak secrets to disk and git history. Enterprise tools like HashiCorp Vault require dedicated cluster infrastructure.
+          VaultKey delivers zero-knowledge encryption and RAM injection with zero operational overhead.
         </p>
       </div>
 
       <ComparisonTable />
-      <PositioningCards />
     </section>
   );
 };

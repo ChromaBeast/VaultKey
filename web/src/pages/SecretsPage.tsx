@@ -11,7 +11,7 @@ import {
   updateSecretValue,
 } from '../lib/api';
 import { pushToast } from '../lib/toast';
-import { BentoGridMetrics } from '../components/BentoGridMetrics';
+
 import { SecretsHeaderBar } from '../components/SecretsHeaderBar';
 import { SecretsTable } from '../components/SecretsTable';
 import { SecretsModals, type ModalTarget } from '../components/SecretsModals';
@@ -143,8 +143,6 @@ export const SecretsPage: React.FC = () => {
         onOpenGenerator={() => setGenOpen(true)}
         onCreateSecret={() => setModalTarget({ mode: 'create', initialKey: '', initialValue: '' })}
       />
-
-      <BentoGridMetrics totalSecrets={secrets.length} activeProject={project} projectCount={projects.length} />
 
       <SecretsTable
         secrets={secrets}

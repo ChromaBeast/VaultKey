@@ -28,8 +28,8 @@ export const HeroSection: React.FC = () => {
               marginBottom: '18px',
             }}
           >
-            Keep secrets <br />
-            <span style={{ color: 'var(--vk-accent)' }}>out of code.</span>
+            Secrets in runtime memory. <br />
+            <span style={{ color: 'var(--vk-accent)' }}>Never on disk.</span>
           </h1>
 
           <p
@@ -38,45 +38,48 @@ export const HeroSection: React.FC = () => {
               color: 'var(--vk-text-secondary)',
               lineHeight: 1.6,
               marginBottom: '28px',
-              maxWidth: '460px',
+              maxWidth: '480px',
             }}
           >
-            VaultKey gives engineering teams a secure place for API keys, credentials,
-            environment secrets, and machine access — with scoped permissions, version history,
-            and an auditable access trail.
+            A single-binary secrets engine for engineering teams.
+            Inject encrypted credentials directly into process memory via Argon2id and AES-256-GCM.
+            Zero cloud dependencies, embedded SQLite, and an immutable HMAC audit ledger.
           </p>
 
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
             <Link
               to="/signup"
               className="btn btn-primary"
-              style={{ padding: '11px 22px', fontSize: '0.88rem' }}
+              style={{ padding: '10px 20px', fontSize: '0.88rem' }}
             >
-              Get started free →
+              Get Started
             </Link>
             <a
-              href="#security"
+              href="#architecture"
               className="btn btn-secondary"
-              style={{ padding: '11px 18px', fontSize: '0.88rem' }}
+              style={{ padding: '10px 18px', fontSize: '0.88rem' }}
             >
-              Explore security
+              View Architecture
             </a>
           </div>
 
           <div
             style={{
-              marginTop: '28px',
-              display: 'flex',
-              gap: '16px',
-              fontSize: '0.75rem',
-              color: 'var(--vk-text-muted)',
+              marginTop: '22px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px',
+              background: 'var(--vk-surface-1)',
+              border: '1px solid var(--vk-border)',
+              borderRadius: 'var(--radius-sm)',
+              padding: '7px 14px',
+              fontSize: '0.78rem',
               fontFamily: 'JetBrains Mono, monospace',
-              flexWrap: 'wrap',
+              color: 'var(--vk-text-secondary)',
             }}
           >
-            <span>• No credit card</span>
-            <span>• CLI-first</span>
-            <span>• Built for developers</span>
+            <span style={{ color: 'var(--vk-accent)', fontWeight: 700 }}>$</span>
+            <span>curl -sSL https://vaultkey.sh/install | sh</span>
           </div>
         </div>
 

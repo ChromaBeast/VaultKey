@@ -1,14 +1,10 @@
-import React, { useEffect } from 'react';
+﻿import React, { useEffect } from 'react';
 import { LandingHeader } from '../components/landing/LandingHeader';
 import { HeroSection } from '../components/landing/hero/HeroSection';
 import { TrustProofBar } from '../components/landing/hero/TrustProofBar';
-import { ProblemSection } from '../components/landing/problem/ProblemSection';
-import { ProductOverviewSection } from '../components/landing/product/ProductOverviewSection';
-import { ProductShowcaseSection } from '../components/landing/showcase/ProductShowcaseSection';
-import { SecurityArchitectureSec } from '../components/landing/security/SecurityArchitectureSec';
+import { ArchitectureSection } from '../components/landing/architecture/ArchitectureSection';
 import { DevExperienceSection } from '../components/landing/devex/DevExperienceSection';
 import { WhyNotEnvSection } from '../components/landing/comparison/WhyNotEnvSection';
-import { UnderTheHoodSection } from '../components/landing/architecture/UnderTheHoodSection';
 import { PricingSection } from '../components/landing/pricing/PricingSection';
 import { FaqSection } from '../components/landing/faq/FaqSection';
 import { FinalCtaSection } from '../components/landing/cta/FinalCtaSection';
@@ -37,13 +33,9 @@ export const LandingPage: React.FC = () => {
       <main>
         <HeroSection />
         <TrustProofBar />
-        <ProblemSection />
-        <ProductOverviewSection />
-        <ProductShowcaseSection />
-        <SecurityArchitectureSec />
+        <ArchitectureSection />
         <DevExperienceSection />
         <WhyNotEnvSection />
-        <UnderTheHoodSection />
         <PricingSection />
         <FaqSection />
         <FinalCtaSection />

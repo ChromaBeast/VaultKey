@@ -1,10 +1,9 @@
 ﻿import React, { useState } from 'react';
-import { KeyRound, ShieldCheck, Zap, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import type { APIKeyItem } from '../lib/api';
 import { apiFetch, errorMessage } from '../lib/api';
 import { pushToast } from '../lib/toast';
-import { StatCard } from '../components/StatCard';
 import { TableSkeleton } from '../components/Skeletons';
 import { CreateApiKeyModal } from '../components/CreateApiKeyModal';
 import { TokenCreatedModal } from '../components/TokenCreatedModal';
@@ -92,6 +91,11 @@ export const ApiKeysPage: React.FC = () => {
         breadcrumb="MACHINE ACCESS"
         title="API Keys"
         description="Scoped credentials for CLI, GitHub Actions CI/CD pipelines, and SDK integrations."
+        badge={
+          <span className="badge badge-read" style={{ fontSize: '0.72rem' }}>
+            {org?.plan === 'pro' ? 'Pro Plan: Unlimited' : `Quota: ${activeKeys.length} / 2 active tokens`}
+          </span>
+        }
         actions={
           <button onClick={() => setModalOpen(true)} className="btn btn-primary">
             <Plus size={14} /> Create API Key
@@ -99,13 +103,7 @@ export const ApiKeysPage: React.FC = () => {
         }
       />
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px', marginBottom: '24px' }}>
-        <StatCard icon={<Zap size={18} />} title="Active Tokens" value={activeKeys.length} subtitle="Scoped access" accentColor="var(--vk-success)" />
-        <StatCard icon={<KeyRound size={18} />} title="Plan Quota" value={org?.plan === 'pro' ? 'Unlimited' : `${activeKeys.length} / 2`} subtitle="Current Tier Limit" accentColor="var(--vk-accent)" />
-        <StatCard icon={<ShieldCheck size={18} />} title="Security Model" value="HMAC-SHA256" subtitle="Cryptographically Hashed" accentColor="var(--vk-accent-secondary)" />
-      </div>
-
-      <div className="table-wrap glass">
+      <div className="table-wrap glass" style={{ marginTop: '20px' }}>
         <table>
           <thead>
             <tr>

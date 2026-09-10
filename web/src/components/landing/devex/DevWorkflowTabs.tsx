@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 
 type WorkflowTab = 'cli' | 'docker' | 'ci' | 'sdk';
 
@@ -6,17 +6,17 @@ const CODE_SNIPPETS: Record<WorkflowTab, { title: string; lang: string; code: st
   cli: {
     title: 'Local CLI Injection',
     lang: 'bash',
-    code: `# Run your app with secrets injected directly into process memory
+    code: `# Launch process with secrets injected directly into RAM
 $ vaultkey run --env=production -- npm start
 
-✓ Authenticated as sheersh
-✓ Vault unlocked in RAM
-✓ 14 production secrets injected
-✓ Application started (PID: 8192)`,
-    note: 'Zero disk writes. The moment npm exit is called, injected env vars disappear from memory.',
+[vaultkey] Authenticated as operator
+[vaultkey] Derived master key via Argon2id
+[vaultkey] Decrypted 14 secrets into locked memory
+[vaultkey] Spawned child process (PID: 8192)`,
+    note: 'Zero disk writes. Decrypted environment variables are zeroed upon process exit.',
   },
   docker: {
-    title: 'Docker & Container Runtimes',
+    title: 'Docker Runtimes',
     lang: 'yaml',
     code: `version: '3.8'
 services:
@@ -26,10 +26,10 @@ services:
       - VAULTKEY_TOKEN=\${VK_PROD_TOKEN}
       - VAULTKEY_ENV=production
     entrypoint: ["vaultkey", "run", "--", "node", "dist/index.js"]`,
-    note: 'Eliminate hardcoded secrets in Dockerfiles or staging images.',
+    note: 'Eliminate plaintext secrets in container images or volume mounts.',
   },
   ci: {
-    title: 'GitHub Actions / CI Pipelines',
+    title: 'CI / CD Workflows',
     lang: 'yaml',
     code: `name: Deploy Production
 jobs:
@@ -43,10 +43,10 @@ jobs:
           token: \${{ secrets.VK_CI_TOKEN }}
           env: production
       - run: npm run build`,
-    note: 'No need to manually sync 50 different GitHub repo secret settings.',
+    note: 'Avoid synchronizing and rotating static secrets across multiple repository settings.',
   },
   sdk: {
-    title: 'Native Go & TypeScript SDKs',
+    title: 'Programmatic API',
     lang: 'typescript',
     code: `import { VaultKeyClient } from '@vaultkey/sdk';
 
@@ -55,9 +55,9 @@ const vk = new VaultKeyClient({
   endpoint: 'https://vault.internal:8080'
 });
 
-// Fetch or rotate secrets at runtime
+// Decrypt and fetch dynamic database credentials at runtime
 const dbUrl = await vk.getSecret('DATABASE_URL');`,
-    note: 'For high-availability microservices requiring live secret polling & rotation.',
+    note: 'Designed for microservices requiring runtime credential polling and automated rotation.',
   },
 };
 
@@ -71,7 +71,7 @@ export const DevWorkflowTabs: React.FC = () => {
       style={{
         background: '#090c14',
         border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '16px',
+        borderRadius: '14px',
         overflow: 'hidden',
         boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5)',
       }}
@@ -94,15 +94,15 @@ export const DevWorkflowTabs: React.FC = () => {
               key={t}
               onClick={() => setTab(t)}
               style={{
-                background: tab === t ? 'rgba(94, 231, 255, 0.12)' : 'transparent',
-                border: tab === t ? '1px solid rgba(94, 231, 255, 0.3)' : '1px solid transparent',
-                color: tab === t ? '#5ee7ff' : '#8b93a3',
+                background: tab === t ? 'rgba(99, 102, 241, 0.15)' : 'transparent',
+                border: tab === t ? '1px solid rgba(99, 102, 241, 0.35)' : '1px solid transparent',
+                color: tab === t ? '#818cf8' : '#8b93a3',
                 fontSize: '0.78rem',
                 fontWeight: 600,
                 padding: '6px 14px',
                 borderRadius: '6px',
                 cursor: 'pointer',
-                fontFamily: 'JetBrains Mono, monospace',
+                fontFamily: 'var(--font-mono)',
                 textTransform: 'uppercase',
               }}
             >
@@ -110,7 +110,7 @@ export const DevWorkflowTabs: React.FC = () => {
             </button>
           ))}
         </div>
-        <span style={{ fontSize: '0.72rem', color: '#8b93a3', fontFamily: 'JetBrains Mono, monospace' }}>
+        <span style={{ fontSize: '0.72rem', color: '#8b93a3', fontFamily: 'var(--font-mono)' }}>
           {current.title}
         </span>
       </div>
@@ -119,7 +119,7 @@ export const DevWorkflowTabs: React.FC = () => {
         <pre
           style={{
             margin: 0,
-            fontFamily: 'JetBrains Mono, monospace',
+            fontFamily: 'var(--font-mono)',
             fontSize: '0.82rem',
             lineHeight: 1.6,
             color: '#f5f7fa',
@@ -137,9 +137,10 @@ export const DevWorkflowTabs: React.FC = () => {
           background: 'rgba(0, 0, 0, 0.25)',
           fontSize: '0.78rem',
           color: '#8b93a3',
+          fontFamily: 'var(--font-mono)',
         }}
       >
-        ⚡ {current.note}
+        NOTE: {current.note}
       </div>
     </div>
   );

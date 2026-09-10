@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 
 interface SecretRow {
   name: string;
@@ -47,19 +47,17 @@ export const HeroProductMockup: React.FC = () => {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ff6b7a', display: 'inline-block' }} />
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#f4c76a', display: 'inline-block' }} />
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#43d39e', display: 'inline-block' }} />
-            <span style={{ marginLeft: '8px', fontSize: '0.8rem', fontWeight: 700, color: 'var(--vk-text)' }}>
-              VaultKey Core
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--vk-success)', display: 'inline-block' }} />
+            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--vk-text)', fontFamily: 'JetBrains Mono, monospace' }}>
+              vaultkey-core v1.2.0
             </span>
-            <span className="badge badge-read" style={{ fontSize: '0.65rem' }}>
-              production
+            <span style={{ color: 'var(--vk-text-muted)', fontSize: '0.75rem' }}>·</span>
+            <span style={{ fontSize: '0.72rem', color: 'var(--vk-text-secondary)', fontFamily: 'JetBrains Mono, monospace' }}>
+              env: production
             </span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.725rem', color: 'var(--vk-success)', fontFamily: 'monospace' }}>
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--vk-success)', display: 'inline-block' }} />
-            AES-256-GCM
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem', color: 'var(--vk-text-muted)', fontFamily: 'JetBrains Mono, monospace' }}>
+            cipher: AES-256-GCM
           </div>
         </div>
 

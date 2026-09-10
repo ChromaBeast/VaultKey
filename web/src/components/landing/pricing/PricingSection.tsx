@@ -1,54 +1,54 @@
-import React from 'react';
+﻿import React from 'react';
 import { PricingCard, type PlanProps } from './PricingCard';
 
 const PLANS: PlanProps[] = [
   {
     id: 'free',
-    name: 'Free',
+    name: 'Developer (Self-Hosted)',
     price: '$0',
     period: '/forever',
-    desc: 'For individual developers and small side projects.',
+    desc: 'Full open-source engine. Deploy as a single binary on any VPS or local machine.',
     features: [
-      '25 secrets across 3 environments',
-      '2 machine API access tokens',
-      '7-day audit logs',
-      'CLI & Docker injection',
+      'Unlimited secrets on local/self-hosted instance',
+      'RAM-only execution via vaultkey CLI',
+      'Argon2id + AES-256-GCM zero-knowledge encryption',
+      'HMAC-SHA256 chained audit logs',
+      'Embedded SQLite in WAL mode',
     ],
-    ctaText: 'Start Free →',
-    ctaLink: '/signup',
+    ctaText: 'View Open Source Docs',
+    ctaLink: '/docs',
     highlighted: false,
   },
   {
     id: 'pro',
-    name: 'Pro Team',
+    name: 'Team Cloud',
     price: '$19',
     period: '/month',
-    desc: 'For engineering teams requiring unified credentials & access controls.',
+    desc: 'Managed cloud instance for engineering teams with centralized RBAC and audit sync.',
     features: [
-      'Unlimited secrets & environments',
-      'Team role-based access control (RBAC)',
-      '90-day HMAC audit ledger',
-      'Advanced CI/CD integrations',
-      '1-Time self-destruct share links',
+      'Managed cloud infrastructure & automated backups',
+      'Team role-based access control (Admin / Dev / CI)',
+      '90-day HMAC audit ledger retention',
+      'Ephemeral 1-time self-destruct secret share links',
+      'Priority GitHub & Slack support',
     ],
-    ctaText: 'Start 14-day trial →',
+    ctaText: 'Start 14-Day Free Trial',
     ctaLink: '/signup',
     highlighted: true,
-    badge: 'MOST POPULAR',
   },
   {
     id: 'enterprise',
     name: 'Enterprise',
-    price: "Let's talk",
-    desc: 'For teams requiring dedicated infrastructure and strict compliance.',
+    price: 'Custom',
+    desc: 'Dedicated single-tenant infrastructure, custom SLA, and SOC2 / HIPAA readiness.',
     features: [
-      'Dedicated isolated VPS deployment',
-      'SAML SSO & Okta directory sync',
-      'Unlimited audit retention',
-      '99.99% uptime SLA',
-      'Enterprise priority support',
+      'Dedicated VPC or air-gapped on-prem deployment',
+      'SAML 2.0 / Okta / OIDC directory synchronization',
+      'Unlimited audit log retention to custom S3/GCS bucket',
+      '99.99% uptime guarantee SLA',
+      'Dedicated security engineer support',
     ],
-    ctaText: 'Talk to us →',
+    ctaText: 'Contact Engineering',
     ctaLink: 'mailto:sheersh@vaultkey.dev?subject=VaultKey%20Enterprise%20Inquiry',
     highlighted: false,
   },
@@ -64,56 +64,38 @@ export const PricingSection: React.FC = () => {
         padding: '0 24px',
       }}
     >
-      {/* Security Trust Strip */}
-      <div
-        style={{
-          padding: '16px 24px',
-          background: 'rgba(94, 231, 255, 0.04)',
-          border: '1px solid rgba(94, 231, 255, 0.15)',
-          borderRadius: '12px',
-          marginBottom: '56px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '16px',
-          fontSize: '0.8rem',
-          color: '#cbd5e1',
-          fontFamily: 'JetBrains Mono, monospace',
-        }}
-      >
-        <span>AES-256-GCM</span>
-        <span>•</span>
-        <span>Argon2id</span>
-        <span>•</span>
-        <span>Audit logs</span>
-        <span>•</span>
-        <span>Self-hostable</span>
-        <span>•</span>
-        <span>CLI-first</span>
-        <span>•</span>
-        <span>Zero-knowledge</span>
-      </div>
-
-      <div style={{ maxWidth: '680px', marginBottom: '40px' }}>
+      <div style={{ maxWidth: '720px', marginBottom: '40px' }}>
+        <span
+          style={{
+            fontSize: '0.75rem',
+            fontFamily: 'var(--font-mono)',
+            color: '#6366f1',
+            letterSpacing: '0.08em',
+            fontWeight: 700,
+            textTransform: 'uppercase',
+          }}
+        >
+          Pricing
+        </span>
         <h2
           style={{
-            fontSize: 'clamp(1.8rem, 3.2vw, 2.5rem)',
+            fontSize: 'clamp(1.8rem, 3.2vw, 2.4rem)',
             fontWeight: 800,
             letterSpacing: '-0.025em',
             color: '#f5f7fa',
-            lineHeight: 1.18,
+            lineHeight: 1.2,
+            marginTop: '8px',
             marginBottom: '16px',
           }}
         >
-          Start small. Scale securely.
+          Self-host for free. Upgrade when your team grows.
         </h2>
-        <p style={{ color: '#8b93a3', fontSize: '0.95rem', lineHeight: 1.65 }}>
-          Simple, honest pricing for developers and engineering teams. No hidden user fees or infrastructure surprises.
+        <p style={{ color: '#8b93a3', fontSize: '0.95rem', lineHeight: 1.65, margin: 0 }}>
+          VaultKey is open-core. Run it yourself with zero telemetry and full data sovereignty, or let us manage uptime, team RBAC, and backups.
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
         {PLANS.map((plan) => (
           <PricingCard key={plan.id} plan={plan} />
         ))}

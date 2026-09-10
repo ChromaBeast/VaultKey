@@ -1,9 +1,8 @@
 ﻿import React, { useEffect, useState } from 'react';
-import { ShieldCheck, ScrollText, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { CheckCircle2, AlertTriangle } from 'lucide-react';
 import type { AuditItem } from '../lib/api';
 import { apiFetch, buildQuery, errorMessage } from '../lib/api';
 import { pushToast } from '../lib/toast';
-import { StatCard } from '../components/StatCard';
 import { TableSkeleton } from '../components/Skeletons';
 import { AuditPaginationBar } from '../components/AuditPaginationBar';
 import { PageHeader } from '../components/ui/PageHeader';
@@ -84,6 +83,11 @@ export const AuditPage: React.FC = () => {
         breadcrumb="SECURITY OBSERVABILITY"
         title="Audit Ledger"
         description="Append-only cryptographic HMAC-SHA256 chained audit entries guarantee immutable log integrity."
+        badge={
+          <span className="badge badge-read" style={{ fontSize: '0.72rem' }}>
+            HMAC-SHA256 Chained
+          </span>
+        }
         actions={
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             {chain === 'valid' && (
@@ -113,12 +117,6 @@ export const AuditPage: React.FC = () => {
           </button>
         </div>
       )}
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px', marginBottom: '20px' }}>
-        <StatCard icon={<ScrollText size={18} />} title="Total Events" value={logs.length} subtitle="Recorded entries" accentColor="var(--vk-accent)" />
-        <StatCard icon={<ShieldCheck size={18} />} title="Ledger Architecture" value="HMAC-SHA256" subtitle="Cryptographically chained" accentColor="var(--vk-accent-secondary)" />
-        <StatCard icon={<ShieldCheck size={18} />} title="Cryptographic Status" value={chain === 'checking' ? 'Verifying' : chain === 'valid' ? 'Valid' : 'Tampered'} subtitle="Zero-trust audit" accentColor={chain === 'valid' ? 'var(--vk-success)' : chain === 'tampered' ? 'var(--vk-danger)' : 'var(--vk-text-muted)'} />
-      </div>
 
       <AuditPaginationBar
         actionFilter={actionFilter}

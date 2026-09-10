@@ -1,21 +1,25 @@
 import React from 'react';
 
-const PILLARS = [
+const SPECS = [
   {
-    title: 'Zero-Knowledge',
-    desc: 'Plaintext secrets live in RAM during injection and never touch disk.',
+    label: 'CIPHER & DERIVATION',
+    value: 'AES-256-GCM · Argon2id',
+    desc: '64MB memory cost, zero-knowledge client derivation.',
   },
   {
-    title: 'Self-Hostable',
-    desc: 'Single static Go binary with embedded SQLite. Zero external database required.',
+    label: 'DEPLOYMENT BINARY',
+    value: 'Go Static (~18MB)',
+    desc: 'Embedded SQLite in WAL mode. Zero external dependencies.',
   },
   {
-    title: 'CLI-First',
-    desc: 'Inject secrets into npm, Docker, Python, or CI workflows in one command.',
+    label: 'INJECTION MODEL',
+    value: 'RAM-Only Pipeline',
+    desc: 'Direct process execution via execve. Zero plaintext on disk.',
   },
   {
-    title: 'Audit-Ready',
-    desc: 'Every access and rotation verified via a tamper-evident HMAC-SHA256 chain.',
+    label: 'LEDGER INTEGRITY',
+    value: 'HMAC-SHA256 Chain',
+    desc: 'Tamper-evident verification sequence for audit logs.',
   },
 ];
 
@@ -38,15 +42,24 @@ export const TrustProofBar: React.FC = () => {
           padding: '28px 0',
         }}
       >
-        {PILLARS.map((pillar) => (
-          <div key={pillar.title} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <div>
-              <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#f5f7fa' }}>
-                {pillar.title}
-              </span>
-            </div>
-            <p style={{ fontSize: '0.8rem', color: '#8b93a3', lineHeight: 1.5, margin: 0 }}>
-              {pillar.desc}
+        {SPECS.map((spec) => (
+          <div key={spec.label} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <span
+              style={{
+                fontSize: '0.7rem',
+                fontFamily: 'var(--font-mono)',
+                color: '#6366f1',
+                letterSpacing: '0.08em',
+                fontWeight: 600,
+              }}
+            >
+              {spec.label}
+            </span>
+            <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#f5f7fa' }}>
+              {spec.value}
+            </span>
+            <p style={{ fontSize: '0.8rem', color: '#8b93a3', lineHeight: 1.4, margin: 0 }}>
+              {spec.desc}
             </p>
           </div>
         ))}
