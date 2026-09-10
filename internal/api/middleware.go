@@ -88,7 +88,7 @@ func (s *Server) SecurityHeadersMiddleware() fiber.Handler {
 		c.Set("X-Content-Type-Options", "nosniff")
 		c.Set("Referrer-Policy", "strict-origin-when-cross-origin")
 		c.Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
-		c.Set("Content-Security-Policy", "default-src 'self'; script-src 'self' https://checkout.razorpay.com https://challenges.cloudflare.com; frame-src https://api.razorpay.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://api.razorpay.com https://lumberjack.razorpay.com;")
+		c.Set("Content-Security-Policy", "default-src 'self'; script-src 'self' https://checkout.razorpay.com https://challenges.cloudflare.com; frame-src https://api.razorpay.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://api.fontshare.com https://fonts.googleapis.com; font-src 'self' data: https://cdn.fontshare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.razorpay.com https://lumberjack.razorpay.com;")
 		return c.Next()
 	}
 }
