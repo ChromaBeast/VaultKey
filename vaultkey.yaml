@@ -15,7 +15,7 @@ max_login_attempts: 5
 lockout_duration: 5m
 email:
   provider: brevo
-  from_email: vaultkey-support@sheershjaiswal.in
+  from_email: support@vaultkeymail.sheershjaiswal.in
   from_name: "VaultKey Support"
   brevo_api_key:
 

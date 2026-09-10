@@ -95,7 +95,7 @@ if [ ! -f /opt/vaultkey/.env ]; then
 VAULTKEY_HMAC_KEY=PLACEHOLDER
 EMAIL_PROVIDER=brevo
 BREVO_API_KEY=
-EMAIL_FROM=vaultkey-support@sheershjaiswal.in
+EMAIL_FROM=support@vaultkeymail.sheershjaiswal.in
 EMAIL_FROM_NAME="VaultKey Support"
 EOF
   sed -i "s/VAULTKEY_HMAC_KEY=PLACEHOLDER/VAULTKEY_HMAC_KEY=$HMAC_KEY/" /opt/vaultkey/.env
