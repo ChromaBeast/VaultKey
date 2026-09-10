@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Menu } from 'lucide-react';
+import { Menu, Command } from 'lucide-react';
 import { Sidebar } from './Sidebar';
 import { CommandPaletteModal } from './CommandPaletteModal';
-import { CMD_OPEN_EVENT } from '../lib/events';
+import { CMD_OPEN_EVENT, openCommandPalette } from '../lib/events';
 
 export const AppLayout: React.FC = () => {
   const [cmdOpen, setCmdOpen] = useState(false);
@@ -26,7 +26,7 @@ export const AppLayout: React.FC = () => {
   }, []);
 
   return (
-    <div className={navOpen ? 'nav-open' : ''} style={{ display: 'flex', minHeight: '100vh', background: '#0b0e14' }}>
+    <div className={navOpen ? 'nav-open' : ''} style={{ display: 'flex', minHeight: '100vh', background: 'var(--vk-bg)' }}>
       <Sidebar mobileOpen={navOpen} onMobileClose={() => setNavOpen(false)} />
       {navOpen && (
         <button
@@ -36,18 +36,29 @@ export const AppLayout: React.FC = () => {
           onClick={() => setNavOpen(false)}
         />
       )}
-      <main className="app-main" style={{ flex: 1, padding: '16px 24px 60px 8px', overflowX: 'hidden' }}>
-        <div style={{ marginBottom: '8px' }}>
+      <main className="app-main" style={{ flex: 1, padding: '20px 32px 64px 12px', overflowX: 'hidden' }}>
+        <div style={{ marginBottom: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <button
             type="button"
             className="btn btn-secondary app-hamburger"
             aria-label="Toggle navigation"
             onClick={() => setNavOpen((o) => !o)}
           >
-            <Menu size={17} /> Menu
+            <Menu size={16} /> Menu
+          </button>
+          <button
+            type="button"
+            onClick={openCommandPalette}
+            className="btn btn-secondary app-hamburger"
+            aria-label="Open command palette"
+            style={{ padding: '6px 10px' }}
+          >
+            <Command size={14} />
           </button>
         </div>
-        <Outlet />
+        <div style={{ maxWidth: '1360px', margin: '0 auto' }}>
+          <Outlet />
+        </div>
       </main>
       {cmdOpen && <CommandPaletteModal isOpen onClose={() => setCmdOpen(false)} />}
     </div>

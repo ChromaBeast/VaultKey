@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { changePassword, errorMessage } from '../../lib/api';
 import { pushToast } from '../../lib/toast';
 
@@ -23,7 +23,7 @@ export const PasswordChangeForm: React.FC = () => {
     setSubmitting(true);
     try {
       await changePassword(currentPassword, newPassword);
-      pushToast('Password updated', 'success');
+      pushToast('Password updated & master key re-wrapped', 'success');
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
@@ -35,13 +35,13 @@ export const PasswordChangeForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={(e) => void handleSubmit(e)} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+    <form onSubmit={(e) => void handleSubmit(e)} style={{ display: 'flex', flexDirection: 'column', gap: '14px', maxWidth: '480px' }}>
       <div>
         <label htmlFor="current-password" style={labelStyle}>Current Password</label>
         <input id="current-password" type="password" className="input" required autoComplete="current-password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
       </div>
       <div>
-        <label htmlFor="new-password" style={labelStyle}>New Password</label>
+        <label htmlFor="new-password" style={labelStyle}>New Password (min. 8 characters)</label>
         <input id="new-password" type="password" className="input" required minLength={8} autoComplete="new-password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
       </div>
       <div>
@@ -50,13 +50,13 @@ export const PasswordChangeForm: React.FC = () => {
       </div>
 
       {error && (
-        <div role="alert" style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#f87171', padding: '10px 14px', borderRadius: '10px', fontSize: '0.85rem' }}>
+        <div role="alert" style={{ background: 'var(--vk-danger-dim)', border: '1px solid rgba(255, 107, 122, 0.3)', color: 'var(--vk-danger)', padding: '8px 12px', borderRadius: 'var(--radius-sm)', fontSize: '0.8rem' }}>
           {error}
         </div>
       )}
 
-      <button type="submit" className="btn btn-primary" disabled={submitting} style={{ alignSelf: 'flex-start' }}>
-        {submitting ? 'Updating...' : 'Change Password'}
+      <button type="submit" className="btn btn-primary" disabled={submitting} style={{ alignSelf: 'flex-start', marginTop: '4px' }}>
+        {submitting ? 'Re-wrapping Key...' : 'Update Password'}
       </button>
     </form>
   );
@@ -64,8 +64,8 @@ export const PasswordChangeForm: React.FC = () => {
 
 const labelStyle: React.CSSProperties = {
   display: 'block',
-  fontSize: '0.8rem',
+  fontSize: '0.75rem',
   fontWeight: 600,
-  color: '#cbd5e1',
-  marginBottom: '6px',
+  color: 'var(--vk-text-secondary)',
+  marginBottom: '5px',
 };

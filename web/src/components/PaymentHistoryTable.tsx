@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import type { PaymentRecord } from '../types/payment';
 
 interface PaymentHistoryTableProps {
@@ -8,7 +8,7 @@ interface PaymentHistoryTableProps {
 export const PaymentHistoryTable: React.FC<PaymentHistoryTableProps> = ({ payments }) => {
   if (!payments || payments.length === 0) {
     return (
-      <div style={{ textAlign: 'center', padding: '24px', color: '#64748b', fontSize: '0.9rem' }}>
+      <div style={{ textAlign: 'center', padding: '32px 16px', color: 'var(--vk-text-muted)', fontSize: '0.85rem' }}>
         No payment transactions recorded yet.
       </div>
     );
@@ -20,56 +20,43 @@ export const PaymentHistoryTable: React.FC<PaymentHistoryTableProps> = ({ paymen
   };
 
   return (
-    <div style={{ overflowX: 'auto', marginTop: '24px' }}>
-      <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
+    <div className="table-wrap glass">
+      <table>
         <thead>
-          <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#94a3b8' }}>
-            <th style={{ padding: '12px 16px' }}>Date</th>
-            <th style={{ padding: '12px 16px' }}>Order ID</th>
-            <th style={{ padding: '12px 16px' }}>Plan</th>
-            <th style={{ padding: '12px 16px' }}>Amount</th>
-            <th style={{ padding: '12px 16px' }}>Status</th>
+          <tr>
+            <th>DATE</th>
+            <th>ORDER ID</th>
+            <th>PLAN</th>
+            <th>AMOUNT</th>
+            <th style={{ textAlign: 'right' }}>STATUS</th>
           </tr>
         </thead>
         <tbody>
-          {payments.map((item) => (
-            <tr key={item.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', color: '#f8fafc' }}>
-              <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
-                {new Date(item.created_at).toLocaleDateString()}
-              </td>
-              <td style={{ padding: '12px 16px', fontFamily: 'monospace', color: '#818cf8' }}>
-                {item.razorpay_order_id}
-              </td>
-              <td style={{ padding: '12px 16px', textTransform: 'capitalize' }}>{item.plan}</td>
-              <td style={{ padding: '12px 16px', fontWeight: 600 }}>{formatAmount(item.amount, item.currency)}</td>
-              <td style={{ padding: '12px 16px' }}>
-                <span
-                  style={{
-                    display: 'inline-block',
-                    padding: '2px 10px',
-                    borderRadius: '999px',
-                    fontSize: '0.75rem',
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    background:
-                      item.status === 'paid'
-                        ? 'rgba(34, 197, 94, 0.2)'
-                        : item.status === 'failed'
-                        ? 'rgba(239, 68, 68, 0.2)'
-                        : 'rgba(234, 179, 8, 0.2)',
-                    color:
-                      item.status === 'paid'
-                        ? '#4ade80'
-                        : item.status === 'failed'
-                        ? '#f87171'
-                        : '#facc15',
-                  }}
-                >
-                  {item.status}
-                </span>
-              </td>
-            </tr>
-          ))}
+          {payments.map((item) => {
+            const isPaid = item.status === 'paid';
+            const isFailed = item.status === 'failed';
+            return (
+              <tr key={item.id}>
+                <td style={{ color: 'var(--vk-text-secondary)', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
+                  {new Date(item.created_at).toLocaleDateString()}
+                </td>
+                <td className="code-font" style={{ fontSize: '0.8rem', color: 'var(--vk-accent)' }}>
+                  {item.razorpay_order_id}
+                </td>
+                <td style={{ textTransform: 'capitalize', fontSize: '0.85rem', fontWeight: 500, color: 'var(--vk-text)' }}>
+                  {item.plan}
+                </td>
+                <td style={{ fontWeight: 600, color: 'var(--vk-text)', fontSize: '0.875rem' }}>
+                  {formatAmount(item.amount, item.currency)}
+                </td>
+                <td style={{ textAlign: 'right' }}>
+                  <span className={isPaid ? 'badge badge-write' : isFailed ? 'badge badge-danger' : 'badge badge-admin'}>
+                    {item.status}
+                  </span>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

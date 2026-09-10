@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   BookOpen,
@@ -38,17 +38,19 @@ export const Sidebar: React.FC<{ mobileOpen: boolean; onMobileClose: () => void 
     <aside
       className="glass app-sidebar"
       style={{
-        width: '220px',
+        width: '224px',
         height: 'calc(100vh - 32px)',
         position: 'sticky',
         top: '16px',
         margin: '16px',
-        padding: '18px 12px',
+        padding: '16px 10px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        borderRadius: '16px',
+        borderRadius: 'var(--radius-lg)',
         flexShrink: 0,
+        background: 'var(--vk-surface-1)',
+        border: '1px solid var(--vk-border)',
       }}
     >
       <div>
@@ -57,31 +59,31 @@ export const Sidebar: React.FC<{ mobileOpen: boolean; onMobileClose: () => void 
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
-            padding: '4px 8px 18px',
-            borderBottom: '1px solid rgba(255,255,255,0.07)',
+            padding: '4px 8px 14px',
+            borderBottom: '1px solid var(--vk-border)',
             marginBottom: '14px',
           }}
         >
           <div
             style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+              width: '28px',
+              height: '28px',
+              borderRadius: 'var(--radius-sm)',
+              background: 'linear-gradient(135deg, rgba(115, 230, 255, 0.2) 0%, rgba(139, 124, 255, 0.2) 100%)',
+              border: '1px solid rgba(115, 230, 255, 0.3)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 4px 10px rgba(99, 102, 246, 0.35)',
               flexShrink: 0,
             }}
           >
-            <KeyRound size={15} color="#fff" />
+            <KeyRound size={14} color="var(--vk-accent)" />
           </div>
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <span
                 className="brand-text"
-                style={{ fontSize: '1.1rem', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.02em' }}
+                style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--vk-text)', letterSpacing: '-0.02em' }}
               >
                 VaultKey
               </span>
@@ -91,13 +93,11 @@ export const Sidebar: React.FC<{ mobileOpen: boolean; onMobileClose: () => void 
                   style={{
                     fontSize: '0.55rem',
                     fontWeight: 700,
-                    background: 'rgba(99, 102, 241, 0.18)',
-                    color: '#818cf8',
+                    background: 'var(--vk-accent-dim)',
+                    color: 'var(--vk-accent)',
                     padding: '2px 5px',
                     borderRadius: '4px',
-                    textTransform: 'uppercase',
-                    border: '1px solid rgba(99, 102, 241, 0.3)',
-                    letterSpacing: '0.05em',
+                    border: '1px solid rgba(115, 230, 255, 0.3)',
                   }}
                 >
                   PRO
@@ -105,9 +105,9 @@ export const Sidebar: React.FC<{ mobileOpen: boolean; onMobileClose: () => void 
               )}
             </div>
             {org && (
-              <span style={{ fontSize: '0.72rem', color: '#94a3b8', fontWeight: 500 }}>
+              <div style={{ fontSize: '0.72rem', color: 'var(--vk-text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {org.name}
-              </span>
+              </div>
             )}
           </div>
           <button
@@ -118,7 +118,7 @@ export const Sidebar: React.FC<{ mobileOpen: boolean; onMobileClose: () => void 
             style={{
               background: 'transparent',
               border: 'none',
-              color: '#94a3b8',
+              color: 'var(--vk-text-muted)',
               cursor: 'pointer',
               display: mobileOpen ? 'inline-flex' : 'none',
               padding: '2px',
@@ -138,13 +138,16 @@ export const Sidebar: React.FC<{ mobileOpen: boolean; onMobileClose: () => void 
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px',
-                padding: '9px 10px',
-                borderRadius: '8px',
-                fontSize: '0.85rem',
+                padding: '8px 10px',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: '0.825rem',
                 fontWeight: isActive ? 600 : 400,
-                background: isActive ? 'rgba(255, 255, 255, 0.07)' : 'transparent',
-                color: isActive ? '#f8fafc' : '#94a3b8',
-                border: `1px solid ${isActive ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}`,
+                background: isActive ? 'var(--vk-surface-2)' : 'transparent',
+                color: isActive ? 'var(--vk-text)' : 'var(--vk-text-secondary)',
+                borderLeft: isActive ? '2px solid var(--vk-accent)' : '2px solid transparent',
+                borderTop: '1px solid transparent',
+                borderRight: '1px solid transparent',
+                borderBottom: '1px solid transparent',
               })}
             >
               <item.icon size={15} style={{ opacity: 0.85, minWidth: '18px' }} />

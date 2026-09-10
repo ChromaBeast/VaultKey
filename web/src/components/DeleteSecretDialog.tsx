@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import type { SecretItem } from '../lib/api';
 import { deleteSecret, errorMessage } from '../lib/api';
 import { pushToast } from '../lib/toast';
@@ -37,8 +37,8 @@ export const DeleteSecretDialog: React.FC<DeleteSecretDialogProps> = ({
   return (
     <ConfirmDialog
       isOpen={item !== null}
-      title="Delete secret?"
-      message={`This permanently removes ${item?.key ?? ''} from project "${project}". The deletion is recorded in the audit ledger.`}
+      title="Permanently delete secret?"
+      message={`This permanently destroys secret "${item?.key ?? ''}" from environment "${project}". The deletion is irreversibly logged into the cryptographic audit ledger.`}
       confirmLabel="Delete Secret"
       danger
       loading={deleting}

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Dices } from 'lucide-react';
+﻿import React, { useState } from 'react';
+import { Dices, Check, Copy } from 'lucide-react';
 import { Modal } from './ui/Modal';
 import { useClipboard } from '../hooks/useClipboard';
 
@@ -9,10 +9,13 @@ interface GeneratorProps {
   onUseSecret: (secret: string) => void;
 }
 
-const generateSecret = (length: number, numbers: boolean, symbols: boolean): string => {
-  let chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const generateSecret = (length: number, uppercase: boolean, lowercase: boolean, numbers: boolean, symbols: boolean): string => {
+  let chars = '';
+  if (uppercase) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if (lowercase) chars += 'abcdefghijklmnopqrstuvwxyz';
   if (numbers) chars += '0123456789';
   if (symbols) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+  if (!chars) chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
   const array = new Uint32Array(length);
   window.crypto.getRandomValues(array);
@@ -25,84 +28,100 @@ const generateSecret = (length: number, numbers: boolean, symbols: boolean): str
 
 export const SecretGeneratorModal: React.FC<GeneratorProps> = ({ isOpen, onClose, onUseSecret }) => {
   const [length, setLength] = useState(32);
+  const [useUpper, setUseUpper] = useState(true);
+  const [useLower, setUseLower] = useState(true);
   const [useSymbols, setUseSymbols] = useState(true);
   const [useNumbers, setUseNumbers] = useState(true);
-  const [secret, setSecret] = useState(() => generateSecret(32, true, true));
+  const [secret, setSecret] = useState(() => generateSecret(32, true, true, true, true));
   const { copied, copy } = useClipboard();
 
   const generate = () => {
-    setSecret(generateSecret(length, useNumbers, useSymbols));
+    setSecret(generateSecret(length, useUpper, useLower, useNumbers, useSymbols));
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} width={440}>
-      <div style={{ padding: '32px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#f8fafc' }}>High-Entropy Generator</h3>
-          <button onClick={onClose} aria-label="Close generator" style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}>
-            x
+    <Modal isOpen={isOpen} onClose={onClose} width={460}>
+      <div style={{ padding: '24px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+          <div>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--vk-text)' }}>High-Entropy Generator</h3>
+            <p style={{ fontSize: '0.75rem', color: 'var(--vk-text-muted)' }}>Cryptographically random client-side generation</p>
+          </div>
+          <button onClick={onClose} aria-label="Close generator" style={{ background: 'none', border: 'none', color: 'var(--vk-text-muted)', cursor: 'pointer' }}>
+            ✕
           </button>
         </div>
 
         <div
           className="code-font"
           style={{
-            background: '#090d16',
-            padding: '16px',
-            borderRadius: '12px',
-            border: '1px solid rgba(139, 92, 246, 0.25)',
+            background: '#07090e',
+            padding: '14px',
+            borderRadius: 'var(--radius-sm)',
+            border: '1px solid var(--vk-border)',
             wordBreak: 'break-all',
-            minHeight: '64px',
+            minHeight: '60px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#34d399',
-            fontSize: '0.95rem',
-            marginBottom: '20px',
-            boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.4)',
+            color: 'var(--vk-success)',
+            fontSize: '0.9rem',
+            marginBottom: '18px',
+            boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.5)',
           }}
         >
-          {secret || <span style={{ color: '#94a3b8' }}>Click Generate below</span>}        </div>
+          {secret}
+        </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '20px' }}>
           <div>
-            <div style={{ fontSize: '0.825rem', color: '#cbd5e1', display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-              <span>Password Length</span>
-              <strong style={{ color: '#c084fc' }}>{length} characters</strong>
+            <div style={{ fontSize: '0.8rem', color: 'var(--vk-text-secondary)', display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+              <span>Length</span>
+              <strong style={{ color: 'var(--vk-accent)', fontFamily: 'monospace' }}>{length} characters</strong>
             </div>
-            <input type="range" min="12" max="64" value={length} onChange={(e) => setLength(Number(e.target.value))} style={{ width: '100%', accentColor: '#8b5cf6' }} />
+            <input
+              type="range"
+              min="12"
+              max="64"
+              value={length}
+              onChange={(e) => setLength(Number(e.target.value))}
+              style={{ width: '100%', accentColor: 'var(--vk-accent)' }}
+            />
           </div>
 
-          <div style={{ display: 'flex', gap: '20px' }}>
-            <label style={{ fontSize: '0.85rem', color: '#cbd5e1', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-              <input type="checkbox" checked={useNumbers} onChange={(e) => setUseNumbers(e.target.checked)} style={{ accentColor: '#8b5cf6' }} /> Numbers (0-9)
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '0.8rem', color: 'var(--vk-text-secondary)' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+              <input type="checkbox" checked={useUpper} onChange={(e) => setUseUpper(e.target.checked)} style={{ accentColor: 'var(--vk-accent)' }} /> A–Z (Upper)
             </label>
-            <label style={{ fontSize: '0.85rem', color: '#cbd5e1', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-              <input type="checkbox" checked={useSymbols} onChange={(e) => setUseSymbols(e.target.checked)} style={{ accentColor: '#8b5cf6' }} /> Symbols (!@#$)
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+              <input type="checkbox" checked={useLower} onChange={(e) => setUseLower(e.target.checked)} style={{ accentColor: 'var(--vk-accent)' }} /> a–z (Lower)
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+              <input type="checkbox" checked={useNumbers} onChange={(e) => setUseNumbers(e.target.checked)} style={{ accentColor: 'var(--vk-accent)' }} /> 0–9 (Numbers)
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+              <input type="checkbox" checked={useSymbols} onChange={(e) => setUseSymbols(e.target.checked)} style={{ accentColor: 'var(--vk-accent)' }} /> Symbols (!@#$)
             </label>
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div style={{ display: 'flex', gap: '8px' }}>
           <button onClick={generate} className="btn btn-secondary" style={{ flex: 1, justifyContent: 'center' }}>
-            <Dices size={15} /> Generate
+            <Dices size={14} /> Regenerate
           </button>
-          {secret && (
-            <>
-              <button onClick={() => copy(secret)} className="btn btn-secondary" style={copied ? { color: '#34d399' } : undefined}>
-                {copied ? 'Copied' : 'Copy'}
-              </button>
-              <button
-                onClick={() => {
-                  onUseSecret(secret);
-                  onClose();
-                }}
-                className="btn btn-primary"
-              >
-                Use Secret
-              </button>
-            </>
-          )}
+          <button onClick={() => copy(secret)} className="btn btn-secondary">
+            {copied ? <Check size={14} color="var(--vk-success)" /> : <Copy size={14} />}
+            {copied ? 'Copied' : 'Copy'}
+          </button>
+          <button
+            onClick={() => {
+              onUseSecret(secret);
+              onClose();
+            }}
+            className="btn btn-primary"
+          >
+            Use Secret
+          </button>
         </div>
       </div>
     </Modal>

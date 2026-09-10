@@ -1,5 +1,6 @@
-import React from 'react';
-import { Dices, Plus } from 'lucide-react';
+﻿import React from 'react';
+import { Dices, Plus, Search } from 'lucide-react';
+import { PageHeader } from './ui/PageHeader';
 
 interface SecretsHeaderBarProps {
   secretCount: number;
@@ -25,41 +26,67 @@ export const SecretsHeaderBar: React.FC<SecretsHeaderBarProps> = ({
   onCreateSecret,
 }) => (
   <>
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
-      <div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#f8fafc' }}>Vault Secrets</h1>
-          {showBadge && (
-            <span className="badge badge-admin">{secretCount} secrets in this project</span>
-          )}
-        </div>
-        <p style={{ color: '#94a3b8', fontSize: '0.875rem', marginTop: '2px' }}>
-          Zero-trust end-to-end encrypted under team master key (AES-256-GCM)
-        </p>
-      </div>
-      <div style={{ display: 'flex', gap: '10px' }}>
-        <button onClick={onOpenGenerator} className="btn btn-secondary">
-          <Dices size={15} /> Generator
-        </button>
-        <button onClick={onCreateSecret} className="btn btn-primary">
-          <Plus size={15} /> New Secret
-        </button>
-      </div>
-    </div>
+    <PageHeader
+      breadcrumb="VAULT SECRETS"
+      title="Secrets"
+      description="Zero-trust end-to-end encrypted under team master key (AES-256-GCM)."
+      badge={
+        showBadge ? (
+          <span className="badge badge-read" style={{ fontSize: '0.72rem' }}>
+            {secretCount} secret{secretCount !== 1 ? 's' : ''} in {project}
+          </span>
+        ) : undefined
+      }
+      actions={
+        <>
+          <button onClick={onOpenGenerator} className="btn btn-secondary">
+            <Dices size={14} /> Generator
+          </button>
+          <button onClick={onCreateSecret} className="btn btn-primary">
+            <Plus size={14} /> New Secret
+          </button>
+        </>
+      }
+    />
 
-    <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
-      <input
-        className="input"
-        placeholder="Search secrets... (Ctrl+K for command palette)"
-        value={search}
-        onChange={(e) => onSearchChange(e.target.value)}
-        aria-label="Search secrets"
-        style={{ maxWidth: '380px' }}
-      />
+    <div
+      style={{
+        display: 'flex',
+        gap: '12px',
+        marginBottom: '20px',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+      }}
+    >
+      <div style={{ position: 'relative', flex: '1 1 300px', maxWidth: '420px' }}>
+        <Search
+          size={15}
+          color="var(--vk-text-muted)"
+          style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
+        />
+        <input
+          className="input"
+          placeholder="Search secrets... (⌘K for command palette)"
+          value={search}
+          onChange={(e) => onSearchChange(e.target.value)}
+          aria-label="Search secrets"
+          style={{ paddingLeft: '36px' }}
+        />
+      </div>
+
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <span style={{ fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 500 }}>Project:</span>
-        <select className="input" value={project} onChange={(e) => onProjectChange(e.target.value)} style={{ width: '180px' }} aria-label="Select project">
-          {projects.map((p) => (<option key={p} value={p}>{p}</option>))}
+        <span style={{ fontSize: '0.8rem', color: 'var(--vk-text-muted)', fontWeight: 600 }}>Environment:</span>
+        <select
+          className="input"
+          value={project}
+          onChange={(e) => onProjectChange(e.target.value)}
+          style={{ width: '160px', padding: '7px 10px', fontSize: '0.825rem' }}
+          aria-label="Select environment"
+        >
+          {projects.map((p) => (
+            <option key={p} value={p}>{p}</option>
+          ))}
         </select>
       </div>
     </div>

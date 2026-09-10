@@ -1,20 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { ShieldCheck, ScrollText } from 'lucide-react';
+﻿import React, { useEffect, useState } from 'react';
+import { ShieldCheck, ScrollText, CheckCircle2, AlertTriangle } from 'lucide-react';
 import type { AuditItem } from '../lib/api';
 import { apiFetch, buildQuery, errorMessage } from '../lib/api';
 import { pushToast } from '../lib/toast';
 import { StatCard } from '../components/StatCard';
 import { TableSkeleton } from '../components/Skeletons';
 import { AuditPaginationBar } from '../components/AuditPaginationBar';
+import { PageHeader } from '../components/ui/PageHeader';
 import { buildAuditCsv, downloadCsv } from '../lib/auditCsv';
 
 type ChainState = 'checking' | 'valid' | 'tampered';
-
-const CHAIN_META: Record<ChainState, { label: string; badgeClass: string; accent: string }> = {
-  checking: { label: 'Checking chain integrity', badgeClass: 'badge-neutral', accent: '#94a3b8' },
-  valid: { label: 'HMAC chain verified', badgeClass: 'badge-write', accent: '#10b981' },
-  tampered: { label: 'Tamper detected in HMAC chain', badgeClass: 'badge-danger', accent: '#ef4444' },
-};
 
 export const AuditPage: React.FC = () => {
   const [logs, setLogs] = useState<AuditItem[]>([]);
@@ -45,9 +40,7 @@ export const AuditPage: React.FC = () => {
       }
     };
     void load();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [actionFilter, projectFilter, limit, offset]);
 
   useEffect(() => {
@@ -60,9 +53,7 @@ export const AuditPage: React.FC = () => {
         if (!active) return;
         setVerifyError(errorMessage(err, 'Chain verification request failed'));
       });
-    return () => {
-      active = false;
-    };
+    return () => { active = false; };
   }, []);
 
   const retryVerify = async () => {
@@ -87,35 +78,46 @@ export const AuditPage: React.FC = () => {
     );
   };
 
-  const meta = CHAIN_META[chain];
-
   return (
-    <div className="animate-fade" style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
-        <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#f8fafc' }}>Tamper-Evident Audit Ledger</h1>
-          <p style={{ color: '#94a3b8', fontSize: '0.875rem', marginTop: '2px' }}>
-            HMAC-SHA256 chained audit entries guarantee immutable security log integrity
-          </p>
-        </div>
-        <span className={`badge ${meta.badgeClass}`} style={{ padding: '8px 16px', fontSize: '0.8rem' }} role="status">
-          {meta.label}
-        </span>
-      </div>
+    <div className="animate-fade">
+      <PageHeader
+        breadcrumb="SECURITY OBSERVABILITY"
+        title="Audit Ledger"
+        description="Append-only cryptographic HMAC-SHA256 chained audit entries guarantee immutable log integrity."
+        actions={
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            {chain === 'valid' && (
+              <span className="badge badge-write" style={{ padding: '6px 12px', fontSize: '0.75rem' }}>
+                <CheckCircle2 size={13} /> Ledger Integrity Verified
+              </span>
+            )}
+            {chain === 'tampered' && (
+              <span className="badge badge-danger" style={{ padding: '6px 12px', fontSize: '0.75rem' }}>
+                <AlertTriangle size={13} /> Tamper Detected
+              </span>
+            )}
+            {chain === 'checking' && (
+              <span className="badge badge-neutral" style={{ padding: '6px 12px', fontSize: '0.75rem' }}>
+                Verifying Chain...
+              </span>
+            )}
+          </div>
+        }
+      />
 
       {verifyError && (
-        <div role="alert" style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.35)', borderRadius: '12px', padding: '14px 18px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-          <span style={{ color: '#f87171', fontSize: '0.875rem' }}>Could not verify chain integrity: {verifyError}</span>
-          <button onClick={() => void retryVerify()} className="btn btn-danger" style={{ padding: '6px 14px', fontSize: '0.8rem' }}>
-            Retry verification
+        <div style={{ background: 'var(--vk-danger-dim)', border: '1px solid rgba(255, 107, 122, 0.3)', borderRadius: 'var(--radius-sm)', padding: '12px 16px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px' }}>
+          <span style={{ color: 'var(--vk-danger)', fontSize: '0.85rem' }}>Verification request failed: {verifyError}</span>
+          <button onClick={() => void retryVerify()} className="btn btn-danger" style={{ padding: '4px 10px', fontSize: '0.75rem' }}>
+            Retry
           </button>
         </div>
       )}
 
-      <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
-        <StatCard icon={<ScrollText size={21} />} title="Total Events" value={logs.length} subtitle="Recorded activity" accentColor="#8b5cf6" />
-        <StatCard icon={<ShieldCheck size={21} />} title="Ledger Type" value="HMAC Chain" subtitle="Cryptographically linked" accentColor="#06b6d4" />
-        <StatCard icon={<ShieldCheck size={21} />} title="Chain Status" value={chain === 'checking' ? 'Checking' : chain === 'valid' ? 'Valid' : 'Tampered'} subtitle="Zero-Trust Audit" accentColor={meta.accent} />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px', marginBottom: '20px' }}>
+        <StatCard icon={<ScrollText size={18} />} title="Total Events" value={logs.length} subtitle="Recorded entries" accentColor="var(--vk-accent)" />
+        <StatCard icon={<ShieldCheck size={18} />} title="Ledger Architecture" value="HMAC-SHA256" subtitle="Cryptographically chained" accentColor="var(--vk-accent-secondary)" />
+        <StatCard icon={<ShieldCheck size={18} />} title="Cryptographic Status" value={chain === 'checking' ? 'Verifying' : chain === 'valid' ? 'Valid' : 'Tampered'} subtitle="Zero-trust audit" accentColor={chain === 'valid' ? 'var(--vk-success)' : chain === 'tampered' ? 'var(--vk-danger)' : 'var(--vk-text-muted)'} />
       </div>
 
       <AuditPaginationBar
@@ -133,15 +135,15 @@ export const AuditPage: React.FC = () => {
       />
 
       {loadError && (
-        <div role="alert" style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.35)', color: '#f87171', borderRadius: '12px', padding: '12px 18px', marginBottom: '20px', fontSize: '0.85rem' }}>
+        <div style={{ background: 'var(--vk-danger-dim)', border: '1px solid rgba(255, 107, 122, 0.3)', color: 'var(--vk-danger)', borderRadius: 'var(--radius-sm)', padding: '10px 14px', marginBottom: '16px', fontSize: '0.85rem' }}>
           {loadError}
         </div>
       )}
 
-      <div className="glass table-wrap">
-        <table style={{ width: '100%', minWidth: '850px' }}>
+      <div className="table-wrap glass">
+        <table style={{ minWidth: '840px' }}>
           <thead>
-            <tr><th>ACTION</th><th>SECRET KEY</th><th>PROJECT</th><th>ACTOR</th><th>IP ADDRESS</th><th>TIMESTAMP</th><th>HMAC SIGNATURE</th></tr>
+            <tr><th>ACTION</th><th>SECRET KEY</th><th>ENVIRONMENT</th><th>ACTOR</th><th>IP ADDRESS</th><th>TIMESTAMP</th><th>HMAC SIGNATURE</th></tr>
           </thead>
           <tbody>
             {loading && <TableSkeleton rows={6} cols={7} />}
@@ -153,30 +155,24 @@ export const AuditPage: React.FC = () => {
                       {l.action}
                     </span>
                   </td>
-                  <td className="code-font" style={{ fontWeight: 600, color: '#f8fafc', maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={l.secret_key || '-'}>
-                    {l.secret_key || '-'}
+                  <td className="code-font" style={{ fontWeight: 600, color: 'var(--vk-text)', maxWidth: '170px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={l.secret_key || '-'}>
+                    {l.secret_key || '—'}
                   </td>
-                  <td><span className="badge badge-read">{l.project || 'default'}</span></td>
-                  <td className="code-font" style={{ fontSize: '0.8rem', color: '#cbd5e1', maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={l.actor || ''}>
-                    {l.actor || '\u2014'}
+                  <td><span className="badge badge-read" style={{ fontSize: '0.68rem' }}>{l.project || 'default'}</span></td>
+                  <td className="code-font" style={{ fontSize: '0.78rem', color: 'var(--vk-text-secondary)', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={l.actor || ''}>
+                    {l.actor || '—'}
                   </td>
-                  <td className="code-font" style={{ color: '#94a3b8', fontSize: '0.8rem' }}>{l.ip_address || '\u2014'}</td>
-                  <td style={{ color: '#94a3b8', fontSize: '0.8rem' }}>{new Date(l.created_at).toLocaleString()}</td>
-                  <td className="code-font" style={{ fontSize: '0.725rem', color: '#c084fc', maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={l.hmac}>
+                  <td className="code-font" style={{ color: 'var(--vk-text-muted)', fontSize: '0.78rem' }}>{l.ip_address || '—'}</td>
+                  <td style={{ color: 'var(--vk-text-muted)', fontSize: '0.78rem' }}>{new Date(l.created_at).toLocaleString()}</td>
+                  <td className="code-font" style={{ fontSize: '0.72rem', color: '#c084fc', maxWidth: '130px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={l.hmac}>
                     {l.hmac}
                   </td>
                 </tr>
               ))}
             {!loading && logs.length === 0 && !loadError && (
               <tr>
-                <td colSpan={7} style={{ textAlign: 'center', padding: '56px 24px' }}>
-                  <ShieldCheck size={34} color="#34d399" style={{ marginBottom: '12px' }} />
-                  <h3 style={{ fontSize: '1.05rem', color: '#f8fafc', fontWeight: 700, marginBottom: '6px', fontFamily: 'Outfit, sans-serif' }}>
-                    No matching audit entries
-                  </h3>
-                  <p style={{ color: '#94a3b8', fontSize: '0.875rem', maxWidth: '380px', margin: '0 auto' }}>
-                    Every secret creation, reveal, and rotation will be signed into the HMAC-SHA256 audit chain.
-                  </p>
+                <td colSpan={7} style={{ textAlign: 'center', padding: '48px 20px', color: 'var(--vk-text-muted)' }}>
+                  No matching audit entries found.
                 </td>
               </tr>
             )}

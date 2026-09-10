@@ -1,107 +1,88 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
+import { KeyRound } from 'lucide-react';
 
 export const LandingFooter: React.FC = () => {
   return (
     <footer
       style={{
-        borderTop: '1px solid rgba(255, 255, 255, 0.07)',
-        padding: '40px 24px',
-        background: '#080a0f',
-        marginTop: '0',
+        borderTop: '1px solid var(--vk-border)',
+        padding: '64px 24px 40px',
+        maxWidth: '1240px',
+        margin: '80px auto 0',
       }}
     >
       <div
         style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '24px',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '40px',
+          marginBottom: '56px',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div
-              style={{
-                width: '26px',
-                height: '26px',
-                borderRadius: '6px',
-                background: 'linear-gradient(135deg, #141a26 0%, #1a2233 100%)',
-                border: '1px solid rgba(94, 231, 255, 0.3)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '12px',
-              }}
-            >
-              🗝️
-            </div>
-            <span className="brand-text" style={{ fontSize: '1rem', fontWeight: 800, color: '#f5f7fa' }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+            <KeyRound size={16} color="var(--vk-accent)" />
+            <span className="brand-text" style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--vk-text)' }}>
               VaultKey
             </span>
           </div>
-          <span
-            className="code-font"
-            style={{
-              fontSize: '0.72rem',
-              color: '#8b93a3',
-              borderLeft: '1px solid rgba(255, 255, 255, 0.08)',
-              paddingLeft: '16px',
-            }}
-          >
-            © {new Date().getFullYear()} VaultKey Inc. Built for engineering teams.
-          </span>
+          <p style={{ color: 'var(--vk-text-muted)', fontSize: '0.825rem', lineHeight: 1.6, maxWidth: '280px' }}>
+            Secure secrets for modern engineering teams. Keep credentials out of code with zero-trust encryption.
+          </p>
         </div>
 
-        <nav style={{ display: 'flex', gap: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
-          {[
-            { to: '#product', label: 'Product' },
-            { to: '#security', label: 'Security' },
-            { to: '#developers', label: 'Developers' },
-            { to: '#pricing', label: 'Pricing' },
-            { to: '/docs', label: 'Docs' },
-            { to: '/login', label: 'Sign In' },
-          ].map((link) =>
-            link.to.startsWith('#') ? (
-              <a
-                key={link.to}
-                href={link.to}
-                style={{ color: '#8b93a3', fontSize: '0.825rem', fontWeight: 500 }}
-                onMouseOver={(e) => (e.currentTarget.style.color = '#f5f7fa')}
-                onMouseOut={(e) => (e.currentTarget.style.color = '#8b93a3')}
-              >
-                {link.label}
-              </a>
-            ) : (
-              <Link
-                key={link.to}
-                to={link.to}
-                style={{ color: '#8b93a3', fontSize: '0.825rem', fontWeight: 500 }}
-                onMouseOver={(e) => (e.currentTarget.style.color = '#f5f7fa')}
-                onMouseOut={(e) => (e.currentTarget.style.color = '#8b93a3')}
-              >
-                {link.label}
-              </Link>
-            )
-          )}
-          <span
-            className="code-font"
-            style={{
-              fontSize: '0.68rem',
-              color: '#5ee7ff',
-              background: 'rgba(94, 231, 255, 0.08)',
-              border: '1px solid rgba(94, 231, 255, 0.2)',
-              padding: '3px 9px',
-              borderRadius: '5px',
-              letterSpacing: '0.04em',
-            }}
-          >
-            Zero-Disk Architecture
-          </span>
-        </nav>
+        <div>
+          <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--vk-text)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '16px' }}>
+            Product
+          </h4>
+          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.825rem', color: 'var(--vk-text-secondary)' }}>
+            <li><Link to="/secrets">Secrets Vault</Link></li>
+            <li><Link to="/keys">Machine Access Keys</Link></li>
+            <li><Link to="/audit">Audit Ledger</Link></li>
+            <li><a href="#pricing">Pricing & Tiers</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--vk-text)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '16px' }}>
+            Developers
+          </h4>
+          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.825rem', color: 'var(--vk-text-secondary)' }}>
+            <li><Link to="/docs">CLI Setup</Link></li>
+            <li><Link to="/docs">REST API Reference</Link></li>
+            <li><a href="#security">Cryptographic Architecture</a></li>
+            <li><a href="https://github.com/ChromaBeast/VaultKey" target="_blank" rel="noreferrer">GitHub Repository</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--vk-text)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '16px' }}>
+            Governance
+          </h4>
+          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.825rem', color: 'var(--vk-text-secondary)' }}>
+            <li><Link to="/privacy">Privacy Policy</Link></li>
+            <li><a href="mailto:security@vaultkey.sheershjaiswal.in">Responsible Disclosure</a></li>
+            <li><a href="mailto:sheersh@vaultkey.dev">Contact Support</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div
+        style={{
+          borderTop: '1px solid var(--vk-border)',
+          paddingTop: '24px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          fontSize: '0.75rem',
+          color: 'var(--vk-text-muted)',
+          flexWrap: 'wrap',
+          gap: '10px',
+        }}
+      >
+        <span>© {new Date().getFullYear()} VaultKey. All rights reserved.</span>
+        <span>Engineered for zero-knowledge security.</span>
       </div>
     </footer>
   );

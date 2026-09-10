@@ -1,0 +1,69 @@
+﻿/* VaultKey Design Tokens — Derived from Whole-Site Premium Design Spec */
+:root {
+  /* Surfaces */
+  --vk-bg: #080a0f;
+  --vk-surface-1: #0d1118;
+  --vk-surface-2: #111722;
+  --vk-surface-3: #151c28;
+
+  /* Borders */
+  --vk-border: rgba(255, 255, 255, 0.06);
+  --vk-border-strong: rgba(255, 255, 255, 0.10);
+  --vk-border-subtle: #1d2633;
+  --vk-border-focus: rgba(115, 230, 255, 0.5);
+
+  /* Typography Colors */
+  --vk-text: #f4f7fa;
+  --vk-text-secondary: #9aa6b5;
+  --vk-text-muted: #667384;
+
+  /* Rare Accents */
+  --vk-accent: #73e6ff;
+  --vk-accent-hover: #9beeff;
+  --vk-accent-dim: rgba(115, 230, 255, 0.12);
+  --vk-accent-secondary: #8b7cff;
+
+  /* Semantic */
+  --vk-success: #43d39e;
+  --vk-success-dim: rgba(67, 211, 158, 0.12);
+  --vk-warning: #f4c76a;
+  --vk-warning-dim: rgba(244, 199, 106, 0.12);
+  --vk-danger: #ff6b7a;
+  --vk-danger-dim: rgba(255, 107, 122, 0.12);
+
+  /* Backward Compatibility Aliases */
+  --bg-main: var(--vk-bg);
+  --bg-card: var(--vk-surface-1);
+  --bg-card-hover: var(--vk-surface-2);
+  --bg-input: #090d14;
+  --border-subtle: var(--vk-border);
+  --border-highlight: var(--vk-border-strong);
+  --border-focus: var(--vk-accent);
+  --text-main: var(--vk-text);
+  --text-muted: var(--vk-text-secondary);
+  --text-label: var(--vk-text);
+  --accent-primary: #6366f1;
+
+  /* Radii */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-card: var(--radius-lg);
+  --radius-btn: var(--radius-sm);
+  --radius-input: var(--radius-sm);
+  --radius-badge: var(--radius-xs);
+
+  /* Shadows */
+  --vk-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --vk-shadow-md: 0 12px 40px rgba(0, 0, 0, 0.22);
+  --vk-shadow-pop: 0 20px 60px rgba(0, 0, 0, 0.45);
+  --vk-focus-ring: 0 0 0 2px var(--vk-border-focus);
+
+  /* Motion */
+  --ease-smooth: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --duration-instant: 100ms;
+  --duration-fast: 160ms;
+  --duration-base: 220ms;
+}

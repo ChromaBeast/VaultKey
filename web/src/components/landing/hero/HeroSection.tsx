@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { HeroProductMockup } from './HeroProductMockup';
 
@@ -6,13 +6,13 @@ export const HeroSection: React.FC = () => {
   return (
     <section
       className="animate-fade"
-      style={{ maxWidth: '1200px', margin: '72px auto 0', padding: '0 24px' }}
+      style={{ maxWidth: '1240px', margin: '64px auto 0', padding: '0 24px' }}
     >
       <div
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '56px',
+          gap: '48px',
           alignItems: 'center',
         }}
       >
@@ -23,16 +23,16 @@ export const HeroSection: React.FC = () => {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '8px',
-              background: 'rgba(94, 231, 255, 0.1)',
-              border: '1px solid rgba(94, 231, 255, 0.25)',
-              padding: '6px 14px',
+              background: 'var(--vk-accent-dim)',
+              border: '1px solid rgba(115, 230, 255, 0.25)',
+              padding: '5px 12px',
               borderRadius: '999px',
               fontSize: '0.72rem',
-              color: '#5ee7ff',
+              color: 'var(--vk-accent)',
               fontWeight: 600,
               fontFamily: 'JetBrains Mono, monospace',
-              letterSpacing: '0.06em',
-              marginBottom: '24px',
+              letterSpacing: '0.04em',
+              marginBottom: '20px',
             }}
           >
             <span
@@ -40,8 +40,7 @@ export const HeroSection: React.FC = () => {
                 width: '6px',
                 height: '6px',
                 borderRadius: '50%',
-                background: '#5ee7ff',
-                boxShadow: '0 0 8px #5ee7ff',
+                background: 'var(--vk-accent)',
               }}
             />
             SECRETS MANAGEMENT FOR ENGINEERING TEAMS
@@ -49,62 +48,62 @@ export const HeroSection: React.FC = () => {
 
           <h1
             style={{
-              fontSize: 'clamp(2.5rem, 4.5vw, 3.8rem)',
+              fontSize: 'clamp(2.4rem, 4.2vw, 3.6rem)',
               fontWeight: 800,
               letterSpacing: '-0.035em',
-              lineHeight: 1.08,
-              color: '#f5f7fa',
-              marginBottom: '20px',
+              lineHeight: 1.05,
+              color: 'var(--vk-text)',
+              marginBottom: '18px',
             }}
           >
             Keep secrets <br />
-            <span style={{ color: '#5ee7ff' }}>out of code.</span>
+            <span style={{ color: 'var(--vk-accent)' }}>out of code.</span>
           </h1>
 
           <p
             style={{
-              fontSize: '1.05rem',
-              color: '#8b93a3',
-              lineHeight: 1.65,
-              marginBottom: '32px',
-              maxWidth: '480px',
+              fontSize: '1rem',
+              color: 'var(--vk-text-secondary)',
+              lineHeight: 1.6,
+              marginBottom: '28px',
+              maxWidth: '460px',
             }}
           >
-            VaultKey gives your team one secure, centralized place for API keys, credentials,
-            and production secrets — with controlled access and a developer-first workflow.
+            VaultKey gives engineering teams a secure place for API keys, credentials,
+            environment secrets, and machine access — with scoped permissions, version history,
+            and an auditable access trail.
           </p>
 
-          <div style={{ display: 'flex', gap: '14px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
             <Link
               to="/signup"
-              className="btn btn-cyan"
-              style={{ padding: '12px 24px', fontSize: '0.92rem', fontWeight: 600 }}
+              className="btn btn-primary"
+              style={{ padding: '11px 22px', fontSize: '0.88rem' }}
             >
               Get started free →
             </Link>
             <a
               href="#security"
               className="btn btn-secondary"
-              style={{ padding: '12px 20px', fontSize: '0.92rem' }}
+              style={{ padding: '11px 18px', fontSize: '0.88rem' }}
             >
-              Explore the security model
+              Explore security
             </a>
           </div>
 
           <div
             style={{
-              marginTop: '32px',
+              marginTop: '28px',
               display: 'flex',
-              gap: '20px',
-              fontSize: '0.78rem',
-              color: '#586174',
+              gap: '16px',
+              fontSize: '0.75rem',
+              color: 'var(--vk-text-muted)',
               fontFamily: 'JetBrains Mono, monospace',
               flexWrap: 'wrap',
             }}
           >
             <span>• No credit card</span>
             <span>• CLI-first</span>
-            <span>• Single-binary</span>
             <span>• Built for developers</span>
           </div>
         </div>

@@ -1,65 +1,56 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 
 export const FinalCtaSection: React.FC = () => {
   return (
-    <section
-      style={{
-        maxWidth: '1200px',
-        margin: '120px auto',
-        padding: '0 24px',
-      }}
-    >
+    <section style={{ maxWidth: '1240px', margin: '100px auto 0', padding: '0 24px', textAlign: 'center' }}>
       <div
-        className="glass-glow"
+        className="glass"
         style={{
           padding: '64px 32px',
-          borderRadius: '20px',
-          background: 'linear-gradient(180deg, rgba(14, 18, 27, 0.95) 0%, rgba(8, 10, 15, 0.98) 100%)',
-          border: '1px solid rgba(94, 231, 255, 0.25)',
-          textAlign: 'center',
-          boxShadow: '0 24px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+          borderRadius: 'var(--radius-xl)',
+          background: 'linear-gradient(180deg, var(--vk-surface-1) 0%, var(--vk-surface-2) 100%)',
+          border: '1px solid var(--vk-border-strong)',
         }}
       >
         <h2
           style={{
-            fontSize: 'clamp(2rem, 3.8vw, 3rem)',
+            fontSize: 'clamp(2rem, 3.5vw, 2.8rem)',
             fontWeight: 800,
             letterSpacing: '-0.03em',
-            color: '#f5f7fa',
-            marginBottom: '16px',
+            color: 'var(--vk-text)',
+            marginBottom: '14px',
           }}
         >
-          Keep secrets out of your code today.
+          Give your secrets one place to live.
         </h2>
         <p
           style={{
-            color: '#8b93a3',
             fontSize: '1rem',
-            maxWidth: '540px',
+            color: 'var(--vk-text-secondary)',
+            maxWidth: '520px',
             margin: '0 auto 32px',
             lineHeight: 1.6,
           }}
         >
-          Set up your first encrypted vault in less than 2 minutes. Free forever for solo developers
-          and small projects.
+          Start with a free vault and move your first project out of scattered .env files,
+          unencrypted wikis, and shared chat messages.
         </p>
-
         <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link
             to="/signup"
-            className="btn btn-cyan"
-            style={{ padding: '12px 28px', fontSize: '0.95rem', fontWeight: 600 }}
+            className="btn btn-primary"
+            style={{ padding: '12px 26px', fontSize: '0.92rem', fontWeight: 600 }}
           >
-            Get started free →
+            Create your vault →
           </Link>
-          <Link
-            to="/docs"
+          <a
+            href="#security"
             className="btn btn-secondary"
-            style={{ padding: '12px 24px', fontSize: '0.95rem' }}
+            style={{ padding: '12px 22px', fontSize: '0.92rem' }}
           >
-            Read the Documentation
-          </Link>
+            Read the architecture
+          </a>
         </div>
       </div>
     </section>

@@ -1,0 +1,76 @@
+﻿/* Modal, Toast, and Command Palette Overlays */
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(4, 6, 10, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.modal-panel {
+  padding: 0;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--vk-border-strong);
+  background: var(--vk-surface-1);
+  box-shadow: var(--vk-shadow-pop);
+}
+
+/* Toasts */
+.toast-stack {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 400;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: min(380px, calc(100vw - 32px));
+}
+.toast-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--vk-surface-2);
+  border: 1px solid var(--vk-border-strong);
+  border-radius: var(--radius-md);
+  padding: 11px 14px;
+  color: var(--vk-text);
+  box-shadow: var(--vk-shadow-md);
+  font-size: 0.85rem;
+  animation: fadeIn 0.16s var(--ease-smooth) forwards;
+}
+.toast-error { border-color: rgba(255, 107, 122, 0.4); }
+.toast-success { border-color: rgba(67, 211, 158, 0.4); }
+.toast-info { border-color: rgba(115, 230, 255, 0.4); }
+.toast-icon { display: inline-flex; flex-shrink: 0; }
+.toast-error .toast-icon { color: var(--vk-danger); }
+.toast-success .toast-icon { color: var(--vk-success); }
+.toast-info .toast-icon { color: var(--vk-accent); }
+.toast-message { flex: 1; }
+.toast-close { background: transparent; border: none; color: var(--vk-text-muted); cursor: pointer; }
+.toast-close:hover { color: var(--vk-text); }
+
+/* Command Palette */
+.cmd-item {
+  list-style: none;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  margin-bottom: 2px;
+  background: transparent;
+  border: 1px solid transparent;
+}
+.cmd-item-active, .cmd-item:hover {
+  background: var(--vk-surface-2);
+  border-color: var(--vk-border-strong);
+}

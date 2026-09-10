@@ -1,12 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Flame, Lock, TriangleAlert } from 'lucide-react';
+﻿import React, { useEffect, useRef, useState } from 'react';
+import { Flame, Lock, AlertTriangle, Copy, Check } from 'lucide-react';
 import { ApiError, errorMessage, fetchSharedSecret, isAbortError } from '../lib/api';
 import { useClipboard } from '../hooks/useClipboard';
 
 type Phase = 'gate' | 'loading' | 'ready' | 'locked' | 'error';
 
-const EXPIRED_COPY =
-  'This shared secret link has expired, reached its view limit, or self-destructed.';
+const EXPIRED_COPY = 'This shared secret link has expired, reached its view limit, or self-destructed.';
 
 export const SharePage: React.FC<{ shareId: string }> = ({ shareId }) => {
   const [phase, setPhase] = useState<Phase>('gate');
@@ -16,12 +15,7 @@ export const SharePage: React.FC<{ shareId: string }> = ({ shareId }) => {
   const startedRef = useRef(false);
   const { copied, copy } = useClipboard();
 
-  useEffect(
-    () => () => {
-      controllerRef.current?.abort();
-    },
-    []
-  );
+  useEffect(() => () => { controllerRef.current?.abort(); }, []);
 
   const reveal = async () => {
     if (startedRef.current && controllerRef.current) return;
@@ -55,51 +49,50 @@ export const SharePage: React.FC<{ shareId: string }> = ({ shareId }) => {
   };
 
   return (
-    <div className="animate-fade" style={{ maxWidth: '480px', margin: '80px auto', padding: '16px' }}>
-      <div className="glass-glow" style={{ padding: '40px 32px', borderRadius: '24px', textAlign: 'center' }}>
+    <div className="animate-fade" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px 16px', background: 'var(--vk-bg)' }}>
+      <div className="glass" style={{ width: '100%', maxWidth: '460px', padding: '36px 30px', textAlign: 'center' }}>
         <div
           style={{
-            width: '56px',
-            height: '56px',
-            margin: '0 auto 16px',
-            borderRadius: '16px',
-            background: 'linear-gradient(135deg, #ef4444 0%, #d946ef 100%)',
+            width: '44px',
+            height: '44px',
+            margin: '0 auto 14px',
+            borderRadius: 'var(--radius-sm)',
+            background: 'var(--vk-danger-dim)',
+            border: '1px solid rgba(255, 107, 122, 0.35)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 8px 24px rgba(239, 68, 68, 0.35)',
           }}
         >
-          <Flame size={28} color="#fff" />
+          <Flame size={22} color="var(--vk-danger)" />
         </div>
-        <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.02em' }}>
+        <h1 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--vk-text)', letterSpacing: '-0.02em' }}>
           One-Time Shared Secret
-        </h2>
-        <p style={{ color: '#94a3b8', fontSize: '0.875rem', marginTop: '4px', marginBottom: '28px' }}>
-          This secret self-destructs after it is revealed once
+        </h1>
+        <p style={{ color: 'var(--vk-text-muted)', fontSize: '0.825rem', marginTop: '4px', marginBottom: '24px' }}>
+          This secret permanently self-destructs after it is revealed once
         </p>
 
         {phase === 'gate' && (
           <div>
-            <p style={{ color: '#cbd5e1', fontSize: '0.875rem', marginBottom: '20px', lineHeight: 1.6 }}>
-              The value stays encrypted on the server until you reveal it. Once displayed,
-              the link is permanently burned and cannot be opened again by anyone.
+            <p style={{ color: 'var(--vk-text-secondary)', fontSize: '0.85rem', marginBottom: '20px', lineHeight: 1.55 }}>
+              The payload remains encrypted on the server until revealed. Once opened, the link is burned and can never be viewed again.
             </p>
-            <button onClick={() => void reveal()} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '14px', fontSize: '0.95rem', borderRadius: '12px' }}>
+            <button onClick={() => void reveal()} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '11px', fontSize: '0.875rem' }}>
               Reveal Secret
             </button>
           </div>
         )}
 
-        {phase === 'loading' && <div style={{ color: '#8b5cf6', fontWeight: 600 }}>Revealing shared secret...</div>}
+        {phase === 'loading' && <div style={{ color: 'var(--vk-accent)', fontSize: '0.875rem', padding: '16px 0' }}>Decrypting payload...</div>}
 
         {phase === 'locked' && (
           <div>
-            <div style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.3)', color: '#fbbf24', padding: '16px', borderRadius: '14px', fontSize: '0.875rem', lineHeight: 1.6, marginBottom: '18px', display: 'flex', gap: '10px', textAlign: 'left' }}>
-              <Lock size={17} style={{ flexShrink: 0, marginTop: '2px' }} />
-              <span>The vault is locked right now. Ask the owner to unlock it and retry.</span>
+            <div style={{ background: 'var(--vk-warning-dim)', border: '1px solid rgba(244, 199, 106, 0.3)', color: 'var(--vk-warning)', padding: '12px 14px', borderRadius: 'var(--radius-sm)', fontSize: '0.825rem', marginBottom: '16px', display: 'flex', gap: '8px', textAlign: 'left' }}>
+              <Lock size={15} style={{ flexShrink: 0, marginTop: '2px' }} />
+              <span>The vault is currently locked. Ask the vault owner to unlock it and retry.</span>
             </div>
-            <button onClick={() => { startedRef.current = false; void reveal(); }} className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center', padding: '12px', borderRadius: '12px' }}>
+            <button onClick={() => { startedRef.current = false; void reveal(); }} className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
               Retry
             </button>
           </div>
@@ -107,11 +100,11 @@ export const SharePage: React.FC<{ shareId: string }> = ({ shareId }) => {
 
         {phase === 'error' && (
           <div>
-            <div style={{ background: 'rgba(239, 68, 68, 0.12)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#f87171', padding: '16px', borderRadius: '14px', fontSize: '0.875rem', lineHeight: 1.6, marginBottom: '18px', display: 'flex', gap: '10px', textAlign: 'left' }}>
-              <TriangleAlert size={17} style={{ flexShrink: 0, marginTop: '2px' }} />
+            <div style={{ background: 'var(--vk-danger-dim)', border: '1px solid rgba(255, 107, 122, 0.3)', color: 'var(--vk-danger)', padding: '12px 14px', borderRadius: 'var(--radius-sm)', fontSize: '0.825rem', marginBottom: '16px', display: 'flex', gap: '8px', textAlign: 'left' }}>
+              <AlertTriangle size={15} style={{ flexShrink: 0, marginTop: '2px' }} />
               <span>{errorMsg || EXPIRED_COPY}</span>
             </div>
-            <button onClick={() => { startedRef.current = false; void reveal(); }} className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center', padding: '12px', borderRadius: '12px' }}>
+            <button onClick={() => { startedRef.current = false; void reveal(); }} className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
               Try Again
             </button>
           </div>
@@ -122,15 +115,15 @@ export const SharePage: React.FC<{ shareId: string }> = ({ shareId }) => {
             <div
               className="code-font"
               style={{
-                background: '#090d16',
-                padding: '18px',
-                borderRadius: '14px',
-                border: '1px solid rgba(52, 211, 153, 0.3)',
+                background: '#07090e',
+                padding: '14px',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid rgba(67, 211, 158, 0.3)',
                 wordBreak: 'break-all',
-                color: '#34d399',
-                fontSize: '1rem',
-                marginBottom: '24px',
-                boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.4)',
+                color: 'var(--vk-success)',
+                fontSize: '0.9rem',
+                marginBottom: '18px',
+                boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.5)',
                 textAlign: 'left',
               }}
             >
@@ -139,19 +132,13 @@ export const SharePage: React.FC<{ shareId: string }> = ({ shareId }) => {
             <button
               onClick={() => void copy(secret)}
               className="btn btn-primary"
-              style={{
-                width: '100%',
-                justifyContent: 'center',
-                background: copied ? '#10b981' : undefined,
-                padding: '14px',
-                fontSize: '0.95rem',
-                borderRadius: '12px',
-              }}
+              style={{ width: '100%', justifyContent: 'center', padding: '11px', fontSize: '0.875rem' }}
             >
-              {copied ? 'Copied to Clipboard' : 'Copy Shared Secret'}
+              {copied ? <Check size={14} /> : <Copy size={14} />}
+              {copied ? 'Copied to Clipboard' : 'Copy Secret'}
             </button>
-            <p style={{ color: '#94a3b8', fontSize: '0.75rem', marginTop: '16px' }}>
-              Reloading or leaving this page permanently destroys this link.
+            <p style={{ color: 'var(--vk-text-muted)', fontSize: '0.75rem', marginTop: '14px' }}>
+              Leaving or refreshing this page permanently burns this secret link.
             </p>
           </div>
         )}

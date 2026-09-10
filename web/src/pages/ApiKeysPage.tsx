@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { KeyRound, ShieldCheck, Zap } from 'lucide-react';
+﻿import React, { useState } from 'react';
+import { KeyRound, ShieldCheck, Zap, Plus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import type { APIKeyItem } from '../lib/api';
 import { apiFetch, errorMessage } from '../lib/api';
@@ -9,6 +9,7 @@ import { TableSkeleton } from '../components/Skeletons';
 import { CreateApiKeyModal } from '../components/CreateApiKeyModal';
 import { TokenCreatedModal } from '../components/TokenCreatedModal';
 import { ConfirmDialog } from '../components/ConfirmDialog';
+import { PageHeader } from '../components/ui/PageHeader';
 
 export const ApiKeysPage: React.FC = () => {
   const { org } = useAuth();
@@ -86,46 +87,59 @@ export const ApiKeysPage: React.FC = () => {
   const activeKeys = keys.filter((k) => k.active);
 
   return (
-    <div className="animate-fade" style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
-        <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#f8fafc' }}>API Access Tokens</h1>
-          <p style={{ color: '#94a3b8', fontSize: '0.875rem', marginTop: '2px' }}>
-            Scoped authentication keys for CLI, GitHub Actions CI/CD & Go SDK
-          </p>
-        </div>
-        <button onClick={() => setModalOpen(true)} className="btn btn-primary">
-          <KeyRound size={15} /> Generate API Key
-        </button>
+    <div className="animate-fade">
+      <PageHeader
+        breadcrumb="MACHINE ACCESS"
+        title="API Keys"
+        description="Scoped credentials for CLI, GitHub Actions CI/CD pipelines, and SDK integrations."
+        actions={
+          <button onClick={() => setModalOpen(true)} className="btn btn-primary">
+            <Plus size={14} /> Create API Key
+          </button>
+        }
+      />
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px', marginBottom: '24px' }}>
+        <StatCard icon={<Zap size={18} />} title="Active Tokens" value={activeKeys.length} subtitle="Scoped access" accentColor="var(--vk-success)" />
+        <StatCard icon={<KeyRound size={18} />} title="Plan Quota" value={org?.plan === 'pro' ? 'Unlimited' : `${activeKeys.length} / 2`} subtitle="Current Tier Limit" accentColor="var(--vk-accent)" />
+        <StatCard icon={<ShieldCheck size={18} />} title="Security Model" value="HMAC-SHA256" subtitle="Cryptographically Hashed" accentColor="var(--vk-accent-secondary)" />
       </div>
 
-      <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
-        <StatCard icon={<Zap size={21} />} title="Active Tokens" value={activeKeys.length} subtitle="Scoped access" accentColor="#10b981" />
-        <StatCard icon={<KeyRound size={20} />} title="Plan Limit" value={org?.plan === 'pro' ? 'Unlimited' : `${activeKeys.length} / 2`} subtitle="Free Tier Limit" accentColor="#8b5cf6" />
-        <StatCard icon={<ShieldCheck size={20} />} title="Security" value="HMAC-SHA256" subtitle="Encrypted Tokens" accentColor="#06b6d4" />
-      </div>
-
-      <div className="glass table-wrap">
+      <div className="table-wrap glass">
         <table>
           <thead>
-            <tr><th>KEY LABEL</th><th>TOKEN ID</th><th>SCOPE</th><th>LAST USED</th><th>CREATED</th><th>STATUS</th><th>ACTION</th></tr>
+            <tr>
+              <th>KEY LABEL</th>
+              <th>TOKEN PREFIX</th>
+              <th>SCOPE</th>
+              <th>LAST USED</th>
+              <th>CREATED</th>
+              <th>STATUS</th>
+              <th style={{ textAlign: 'right' }}>ACTION</th>
+            </tr>
           </thead>
           <tbody>
             {loading && <TableSkeleton rows={4} cols={7} />}
             {!loading &&
               keys.map((k) => (
                 <tr key={k.id}>
-                  <td style={{ fontWeight: 600, color: '#f8fafc', fontSize: '0.95rem' }}>{k.name}</td>
-                  <td className="code-font" style={{ color: '#818cf8', fontSize: '0.85rem' }}>{k.id}</td>
-                  <td><span className={`badge badge-${k.permissions}`}>{k.permissions}</span></td>
-                  <td style={{ color: '#94a3b8', fontSize: '0.85rem' }}>{k.last_used ? new Date(k.last_used).toLocaleString() : 'Never'}</td>
-                  <td style={{ color: '#94a3b8', fontSize: '0.85rem' }}>{new Date(k.created_at).toLocaleDateString()}</td>
+                  <td style={{ fontWeight: 600, color: 'var(--vk-text)', fontSize: '0.875rem' }}>{k.name}</td>
+                  <td className="code-font" style={{ color: 'var(--vk-accent)', fontSize: '0.8rem' }}>{k.id}</td>
+                  <td>
+                    <span className={`badge badge-${k.permissions}`}>{k.permissions}</span>
+                  </td>
+                  <td style={{ color: 'var(--vk-text-secondary)', fontSize: '0.8rem' }}>
+                    {k.last_used ? new Date(k.last_used).toLocaleString() : 'Never'}
+                  </td>
+                  <td style={{ color: 'var(--vk-text-secondary)', fontSize: '0.8rem' }}>
+                    {new Date(k.created_at).toLocaleDateString()}
+                  </td>
                   <td>
                     <span className={k.active ? 'badge badge-write' : 'badge badge-danger'}>
                       {k.active ? 'Active' : 'Revoked'}
                     </span>
                   </td>
-                  <td>
+                  <td style={{ textAlign: 'right' }}>
                     {k.active && (
                       <button onClick={() => setRevokeTarget(k)} className="btn btn-danger" style={{ padding: '4px 10px', fontSize: '0.75rem' }}>
                         Revoke
@@ -135,7 +149,11 @@ export const ApiKeysPage: React.FC = () => {
                 </tr>
               ))}
             {!loading && keys.length === 0 && (
-              <tr><td colSpan={7} style={{ textAlign: 'center', color: '#94a3b8', padding: '48px' }}>No API keys generated yet.</td></tr>
+              <tr>
+                <td colSpan={7} style={{ textAlign: 'center', color: 'var(--vk-text-muted)', padding: '48px' }}>
+                  No machine access tokens generated yet.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
@@ -153,7 +171,7 @@ export const ApiKeysPage: React.FC = () => {
       <ConfirmDialog
         isOpen={revokeTarget !== null}
         title="Revoke API key?"
-        message={`Any CLI, CI pipeline, or SDK using "${revokeTarget?.name ?? ''}" will immediately lose access.`}
+        message={`Any automated workflow, CI/CD pipeline, or CLI session using "${revokeTarget?.name ?? ''}" will immediately lose access.`}
         confirmLabel="Revoke Key"
         danger
         loading={revokeLoading}

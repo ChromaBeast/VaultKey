@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { KeyRound, ShieldCheck, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
+import { KeyRound, ShieldCheck, ArrowRight, AlertCircle } from 'lucide-react';
 import { acceptInvite, fetchInviteDetails, errorMessage } from '../lib/api';
 import type { InviteDetails } from '../lib/api';
 import { pushToast } from '../lib/toast';
@@ -61,7 +61,7 @@ export const AcceptInvitePage: React.FC = () => {
         if (res.user) localStorage.setItem('vk_user', JSON.stringify(res.user));
         if (res.org) localStorage.setItem('vk_org', JSON.stringify(res.org));
       }
-      pushToast(`Welcome to ${invite?.org_name || 'the team'}! Your vault key is now activated.`, 'success');
+      pushToast(`Welcome to ${invite?.org_name || 'the team'}! Your vault key is activated.`, 'success');
       window.location.href = '/secrets';
     } catch (err) {
       pushToast(errorMessage(err, 'Failed to accept invitation'), 'error');
@@ -71,42 +71,42 @@ export const AcceptInvitePage: React.FC = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
-      <div className="glass" style={{ width: '100%', maxWidth: '440px', padding: '36px', borderRadius: '18px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-          <div style={{ display: 'inline-flex', padding: '12px', borderRadius: '14px', background: 'rgba(94, 231, 255, 0.1)', color: '#5ee7ff', marginBottom: '14px' }}>
-            <ShieldCheck size={32} />
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px 16px', background: 'var(--vk-bg)' }}>
+      <div className="glass" style={{ width: '100%', maxWidth: '440px', padding: '36px 32px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+          <div style={{ display: 'inline-flex', padding: '12px', borderRadius: 'var(--radius-sm)', background: 'var(--vk-accent-dim)', color: 'var(--vk-accent)', marginBottom: '14px', border: '1px solid rgba(115, 230, 255, 0.3)' }}>
+            <ShieldCheck size={28} />
           </div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#f8fafc', marginBottom: '6px' }}>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--vk-text)', marginBottom: '4px' }}>
             Accept Invitation
           </h1>
-          <p style={{ color: '#94a3b8', fontSize: '0.875rem' }}>
+          <p style={{ color: 'var(--vk-text-muted)', fontSize: '0.825rem' }}>
             Set your password to derive your zero-knowledge vault key.
           </p>
         </div>
 
         {loading && (
-          <div style={{ textAlign: 'center', padding: '36px 0', color: '#94a3b8', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
-            <Loader2 className="spin" size={18} /> Verifying invitation link...
+          <div style={{ textAlign: 'center', padding: '32px 0', color: 'var(--vk-text-muted)', fontSize: '0.85rem' }}>
+            Verifying invitation token...
           </div>
         )}
 
         {!loading && error && (
-          <div style={{ padding: '16px', borderRadius: '12px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#fca5a5', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-            <AlertCircle size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
-            <div style={{ fontSize: '0.875rem' }}>
+          <div style={{ padding: '14px', borderRadius: 'var(--radius-sm)', background: 'var(--vk-danger-dim)', border: '1px solid rgba(255, 107, 122, 0.3)', color: 'var(--vk-danger)', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+            <AlertCircle size={16} style={{ flexShrink: 0, marginTop: '2px' }} />
+            <div style={{ fontSize: '0.825rem' }}>
               <strong>Invitation Error</strong>
-              <p style={{ margin: '4px 0 0', color: '#f87171' }}>{error}</p>
+              <p style={{ margin: '4px 0 0' }}>{error}</p>
             </div>
           </div>
         )}
 
         {!loading && !error && invite && (
-          <form onSubmit={(e) => void handleSubmit(e)} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-            <div style={{ padding: '12px 16px', borderRadius: '10px', background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-              <div style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Organization</div>
-              <div style={{ color: '#f8fafc', fontWeight: 600, fontSize: '0.95rem', marginTop: '2px' }}>{invite.org_name}</div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px', fontSize: '0.8rem', color: '#94a3b8' }}>
+          <form onSubmit={(e) => void handleSubmit(e)} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ padding: '12px 14px', borderRadius: 'var(--radius-sm)', background: 'var(--vk-surface-2)', border: '1px solid var(--vk-border)' }}>
+              <div style={{ fontSize: '0.72rem', color: 'var(--vk-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Organization</div>
+              <div style={{ color: 'var(--vk-text)', fontWeight: 600, fontSize: '0.95rem', marginTop: '2px' }}>{invite.org_name}</div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px', fontSize: '0.78rem', color: 'var(--vk-text-secondary)' }}>
                 <span>Account: {invite.email}</span>
                 <span className={`badge badge-${invite.role === 'write' ? 'write' : invite.role === 'admin' ? 'admin' : 'read'}`}>{invite.role}</span>
               </div>
@@ -140,18 +140,18 @@ export const AcceptInvitePage: React.FC = () => {
               />
             </div>
 
-            <button type="submit" className="btn btn-primary" disabled={submitting} style={{ width: '100%', padding: '12px', marginTop: '6px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
-              {submitting ? <Loader2 className="spin" size={16} /> : <KeyRound size={16} />}
-              {submitting ? 'Deriving & Activating...' : 'Activate Account & Enter Vault'}
-              {!submitting && <ArrowRight size={15} />}
+            <button type="submit" className="btn btn-primary" disabled={submitting} style={{ width: '100%', padding: '11px', marginTop: '6px', justifyContent: 'center' }}>
+              <KeyRound size={14} />
+              {submitting ? 'Activating Key...' : 'Activate & Enter Vault'}
+              {!submitting && <ArrowRight size={14} />}
             </button>
           </form>
         )}
 
-        <div style={{ textAlign: 'center', marginTop: '24px' }}>
+        <div style={{ textAlign: 'center', marginTop: '20px' }}>
           <button
             onClick={() => navigate('/login')}
-            style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '0.825rem' }}
+            style={{ background: 'none', border: 'none', color: 'var(--vk-text-muted)', cursor: 'pointer', fontSize: '0.8rem' }}
           >
             Already have an account? Sign in
           </button>
@@ -163,8 +163,8 @@ export const AcceptInvitePage: React.FC = () => {
 
 const labelStyle: React.CSSProperties = {
   display: 'block',
-  fontSize: '0.8rem',
+  fontSize: '0.75rem',
   fontWeight: 600,
-  color: '#cbd5e1',
-  marginBottom: '6px',
+  color: 'var(--vk-text-secondary)',
+  marginBottom: '5px',
 };

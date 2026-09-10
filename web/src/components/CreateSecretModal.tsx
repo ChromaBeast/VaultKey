@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Dices } from 'lucide-react';
 import { Modal } from './ui/Modal';
 
@@ -42,15 +42,15 @@ export const CreateSecretModal: React.FC<CreateSecretModalProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={submitting ? () => undefined : onClose} width={440}>
-      <form onSubmit={handleSubmit} style={{ padding: '32px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+    <Modal isOpen={isOpen} onClose={submitting ? () => undefined : onClose} width={460}>
+      <form onSubmit={handleSubmit} style={{ padding: '24px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
           <div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#f8fafc' }}>
-              {isEdit ? 'Edit Secret Value' : 'New Secret'}
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--vk-text)' }}>
+              {isEdit ? 'Edit Secret Value' : 'Create Secret'}
             </h3>
-            <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
-              Target Project: <strong style={{ color: '#c084fc' }}>{project}</strong>
+            <span style={{ fontSize: '0.75rem', color: 'var(--vk-text-muted)' }}>
+              Target Environment: <strong style={{ color: 'var(--vk-accent)' }}>{project}</strong>
             </span>
           </div>
           {!isEdit && onOpenGenerator && (
@@ -58,54 +58,55 @@ export const CreateSecretModal: React.FC<CreateSecretModalProps> = ({
               type="button"
               onClick={onOpenGenerator}
               className="btn btn-secondary"
-              style={{ padding: '6px 12px', fontSize: '0.75rem' }}
+              style={{ padding: '5px 10px', fontSize: '0.75rem' }}
             >
-              <Dices size={14} /> Generator
+              <Dices size={13} /> Generator
             </button>
           )}
         </div>
 
         <div style={{ marginBottom: '16px' }}>
-          <label htmlFor="secret-key-input" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '6px' }}>
-            Secret Key Name
+          <label htmlFor="secret-key-input" style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'var(--vk-text-secondary)', marginBottom: '5px' }}>
+            Secret Name
           </label>
           <input
             id="secret-key-input"
             className="input code-font"
-            placeholder="DATABASE_URL / API_KEY"
+            placeholder="DATABASE_URL / STRIPE_SECRET_KEY"
             value={key}
             onChange={(e) => setKey(e.target.value.toUpperCase().replace(/\s+/g, '_'))}
             readOnly={isEdit}
             required
+            style={{ fontSize: '0.875rem' }}
           />
           {isEdit && (
-            <span style={{ fontSize: '0.72rem', color: '#94a3b8', marginTop: '4px', display: 'block' }}>
-              Key names are immutable; only the value can be updated.
+            <span style={{ fontSize: '0.7rem', color: 'var(--vk-text-muted)', marginTop: '4px', display: 'block' }}>
+              Secret names are immutable; saving will create an append-only new version.
             </span>
           )}
         </div>
 
-        <div style={{ marginBottom: '24px' }}>
-          <label htmlFor="secret-value-input" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '6px' }}>
+        <div style={{ marginBottom: '22px' }}>
+          <label htmlFor="secret-value-input" style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'var(--vk-text-secondary)', marginBottom: '5px' }}>
             Secret Value
           </label>
           <textarea
             id="secret-value-input"
             className="input code-font"
-            placeholder="super_secret_value_123"
+            placeholder="Enter or paste secret payload..."
             value={value}
             onChange={(e) => setValue(e.target.value)}
             required
-            style={{ minHeight: '90px', resize: 'vertical' }}
+            style={{ minHeight: '96px', resize: 'vertical', fontSize: '0.85rem' }}
           />
         </div>
 
-        <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
           <button type="button" onClick={onClose} className="btn btn-secondary" disabled={submitting}>
             Cancel
           </button>
           <button type="submit" disabled={submitting} className="btn btn-primary">
-            {submitting ? 'Encrypting...' : isEdit ? 'Save New Value' : 'Save & Encrypt'}
+            {submitting ? 'Encrypting...' : isEdit ? 'Save New Version' : 'Save & Encrypt'}
           </button>
         </div>
       </form>
