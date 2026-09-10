@@ -25,16 +25,10 @@ func (db *DB) CreateSharedSecret(s SharedSecret) error {
 	return err
 }
 
-func (db *DB) GetAndIncrementSharedSecret(id string) (*SharedSecret, error) {
-	tx, err := db.Begin()
-	if err != nil {
-		return nil, err
-	}
-	defer tx.Rollback()
-
+func (db *DB) GetSharedSecret(id string) (*SharedSecret, error) {
 	var s SharedSecret
 	query := `SELECT id, org_id, ciphertext, view_count, max_views, expires_at, created_at FROM shared_secrets WHERE id = ?`
-	err = tx.QueryRow(query, id).Scan(&s.ID, &s.OrgID, &s.Ciphertext, &s.ViewCount, &s.MaxViews, &s.ExpiresAt, &s.CreatedAt)
+	err := db.QueryRow(query, id).Scan(&s.ID, &s.OrgID, &s.Ciphertext, &s.ViewCount, &s.MaxViews, &s.ExpiresAt, &s.CreatedAt)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -43,20 +37,48 @@ func (db *DB) GetAndIncrementSharedSecret(id string) (*SharedSecret, error) {
 	}
 
 	if time.Now().After(s.ExpiresAt) || s.ViewCount >= s.MaxViews {
-		_, _ = tx.Exec("DELETE FROM shared_secrets WHERE id = ?", id)
-		_ = tx.Commit()
+		_, _ = db.Exec("DELETE FROM shared_secrets WHERE id = ?", id)
 		return nil, errors.New("secret has expired or reached view limit")
 	}
 
-	s.ViewCount++
-	if s.ViewCount >= s.MaxViews {
-		_, _ = tx.Exec("DELETE FROM shared_secrets WHERE id = ?", id)
-	} else {
-		_, _ = tx.Exec("UPDATE shared_secrets SET view_count = ? WHERE id = ?", s.ViewCount, id)
-	}
-
-	if err := tx.Commit(); err != nil {
-		return nil, err
-	}
 	return &s, nil
 }
+
+func (db *DB) ConsumeSharedSecret(id string) error {
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	var viewCount, maxViews int
+	err = tx.QueryRow(`SELECT view_count, max_views FROM shared_secrets WHERE id = ?`, id).Scan(&viewCount, &maxViews)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil
+		}
+		return err
+	}
+
+	viewCount++
+	if viewCount >= maxViews {
+		_, _ = tx.Exec("DELETE FROM shared_secrets WHERE id = ?", id)
+	} else {
+		_, _ = tx.Exec("UPDATE shared_secrets SET view_count = ? WHERE id = ?", viewCount, id)
+	}
+
+	return tx.Commit()
+}
+
+func (db *DB) GetAndIncrementSharedSecret(id string) (*SharedSecret, error) {
+	s, err := db.GetSharedSecret(id)
+	if err != nil || s == nil {
+		return nil, err
+	}
+	if err := db.ConsumeSharedSecret(id); err != nil {
+		return nil, err
+	}
+	s.ViewCount++
+	return s, nil
+}
+

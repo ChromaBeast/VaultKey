@@ -12,15 +12,9 @@ import {
 } from '../lib/api';
 import { pushToast } from '../lib/toast';
 import { BentoGridMetrics } from '../components/BentoGridMetrics';
-import { CreateSecretModal } from '../components/CreateSecretModal';
-import { DeleteSecretDialog } from '../components/DeleteSecretDialog';
-import { RevealSecretModal } from '../components/RevealSecretModal';
 import { SecretsHeaderBar } from '../components/SecretsHeaderBar';
 import { SecretsTable } from '../components/SecretsTable';
-import { SecretGeneratorModal } from '../components/SecretGeneratorModal';
-import { SecretVersionHistoryModal } from '../components/SecretVersionHistoryModal';
-
-type ModalTarget = { mode: 'create' | 'edit'; initialKey?: string; initialValue?: string };
+import { SecretsModals, type ModalTarget } from '../components/SecretsModals';
 
 export const SecretsPage: React.FC = () => {
   const { org } = useAuth();
@@ -166,45 +160,22 @@ export const SecretsPage: React.FC = () => {
         onClearSearch={() => setSearch('')}
       />
 
-      {genOpen && (
-        <SecretGeneratorModal
-          isOpen
-          onClose={() => setGenOpen(false)}
-          onUseSecret={(secret) => setModalTarget({ mode: 'create', initialKey: '', initialValue: secret })}
-        />
-      )}
-      {modalTarget !== null && (
-        <CreateSecretModal
-          isOpen
-          project={project}
-          mode={modalTarget.mode}
-          initialKey={modalTarget.initialKey}
-          initialValue={modalTarget.initialValue}
-          onClose={() => setModalTarget(null)}
-          onSubmit={handleSubmitSecret}
-          onOpenGenerator={() => setGenOpen(true)}
-        />
-      )}
-      {historyItem && (
-        <SecretVersionHistoryModal
-          secretKey={historyItem.key}
-          project={project}
-          currentVersion={historyItem.version}
-          onClose={() => setHistoryItem(null)}
-          onRollbackSuccess={refresh}
-        />
-      )}
-      {revealedVal && (
-        <RevealSecretModal
-          secretKey={revealedVal.key}
-          secretVal={revealedVal.val}
-          onClose={() => setRevealedVal(null)}
-        />
-      )}
-      <DeleteSecretDialog
-        item={deleteItem}
+      <SecretsModals
         project={project}
-        onClose={() => setDeleteItem(null)}
+        genOpen={genOpen}
+        onCloseGen={() => setGenOpen(false)}
+        onUseGeneratedSecret={(secret) => setModalTarget({ mode: 'create', initialKey: '', initialValue: secret })}
+        modalTarget={modalTarget}
+        onCloseModalTarget={() => setModalTarget(null)}
+        onSubmitSecret={handleSubmitSecret}
+        onOpenGenerator={() => setGenOpen(true)}
+        historyItem={historyItem}
+        onCloseHistory={() => setHistoryItem(null)}
+        onRollbackSuccess={refresh}
+        revealedVal={revealedVal}
+        onCloseReveal={() => setRevealedVal(null)}
+        deleteItem={deleteItem}
+        onCloseDelete={() => setDeleteItem(null)}
         onDeleted={refresh}
       />
     </div>

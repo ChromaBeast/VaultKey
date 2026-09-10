@@ -94,7 +94,7 @@ func (s *Server) handleCreateShare(c *fiber.Ctx) error {
 
 func (s *Server) handleGetShare(c *fiber.Ctx) error {
 	id := c.Params("id")
-	share, err := s.DB.GetAndIncrementSharedSecret(id)
+	share, err := s.DB.GetSharedSecret(id)
 	if err != nil || share == nil {
 		return c.Status(404).JSON(fiber.Map{"error": "shared secret is invalid, expired, or self-destructed"})
 	}
@@ -102,6 +102,13 @@ func (s *Server) handleGetShare(c *fiber.Ctx) error {
 	raw, err := base64.StdEncoding.DecodeString(share.Ciphertext)
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{"error": "shared secret is invalid, expired, or self-destructed"})
+	}
+
+	if crypto.Global.IsLocked(share.OrgID) {
+		return c.Status(423).JSON(fiber.Map{
+			"error": "the vault is locked right now; the owner must unlock it before this secret can be revealed",
+			"code":  "VAULT_LOCKED",
+		})
 	}
 
 	plain, err := crypto.Decrypt(share.OrgID, raw)
@@ -112,11 +119,12 @@ func (s *Server) handleGetShare(c *fiber.Ctx) error {
 		})
 	}
 
+	_ = s.DB.ConsumeSharedSecret(id)
 	_ = s.LogAuditOrg(share.OrgID, "SHARE_VIEWED", &id, nil, "public:"+c.IP(), c.IP(), c.Get("User-Agent"))
 
 	return c.JSON(fiber.Map{
 		"secret":     plain,
-		"view_count": share.ViewCount,
+		"view_count": share.ViewCount + 1,
 		"max_views":  share.MaxViews,
 		"expires_at": share.ExpiresAt,
 	})

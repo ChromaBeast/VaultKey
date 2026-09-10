@@ -47,7 +47,7 @@ func Default() *Config {
 		RazorpayKeySecret:  demoRzpSecret,
 		RazorpayPlanProID:  "plan_pro_monthly_1499",
 		RazorpayPlanEntID:  "plan_enterprise_monthly_4999",
-		AllowedOrigins:     "http://localhost:8080,http://localhost:3000,http://localhost:5173,https://vaultkey.sheershjaiswal.in",
+		AllowedOrigins:     "http://localhost:8080,http://localhost:3000,http://localhost:5173",
 		TurnstileSecretKey: testTurnstile,
 		MaxLoginAttempts:   5,
 		LockoutDuration:    "5m",
@@ -158,6 +158,8 @@ func applyEnv(cfg *Config) error {
 	}
 	if v := os.Getenv("VAULTKEY_ALLOWED_ORIGINS"); v != "" {
 		cfg.AllowedOrigins = v
+	} else if d := os.Getenv("VAULTKEY_DOMAIN"); d != "" && d != "localhost" {
+		cfg.AllowedOrigins = cfg.AllowedOrigins + ",https://" + d
 	}
 	if v := os.Getenv("VAULTKEY_TURNSTILE_SECRET_KEY"); v != "" {
 		cfg.TurnstileSecretKey = v

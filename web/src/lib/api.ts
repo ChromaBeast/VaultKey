@@ -164,7 +164,7 @@ export const revealSecretValue = (key: string, project: string) =>
   apiFetch<{ value: string }>(`/v1/secrets/${encodePath(key)}${buildQuery({ project })}`);
 
 export const updateSecretValue = (key: string, value: string, project: string) =>
-  apiFetch<{ message?: string }>(`/v1/secrets/${encodePath(key)}`, {
+  apiFetch<{ message?: string }>(`/v1/secrets/${encodePath(key)}${buildQuery({ project })}`, {
     method: 'PUT',
     body: JSON.stringify({ value, project }),
   });
@@ -188,26 +188,5 @@ export const rollbackSecretVersion = (key: string, params: RollbackParams) =>
     `/v1/secrets/${encodePath(key)}/rollback${buildQuery(params)}`,
     { method: 'POST' }
   );
+export * from './api_team';
 
-export const createShareLink = (value: string) =>
-  apiFetch<{ share_url: string }>('/v1/shares', {
-    method: 'POST',
-    body: JSON.stringify({ secret: value, max_views: 1, duration: '24h' }),
-  });
-
-export const fetchSharedSecret = (shareId: string, signal?: AbortSignal) =>
-  apiFetch<{ secret: string }>(`/v1/shares/${encodePath(shareId)}`, { signal });
-
-export const fetchUsers = () => apiFetch<TeamUser[]>('/v1/users');
-
-export const inviteUser = (payload: { email: string; password: string; role: string }) =>
-  apiFetch<TeamUser>('/v1/users/invite', { method: 'POST', body: JSON.stringify(payload) });
-
-export const deleteUser = (id: string) =>
-  apiFetch<void>(`/v1/users/${encodePath(id)}`, { method: 'DELETE' });
-
-export const changePassword = (current_password: string, new_password: string) =>
-  apiFetch<Record<string, never>>('/v1/account/password', {
-    method: 'POST',
-    body: JSON.stringify({ current_password, new_password }),
-  });

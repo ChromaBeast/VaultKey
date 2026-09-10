@@ -15,11 +15,11 @@ export const LandingHeader: React.FC = () => {
     >
       <div
         style={{
-          background: 'rgba(18, 24, 36, 0.85)',
+          background: 'rgba(14, 18, 27, 0.88)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          boxShadow: '0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08)',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
+          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08)',
           borderRadius: '12px',
           padding: '10px 20px',
           display: 'flex',
@@ -30,14 +30,15 @@ export const LandingHeader: React.FC = () => {
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div
             style={{
-              width: '30px',
-              height: '30px',
+              width: '32px',
+              height: '32px',
               borderRadius: '8px',
-              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+              background: 'linear-gradient(135deg, #141a26 0%, #1a2233 100%)',
+              border: '1px solid rgba(94, 231, 255, 0.3)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(99, 102, 246, 0.4)',
+              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.4)',
               fontSize: '15px',
             }}
           >
@@ -45,47 +46,58 @@ export const LandingHeader: React.FC = () => {
           </div>
           <span
             className="brand-text"
-            style={{ fontSize: '1.1rem', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.025em' }}
+            style={{ fontSize: '1.15rem', fontWeight: 800, color: '#f5f7fa', letterSpacing: '-0.025em' }}
           >
             VaultKey
           </span>
         </Link>
 
-        <nav style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
+        <nav style={{ display: 'flex', gap: '28px', alignItems: 'center' }}>
           {[
-            { href: '#features', label: 'Features' },
-            { href: '#architecture', label: 'Architecture' },
+            { href: '#product', label: 'Product' },
+            { href: '#security', label: 'Security' },
+            { href: '#developers', label: 'Developers' },
+            { href: '#pricing', label: 'Pricing' },
           ].map((item) => (
             <a
               key={item.href}
               href={item.href}
-              style={{ color: '#94a3b8', fontSize: '0.875rem', fontWeight: 500, transition: 'color 0.15s ease' }}
-              onMouseOver={(e) => (e.currentTarget.style.color = '#f8fafc')}
-              onMouseOut={(e) => (e.currentTarget.style.color = '#94a3b8')}
+              style={{
+                color: '#8b93a3',
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                transition: 'color 0.15s ease',
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.color = '#f5f7fa')}
+              onMouseOut={(e) => (e.currentTarget.style.color = '#8b93a3')}
             >
               {item.label}
             </a>
           ))}
           <Link
             to="/docs"
-            style={{ color: '#94a3b8', fontSize: '0.875rem', fontWeight: 500 }}
+            style={{ color: '#8b93a3', fontSize: '0.875rem', fontWeight: 500 }}
+            onMouseOver={(e) => (e.currentTarget.style.color = '#f5f7fa')}
+            onMouseOut={(e) => (e.currentTarget.style.color = '#8b93a3')}
           >
             Docs
           </Link>
-          <Link
-            to="/#pricing"
-            style={{ color: '#94a3b8', fontSize: '0.875rem', fontWeight: 500 }}
-          >
-            Pricing
-          </Link>
         </nav>
 
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <Link to="/login" className="btn btn-secondary" style={{ fontSize: '0.85rem', padding: '7px 14px' }}>
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <Link
+            to="/login"
+            className="btn btn-secondary"
+            style={{ fontSize: '0.85rem', padding: '7px 14px' }}
+          >
             Sign In
           </Link>
-          <Link to="/signup" className="btn btn-primary" style={{ fontSize: '0.85rem', padding: '7px 14px' }}>
-            Get Started
+          <Link
+            to="/signup"
+            className="btn btn-cyan"
+            style={{ fontSize: '0.85rem', padding: '7px 16px' }}
+          >
+            Get Started →
           </Link>
         </div>
       </div>

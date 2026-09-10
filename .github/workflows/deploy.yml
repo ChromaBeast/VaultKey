@@ -31,14 +31,12 @@ jobs:
           cache: true
           cache-dependency-path: go.sum
 
-      - uses: actions/setup-node@v4.4.0
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: web/package-lock.json
+          bun-version: latest
 
       - name: Build Web Frontend
-        run: cd web && npm ci && npm run lint && npm run build
+        run: cd web && bun install --frozen-lockfile && bun run lint && bun run build
 
       - name: Run Backend Tests
         run: go test ./... -v
@@ -66,14 +64,12 @@ jobs:
           cache: true
           cache-dependency-path: go.sum
 
-      - uses: actions/setup-node@v4.4.0
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: web/package-lock.json
+          bun-version: latest
 
       - name: Build Web Frontend
-        run: cd web && npm ci && npm run lint && npm run build
+        run: cd web && bun install --frozen-lockfile && bun run lint && bun run build
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -94,6 +90,8 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
+          build-args: |
+            VERSION=sha-${{ github.sha }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}

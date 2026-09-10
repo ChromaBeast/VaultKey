@@ -12,6 +12,9 @@ services:
       VAULTKEY_DB_PATH: /var/lib/vaultkey/vaultkey.db
       VAULTKEY_AUTO_LOCK: 30m
       VAULTKEY_HMAC_KEY: "${VAULTKEY_HMAC_KEY:?set VAULTKEY_HMAC_KEY in .env (see .env.example)}"
+      VAULTKEY_TRUSTED_PROXIES: "127.0.0.1"
+      VAULTKEY_DOMAIN: "${VAULTKEY_DOMAIN:-localhost}"
+      VAULTKEY_ALLOWED_ORIGINS: "${VAULTKEY_ALLOWED_ORIGINS:-}"
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/healthz"]
       interval: 30s

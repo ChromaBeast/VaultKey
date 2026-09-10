@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { UserPlus } from 'lucide-react';
+import { UserPlus, Copy, Check } from 'lucide-react';
 import type { TeamUser } from '../../lib/api';
 import { deleteUser, errorMessage, fetchUsers, inviteUser } from '../../lib/api';
 import { pushToast } from '../../lib/toast';
@@ -10,9 +10,10 @@ export const TeamAdminSection: React.FC = () => {
   const [users, setUsers] = useState<TeamUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [role, setRole] = useState('read');
   const [inviting, setInviting] = useState(false);
+  const [inviteUrl, setInviteUrl] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const [removeTarget, setRemoveTarget] = useState<TeamUser | null>(null);
   const [removing, setRemoving] = useState(false);
 
@@ -45,22 +46,34 @@ export const TeamAdminSection: React.FC = () => {
     };
   }, []);
 
-
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
     if (inviting) return;
     setInviting(true);
     try {
-      const created = await inviteUser({ email: email.trim(), password, role });
-      pushToast(`Invitation created for ${created.email} (${created.role})`, 'success');
+      const res = await inviteUser({ email: email.trim(), role });
+      const fullUrl = `${window.location.origin}${res.invite_url}`;
+      setInviteUrl(fullUrl);
+      pushToast(`One-time invite link generated for ${res.email}`, 'success');
       setEmail('');
-      setPassword('');
       setRole('read');
       void loadUsers();
     } catch (err) {
       pushToast(errorMessage(err, 'Failed to invite user'), 'error');
     } finally {
       setInviting(false);
+    }
+  };
+
+  const handleCopy = async () => {
+    if (!inviteUrl) return;
+    try {
+      await navigator.clipboard.writeText(inviteUrl);
+      setCopied(true);
+      pushToast('Invite link copied to clipboard', 'success');
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      pushToast('Failed to copy to clipboard', 'error');
     }
   };
 
@@ -82,13 +95,9 @@ export const TeamAdminSection: React.FC = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <form onSubmit={(e) => void handleInvite(e)} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
-        <div style={{ flex: '1 1 200px' }}>
-          <label htmlFor="invite-email" style={labelStyle}>Email</label>
+        <div style={{ flex: '1 1 240px' }}>
+          <label htmlFor="invite-email" style={labelStyle}>Email Address</label>
           <input id="invite-email" type="email" className="input" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="teammate@company.com" />
-        </div>
-        <div style={{ flex: '1 1 160px' }}>
-          <label htmlFor="invite-password" style={labelStyle}>Initial Password</label>
-          <input id="invite-password" type="text" className="input" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Min 8 characters" />
         </div>
         <div style={{ width: '130px' }}>
           <label htmlFor="invite-role" style={labelStyle}>Role</label>
@@ -99,9 +108,57 @@ export const TeamAdminSection: React.FC = () => {
           </select>
         </div>
         <button type="submit" className="btn btn-primary" disabled={inviting}>
-          <UserPlus size={15} /> {inviting ? 'Inviting...' : 'Invite'}
+          <UserPlus size={15} /> {inviting ? 'Generating...' : 'Create Invite Link'}
         </button>
       </form>
+
+      {inviteUrl && (
+        <div
+          style={{
+            padding: '14px 18px',
+            background: 'rgba(94, 231, 255, 0.06)',
+            border: '1px solid rgba(94, 231, 255, 0.25)',
+            borderRadius: '10px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#5ee7ff' }}>
+              One-Time Invite Link Generated
+            </span>
+            <button
+              onClick={() => setInviteUrl(null)}
+              style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: '0.75rem' }}
+            >
+              Dismiss
+            </button>
+          </div>
+          <p style={{ fontSize: '0.8rem', color: '#cbd5e1', margin: 0 }}>
+            Share this secure link with the teammate. They will set their own password upon opening it.
+          </p>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <input
+              type="text"
+              readOnly
+              value={inviteUrl}
+              className="input"
+              style={{ flex: 1, fontSize: '0.8rem', fontFamily: 'monospace', padding: '6px 10px' }}
+              onClick={(e) => (e.target as HTMLInputElement).select()}
+            />
+            <button
+              type="button"
+              onClick={() => void handleCopy()}
+              className="btn btn-primary"
+              style={{ padding: '6px 14px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}
+            >
+              {copied ? <Check size={14} /> : <Copy size={14} />}
+              {copied ? 'Copied' : 'Copy'}
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="glass table-wrap">
         <table>

@@ -2,6 +2,7 @@ package api
 
 import (
 	"vaultkey/internal/crypto"
+	"vaultkey/internal/version"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -37,6 +38,6 @@ func (s *Server) handleStatus(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"org_id":  orgID,
 		"locked":  crypto.Global.IsLocked(orgID),
-		"version": "2.1.0",
+		"version": version.Version,
 	})
 }

@@ -90,3 +90,14 @@ func (db *DB) RevokeAPIKey(orgID, id string) (int64, error) {
 	n, _ := res.RowsAffected()
 	return n, nil
 }
+
+func (db *DB) RevokeUserSessions(orgID, email, keepKeyID string) error {
+	sessionName := "Session: " + email
+	if keepKeyID != "" {
+		_, err := db.Exec("UPDATE api_keys SET active = 0 WHERE org_id = ? AND name = ? AND id != ? AND active = 1", orgID, sessionName, keepKeyID)
+		return err
+	}
+	_, err := db.Exec("UPDATE api_keys SET active = 0 WHERE org_id = ? AND name = ? AND active = 1", orgID, sessionName)
+	return err
+}
+

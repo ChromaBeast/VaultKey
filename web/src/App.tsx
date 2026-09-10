@@ -15,6 +15,7 @@ import { AuditPage } from './pages/AuditPage';
 import { BillingPage } from './pages/BillingPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { SharePage } from './pages/SharePage';
+import { AcceptInvitePage } from './pages/AcceptInvitePage';
 import { DocsPage } from './pages/DocsPage';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { NotFoundPage } from './pages/NotFoundPage';
@@ -29,6 +30,7 @@ export const App: React.FC = () => {
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/accept-invite" element={<AcceptInvitePage />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/share/:shareId" element={<SharePageWrapper />} />
             <Route path="/docs" element={<PublicShell><DocsPage /></PublicShell>} />

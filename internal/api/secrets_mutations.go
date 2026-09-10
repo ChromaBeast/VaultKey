@@ -13,18 +13,14 @@ import (
 var dbErrVersionConflict = db.ErrVersionConflict
 
 type UpdateSecretReq struct {
-	Value string `json:"value"`
+	Value       string `json:"value"`
+	Project     string `json:"project"`
+	Environment string `json:"environment"`
 }
 
 func (s *Server) handleUpdateSecret(c *fiber.Ctx) error {
 	orgID := c.Locals("org_id").(string)
 	key := c.Params("key")
-	proj := c.Query("project", "default")
-	env := c.Query("environment", "production")
-
-	if !s.checkAuth(c, "write", proj) {
-		return c.Status(403).JSON(fiber.Map{"error": "unauthorized"})
-	}
 
 	var req UpdateSecretReq
 	if err := c.BodyParser(&req); err != nil || req.Value == "" {
@@ -32,6 +28,26 @@ func (s *Server) handleUpdateSecret(c *fiber.Ctx) error {
 	}
 	if len(req.Value) > 64*1024 {
 		return c.Status(400).JSON(fiber.Map{"error": "secret value too large (max 64KiB)"})
+	}
+
+	proj := c.Query("project")
+	if proj == "" {
+		proj = req.Project
+	}
+	if proj == "" {
+		proj = "default"
+	}
+
+	env := c.Query("environment")
+	if env == "" {
+		env = req.Environment
+	}
+	if env == "" {
+		env = "production"
+	}
+
+	if !s.checkAuth(c, "write", proj) {
+		return c.Status(403).JSON(fiber.Map{"error": "unauthorized"})
 	}
 
 	oldSec, err := s.DB.GetSecret(orgID, proj, env, key)
@@ -130,6 +146,7 @@ func (s *Server) handleGetSecretVersions(c *fiber.Ctx) error {
 			return c.Status(500).JSON(fiber.Map{"error": "failed to decrypt version history; possible key rotation corruption"})
 		}
 		res = append(res, fiber.Map{
+			"id":         v.ID,
 			"version":    v.Version,
 			"value":      plain,
 			"created_at": v.CreatedAt,

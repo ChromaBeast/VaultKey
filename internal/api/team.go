@@ -4,11 +4,10 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"strings"
-	"vaultkey/internal/crypto"
+	"time"
 	"vaultkey/internal/db"
 
 	"github.com/gofiber/fiber/v2"
-	"golang.org/x/crypto/bcrypt"
 )
 
 var inviteableRoles = map[string]bool{"admin": true, "write": true, "read": true}
@@ -48,9 +47,8 @@ func (s *Server) handleListUsers(c *fiber.Ctx) error {
 }
 
 type InviteUserRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	Role     string `json:"role"`
+	Email string `json:"email"`
+	Role  string `json:"role"`
 }
 
 func (s *Server) handleInviteUser(c *fiber.Ctx) error {
@@ -61,65 +59,50 @@ func (s *Server) handleInviteUser(c *fiber.Ctx) error {
 	actor := c.Locals("actor").(string)
 
 	var req InviteUserRequest
-	if err := c.BodyParser(&req); err != nil || req.Email == "" || req.Password == "" {
-		return c.Status(400).JSON(fiber.Map{"error": "email and password are required"})
+	if err := c.BodyParser(&req); err != nil || req.Email == "" {
+		return c.Status(400).JSON(fiber.Map{"error": "email is required"})
 	}
+	req.Email = strings.ToLower(strings.TrimSpace(req.Email))
 	req.Role = strings.ToLower(strings.TrimSpace(req.Role))
+	if req.Role == "" {
+		req.Role = "read"
+	}
 	if !inviteableRoles[req.Role] {
 		return c.Status(400).JSON(fiber.Map{"error": "role must be one of: admin, write, read"})
-	}
-	if len(req.Password) < 8 {
-		return c.Status(400).JSON(fiber.Map{"error": "password must be at least 8 characters"})
 	}
 
 	if existing, _ := s.DB.GetUserByEmail(req.Email); existing != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "email is already registered"})
 	}
 
-	key, err := cryptoGetKey(orgID)
-	if err != nil {
-		return c.Status(423).JSON(fiber.Map{"error": "vault must be unlocked to invite members", "code": "VAULT_LOCKED"})
+	tokenBytes := make([]byte, 16)
+	if _, err := rand.Read(tokenBytes); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to generate invite token"})
 	}
-	defer crypto.Zero(key)
+	token := "inv_" + hex.EncodeToString(tokenBytes)
 
-	wrap, err := crypto.WrapMasterKey(key, req.Password)
-	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "failed to wrap vault key for member"})
-	}
-
-	idBytes := make([]byte, 8)
-	if _, err := rand.Read(idBytes); err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "failed to generate user ID"})
-	}
-
-	pwHash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "failed to hash password"})
+	inv := db.Invite{
+		Token:     token,
+		OrgID:     orgID,
+		Email:     req.Email,
+		Role:      req.Role,
+		CreatedBy: actor,
+		ExpiresAt: time.Now().Add(7 * 24 * time.Hour),
 	}
 
-	user := db.User{
-		ID:           "usr_" + hex.EncodeToString(idBytes),
-		OrgID:        orgID,
-		Email:        req.Email,
-		PasswordHash: string(pwHash),
-		Role:         req.Role,
-	}
-	wrapRow := db.KeyWrap{
-		OrgID:      orgID,
-		UserID:     user.ID,
-		WrappedKey: wrap.Ciphertext,
-		WrapSalt:   hex.EncodeToString(wrap.Salt),
-		KDFParams:  wrap.Params.Encode(),
+	if err := s.DB.CreateInvite(inv); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to store invitation"})
 	}
 
-	if err := s.DB.WithTx(func(tx *db.Tx) error {
-		return createUserWithWrapTx(tx, user, wrapRow)
-	}); err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "failed to create member"})
-	}
+	_ = s.LogAuditOrg(orgID, "USER_INVITED", nil, nil, actor+"->"+req.Email, c.IP(), c.Get("User-Agent"))
 
-	_ = s.LogAuditOrg(orgID, "USER_INVITED", nil, nil, actor+"->"+user.Email, c.IP(), c.Get("User-Agent"))
-	return c.Status(201).JSON(user)
+	return c.Status(201).JSON(fiber.Map{
+		"token":      token,
+		"invite_url": "/accept-invite?token=" + token,
+		"email":      req.Email,
+		"role":       req.Role,
+		"expires_at": inv.ExpiresAt,
+	})
 }
 
 func (s *Server) handleDeleteUser(c *fiber.Ctx) error {

@@ -36,6 +36,10 @@ func (s *Server) handleChangePassword(c *fiber.Ctx) error {
 		return c.Status(403).JSON(fiber.Map{"error": "password change requires a session token from a logged-in user"})
 	}
 
+	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.CurrentPassword)); err != nil {
+		return c.Status(401).JSON(fiber.Map{"error": "invalid current password"})
+	}
+
 	key, err := cryptoGetKey(orgID)
 	if err != nil {
 		return c.Status(423).JSON(fiber.Map{"error": "vault is locked", "code": "VAULT_LOCKED"})
@@ -65,7 +69,9 @@ func (s *Server) handleChangePassword(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "failed to update key wrap"})
 	}
 
+	_ = s.DB.RevokeUserSessions(orgID, user.Email, actor)
 	_ = s.LogAuditOrg(orgID, "PASSWORD_CHANGED", nil, nil, actor, c.IP(), c.Get("User-Agent"))
+	_ = s.LogAuditOrg(orgID, "SESSION_REVOKE_ALL", nil, nil, actor, c.IP(), c.Get("User-Agent"))
 	return c.JSON(fiber.Map{"status": "password changed"})
 }
 

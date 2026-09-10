@@ -86,7 +86,7 @@ export const SecretVersionHistoryModal: React.FC<SecretVersionHistoryModalProps>
           <div style={{ maxHeight: '300px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {versions.map((item) => (
               <div
-                key={item.id}
+                key={item.id || `ver-${item.version}`}
                 style={{
                   padding: '12px 16px',
                   borderRadius: '10px',

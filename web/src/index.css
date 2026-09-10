@@ -20,7 +20,12 @@
   --accent-emerald: #10b981;
   --accent-amber: #f59e0b;
   --accent-red: #ef4444;
-  --accent-cyan: #06b6d4;
+  --accent-cyan: #5ee7ff;
+  --accent-violet: #818cf8;
+  --vk-bg-canvas: #080a0f;
+  --vk-bg-surface: #0e121b;
+  --vk-bg-surface-elevated: #141a26;
+  --vk-bg-inset: #06070b;
 
   --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-fast: 0.15s;
@@ -159,6 +164,17 @@ a:focus-visible,
 .btn-primary:hover {
   background: #4f46e5;
   box-shadow: 0 4px 18px rgba(99, 102, 241, 0.5);
+}
+
+.btn-cyan {
+  background: #5ee7ff;
+  color: #080a0f;
+  font-weight: 600;
+  box-shadow: 0 2px 12px rgba(94, 231, 255, 0.35);
+}
+.btn-cyan:hover {
+  background: #7eedff;
+  box-shadow: 0 4px 20px rgba(94, 231, 255, 0.55);
 }
 
 .btn-secondary {
