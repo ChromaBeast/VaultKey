@@ -1,105 +1,86 @@
-﻿import React from 'react';
-import { PricingCard, type PlanProps } from './PricingCard';
+import React from 'react';
+import { PricingModule, type PricingPlan } from '@/components/ui/pricing-module';
+import { Terminal, Cpu, Shield, Building2 } from 'lucide-react';
 
-const PLANS: PlanProps[] = [
+const VAULTKEY_PLANS: PricingPlan[] = [
   {
-    id: 'free',
-    name: 'Developer (Self-Hosted)',
-    price: '$0',
-    period: '/forever',
-    desc: 'Full open-source engine. Deploy as a single binary on any VPS or local machine.',
+    id: 'community',
+    name: 'Developer (OSS)',
+    description: 'Self-hosted zero-telemetry single binary engine for local and VPS environments.',
+    icon: <Terminal className="w-8 h-8 text-primary" />,
+    priceMonthly: 0,
+    priceYearly: 0,
+    users: 'Unlimited local seats',
     features: [
-      'Unlimited secrets on local/self-hosted instance',
-      'RAM-only execution via vaultkey CLI',
-      'Argon2id + AES-256-GCM zero-knowledge encryption',
-      'HMAC-SHA256 chained audit logs',
-      'Embedded SQLite in WAL mode',
+      { label: 'Unlimited secrets & local vaults', included: true },
+      { label: 'Argon2id + AES-256-GCM zero-knowledge encryption', included: true },
+      { label: 'HMAC-SHA256 chained audit logs', included: true },
+      { label: 'RAM-only execution via vaultkey CLI', included: true },
+      { label: 'Managed cloud sync & RBAC', included: false },
     ],
-    ctaText: 'View Open Source Docs',
-    ctaLink: '/docs',
-    highlighted: false,
   },
   {
-    id: 'pro',
-    name: 'Team Cloud',
-    price: '$19',
-    period: '/month',
-    desc: 'Managed cloud instance for engineering teams with centralized RBAC and audit sync.',
+    id: 'developer',
+    name: 'Developer Pro',
+    description: 'Encrypted cloud backup and automated sync across dev workstations and CI pipelines.',
+    icon: <Cpu className="w-8 h-8 text-primary" />,
+    priceMonthly: 9,
+    priceYearly: 90,
+    users: 'Up to 3 workstations',
     features: [
-      'Managed cloud infrastructure & automated backups',
-      'Team role-based access control (Admin / Dev / CI)',
-      '90-day HMAC audit ledger retention',
-      'Ephemeral 1-time self-destruct secret share links',
-      'Priority GitHub & Slack support',
+      { label: 'Encrypted cloud sync across devices', included: true },
+      { label: 'Automated WAL backup snapshots', included: true },
+      { label: 'CI/CD pipeline service tokens', included: true },
+      { label: 'Ephemeral self-destruct share links', included: true },
+      { label: 'Team role-based access control', included: false },
     ],
-    ctaText: 'Start 14-Day Free Trial',
-    ctaLink: '/signup',
-    highlighted: true,
+  },
+  {
+    id: 'team',
+    name: 'Team Cloud',
+    description: 'Managed cloud instance for engineering teams with centralized RBAC and audit ledger.',
+    icon: <Shield className="w-8 h-8 text-primary" />,
+    priceMonthly: 29,
+    priceYearly: 290,
+    users: 'Up to 25 engineers',
+    features: [
+      { label: 'Managed high-availability cloud infrastructure', included: true },
+      { label: 'Team RBAC (Admin / Developer / CI)', included: true },
+      { label: '90-day HMAC audit log retention & export', included: true },
+      { label: 'Ephemeral self-destruct secret links', included: true },
+      { label: 'Priority GitHub & Slack support', included: true },
+    ],
+    recommended: true,
   },
   {
     id: 'enterprise',
     name: 'Enterprise',
-    price: 'Custom',
-    desc: 'Dedicated single-tenant infrastructure, custom SLA, and SOC2 / HIPAA readiness.',
+    description: 'Dedicated single-tenant infrastructure, custom SLA, and SOC2 / HIPAA readiness.',
+    icon: <Building2 className="w-8 h-8 text-primary" />,
+    priceMonthly: 199,
+    priceYearly: 1990,
+    users: 'Unlimited team members',
     features: [
-      'Dedicated VPC or air-gapped on-prem deployment',
-      'SAML 2.0 / Okta / OIDC directory synchronization',
-      'Unlimited audit log retention to custom S3/GCS bucket',
-      '99.99% uptime guarantee SLA',
-      'Dedicated security engineer support',
+      { label: 'Dedicated VPC or air-gapped on-prem deployment', included: true },
+      { label: 'SAML 2.0 / Okta / OIDC directory sync', included: true },
+      { label: 'Unlimited audit ledger export to S3/GCS', included: true },
+      { label: '99.99% uptime guarantee SLA', included: true },
+      { label: 'Dedicated security engineer support', included: true },
     ],
-    ctaText: 'Contact Engineering',
-    ctaLink: 'mailto:sheersh@vaultkey.dev?subject=VaultKey%20Enterprise%20Inquiry',
-    highlighted: false,
   },
 ];
 
 export const PricingSection: React.FC = () => {
   return (
-    <section
-      id="pricing"
-      style={{
-        maxWidth: '1200px',
-        margin: '100px auto 0',
-        padding: '0 24px',
-      }}
-    >
-      <div style={{ maxWidth: '720px', marginBottom: '40px' }}>
-        <span
-          style={{
-            fontSize: '0.75rem',
-            fontFamily: 'var(--font-mono)',
-            color: '#6366f1',
-            letterSpacing: '0.08em',
-            fontWeight: 700,
-            textTransform: 'uppercase',
-          }}
-        >
-          Pricing
-        </span>
-        <h2
-          style={{
-            fontSize: 'clamp(1.8rem, 3.2vw, 2.4rem)',
-            fontWeight: 800,
-            letterSpacing: '-0.025em',
-            color: '#f5f7fa',
-            lineHeight: 1.2,
-            marginTop: '8px',
-            marginBottom: '16px',
-          }}
-        >
-          Self-host for free. Upgrade when your team grows.
-        </h2>
-        <p style={{ color: '#8b93a3', fontSize: '0.95rem', lineHeight: 1.65, margin: 0 }}>
-          VaultKey is open-core. Run it yourself with zero telemetry and full data sovereignty, or let us manage uptime, team RBAC, and backups.
-        </p>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
-        {PLANS.map((plan) => (
-          <PricingCard key={plan.id} plan={plan} />
-        ))}
-      </div>
-    </section>
+    <div id="pricing" className="max-w-7xl mx-auto my-12">
+      <PricingModule
+        title="Self-host for free. Upgrade when your team grows."
+        subtitle="VaultKey is open-core. Run it yourself with zero telemetry, or let us manage uptime, team RBAC, and backups."
+        annualBillingLabel="Pay annually and save 20%"
+        buttonLabel="Get Started"
+        plans={VAULTKEY_PLANS}
+        defaultAnnual={false}
+      />
+    </div>
   );
 };
