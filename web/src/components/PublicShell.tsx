@@ -34,13 +34,13 @@ export const PublicShell: React.FC<{ children: React.ReactNode }> = ({ children 
                 width: '24px',
                 height: '24px',
                 borderRadius: '6px',
-                background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                background: 'linear-gradient(135deg, #3cedeb 0%, #06b6d4 100%)',
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <KeyRound size={13} color="#fff" />
+              <KeyRound size={13} color="#020811" />
             </span>
             <span className="brand-text" style={{ fontSize: '1rem', fontWeight: 800 }}>
               VaultKey

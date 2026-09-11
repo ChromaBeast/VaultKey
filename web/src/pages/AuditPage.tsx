@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CheckCircle2, AlertTriangle } from 'lucide-react';
 import type { AuditItem } from '../lib/api';
 import { apiFetch, buildQuery, errorMessage } from '../lib/api';
@@ -162,7 +162,7 @@ export const AuditPage: React.FC = () => {
                   </td>
                   <td className="code-font" style={{ color: 'var(--vk-text-muted)', fontSize: '0.78rem' }}>{l.ip_address || '—'}</td>
                   <td style={{ color: 'var(--vk-text-muted)', fontSize: '0.78rem' }}>{new Date(l.created_at).toLocaleString()}</td>
-                  <td className="code-font" style={{ fontSize: '0.72rem', color: '#c084fc', maxWidth: '130px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={l.hmac}>
+                  <td className="code-font" style={{ fontSize: '0.72rem', color: 'var(--vk-accent)', maxWidth: '130px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={l.hmac}>
                     {l.hmac}
                   </td>
                 </tr>

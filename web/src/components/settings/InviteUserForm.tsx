@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { UserPlus, Copy, Check } from 'lucide-react';
 import { inviteUser, errorMessage } from '../../lib/api';
 import { pushToast } from '../../lib/toast';
@@ -78,7 +78,7 @@ export const InviteUserForm: React.FC<InviteUserFormProps> = ({ onUserInvited })
           style={{
             padding: '12px 16px',
             background: 'var(--vk-accent-dim)',
-            border: '1px solid rgba(115, 230, 255, 0.3)',
+            border: '1px solid rgba(60, 237, 235, 0.3)',
             borderRadius: 'var(--radius-sm)',
             display: 'flex',
             flexDirection: 'column',

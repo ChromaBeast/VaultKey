@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 
 interface ComparisonDimension {
   feature: string;
@@ -63,7 +63,7 @@ export const ComparisonTable: React.FC = () => {
           <thead>
             <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)', background: 'rgba(255, 255, 255, 0.02)' }}>
               <th style={{ padding: '14px 18px', color: '#8b93a3', fontSize: '0.8rem', fontWeight: 600 }}>Capability</th>
-              <th style={{ padding: '14px 18px', color: '#6366f1', fontSize: '0.8rem', fontWeight: 700 }}>VaultKey</th>
+              <th style={{ padding: '14px 18px', color: 'var(--vk-accent)', fontSize: '0.8rem', fontWeight: 700 }}>VaultKey</th>
               <th style={{ padding: '14px 18px', color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600 }}>HashiCorp Vault</th>
               <th style={{ padding: '14px 18px', color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600 }}>AWS / GCP Secrets</th>
               <th style={{ padding: '14px 18px', color: '#f87171', fontSize: '0.8rem', fontWeight: 600 }}>Plain .env Files</th>
@@ -75,7 +75,7 @@ export const ComparisonTable: React.FC = () => {
                 <td style={{ padding: '14px 18px', fontWeight: 600, color: '#f5f7fa', fontSize: '0.82rem' }}>
                   {row.feature}
                 </td>
-                <td style={{ padding: '14px 18px', color: '#818cf8', fontWeight: 600, fontSize: '0.82rem', background: 'rgba(99, 102, 241, 0.04)' }}>
+                <td style={{ padding: '14px 18px', color: 'var(--vk-accent)', fontWeight: 600, fontSize: '0.82rem', background: 'rgba(60, 237, 235, 0.06)' }}>
                   {row.vaultkey}
                 </td>
                 <td style={{ padding: '14px 18px', color: '#94a3b8', fontSize: '0.8rem' }}>

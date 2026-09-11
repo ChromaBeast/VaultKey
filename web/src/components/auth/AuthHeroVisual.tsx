@@ -14,7 +14,7 @@ export const AuthHeroVisual: React.FC = () => {
         justifyContent: 'space-between',
         padding: '48px 40px',
         overflow: 'hidden',
-        background: 'radial-gradient(circle at 65% 35%, rgba(115, 230, 255, 0.08) 0%, rgba(139, 124, 255, 0.04) 45%, #080a0f 80%)',
+        background: 'radial-gradient(circle at 65% 35%, rgba(60, 237, 235, 0.08) 0%, rgba(6, 182, 212, 0.04) 45%, #020811 80%)',
         borderLeft: '1px solid var(--vk-border)',
       }}
     >
@@ -43,8 +43,8 @@ export const AuthHeroVisual: React.FC = () => {
             gap: '8px',
             padding: '6px 12px',
             borderRadius: '999px',
-            background: 'rgba(115, 230, 255, 0.08)',
-            border: '1px solid rgba(115, 230, 255, 0.25)',
+            background: 'rgba(60, 237, 235, 0.08)',
+            border: '1px solid rgba(60, 237, 235, 0.25)',
             backdropFilter: 'blur(8px)',
           }}
         >
@@ -63,12 +63,12 @@ export const AuthHeroVisual: React.FC = () => {
             width: '120px',
             height: '120px',
             borderRadius: '24px',
-            background: 'linear-gradient(135deg, rgba(115, 230, 255, 0.15) 0%, rgba(139, 124, 255, 0.1) 100%)',
-            border: '1px solid rgba(115, 230, 255, 0.3)',
+            background: 'linear-gradient(135deg, rgba(60, 237, 235, 0.15) 0%, rgba(6, 182, 212, 0.1) 100%)',
+            border: '1px solid rgba(60, 237, 235, 0.3)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 0 50px rgba(115, 230, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+            boxShadow: '0 0 50px rgba(60, 237, 235, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
             marginBottom: '28px',
           }}
         >
@@ -78,7 +78,7 @@ export const AuthHeroVisual: React.FC = () => {
               position: 'absolute',
               inset: '-8px',
               borderRadius: '30px',
-              border: '1px dashed rgba(115, 230, 255, 0.2)',
+              border: '1px dashed rgba(60, 237, 235, 0.2)',
               pointerEvents: 'none',
             }}
           />

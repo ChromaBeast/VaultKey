@@ -81,7 +81,7 @@ const SidebarHeader: React.FC<{ org: { plan?: string; name: string } | null }> =
   const { open } = useSidebar();
   return (
     <div className="flex items-center gap-3 py-2 px-1 border-b border-border/50">
-      <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-cyan-500/20 to-indigo-500/20 border border-cyan-500/30 flex items-center justify-center shrink-0">
+      <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-cyan-400/25 to-teal-500/20 border border-cyan-400/35 flex items-center justify-center shrink-0">
         <KeyRound className="h-4 w-4 text-primary" />
       </div>
       {open && (

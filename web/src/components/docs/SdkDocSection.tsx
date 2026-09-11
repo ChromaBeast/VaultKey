@@ -38,7 +38,7 @@ vk.inject(project="backend", env="production")`;
             {copiedSnippet === 'node' ? 'Copied' : 'Copy'}
           </button>
         </div>
-        <pre className="code-font" style={{ background: '#090d16', padding: '14px', borderRadius: '10px', overflowX: 'auto', border: '1px solid rgba(255,255,255,0.1)', color: '#6366f1', fontSize: '0.8rem', lineHeight: '1.5' }}>
+        <pre className="code-font" style={{ background: '#090d16', padding: '14px', borderRadius: '10px', overflowX: 'auto', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--vk-accent)', fontSize: '0.8rem', lineHeight: '1.5' }}>
           {nodeCode}
         </pre>
       </div>
@@ -50,7 +50,7 @@ vk.inject(project="backend", env="production")`;
             {copiedSnippet === 'py' ? 'Copied' : 'Copy'}
           </button>
         </div>
-        <pre className="code-font" style={{ background: '#090d16', padding: '14px', borderRadius: '10px', overflowX: 'auto', border: '1px solid rgba(255,255,255,0.1)', color: '#a855f7', fontSize: '0.8rem', lineHeight: '1.5' }}>
+        <pre className="code-font" style={{ background: '#090d16', padding: '14px', borderRadius: '10px', overflowX: 'auto', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--vk-accent-hover)', fontSize: '0.8rem', lineHeight: '1.5' }}>
           {pythonCode}
         </pre>
       </div>

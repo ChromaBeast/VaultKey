@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 
 const PIPELINE_STEPS = [
   {
@@ -49,7 +49,7 @@ export const ArchitectureSection: React.FC = () => {
           style={{
             fontSize: '0.75rem',
             fontFamily: 'var(--font-mono)',
-            color: '#6366f1',
+            color: 'var(--vk-accent)',
             letterSpacing: '0.08em',
             fontWeight: 700,
             textTransform: 'uppercase',
@@ -107,7 +107,7 @@ export const ArchitectureSection: React.FC = () => {
                   marginBottom: '14px',
                 }}
               >
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#6366f1', fontWeight: 700 }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--vk-accent)', fontWeight: 700 }}>
                   {s.step}
                 </span>
                 <span
@@ -116,9 +116,9 @@ export const ArchitectureSection: React.FC = () => {
                     fontSize: '0.62rem',
                     padding: '2px 6px',
                     borderRadius: '4px',
-                    background: 'rgba(99, 102, 241, 0.1)',
-                    color: '#818cf8',
-                    border: '1px solid rgba(99, 102, 241, 0.2)',
+                    background: 'rgba(60, 237, 235, 0.1)',
+                    color: 'var(--vk-accent)',
+                    border: '1px solid rgba(60, 237, 235, 0.2)',
                   }}
                 >
                   {s.tag}

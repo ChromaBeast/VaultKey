@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 
 interface FaqItem {
   question: string;
@@ -54,7 +54,7 @@ export const FaqSection: React.FC = () => {
           style={{
             fontSize: '0.75rem',
             fontFamily: 'var(--font-mono)',
-            color: '#6366f1',
+            color: 'var(--vk-accent)',
             letterSpacing: '0.08em',
             fontWeight: 700,
             textTransform: 'uppercase',
@@ -110,7 +110,7 @@ export const FaqSection: React.FC = () => {
                 <span>{faq.question}</span>
                 <span
                   style={{
-                    color: '#818cf8',
+                    color: 'var(--vk-accent)',
                     fontFamily: 'var(--font-mono)',
                     fontSize: '1.1rem',
                     marginLeft: '16px',

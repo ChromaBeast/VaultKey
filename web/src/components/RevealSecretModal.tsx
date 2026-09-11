@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Link2, ShieldAlert } from 'lucide-react';
 import { createShareLink, errorMessage } from '../lib/api';
 import { pushToast } from '../lib/toast';
@@ -69,7 +69,7 @@ export const RevealSecretModal: React.FC<RevealSecretModalProps> = ({ secretKey,
               background: 'var(--vk-accent-dim)',
               padding: '10px 12px',
               borderRadius: 'var(--radius-sm)',
-              border: '1px solid rgba(115, 230, 255, 0.25)',
+              border: '1px solid rgba(60, 237, 235, 0.25)',
             }}
           >
             <div style={{ fontSize: '0.72rem', color: 'var(--vk-text-muted)', marginBottom: '3px', fontWeight: 600 }}>

@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 export interface PlanProps {
@@ -24,7 +24,7 @@ export const PricingCard: React.FC<{ plan: PlanProps }> = ({ plan }) => {
         flexDirection: 'column',
         justifyContent: 'space-between',
         background: plan.highlighted ? 'rgba(16, 20, 32, 0.85)' : 'rgba(14, 18, 27, 0.55)',
-        border: plan.highlighted ? '1px solid rgba(99, 102, 241, 0.4)' : '1px solid rgba(255, 255, 255, 0.08)',
+        border: plan.highlighted ? '1px solid rgba(60, 237, 235, 0.4)' : '1px solid rgba(255, 255, 255, 0.08)',
       }}
     >
       <div>
@@ -33,7 +33,7 @@ export const PricingCard: React.FC<{ plan: PlanProps }> = ({ plan }) => {
             style={{
               fontSize: '0.8rem',
               fontWeight: 700,
-              color: plan.highlighted ? '#818cf8' : '#8b93a3',
+              color: plan.highlighted ? 'var(--vk-accent)' : '#8b93a3',
               letterSpacing: '0.06em',
               textTransform: 'uppercase',
               fontFamily: 'var(--font-mono)',

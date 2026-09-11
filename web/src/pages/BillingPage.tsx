@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { RazorpayCheckoutButton } from '../components/RazorpayCheckoutButton';
 import { CancelSubscriptionButton } from '../components/CancelSubscriptionButton';
@@ -48,7 +48,7 @@ export const BillingPage: React.FC = () => {
             justifyContent: 'space-between',
             flexWrap: 'wrap',
             gap: '14px',
-            borderColor: 'rgba(115, 230, 255, 0.25)',
+            borderColor: 'rgba(60, 237, 235, 0.25)',
           }}
         >
           <div>

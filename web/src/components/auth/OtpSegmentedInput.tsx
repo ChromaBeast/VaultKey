@@ -102,7 +102,7 @@ export const OtpSegmentedInput: React.FC<OtpSegmentedInputProps> = ({
               fontFamily: 'JetBrains Mono, monospace',
               color: 'var(--vk-text)',
               outline: 'none',
-              boxShadow: digit ? '0 0 10px rgba(115, 230, 255, 0.15)' : 'none',
+              boxShadow: digit ? '0 0 10px rgba(60, 237, 235, 0.2)' : 'none',
               transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
             }}
           />

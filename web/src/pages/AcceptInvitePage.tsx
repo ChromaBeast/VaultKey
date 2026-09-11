@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { KeyRound, ShieldCheck, ArrowRight, AlertCircle } from 'lucide-react';
 import { acceptInvite, fetchInviteDetails, errorMessage } from '../lib/api';
@@ -74,7 +74,7 @@ export const AcceptInvitePage: React.FC = () => {
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px 16px', background: 'var(--vk-bg)' }}>
       <div className="glass" style={{ width: '100%', maxWidth: '440px', padding: '36px 32px' }}>
         <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-          <div style={{ display: 'inline-flex', padding: '12px', borderRadius: 'var(--radius-sm)', background: 'var(--vk-accent-dim)', color: 'var(--vk-accent)', marginBottom: '14px', border: '1px solid rgba(115, 230, 255, 0.3)' }}>
+          <div style={{ display: 'inline-flex', padding: '12px', borderRadius: 'var(--radius-sm)', background: 'var(--vk-accent-dim)', color: 'var(--vk-accent)', marginBottom: '14px', border: '1px solid rgba(60, 237, 235, 0.3)' }}>
             <ShieldCheck size={28} />
           </div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--vk-text)', marginBottom: '4px' }}>

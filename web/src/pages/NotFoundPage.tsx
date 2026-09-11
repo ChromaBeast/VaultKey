@@ -5,8 +5,8 @@ import { ArrowLeft, FileQuestion } from 'lucide-react';
 export const NotFoundPage: React.FC = () => (
   <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: '24px' }}>
     <div className="glass" style={{ maxWidth: '440px', padding: '40px 36px', textAlign: 'center' }}>
-      <FileQuestion size={36} color="#818cf8" style={{ marginBottom: '16px' }} />
-      <div className="code-font" style={{ fontSize: '0.8rem', color: '#818cf8', marginBottom: '6px' }}>
+      <FileQuestion size={36} color="var(--vk-accent)" style={{ marginBottom: '16px' }} />
+      <div className="code-font" style={{ fontSize: '0.8rem', color: 'var(--vk-accent)', marginBottom: '6px' }}>
         HTTP 404
       </div>
       <h1 style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.02em', marginBottom: '8px' }}>

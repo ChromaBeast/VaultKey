@@ -15,7 +15,7 @@
 
 .glass-glow {
   background: var(--vk-surface-1);
-  border: 1px solid rgba(115, 230, 255, 0.3);
+  border: 1px solid rgba(60, 237, 235, 0.3);
   border-radius: var(--radius-card);
   box-shadow: var(--vk-shadow-sm);
 }
@@ -45,11 +45,11 @@
   background: var(--vk-accent);
   color: #080a0f;
   font-weight: 600;
-  border-color: rgba(115, 230, 255, 0.4);
+  border-color: rgba(60, 237, 235, 0.4);
 }
 .btn-primary:hover {
   background: var(--vk-accent-hover);
-  border-color: rgba(115, 230, 255, 0.8);
+  border-color: rgba(60, 237, 235, 0.8);
 }
 
 .btn-secondary {
@@ -107,7 +107,7 @@
 }
 .badge-admin { background: var(--vk-warning-dim); color: var(--vk-warning); border: 1px solid rgba(244, 199, 106, 0.25); }
 .badge-write { background: var(--vk-success-dim); color: var(--vk-success); border: 1px solid rgba(67, 211, 158, 0.25); }
-.badge-read  { background: var(--vk-accent-dim); color: var(--vk-accent); border: 1px solid rgba(115, 230, 255, 0.25); }
+.badge-read  { background: var(--vk-accent-dim); color: var(--vk-accent); border: 1px solid rgba(60, 237, 235, 0.25); }
 .badge-neutral { background: rgba(255, 255, 255, 0.05); color: var(--vk-text-secondary); border: 1px solid var(--vk-border); }
 .badge-danger { background: var(--vk-danger-dim); color: var(--vk-danger); border: 1px solid rgba(255, 107, 122, 0.25); }
 
@@ -116,9 +116,9 @@
   border-radius: var(--radius-badge);
   font-size: 0.75rem;
   font-weight: 600;
-  color: #c084fc;
-  background: rgba(192, 132, 252, 0.1);
-  border: 1px solid rgba(192, 132, 252, 0.22);
+  color: var(--vk-accent);
+  background: var(--vk-accent-dim);
+  border: 1px solid rgba(60, 237, 235, 0.22);
 }
 
 /* Tables */

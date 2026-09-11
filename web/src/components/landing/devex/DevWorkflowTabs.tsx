@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 
 type WorkflowTab = 'cli' | 'docker' | 'ci' | 'sdk';
 
@@ -94,9 +94,9 @@ export const DevWorkflowTabs: React.FC = () => {
               key={t}
               onClick={() => setTab(t)}
               style={{
-                background: tab === t ? 'rgba(99, 102, 241, 0.15)' : 'transparent',
-                border: tab === t ? '1px solid rgba(99, 102, 241, 0.35)' : '1px solid transparent',
-                color: tab === t ? '#818cf8' : '#8b93a3',
+                background: tab === t ? 'rgba(60, 237, 235, 0.15)' : 'transparent',
+                border: tab === t ? '1px solid rgba(60, 237, 235, 0.35)' : '1px solid transparent',
+                color: tab === t ? 'var(--vk-accent)' : '#8b93a3',
                 fontSize: '0.78rem',
                 fontWeight: 600,
                 padding: '6px 14px',

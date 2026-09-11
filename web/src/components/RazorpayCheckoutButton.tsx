@@ -41,7 +41,7 @@ export const RazorpayCheckoutButton: React.FC<RazorpayCheckoutButtonProps> = ({
           email: user?.email || '',
           name: org?.name || '',
         },
-        theme: { color: '#6366f1' },
+        theme: { color: '#3cedeb' },
         handler: (response) => {
           void (async () => {
             try {

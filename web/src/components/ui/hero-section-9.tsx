@@ -114,20 +114,20 @@ export const HeroSection = ({
           initial="hidden"
           animate="visible"
         >
-          {/* Ambient Glow Orbs */}
+          {/* Ambient Glow Orbs — CCyan Harmonized */}
           <motion.div
-            className="absolute -top-4 left-1/4 h-28 w-28 rounded-full bg-cyan-500/15 blur-2xl"
+            className="absolute -top-4 left-1/4 h-28 w-28 rounded-full bg-cyan-400/20 blur-2xl"
             variants={floatingVariants}
             animate="animate"
           />
           <motion.div
-            className="absolute bottom-4 right-1/4 h-24 w-24 rounded-full bg-indigo-500/15 blur-2xl"
+            className="absolute bottom-4 right-1/4 h-24 w-24 rounded-full bg-teal-400/15 blur-2xl"
             variants={floatingVariants}
             animate="animate"
             style={{ transitionDelay: '0.6s' }}
           />
           <motion.div
-            className="absolute bottom-1/3 left-6 h-20 w-20 rounded-full bg-purple-500/15 blur-2xl"
+            className="absolute bottom-1/3 left-6 h-20 w-20 rounded-full bg-cyan-500/15 blur-2xl"
             variants={floatingVariants}
             animate="animate"
             style={{ transitionDelay: '1.2s' }}

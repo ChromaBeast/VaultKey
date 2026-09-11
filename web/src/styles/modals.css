@@ -1,4 +1,4 @@
-﻿/* Modal, Toast, and Command Palette Overlays */
+/* Modal, Toast, and Command Palette Overlays */
 
 /* Modal */
 .modal-overlay {
@@ -47,7 +47,7 @@
 }
 .toast-error { border-color: rgba(255, 107, 122, 0.4); }
 .toast-success { border-color: rgba(67, 211, 158, 0.4); }
-.toast-info { border-color: rgba(115, 230, 255, 0.4); }
+.toast-info { border-color: rgba(60, 237, 235, 0.4); }
 .toast-icon { display: inline-flex; flex-shrink: 0; }
 .toast-error .toast-icon { color: var(--vk-danger); }
 .toast-success .toast-icon { color: var(--vk-success); }

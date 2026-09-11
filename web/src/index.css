@@ -29,25 +29,27 @@
   --color-ring: var(--ring);
 }
 
-:root {
-  --background: #080a0f;
-  --foreground: #f4f7fa;
-  --card: #0d1118;
-  --card-foreground: #f4f7fa;
-  --popover: #0d1118;
-  --popover-foreground: #f4f7fa;
-  --primary: #6366f1;
-  --primary-foreground: #ffffff;
-  --secondary: #151c28;
-  --secondary-foreground: #f4f7fa;
-  --muted: #111722;
-  --muted-foreground: #9aa6b5;
-  --accent: #151c28;
-  --accent-foreground: #73e6ff;
+:root,
+.dark {
+  /* 21st.dev Cyber Cyan (CCyan) Theme */
+  --background: #020811;
+  --foreground: #def7fb;
+  --card: #0a0c13;
+  --card-foreground: #c7e9fb;
+  --popover: #0a0c13;
+  --popover-foreground: #def7fb;
+  --primary: #3cedeb;
+  --primary-foreground: #000000;
+  --secondary: #112a37;
+  --secondary-foreground: #def7fb;
+  --muted: #112a37;
+  --muted-foreground: #60a5c2;
+  --accent: #152e39;
+  --accent-foreground: #b9e7f8;
   --destructive: #ff6b7a;
   --destructive-foreground: #ffffff;
-  --border: rgba(255, 255, 255, 0.08);
-  --input: #151c28;
-  --ring: #6366f1;
+  --border: #112a37;
+  --input: #112a37;
+  --ring: #3cedeb;
   --radius: 0.5rem;
 }

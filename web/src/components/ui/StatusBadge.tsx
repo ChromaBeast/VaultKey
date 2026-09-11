@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 
 export type StatusVariant = 'success' | 'warning' | 'danger' | 'neutral' | 'accent';
 
@@ -30,7 +30,7 @@ const VARIANT_MAP: Record<StatusVariant, { bg: string; color: string; border: st
   accent: {
     bg: 'var(--vk-accent-dim)',
     color: 'var(--vk-accent)',
-    border: 'rgba(115, 230, 255, 0.25)',
+    border: 'rgba(60, 237, 235, 0.25)',
     dot: 'var(--vk-accent)',
   },
   neutral: {

@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { ComparisonTable } from './ComparisonTable';
 
 export const WhyNotEnvSection: React.FC = () => {
@@ -16,7 +16,7 @@ export const WhyNotEnvSection: React.FC = () => {
           style={{
             fontSize: '0.75rem',
             fontFamily: 'var(--font-mono)',
-            color: '#6366f1',
+            color: 'var(--vk-accent)',
             letterSpacing: '0.08em',
             fontWeight: 700,
             textTransform: 'uppercase',

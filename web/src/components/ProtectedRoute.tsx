@@ -10,7 +10,7 @@ export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ childr
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-        <span className="icon-spin"><KeyRound size={30} color="#8b5cf6" /></span>
+        <span className="icon-spin"><KeyRound size={30} color="#3cedeb" /></span>
       </div>
     );
   }

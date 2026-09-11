@@ -48,7 +48,7 @@ export const TrustProofBar: React.FC = () => {
               style={{
                 fontSize: '0.7rem',
                 fontFamily: 'var(--font-mono)',
-                color: '#6366f1',
+                color: 'var(--vk-accent)',
                 letterSpacing: '0.08em',
                 fontWeight: 600,
               }}

@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export const FinalCtaSection: React.FC = () => {
@@ -61,7 +61,7 @@ export const FinalCtaSection: React.FC = () => {
             marginBottom: '32px',
           }}
         >
-          <span style={{ color: '#6366f1' }}>$</span>
+          <span style={{ color: 'var(--vk-accent)', fontWeight: 700 }}>$</span>
           <span>{installCmd}</span>
           <button
             onClick={handleCopy}
