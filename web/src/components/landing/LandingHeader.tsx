@@ -32,7 +32,7 @@ export const LandingHeader: React.FC = () => {
     >
       <div
         style={{
-          maxWidth: '1240px',
+          maxWidth: '1200px',
           height: '100%',
           margin: '0 auto',
           padding: '0 24px',

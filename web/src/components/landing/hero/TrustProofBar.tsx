@@ -28,7 +28,7 @@ export const TrustProofBar: React.FC = () => {
     <div
       style={{
         maxWidth: '1200px',
-        margin: '64px auto 0',
+        margin: '20px auto 0',
         padding: '0 24px',
       }}
     >

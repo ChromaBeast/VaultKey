@@ -69,8 +69,8 @@ export const HeroSection = ({
   className,
 }: HeroSectionProps) => {
   return (
-    <section className={cn('w-full overflow-hidden bg-background py-16 sm:py-24 px-4 sm:px-6 lg:px-8', className)}>
-      <div className="max-w-7xl mx-auto grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-12">
+    <div className={cn('w-full', className)}>
+      <div className="w-full grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-12">
         {/* Left Column: Text Content */}
         <motion.div
           className="flex flex-col items-center text-center lg:items-start lg:text-left"
@@ -84,10 +84,10 @@ export const HeroSection = ({
           >
             {title}
           </motion.h1>
-          <motion.p className="mt-6 max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed" variants={itemVariants}>
+          <motion.p className="mt-5 max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed" variants={itemVariants}>
             {subtitle}
           </motion.p>
-          <motion.div className="mt-8 flex flex-wrap justify-center gap-3.5 lg:justify-start" variants={itemVariants}>
+          <motion.div className="mt-7 flex flex-wrap justify-center gap-3.5 lg:justify-start" variants={itemVariants}>
             {actions.map((action, index) => (
               <Button
                 key={index}
@@ -103,9 +103,9 @@ export const HeroSection = ({
               </Button>
             ))}
           </motion.div>
-          <motion.div className="mt-10 flex flex-wrap justify-center gap-4 sm:gap-6 lg:justify-start" variants={itemVariants}>
+          <motion.div className="mt-8 flex flex-wrap justify-center gap-3 sm:gap-4 lg:justify-start" variants={itemVariants}>
             {stats.map((stat, index) => (
-              <div key={index} className="flex items-center gap-3 bg-card/60 border border-white/10 rounded-xl px-4 py-2.5 shadow-sm">
+              <div key={index} className="flex items-center gap-3 bg-card/60 border border-white/10 rounded-xl px-3.5 py-2 sm:px-4 sm:py-2.5 shadow-sm">
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 text-primary border border-primary/25 shrink-0">
                   {stat.icon}
                 </div>
@@ -121,7 +121,7 @@ export const HeroSection = ({
         {/* Right Column: Visual Content or Image Collage */}
         {visualContent ? (
           <motion.div
-            className="w-full flex items-center justify-center"
+            className="w-full flex items-center justify-center lg:justify-end"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -155,37 +155,26 @@ export const HeroSection = ({
             />
 
             {/* Images */}
-            {images[0] && (
-              <motion.div
-                className="absolute left-1/2 top-0 h-48 w-48 -translate-x-1/2 rounded-2xl bg-card/80 backdrop-blur-md border border-white/10 p-2 shadow-2xl shadow-black/60 sm:h-64 sm:w-64"
-                style={{ transformOrigin: 'bottom center' }}
-                variants={imageVariants}
-              >
-                <img src={images[0]} alt="Hero feature primary" className="h-full w-full rounded-xl object-cover" />
-              </motion.div>
-            )}
-            {images[1] && (
-              <motion.div
-                className="absolute right-2 sm:right-6 top-1/3 h-40 w-40 rounded-2xl bg-card/80 backdrop-blur-md border border-white/10 p-2 shadow-2xl shadow-black/60 sm:h-56 sm:w-56"
-                style={{ transformOrigin: 'left center' }}
-                variants={imageVariants}
-              >
-                <img src={images[1]} alt="Hero feature secondary" className="h-full w-full rounded-xl object-cover" />
-              </motion.div>
-            )}
-            {images[2] && (
-              <motion.div
-                className="absolute bottom-0 left-2 sm:left-6 h-36 w-36 rounded-2xl bg-card/80 backdrop-blur-md border border-white/10 p-2 shadow-2xl shadow-black/60 sm:h-48 sm:w-48"
-                style={{ transformOrigin: 'top right' }}
-                variants={imageVariants}
-              >
-                <img src={images[2]} alt="Hero feature tertiary" className="h-full w-full rounded-xl object-cover" />
-              </motion.div>
-            )}
+            {images.slice(0, 3).map((img, i) => {
+              const placements = [
+                'left-1/2 top-0 h-48 w-48 -translate-x-1/2 sm:h-64 sm:w-64 origin-bottom',
+                'right-2 sm:right-6 top-1/3 h-40 w-40 sm:h-56 sm:w-56 origin-left',
+                'bottom-0 left-2 sm:left-6 h-36 w-36 sm:h-48 sm:w-48 origin-top-right',
+              ];
+              return (
+                <motion.div
+                  key={i}
+                  className={cn('absolute rounded-2xl bg-card/80 backdrop-blur-md border border-white/10 p-2 shadow-2xl shadow-black/60', placements[i])}
+                  variants={imageVariants}
+                >
+                  <img src={img} alt={`Hero feature ${i + 1}`} className="h-full w-full rounded-xl object-cover" />
+                </motion.div>
+              );
+            })}
           </motion.div>
         )}
       </div>
-    </section>
+    </div>
   );
 };
 

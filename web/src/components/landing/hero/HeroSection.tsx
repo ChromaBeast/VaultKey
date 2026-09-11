@@ -50,7 +50,16 @@ export const HeroSection: React.FC = () => {
   };
 
   return (
-    <div className="w-full">
+    <section
+      id="hero"
+      style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '40px 24px 20px',
+        boxSizing: 'border-box',
+        width: '100%',
+      }}
+    >
       <HeroSectionUI
         title={heroData.title}
         subtitle={heroData.subtitle}
@@ -58,6 +67,6 @@ export const HeroSection: React.FC = () => {
         stats={heroData.stats}
         visualContent={<VaultKeyHeroVisual />}
       />
-    </div>
+    </section>
   );
 };

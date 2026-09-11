@@ -20,8 +20,10 @@ export const VaultKeyHeroVisual: React.FC = () => {
   return (
     <div className="relative w-full max-w-lg mx-auto lg:max-w-none pt-4 pb-6">
       {/* Ambient Glows */}
-      <div className="absolute -top-8 -left-8 w-52 h-52 rounded-full bg-cyan-400/20 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-8 -right-8 w-56 h-56 rounded-full bg-teal-400/15 blur-3xl pointer-events-none" />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-8 -left-8 w-52 h-52 rounded-full bg-cyan-400/20 blur-3xl" />
+        <div className="absolute -bottom-8 -right-8 w-56 h-56 rounded-full bg-teal-400/15 blur-3xl" />
+      </div>
 
       {/* Main Terminal Mockup Window */}
       <div className="relative rounded-2xl bg-card/90 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/80 overflow-hidden">
@@ -82,7 +84,7 @@ export const VaultKeyHeroVisual: React.FC = () => {
 
       {/* Floating Badge 1: Top Right */}
       <motion.div
-        className="absolute -top-3 -right-2 sm:-right-4 bg-card/95 backdrop-blur-md border border-white/10 rounded-xl p-3 shadow-xl flex items-center gap-3 hidden sm:flex z-10"
+        className="absolute -top-3 right-0 sm:right-1 bg-card/95 backdrop-blur-md border border-white/10 rounded-xl p-3 shadow-xl flex items-center gap-3 hidden sm:flex z-10"
         variants={floatingBadgeVariants}
         animate="animate"
       >
@@ -97,7 +99,7 @@ export const VaultKeyHeroVisual: React.FC = () => {
 
       {/* Floating Badge 2: Bottom Left */}
       <motion.div
-        className="absolute -bottom-3 -left-2 sm:-left-4 bg-card/95 backdrop-blur-md border border-white/10 rounded-xl p-3 shadow-xl flex items-center gap-3 hidden sm:flex z-10"
+        className="absolute -bottom-3 left-0 sm:left-1 bg-card/95 backdrop-blur-md border border-white/10 rounded-xl p-3 shadow-xl flex items-center gap-3 hidden sm:flex z-10"
         variants={floatingBadgeVariantsAlt}
         animate="animate"
       >

@@ -1,17 +1,9 @@
 "use client";
 
 import * as React from "react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { PricingCard } from "./pricing-card";
 
 export interface PlanFeature {
   label: string;
@@ -54,21 +46,24 @@ export function PricingModule({
   const [isAnnual, setIsAnnual] = React.useState(defaultAnnual);
 
   return (
-    <section className={cn("w-full bg-background text-foreground py-16 sm:py-24 px-4 sm:px-6 lg:px-8", className)}>
-      <div className="max-w-7xl mx-auto text-center">
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground mb-4">
+    <div className={cn("w-full text-foreground", className)}>
+      <div className="w-full text-center">
+        <span className="text-xs font-mono text-primary uppercase font-bold tracking-widest block mb-2">
+          Pricing & Plans
+        </span>
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground mb-3">
           {title}
         </h2>
-        <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed">
+        <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto mb-6 leading-relaxed">
           {subtitle}
         </p>
 
         {/* Dedicated Toggle Row with Dual Monthly/Annual Labels */}
-        <div className="flex justify-center items-center mb-16">
+        <div className="flex justify-center items-center mb-8 sm:mb-10">
           <div
             role="group"
             aria-label="Billing frequency options"
-            className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-card/80 backdrop-blur-md border border-white/10 shadow-lg"
+            className="inline-flex items-center gap-3 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-card/80 backdrop-blur-md border border-white/10 shadow-lg"
           >
             <button
               type="button"
@@ -105,83 +100,19 @@ export function PricingModule({
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 xl:gap-5 items-stretch w-full">
           {plans.map((plan) => (
-            <Card
+            <PricingCard
               key={plan.id}
-              className={cn(
-                "relative flex flex-col justify-between bg-card/80 backdrop-blur-md border border-white/10 rounded-2xl p-5 sm:p-6 transition-all duration-300 hover:shadow-2xl hover:border-primary/40",
-                plan.recommended && "border-primary/70 ring-1 ring-primary/40 shadow-xl shadow-primary/10"
-              )}
-            >
-              {plan.recommended && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-black text-[10px] font-extrabold tracking-widest uppercase px-3.5 py-1 rounded-full shadow-lg shadow-primary/30 z-20 whitespace-nowrap">
-                  RECOMMENDED
-                </div>
-              )}
-
-              <CardHeader className="text-center pt-2 pb-4 px-0">
-                <div className="flex justify-center mb-3">
-                  <div className="h-11 w-11 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center text-primary">
-                    {plan.icon}
-                  </div>
-                </div>
-                <CardTitle className="text-lg font-bold tracking-tight text-foreground">{plan.name}</CardTitle>
-                <CardDescription className="text-xs text-muted-foreground mt-1.5 h-10 flex items-center justify-center line-clamp-2">
-                  {plan.description}
-                </CardDescription>
-              </CardHeader>
-
-              <CardContent className="flex flex-col flex-1 justify-between px-0 pb-0 text-center">
-                <div>
-                  <div className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
-                    ${isAnnual ? plan.priceYearly : plan.priceMonthly}
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1 mb-5">/ {isAnnual ? "year" : "month"}</p>
-
-                  <Button
-                    variant={plan.recommended ? "default" : "outline"}
-                    onClick={() => onSelectPlan?.(plan)}
-                    className={cn(
-                      "w-full h-11 font-semibold transition-all",
-                      plan.recommended
-                        ? "bg-primary text-black hover:bg-primary/90 shadow-md shadow-primary/25"
-                        : "bg-surface-2/60 border-white/10 text-foreground hover:bg-surface-3 hover:border-primary/40"
-                    )}
-                  >
-                    {buttonLabel}
-                  </Button>
-                </div>
-
-                <div className="text-left text-xs border-t border-white/10 pt-5 mt-6">
-                  <h4 className="font-semibold text-primary/90 mb-2 tracking-wider uppercase text-[10px] font-mono">Overview</h4>
-                  <p className="text-muted-foreground mb-3 font-medium text-xs">✓ {plan.users}</p>
-
-                  <h4 className="font-semibold text-primary/90 mb-2 tracking-wider uppercase text-[10px] font-mono">Highlights</h4>
-                  <ul className="space-y-2">
-                    {plan.features.map((f, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        {f.included ? (
-                          <Check className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
-                        ) : (
-                          <X className="w-3.5 h-3.5 text-muted-foreground/30 shrink-0 mt-0.5" />
-                        )}
-                        <span className={cn(
-                          "text-xs leading-relaxed",
-                          f.included ? "text-foreground/90" : "text-muted-foreground/40 line-through"
-                        )}>
-                          {f.label}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
+              plan={plan}
+              isAnnual={isAnnual}
+              buttonLabel={buttonLabel}
+              onSelectPlan={onSelectPlan}
+            />
           ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 

@@ -8,7 +8,7 @@ export const LandingFooter: React.FC = () => {
       style={{
         borderTop: '1px solid var(--vk-border)',
         padding: '64px 24px 40px',
-        maxWidth: '1240px',
+        maxWidth: '1200px',
         margin: '80px auto 0',
       }}
     >

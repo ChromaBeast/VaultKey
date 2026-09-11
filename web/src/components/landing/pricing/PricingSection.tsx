@@ -75,7 +75,14 @@ export const PricingSection: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div id="pricing" className="w-full">
+    <section
+      id="pricing"
+      style={{
+        maxWidth: '1200px',
+        margin: '100px auto 0',
+        padding: '0 24px',
+      }}
+    >
       <PricingModule
         title="Self-host for free. Upgrade when your team grows."
         subtitle="VaultKey is open-core. Run it yourself with zero telemetry, or let us manage uptime, team RBAC, and backups."
@@ -83,8 +90,9 @@ export const PricingSection: React.FC = () => {
         buttonLabel="Get Started"
         plans={VAULTKEY_PLANS}
         defaultAnnual={false}
+        className="py-0 px-0 bg-transparent"
         onSelectPlan={() => navigate('/signup')}
       />
-    </div>
+    </section>
   );
 };
