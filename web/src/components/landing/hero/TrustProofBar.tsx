@@ -2,22 +2,22 @@ import React from 'react';
 
 const SPECS = [
   {
-    label: 'CIPHER & DERIVATION',
+    label: 'Cipher & Derivation',
     value: 'AES-256-GCM · Argon2id',
     desc: '64MB memory cost, zero-knowledge client derivation.',
   },
   {
-    label: 'DEPLOYMENT BINARY',
+    label: 'Deployment Binary',
     value: 'Go Static (~18MB)',
     desc: 'Embedded SQLite in WAL mode. Zero external dependencies.',
   },
   {
-    label: 'INJECTION MODEL',
+    label: 'Injection Model',
     value: 'RAM-Only Pipeline',
     desc: 'Direct process execution via execve. Zero plaintext on disk.',
   },
   {
-    label: 'LEDGER INTEGRITY',
+    label: 'Ledger Integrity',
     value: 'HMAC-SHA256 Chain',
     desc: 'Tamper-evident verification sequence for audit logs.',
   },
@@ -46,19 +46,19 @@ export const TrustProofBar: React.FC = () => {
           <div key={spec.label} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <span
               style={{
-                fontSize: '0.7rem',
+                fontSize: 'var(--font-size-xs)',
                 fontFamily: 'var(--font-mono)',
                 color: 'var(--vk-accent)',
-                letterSpacing: '0.08em',
+                letterSpacing: '0.04em',
                 fontWeight: 600,
               }}
             >
               {spec.label}
             </span>
-            <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#f5f7fa' }}>
+            <span style={{ fontSize: 'var(--font-size-base)', fontWeight: 700, color: 'var(--vk-text)' }}>
               {spec.value}
             </span>
-            <p style={{ fontSize: '0.8rem', color: '#8b93a3', lineHeight: 1.4, margin: 0 }}>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--vk-text-muted)', lineHeight: 1.4, margin: 0 }}>
               {spec.desc}
             </p>
           </div>

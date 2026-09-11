@@ -62,7 +62,7 @@ export const ArchitectureSection: React.FC = () => {
             fontSize: 'clamp(1.8rem, 3.2vw, 2.4rem)',
             fontWeight: 800,
             letterSpacing: '-0.025em',
-            color: '#f5f7fa',
+            color: 'var(--vk-text)',
             lineHeight: 1.2,
             marginTop: '8px',
             marginBottom: '16px',
@@ -70,7 +70,7 @@ export const ArchitectureSection: React.FC = () => {
         >
           Memory-only pipeline. Zero plaintext on disk.
         </h2>
-        <p style={{ color: '#8b93a3', fontSize: '0.95rem', lineHeight: 1.65, margin: 0 }}>
+        <p style={{ color: 'var(--vk-text-muted)', fontSize: 'var(--font-size-base)', lineHeight: 1.65, margin: 0 }}>
           Most secret leaks occur because dot-env files sit unencrypted on developer laptops or in CI cache disks.
           VaultKey keeps secrets strictly in RAM during execution and securely encrypted at rest.
         </p>
@@ -90,7 +90,7 @@ export const ArchitectureSection: React.FC = () => {
             className="glass"
             style={{
               padding: '24px',
-              borderRadius: '12px',
+              borderRadius: 'var(--radius-lg)',
               background: 'rgba(14, 18, 27, 0.7)',
               border: '1px solid rgba(255, 255, 255, 0.08)',
               display: 'flex',
@@ -107,15 +107,15 @@ export const ArchitectureSection: React.FC = () => {
                   marginBottom: '14px',
                 }}
               >
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--vk-accent)', fontWeight: 700 }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--font-size-xs)', color: 'var(--vk-accent)', fontWeight: 700 }}>
                   {s.step}
                 </span>
                 <span
                   style={{
                     fontFamily: 'var(--font-mono)',
-                    fontSize: '0.62rem',
+                    fontSize: 'var(--font-size-2xs)',
                     padding: '2px 6px',
-                    borderRadius: '4px',
+                    borderRadius: 'var(--radius-sm)',
                     background: 'rgba(60, 237, 235, 0.1)',
                     color: 'var(--vk-accent)',
                     border: '1px solid rgba(60, 237, 235, 0.2)',
@@ -124,10 +124,10 @@ export const ArchitectureSection: React.FC = () => {
                   {s.tag}
                 </span>
               </div>
-              <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#f5f7fa', marginBottom: '8px' }}>
+              <h3 style={{ fontSize: 'var(--font-size-base)', fontWeight: 700, color: 'var(--vk-text)', marginBottom: '8px' }}>
                 {s.title}
               </h3>
-              <p style={{ fontSize: '0.82rem', color: '#8b93a3', lineHeight: 1.5, margin: 0 }}>
+              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--vk-text-muted)', lineHeight: 1.5, margin: 0 }}>
                 {s.desc}
               </p>
             </div>
@@ -138,7 +138,7 @@ export const ArchitectureSection: React.FC = () => {
       <div
         style={{
           padding: '20px 24px',
-          borderRadius: '12px',
+          borderRadius: 'var(--radius-lg)',
           background: 'rgba(10, 14, 22, 0.85)',
           border: '1px solid rgba(255, 255, 255, 0.06)',
           display: 'grid',
@@ -148,10 +148,10 @@ export const ArchitectureSection: React.FC = () => {
       >
         {ARCH_ATTRIBUTES.map((attr) => (
           <div key={attr.label}>
-            <div style={{ fontSize: '0.72rem', color: '#64748b', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>
+            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--vk-text-muted)', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>
               {attr.label}
             </div>
-            <div style={{ fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 600 }}>
+            <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--vk-text-secondary)', fontWeight: 600 }}>
               {attr.val}
             </div>
           </div>

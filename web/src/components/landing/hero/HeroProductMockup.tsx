@@ -48,22 +48,22 @@ export const HeroProductMockup: React.FC = () => {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--vk-success)', display: 'inline-block' }} />
-            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--vk-text)', fontFamily: 'JetBrains Mono, monospace' }}>
+            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 700, color: 'var(--vk-text)', fontFamily: 'JetBrains Mono, monospace' }}>
               vaultkey-core v1.2.0
             </span>
-            <span style={{ color: 'var(--vk-text-muted)', fontSize: '0.75rem' }}>·</span>
-            <span style={{ fontSize: '0.72rem', color: 'var(--vk-text-secondary)', fontFamily: 'JetBrains Mono, monospace' }}>
+            <span style={{ color: 'var(--vk-text-muted)', fontSize: 'var(--font-size-xs)' }}>·</span>
+            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--vk-text-secondary)', fontFamily: 'JetBrains Mono, monospace' }}>
               env: production
             </span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.72rem', color: 'var(--vk-text-muted)', fontFamily: 'JetBrains Mono, monospace' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: 'var(--font-size-xs)', color: 'var(--vk-text-muted)', fontFamily: 'JetBrains Mono, monospace' }}>
             cipher: AES-256-GCM
           </div>
         </div>
 
         {/* Secrets Table */}
         <div style={{ padding: '4px 12px' }}>
-          <table style={{ width: '100%', fontSize: '0.78rem', borderCollapse: 'collapse' }}>
+          <table style={{ width: '100%', fontSize: 'var(--font-size-xs)', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--vk-border)' }}>
                 <th style={{ padding: '8px 6px' }}>NAME</th>
@@ -85,13 +85,13 @@ export const HeroProductMockup: React.FC = () => {
                       fontFamily: 'JetBrains Mono, monospace',
                       color: revealedIndex === idx ? 'var(--vk-success)' : 'var(--vk-text-muted)',
                       cursor: 'pointer',
-                      fontSize: '0.75rem',
+                      fontSize: 'var(--font-size-xs)',
                     }}
                     title="Click to toggle reveal"
                   >
                     {revealedIndex === idx ? row.revealed : row.masked}
                   </td>
-                  <td style={{ padding: '8px 6px', color: 'var(--vk-text-muted)', fontSize: '0.725rem' }}>
+                  <td style={{ padding: '8px 6px', color: 'var(--vk-text-muted)', fontSize: 'var(--font-size-xs)' }}>
                     {row.accessed}
                   </td>
                   <td style={{ padding: '8px 6px', textAlign: 'right' }}>
@@ -110,7 +110,7 @@ export const HeroProductMockup: React.FC = () => {
           style={{
             padding: '8px 16px',
             borderTop: '1px solid var(--vk-border)',
-            fontSize: '0.725rem',
+            fontSize: 'var(--font-size-xs)',
             color: 'var(--vk-text-muted)',
             display: 'flex',
             justifyContent: 'space-between',
@@ -130,7 +130,7 @@ export const HeroProductMockup: React.FC = () => {
           borderRadius: 'var(--radius-sm)',
           padding: '12px 16px',
           fontFamily: 'JetBrains Mono, monospace',
-          fontSize: '0.78rem',
+          fontSize: 'var(--font-size-xs)',
           boxShadow: 'var(--vk-shadow-sm)',
         }}
       >
@@ -138,7 +138,7 @@ export const HeroProductMockup: React.FC = () => {
           <span style={{ color: 'var(--vk-text-muted)' }}>$</span>
           <span style={{ fontWeight: 600 }}>vaultkey run -- npm start</span>
         </div>
-        <div style={{ color: 'var(--vk-success)', display: 'flex', flexDirection: 'column', gap: '2px', fontSize: '0.74rem' }}>
+        <div style={{ color: 'var(--vk-success)', display: 'flex', flexDirection: 'column', gap: '2px', fontSize: 'var(--font-size-xs)' }}>
           <div>✓ authenticated</div>
           <div>✓ vault unlocked (RAM-only key derivation)</div>
           <div>✓ 14 secrets injected into environment</div>

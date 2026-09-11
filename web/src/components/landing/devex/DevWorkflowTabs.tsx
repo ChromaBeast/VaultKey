@@ -88,41 +88,56 @@ export const DevWorkflowTabs: React.FC = () => {
           gap: '8px',
         }}
       >
-        <div style={{ display: 'flex', gap: '6px' }}>
-          {(['cli', 'docker', 'ci', 'sdk'] as WorkflowTab[]).map((t) => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              style={{
-                background: tab === t ? 'rgba(60, 237, 235, 0.15)' : 'transparent',
-                border: tab === t ? '1px solid rgba(60, 237, 235, 0.35)' : '1px solid transparent',
-                color: tab === t ? 'var(--vk-accent)' : '#8b93a3',
-                fontSize: '0.78rem',
-                fontWeight: 600,
-                padding: '6px 14px',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontFamily: 'var(--font-mono)',
-                textTransform: 'uppercase',
-              }}
-            >
-              {t}
-            </button>
-          ))}
+        <div role="tablist" aria-label="Workflow implementation environments" style={{ display: 'flex', gap: '6px' }}>
+          {(['cli', 'docker', 'ci', 'sdk'] as WorkflowTab[]).map((t) => {
+            const isActive = tab === t;
+            return (
+              <button
+                key={t}
+                role="tab"
+                id={`tab-${t}`}
+                aria-selected={isActive}
+                aria-controls={`panel-${t}`}
+                onClick={() => setTab(t)}
+                style={{
+                  background: isActive ? 'var(--vk-accent)' : 'transparent',
+                  border: isActive ? '1px solid var(--vk-accent)' : '1px solid transparent',
+                  color: isActive ? '#020811' : 'var(--vk-text-muted)',
+                  fontSize: 'var(--font-size-xs)',
+                  fontWeight: isActive ? 700 : 500,
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-sm)',
+                  cursor: 'pointer',
+                  fontFamily: 'var(--font-mono)',
+                  textTransform: 'uppercase',
+                  boxShadow: isActive ? '0 0 14px rgba(60, 237, 235, 0.25)' : 'none',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                {t}
+              </button>
+            );
+          })}
         </div>
-        <span style={{ fontSize: '0.72rem', color: '#8b93a3', fontFamily: 'var(--font-mono)' }}>
+        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--vk-text-muted)', fontFamily: 'var(--font-mono)' }}>
           {current.title}
         </span>
       </div>
 
-      <div style={{ padding: '20px', background: '#06070b' }}>
+      <div
+        role="tabpanel"
+        id={`panel-${tab}`}
+        aria-labelledby={`tab-${tab}`}
+        tabIndex={0}
+        style={{ padding: '20px', background: '#06070b' }}
+      >
         <pre
           style={{
             margin: 0,
             fontFamily: 'var(--font-mono)',
-            fontSize: '0.82rem',
+            fontSize: 'var(--font-size-sm)',
             lineHeight: 1.6,
-            color: '#f5f7fa',
+            color: 'var(--vk-text)',
             overflowX: 'auto',
           }}
         >

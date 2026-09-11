@@ -17,7 +17,7 @@ export const FinalCtaSection: React.FC = () => {
         className="glass"
         style={{
           padding: '56px 32px',
-          borderRadius: '16px',
+          borderRadius: 'var(--radius-lg)',
           background: 'rgba(14, 18, 27, 0.75)',
           border: '1px solid rgba(255, 255, 255, 0.08)',
           textAlign: 'center',
@@ -28,7 +28,7 @@ export const FinalCtaSection: React.FC = () => {
             fontSize: 'clamp(1.8rem, 3.2vw, 2.5rem)',
             fontWeight: 800,
             letterSpacing: '-0.025em',
-            color: '#f5f7fa',
+            color: 'var(--vk-text)',
             marginBottom: '12px',
           }}
         >
@@ -36,8 +36,8 @@ export const FinalCtaSection: React.FC = () => {
         </h2>
         <p
           style={{
-            fontSize: '0.95rem',
-            color: '#8b93a3',
+            fontSize: 'var(--font-size-base)',
+            color: 'var(--vk-text-muted)',
             maxWidth: '540px',
             margin: '0 auto 28px',
             lineHeight: 1.6,
@@ -54,23 +54,25 @@ export const FinalCtaSection: React.FC = () => {
             background: 'rgba(5, 7, 12, 0.8)',
             border: '1px solid rgba(255, 255, 255, 0.1)',
             padding: '10px 18px',
-            borderRadius: '8px',
+            borderRadius: 'var(--radius-md)',
             fontFamily: 'var(--font-mono)',
-            fontSize: '0.85rem',
-            color: '#cbd5e1',
+            fontSize: 'var(--font-size-sm)',
+            color: 'var(--vk-text-secondary)',
             marginBottom: '32px',
           }}
         >
           <span style={{ color: 'var(--vk-accent)', fontWeight: 700 }}>$</span>
           <span>{installCmd}</span>
           <button
+            type="button"
+            aria-label="Copy install command to clipboard"
             onClick={handleCopy}
             style={{
               background: 'transparent',
               border: 'none',
-              color: copied ? '#10b981' : '#8b93a3',
+              color: copied ? 'var(--vk-success)' : 'var(--vk-text-muted)',
               cursor: 'pointer',
-              fontSize: '0.75rem',
+              fontSize: 'var(--font-size-xs)',
               marginLeft: '8px',
               fontWeight: 600,
             }}

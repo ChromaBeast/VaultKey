@@ -19,7 +19,7 @@ export const PricingCard: React.FC<{ plan: PlanProps }> = ({ plan }) => {
       className="glass"
       style={{
         padding: '32px',
-        borderRadius: '14px',
+        borderRadius: 'var(--radius-lg)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -31,9 +31,9 @@ export const PricingCard: React.FC<{ plan: PlanProps }> = ({ plan }) => {
         <div style={{ marginBottom: '20px' }}>
           <h3
             style={{
-              fontSize: '0.8rem',
+              fontSize: 'var(--font-size-xs)',
               fontWeight: 700,
-              color: plan.highlighted ? 'var(--vk-accent)' : '#8b93a3',
+              color: plan.highlighted ? 'var(--vk-accent)' : 'var(--vk-text-muted)',
               letterSpacing: '0.06em',
               textTransform: 'uppercase',
               fontFamily: 'var(--font-mono)',
@@ -43,14 +43,14 @@ export const PricingCard: React.FC<{ plan: PlanProps }> = ({ plan }) => {
             {plan.name}
           </h3>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-            <span style={{ fontSize: '2.5rem', fontWeight: 800, color: '#f5f7fa', letterSpacing: '-0.03em' }}>
+            <span style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--vk-text)', letterSpacing: '-0.03em' }}>
               {plan.price}
             </span>
             {plan.period && (
-              <span style={{ color: '#8b93a3', fontSize: '0.85rem' }}>{plan.period}</span>
+              <span style={{ color: 'var(--vk-text-muted)', fontSize: 'var(--font-size-sm)' }}>{plan.period}</span>
             )}
           </div>
-          <p style={{ color: '#8b93a3', fontSize: '0.825rem', marginTop: '6px' }}>
+          <p style={{ color: 'var(--vk-text-muted)', fontSize: 'var(--font-size-sm)', marginTop: '6px' }}>
             {plan.desc}
           </p>
         </div>
@@ -64,8 +64,8 @@ export const PricingCard: React.FC<{ plan: PlanProps }> = ({ plan }) => {
         >
           <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {plan.features.map((f) => (
-              <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontSize: '0.85rem', color: '#cbd5e1' }}>
-                <span style={{ color: '#10b981', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', marginTop: '1px', flexShrink: 0 }}>
+              <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontSize: 'var(--font-size-sm)', color: 'var(--vk-text-secondary)' }}>
+                <span style={{ color: 'var(--vk-success)', fontFamily: 'var(--font-mono)', fontSize: 'var(--font-size-xs)', marginTop: '1px', flexShrink: 0 }}>
                   ✓
                 </span>
                 <span>{f}</span>

@@ -89,7 +89,16 @@ export const HeroSection = ({
           </motion.p>
           <motion.div className="mt-8 flex flex-wrap justify-center gap-3.5 lg:justify-start" variants={itemVariants}>
             {actions.map((action, index) => (
-              <Button key={index} onClick={action.onClick} variant={action.variant} size="lg" className={action.className}>
+              <Button
+                key={index}
+                onClick={action.onClick}
+                variant={action.variant}
+                size="xl"
+                className={cn(
+                  action.variant === 'default' && 'shadow-lg shadow-primary/25 hover:shadow-primary/40',
+                  action.className
+                )}
+              >
                 {action.text}
               </Button>
             ))}

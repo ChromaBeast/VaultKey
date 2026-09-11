@@ -33,10 +33,10 @@ export const LandingFooter: React.FC = () => {
         </div>
 
         <div>
-          <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--vk-text)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '16px' }}>
+          <h3 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 700, color: 'var(--vk-text)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '16px' }}>
             Product
-          </h4>
-          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.825rem', color: 'var(--vk-text-secondary)' }}>
+          </h3>
+          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: 'var(--font-size-sm)', color: 'var(--vk-text-secondary)' }}>
             <li><Link to="/secrets">Secrets Vault</Link></li>
             <li><Link to="/keys">Machine Access Keys</Link></li>
             <li><Link to="/audit">Audit Ledger</Link></li>
@@ -45,10 +45,10 @@ export const LandingFooter: React.FC = () => {
         </div>
 
         <div>
-          <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--vk-text)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '16px' }}>
+          <h3 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 700, color: 'var(--vk-text)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '16px' }}>
             Developers
-          </h4>
-          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.825rem', color: 'var(--vk-text-secondary)' }}>
+          </h3>
+          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: 'var(--font-size-sm)', color: 'var(--vk-text-secondary)' }}>
             <li><Link to="/docs">CLI Setup</Link></li>
             <li><Link to="/docs">REST API Reference</Link></li>
             <li><a href="#architecture">Cryptographic Architecture</a></li>
@@ -57,9 +57,9 @@ export const LandingFooter: React.FC = () => {
         </div>
 
         <div>
-          <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--vk-text)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '16px' }}>
+          <h3 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 700, color: 'var(--vk-text)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '16px' }}>
             Governance
-          </h4>
+          </h3>
           <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.825rem', color: 'var(--vk-text-secondary)' }}>
             <li><Link to="/privacy">Privacy Policy</Link></li>
             <li><a href="mailto:security@vaultkey.sheershjaiswal.in">Responsible Disclosure</a></li>

@@ -63,17 +63,44 @@ export function PricingModule({
           {subtitle}
         </p>
 
-        {/* Dedicated Toggle Row — Guarantees no collision with cards or badges */}
+        {/* Dedicated Toggle Row with Dual Monthly/Annual Labels */}
         <div className="flex justify-center items-center mb-16">
-          <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-card/80 backdrop-blur-md border border-white/10 shadow-lg">
+          <div
+            role="group"
+            aria-label="Billing frequency options"
+            className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-card/80 backdrop-blur-md border border-white/10 shadow-lg"
+          >
+            <button
+              type="button"
+              onClick={() => setIsAnnual(false)}
+              className={cn(
+                "text-xs sm:text-sm font-medium transition-colors cursor-pointer select-none bg-transparent border-none p-0",
+                !isAnnual ? "text-foreground font-semibold" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              Monthly
+            </button>
             <Switch
               id="billing-toggle"
+              aria-label={annualBillingLabel}
               checked={isAnnual}
               onCheckedChange={(checked) => setIsAnnual(checked)}
             />
-            <label htmlFor="billing-toggle" className="text-xs sm:text-sm font-medium text-foreground cursor-pointer select-none">
-              {annualBillingLabel}
-            </label>
+            <button
+              type="button"
+              onClick={() => setIsAnnual(true)}
+              className={cn(
+                "text-xs sm:text-sm font-medium transition-colors cursor-pointer select-none flex items-center gap-1.5 bg-transparent border-none p-0",
+                isAnnual ? "text-foreground font-semibold" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <span>Annual</span>
+              <span className="text-[10px] font-bold text-primary bg-primary/15 border border-primary/25 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                {annualBillingLabel.includes('(')
+                  ? annualBillingLabel.slice(annualBillingLabel.indexOf('(') + 1, annualBillingLabel.indexOf(')'))
+                  : 'Save 20%'}
+              </span>
+            </button>
           </div>
         </div>
 
@@ -116,7 +143,7 @@ export function PricingModule({
                     variant={plan.recommended ? "default" : "outline"}
                     onClick={() => onSelectPlan?.(plan)}
                     className={cn(
-                      "w-full mb-6 font-semibold py-2.5 transition-all",
+                      "w-full h-11 font-semibold transition-all",
                       plan.recommended
                         ? "bg-primary text-black hover:bg-primary/90 shadow-md shadow-primary/25"
                         : "bg-surface-2/60 border-white/10 text-foreground hover:bg-surface-3 hover:border-primary/40"
@@ -126,8 +153,8 @@ export function PricingModule({
                   </Button>
                 </div>
 
-                <div className="text-left text-xs border-t border-white/8 pt-4 mt-auto">
-                  <h4 className="font-semibold text-primary/90 mb-1 tracking-wider uppercase text-[10px] font-mono">Overview</h4>
+                <div className="text-left text-xs border-t border-white/10 pt-5 mt-6">
+                  <h4 className="font-semibold text-primary/90 mb-2 tracking-wider uppercase text-[10px] font-mono">Overview</h4>
                   <p className="text-muted-foreground mb-3 font-medium text-xs">✓ {plan.users}</p>
 
                   <h4 className="font-semibold text-primary/90 mb-2 tracking-wider uppercase text-[10px] font-mono">Highlights</h4>

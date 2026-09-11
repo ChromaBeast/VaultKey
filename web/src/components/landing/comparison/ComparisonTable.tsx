@@ -52,7 +52,7 @@ export const ComparisonTable: React.FC = () => {
       style={{
         background: '#090c14',
         border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '14px',
+        borderRadius: 'var(--radius-lg)',
         overflow: 'hidden',
         boxShadow: '0 16px 36px rgba(0, 0, 0, 0.45)',
         marginBottom: '20px',
@@ -62,29 +62,29 @@ export const ComparisonTable: React.FC = () => {
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '720px' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)', background: 'rgba(255, 255, 255, 0.02)' }}>
-              <th style={{ padding: '14px 18px', color: '#8b93a3', fontSize: '0.8rem', fontWeight: 600 }}>Capability</th>
-              <th style={{ padding: '14px 18px', color: 'var(--vk-accent)', fontSize: '0.8rem', fontWeight: 700 }}>VaultKey</th>
-              <th style={{ padding: '14px 18px', color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600 }}>HashiCorp Vault</th>
-              <th style={{ padding: '14px 18px', color: '#94a3b8', fontSize: '0.8rem', fontWeight: 600 }}>AWS / GCP Secrets</th>
-              <th style={{ padding: '14px 18px', color: '#f87171', fontSize: '0.8rem', fontWeight: 600 }}>Plain .env Files</th>
+              <th style={{ padding: '14px 18px', color: 'var(--vk-text-muted)', fontSize: 'var(--font-size-xs)', fontWeight: 600 }}>Capability</th>
+              <th style={{ padding: '14px 18px', color: 'var(--vk-accent)', fontSize: 'var(--font-size-xs)', fontWeight: 700 }}>VaultKey</th>
+              <th style={{ padding: '14px 18px', color: 'var(--vk-text-muted)', fontSize: 'var(--font-size-xs)', fontWeight: 600 }}>HashiCorp Vault</th>
+              <th style={{ padding: '14px 18px', color: 'var(--vk-text-muted)', fontSize: 'var(--font-size-xs)', fontWeight: 600 }}>AWS / GCP Secrets</th>
+              <th style={{ padding: '14px 18px', color: 'var(--vk-danger)', fontSize: 'var(--font-size-xs)', fontWeight: 600 }}>Plain .env Files</th>
             </tr>
           </thead>
           <tbody>
             {COMPARISON_DATA.map((row) => (
               <tr key={row.feature} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.04)' }}>
-                <td style={{ padding: '14px 18px', fontWeight: 600, color: '#f5f7fa', fontSize: '0.82rem' }}>
+                <td style={{ padding: '14px 18px', fontWeight: 600, color: 'var(--vk-text)', fontSize: 'var(--font-size-sm)' }}>
                   {row.feature}
                 </td>
-                <td style={{ padding: '14px 18px', color: 'var(--vk-accent)', fontWeight: 600, fontSize: '0.82rem', background: 'rgba(60, 237, 235, 0.06)' }}>
+                <td style={{ padding: '14px 18px', color: 'var(--vk-accent)', fontWeight: 600, fontSize: 'var(--font-size-sm)', background: 'rgba(60, 237, 235, 0.06)' }}>
                   {row.vaultkey}
                 </td>
-                <td style={{ padding: '14px 18px', color: '#94a3b8', fontSize: '0.8rem' }}>
+                <td style={{ padding: '14px 18px', color: 'var(--vk-text-muted)', fontSize: 'var(--font-size-sm)' }}>
                   {row.hashi}
                 </td>
-                <td style={{ padding: '14px 18px', color: '#94a3b8', fontSize: '0.8rem' }}>
+                <td style={{ padding: '14px 18px', color: 'var(--vk-text-muted)', fontSize: 'var(--font-size-sm)' }}>
                   {row.cloud}
                 </td>
-                <td style={{ padding: '14px 18px', color: '#64748b', fontSize: '0.8rem' }}>
+                <td style={{ padding: '14px 18px', color: 'var(--vk-text-muted)', fontSize: 'var(--font-size-sm)' }}>
                   {row.dotenv}
                 </td>
               </tr>
