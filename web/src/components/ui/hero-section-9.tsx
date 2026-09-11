@@ -21,7 +21,8 @@ export interface HeroSectionProps {
   subtitle: string;
   actions: ActionProps[];
   stats: StatProps[];
-  images: string[];
+  images?: string[];
+  visualContent?: React.ReactNode;
   className?: string;
 }
 
@@ -63,7 +64,8 @@ export const HeroSection = ({
   subtitle,
   actions,
   stats,
-  images,
+  images = [],
+  visualContent,
   className,
 }: HeroSectionProps) => {
   return (
@@ -107,55 +109,72 @@ export const HeroSection = ({
           </motion.div>
         </motion.div>
 
-        {/* Right Column: Image Collage */}
-        <motion.div
-          className="relative h-[380px] w-full sm:h-[460px] lg:h-[500px]"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {/* Ambient Glow Orbs — CCyan Harmonized */}
+        {/* Right Column: Visual Content or Image Collage */}
+        {visualContent ? (
           <motion.div
-            className="absolute -top-4 left-1/4 h-28 w-28 rounded-full bg-cyan-400/20 blur-2xl"
-            variants={floatingVariants}
-            animate="animate"
-          />
+            className="w-full flex items-center justify-center"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {visualContent}
+          </motion.div>
+        ) : (
           <motion.div
-            className="absolute bottom-4 right-1/4 h-24 w-24 rounded-full bg-teal-400/15 blur-2xl"
-            variants={floatingVariants}
-            animate="animate"
-            style={{ transitionDelay: '0.6s' }}
-          />
-          <motion.div
-            className="absolute bottom-1/3 left-6 h-20 w-20 rounded-full bg-cyan-500/15 blur-2xl"
-            variants={floatingVariants}
-            animate="animate"
-            style={{ transitionDelay: '1.2s' }}
-          />
+            className="relative h-[380px] w-full sm:h-[460px] lg:h-[500px]"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {/* Ambient Glow Orbs — CCyan Harmonized */}
+            <motion.div
+              className="absolute -top-4 left-1/4 h-28 w-28 rounded-full bg-cyan-400/20 blur-2xl"
+              variants={floatingVariants}
+              animate="animate"
+            />
+            <motion.div
+              className="absolute bottom-4 right-1/4 h-24 w-24 rounded-full bg-teal-400/15 blur-2xl"
+              variants={floatingVariants}
+              animate="animate"
+              style={{ transitionDelay: '0.6s' }}
+            />
+            <motion.div
+              className="absolute bottom-1/3 left-6 h-20 w-20 rounded-full bg-cyan-500/15 blur-2xl"
+              variants={floatingVariants}
+              animate="animate"
+              style={{ transitionDelay: '1.2s' }}
+            />
 
-          {/* Images */}
-          <motion.div
-            className="absolute left-1/2 top-0 h-48 w-48 -translate-x-1/2 rounded-2xl bg-card/80 backdrop-blur-md border border-white/10 p-2 shadow-2xl shadow-black/60 sm:h-64 sm:w-64"
-            style={{ transformOrigin: 'bottom center' }}
-            variants={imageVariants}
-          >
-            <img src={images[0]} alt="Hero feature primary" className="h-full w-full rounded-xl object-cover" />
+            {/* Images */}
+            {images[0] && (
+              <motion.div
+                className="absolute left-1/2 top-0 h-48 w-48 -translate-x-1/2 rounded-2xl bg-card/80 backdrop-blur-md border border-white/10 p-2 shadow-2xl shadow-black/60 sm:h-64 sm:w-64"
+                style={{ transformOrigin: 'bottom center' }}
+                variants={imageVariants}
+              >
+                <img src={images[0]} alt="Hero feature primary" className="h-full w-full rounded-xl object-cover" />
+              </motion.div>
+            )}
+            {images[1] && (
+              <motion.div
+                className="absolute right-2 sm:right-6 top-1/3 h-40 w-40 rounded-2xl bg-card/80 backdrop-blur-md border border-white/10 p-2 shadow-2xl shadow-black/60 sm:h-56 sm:w-56"
+                style={{ transformOrigin: 'left center' }}
+                variants={imageVariants}
+              >
+                <img src={images[1]} alt="Hero feature secondary" className="h-full w-full rounded-xl object-cover" />
+              </motion.div>
+            )}
+            {images[2] && (
+              <motion.div
+                className="absolute bottom-0 left-2 sm:left-6 h-36 w-36 rounded-2xl bg-card/80 backdrop-blur-md border border-white/10 p-2 shadow-2xl shadow-black/60 sm:h-48 sm:w-48"
+                style={{ transformOrigin: 'top right' }}
+                variants={imageVariants}
+              >
+                <img src={images[2]} alt="Hero feature tertiary" className="h-full w-full rounded-xl object-cover" />
+              </motion.div>
+            )}
           </motion.div>
-          <motion.div
-            className="absolute right-2 sm:right-6 top-1/3 h-40 w-40 rounded-2xl bg-card/80 backdrop-blur-md border border-white/10 p-2 shadow-2xl shadow-black/60 sm:h-56 sm:w-56"
-            style={{ transformOrigin: 'left center' }}
-            variants={imageVariants}
-          >
-            <img src={images[1]} alt="Hero feature secondary" className="h-full w-full rounded-xl object-cover" />
-          </motion.div>
-          <motion.div
-            className="absolute bottom-0 left-2 sm:left-6 h-36 w-36 rounded-2xl bg-card/80 backdrop-blur-md border border-white/10 p-2 shadow-2xl shadow-black/60 sm:h-48 sm:w-48"
-            style={{ transformOrigin: 'top right' }}
-            variants={imageVariants}
-          >
-            <img src={images[2]} alt="Hero feature tertiary" className="h-full w-full rounded-xl object-cover" />
-          </motion.div>
-        </motion.div>
+        )}
       </div>
     </section>
   );

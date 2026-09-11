@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import HeroSectionUI from '@/components/ui/hero-section-9';
 import { Shield, KeyRound, Terminal } from 'lucide-react';
+import { VaultKeyHeroVisual } from './VaultKeyHeroVisual';
 
 export const HeroSection: React.FC = () => {
   const navigate = useNavigate();
@@ -20,11 +21,13 @@ export const HeroSection: React.FC = () => {
         text: 'Get Started Free',
         onClick: () => navigate('/signup'),
         variant: 'default' as const,
+        className: 'bg-primary text-black font-semibold hover:bg-primary/90 shadow-lg shadow-primary/25 px-6',
       },
       {
         text: 'View Documentation',
         onClick: () => navigate('/docs'),
         variant: 'outline' as const,
+        className: 'bg-card/70 border-white/15 text-foreground hover:bg-surface-2 hover:border-primary/40 px-6',
       },
     ],
     stats: [
@@ -44,11 +47,6 @@ export const HeroSection: React.FC = () => {
         icon: <KeyRound className="h-5 w-5 text-primary" />,
       },
     ],
-    images: [
-      'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80',
-    ],
   };
 
   return (
@@ -58,7 +56,7 @@ export const HeroSection: React.FC = () => {
         subtitle={heroData.subtitle}
         actions={heroData.actions}
         stats={heroData.stats}
-        images={heroData.images}
+        visualContent={<VaultKeyHeroVisual />}
       />
     </div>
   );

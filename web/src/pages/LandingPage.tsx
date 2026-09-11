@@ -1,4 +1,4 @@
-﻿import React, { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { LandingHeader } from '../components/landing/LandingHeader';
 import { HeroSection } from '../components/landing/hero/HeroSection';
 import { TrustProofBar } from '../components/landing/hero/TrustProofBar';
@@ -28,7 +28,7 @@ export const LandingPage: React.FC = () => {
   }, []);
 
   return (
-    <div style={{ background: '#080a0f', minHeight: '100vh', color: '#f5f7fa' }}>
+    <div style={{ background: 'var(--vk-bg)', minHeight: '100vh', color: 'var(--vk-text)' }}>
       <LandingHeader />
       <main>
         <HeroSection />
