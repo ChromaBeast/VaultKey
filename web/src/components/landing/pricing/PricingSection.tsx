@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PricingModule, type PricingPlan } from '@/components/ui/pricing-module';
 import { Terminal, Cpu, Shield, Building2 } from 'lucide-react';
 
@@ -7,7 +8,7 @@ const VAULTKEY_PLANS: PricingPlan[] = [
     id: 'community',
     name: 'Developer (OSS)',
     description: 'Self-hosted zero-telemetry single binary engine for local and VPS environments.',
-    icon: <Terminal className="w-8 h-8 text-primary" />,
+    icon: <Terminal className="w-6 h-6" />,
     priceMonthly: 0,
     priceYearly: 0,
     users: 'Unlimited local seats',
@@ -23,7 +24,7 @@ const VAULTKEY_PLANS: PricingPlan[] = [
     id: 'developer',
     name: 'Developer Pro',
     description: 'Encrypted cloud backup and automated sync across dev workstations and CI pipelines.',
-    icon: <Cpu className="w-8 h-8 text-primary" />,
+    icon: <Cpu className="w-6 h-6" />,
     priceMonthly: 9,
     priceYearly: 90,
     users: 'Up to 3 workstations',
@@ -39,7 +40,7 @@ const VAULTKEY_PLANS: PricingPlan[] = [
     id: 'team',
     name: 'Team Cloud',
     description: 'Managed cloud instance for engineering teams with centralized RBAC and audit ledger.',
-    icon: <Shield className="w-8 h-8 text-primary" />,
+    icon: <Shield className="w-6 h-6" />,
     priceMonthly: 29,
     priceYearly: 290,
     users: 'Up to 25 engineers',
@@ -56,7 +57,7 @@ const VAULTKEY_PLANS: PricingPlan[] = [
     id: 'enterprise',
     name: 'Enterprise',
     description: 'Dedicated single-tenant infrastructure, custom SLA, and SOC2 / HIPAA readiness.',
-    icon: <Building2 className="w-8 h-8 text-primary" />,
+    icon: <Building2 className="w-6 h-6" />,
     priceMonthly: 199,
     priceYearly: 1990,
     users: 'Unlimited team members',
@@ -71,15 +72,18 @@ const VAULTKEY_PLANS: PricingPlan[] = [
 ];
 
 export const PricingSection: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
-    <div id="pricing" className="max-w-7xl mx-auto my-12">
+    <div id="pricing" className="w-full">
       <PricingModule
         title="Self-host for free. Upgrade when your team grows."
         subtitle="VaultKey is open-core. Run it yourself with zero telemetry, or let us manage uptime, team RBAC, and backups."
-        annualBillingLabel="Pay annually and save 20%"
+        annualBillingLabel="Pay annually (save 20%)"
         buttonLabel="Get Started"
         plans={VAULTKEY_PLANS}
         defaultAnnual={false}
+        onSelectPlan={() => navigate('/signup')}
       />
     </div>
   );

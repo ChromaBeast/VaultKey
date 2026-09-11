@@ -38,6 +38,7 @@ export interface PricingModuleProps {
   plans: PricingPlan[];
   defaultAnnual?: boolean;
   className?: string;
+  onSelectPlan?: (plan: PricingPlan) => void;
 }
 
 export function PricingModule({
@@ -48,90 +49,84 @@ export function PricingModule({
   plans,
   defaultAnnual = false,
   className,
+  onSelectPlan,
 }: PricingModuleProps) {
   const [isAnnual, setIsAnnual] = React.useState(defaultAnnual);
 
   return (
-    <section
-      className={cn(
-        "w-full bg-background text-foreground py-20 px-4 md:px-8",
-        className
-      )}
-    >
-      <div className="max-w-6xl mx-auto text-center">
-        <h2 className="text-4xl font-bold tracking-tight mb-2">{title}</h2>
-        <p className="text-muted-foreground mb-8">{subtitle}</p>
+    <section className={cn("w-full bg-background text-foreground py-16 sm:py-24 px-4 sm:px-6 lg:px-8", className)}>
+      <div className="max-w-7xl mx-auto text-center">
+        <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground mb-3">{title}</h2>
+        <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">{subtitle}</p>
 
         {/* Toggle */}
-        <div className="flex items-center justify-center gap-2 mb-10">
+        <div className="inline-flex items-center justify-center gap-3 mb-12 px-4 py-2 rounded-full bg-card/60 border border-white/10">
           <Switch
             id="billing-toggle"
             checked={isAnnual}
             onCheckedChange={(checked) => setIsAnnual(checked)}
           />
-          <label
-            htmlFor="billing-toggle"
-            className="text-sm text-muted-foreground cursor-pointer"
-          >
+          <label htmlFor="billing-toggle" className="text-sm font-medium text-muted-foreground cursor-pointer select-none">
             {annualBillingLabel}
           </label>
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
           {plans.map((plan) => (
             <Card
               key={plan.id}
               className={cn(
-                "relative border border-muted rounded-xl transition-all hover:shadow-md hover:border-primary/30",
-                plan.recommended && "border-primary ring-1 ring-primary/30 scale-[1.03]"
+                "relative flex flex-col justify-between bg-card/70 backdrop-blur-md border border-white/10 rounded-2xl p-2 transition-all duration-300 hover:shadow-2xl hover:border-primary/40",
+                plan.recommended && "border-primary/70 ring-1 ring-primary/40 shadow-xl shadow-primary/10 sm:scale-[1.02]"
               )}
             >
               {plan.recommended && (
-                <div className="absolute -top-3 left-0 right-0 mx-auto w-fit bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full">
+                <div className="absolute -top-3 left-0 right-0 mx-auto w-fit bg-primary text-primary-foreground text-[11px] font-bold tracking-wide uppercase px-3 py-1 rounded-full shadow-lg shadow-primary/30">
                   Recommended
                 </div>
               )}
 
-              <CardHeader className="text-center pt-8">
-                <div className="flex justify-center mb-4">{plan.icon}</div>
-                <CardTitle>{plan.name}</CardTitle>
-                <CardDescription>{plan.description}</CardDescription>
+              <CardHeader className="text-center pt-7 pb-4 px-4">
+                <div className="flex justify-center mb-3">
+                  <div className="h-12 w-12 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center text-primary">
+                    {plan.icon}
+                  </div>
+                </div>
+                <CardTitle className="text-xl font-bold tracking-tight text-foreground">{plan.name}</CardTitle>
+                <CardDescription className="text-xs text-muted-foreground mt-1.5 line-clamp-2">{plan.description}</CardDescription>
               </CardHeader>
 
-              <CardContent className="text-center">
-                <div className="text-3xl font-bold mb-2 transition-all duration-300">
-                  ${isAnnual ? plan.priceYearly : plan.priceMonthly}
+              <CardContent className="flex flex-col flex-1 justify-between px-4 pb-4 text-center">
+                <div>
+                  <div className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground mb-1">
+                    ${isAnnual ? plan.priceYearly : plan.priceMonthly}
+                  </div>
+                  <p className="text-xs text-muted-foreground mb-6">/ {isAnnual ? "year" : "month"}</p>
+
+                  <Button
+                    variant={plan.recommended ? "default" : "outline"}
+                    onClick={() => onSelectPlan?.(plan)}
+                    className={cn("w-full mb-6 font-semibold", !plan.recommended && "border-white/15 hover:bg-accent/40")}
+                  >
+                    {buttonLabel}
+                  </Button>
                 </div>
-                <p className="text-sm text-muted-foreground mb-4">
-                  / {isAnnual ? "year" : "month"}
-                </p>
 
-                <Button
-                  variant={plan.recommended ? "default" : "outline"}
-                  className="w-full mb-6"
-                >
-                  {buttonLabel}
-                </Button>
+                <div className="text-left text-xs border-t border-white/5 pt-4">
+                  <h4 className="font-semibold text-foreground mb-1 tracking-wider uppercase text-[10px]">Overview</h4>
+                  <p className="text-muted-foreground mb-3 font-medium">✓ {plan.users}</p>
 
-                <div className="text-left text-sm">
-                  <h4 className="font-semibold mb-2">Overview</h4>
-                  <p className="text-muted-foreground mb-4">✓ {plan.users}</p>
-
-                  <h4 className="font-semibold mb-2">Highlights</h4>
+                  <h4 className="font-semibold text-foreground mb-2 tracking-wider uppercase text-[10px]">Highlights</h4>
                   <ul className="space-y-2">
                     {plan.features.map((f, i) => (
-                      <li key={i} className="flex items-center gap-2">
+                      <li key={i} className="flex items-start gap-2">
                         {f.included ? (
-                          <Check className="w-4 h-4 text-primary" />
+                          <Check className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
                         ) : (
-                          <X className="w-4 h-4 text-muted-foreground" />
+                          <X className="w-3.5 h-3.5 text-muted-foreground/40 shrink-0 mt-0.5" />
                         )}
-                        <span
-                          className={f.included
-                            ? "text-muted-foreground"
-                            : "text-muted-foreground/60 line-through"}
-                        >
+                        <span className={f.included ? "text-foreground/90" : "text-muted-foreground/50 line-through"}>
                           {f.label}
                         </span>
                       </li>
@@ -146,3 +141,5 @@ export function PricingModule({
     </section>
   );
 }
+
+export default PricingModule;

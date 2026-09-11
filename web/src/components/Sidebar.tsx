@@ -1,5 +1,5 @@
-﻿import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   BookOpen,
   CreditCard,
@@ -7,19 +7,12 @@ import {
   Lock,
   ScrollText,
   Settings,
-  X,
 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import { Sidebar, SidebarBody, SidebarLink, useSidebar } from '@/components/ui/sidebar';
 import { useAuth } from '../context/AuthContext';
-import { SidebarUserPanel } from './SidebarUserPanel';
+import { pushToast } from '../lib/toast';
 
-interface NavItem {
-  path: string;
-  label: string;
-  icon: LucideIcon;
-}
-
-const NAV_ITEMS: NavItem[] = [
+const NAV_ITEMS = [
   { path: '/secrets', label: 'Secrets', icon: Lock },
   { path: '/keys', label: 'API Keys', icon: KeyRound },
   { path: '/audit', label: 'Audit Ledger', icon: ScrollText },
@@ -28,136 +21,128 @@ const NAV_ITEMS: NavItem[] = [
   { path: '/docs', label: 'Docs', icon: BookOpen },
 ];
 
-export const Sidebar: React.FC<{ mobileOpen: boolean; onMobileClose: () => void }> = ({
-  mobileOpen,
-  onMobileClose,
-}) => {
-  const { org } = useAuth();
+export const AppSidebar: React.FC = () => {
+  const [open, setOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { org, user, lockVault } = useAuth();
+
+  const handleLock = async () => {
+    try {
+      await lockVault();
+      pushToast('Vault locked & memory wiped', 'info');
+      navigate('/login');
+    } catch {
+      navigate('/login');
+    }
+  };
 
   return (
-    <aside
-      className="glass app-sidebar"
-      style={{
-        width: '224px',
-        height: 'calc(100vh - 32px)',
-        position: 'sticky',
-        top: '16px',
-        margin: '16px',
-        padding: '16px 10px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        borderRadius: 'var(--radius-lg)',
-        flexShrink: 0,
-        background: 'var(--vk-surface-1)',
-        border: '1px solid var(--vk-border)',
-      }}
-    >
-      <div>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            padding: '4px 8px 14px',
-            borderBottom: '1px solid var(--vk-border)',
-            marginBottom: '14px',
-          }}
-        >
-          <div
-            style={{
-              width: '28px',
-              height: '28px',
-              borderRadius: 'var(--radius-sm)',
-              background: 'linear-gradient(135deg, rgba(115, 230, 255, 0.2) 0%, rgba(139, 124, 255, 0.2) 100%)',
-              border: '1px solid rgba(115, 230, 255, 0.3)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-            }}
-          >
-            <KeyRound size={14} color="var(--vk-accent)" />
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span
-                className="brand-text"
-                style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--vk-text)', letterSpacing: '-0.02em' }}
-              >
-                VaultKey
-              </span>
-              {org?.plan === 'pro' && (
-                <span
-                  className="code-font"
-                  style={{
-                    fontSize: '0.55rem',
-                    fontWeight: 700,
-                    background: 'var(--vk-accent-dim)',
-                    color: 'var(--vk-accent)',
-                    padding: '2px 5px',
-                    borderRadius: '4px',
-                    border: '1px solid rgba(115, 230, 255, 0.3)',
+    <Sidebar open={open} setOpen={setOpen}>
+      <SidebarBody className="justify-between gap-6">
+        <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
+          <SidebarHeader org={org} />
+          <nav className="mt-6 flex flex-col gap-1" aria-label="Primary">
+            {NAV_ITEMS.map((item) => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.path;
+              return (
+                <SidebarLink
+                  key={item.path}
+                  link={{
+                    label: item.label,
+                    href: item.path,
+                    icon: <Icon className="h-4 w-4 shrink-0" />,
+                    isActive,
+                    onClick: (e) => {
+                      e.preventDefault();
+                      navigate(item.path);
+                    },
                   }}
-                >
-                  PRO
-                </span>
-              )}
-            </div>
-            {org && (
-              <div style={{ fontSize: '0.72rem', color: 'var(--vk-text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {org.name}
-              </div>
-            )}
-          </div>
-          <button
-            type="button"
-            aria-label="Close navigation"
-            onClick={onMobileClose}
-            className="app-sidebar-close"
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: 'var(--vk-text-muted)',
-              cursor: 'pointer',
-              display: mobileOpen ? 'inline-flex' : 'none',
-              padding: '2px',
-            }}
-          >
-            <X size={16} />
-          </button>
+                />
+              );
+            })}
+          </nav>
         </div>
 
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: '2px' }} aria-label="Primary">
-          {NAV_ITEMS.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              onClick={onMobileClose}
-              style={({ isActive }) => ({
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                padding: '8px 10px',
-                borderRadius: 'var(--radius-sm)',
-                fontSize: '0.825rem',
-                fontWeight: isActive ? 600 : 400,
-                background: isActive ? 'var(--vk-surface-2)' : 'transparent',
-                color: isActive ? 'var(--vk-text)' : 'var(--vk-text-secondary)',
-                borderLeft: isActive ? '2px solid var(--vk-accent)' : '2px solid transparent',
-                borderTop: '1px solid transparent',
-                borderRight: '1px solid transparent',
-                borderBottom: '1px solid transparent',
-              })}
-            >
-              <item.icon size={15} style={{ opacity: 0.85, minWidth: '18px' }} />
-              <span>{item.label}</span>
-            </NavLink>
-          ))}
-        </nav>
-      </div>
-
-      <SidebarUserPanel />
-    </aside>
+        {user && (
+          <SidebarFooter
+            email={user.email}
+            role={user.role}
+            onLock={() => void handleLock()}
+          />
+        )}
+      </SidebarBody>
+    </Sidebar>
   );
 };
+
+const SidebarHeader: React.FC<{ org: { plan?: string; name: string } | null }> = ({ org }) => {
+  const { open } = useSidebar();
+  return (
+    <div className="flex items-center gap-3 py-2 px-1 border-b border-border/50">
+      <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-cyan-500/20 to-indigo-500/20 border border-cyan-500/30 flex items-center justify-center shrink-0">
+        <KeyRound className="h-4 w-4 text-primary" />
+      </div>
+      {open && (
+        <div className="flex flex-col min-w-0">
+          <div className="flex items-center gap-1.5">
+            <span className="font-bold text-foreground text-sm tracking-tight">VaultKey</span>
+            {org?.plan === 'pro' && (
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary/20 text-primary border border-primary/30">
+                PRO
+              </span>
+            )}
+          </div>
+          {org && (
+            <span className="text-xs text-muted-foreground truncate">{org.name}</span>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const SidebarFooter: React.FC<{
+  email: string;
+  role: string;
+  onLock: () => void;
+}> = ({ email, role, onLock }) => {
+  const { open } = useSidebar();
+  const initials = email.substring(0, 2).toUpperCase();
+
+  return (
+    <div className="pt-3 border-t border-border/50 flex flex-col gap-2">
+      <div className="flex items-center gap-2.5 px-1">
+        <div className="h-7 w-7 rounded-full bg-secondary border border-border flex items-center justify-center font-mono font-bold text-xs text-foreground shrink-0">
+          {initials}
+        </div>
+        {open && (
+          <div className="flex flex-col min-w-0">
+            <span className="text-xs font-medium text-foreground truncate" title={email}>
+              {email}
+            </span>
+            <span className="text-[10px] text-muted-foreground capitalize">{role} role</span>
+          </div>
+        )}
+      </div>
+
+      {open && (
+        <button
+          onClick={onLock}
+          type="button"
+          className="w-full flex items-center justify-between text-xs py-1.5 px-2.5 rounded-md bg-destructive/10 text-destructive hover:bg-destructive/20 border border-destructive/20 transition-colors"
+          title="Zero memory & lock vault immediately"
+        >
+          <span className="flex items-center gap-1.5">
+            <Lock className="h-3 w-3" /> Lock Vault
+          </span>
+          <kbd className="text-[10px] opacity-70 font-mono">⌘K</kbd>
+        </button>
+      )}
+    </div>
+  );
+};
+
+export { AppSidebar as Sidebar };
+export default AppSidebar;
