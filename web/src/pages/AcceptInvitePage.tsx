@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { KeyRound, ShieldCheck, ArrowRight, AlertCircle } from 'lucide-react';
+import { ShieldCheck, ArrowRight, AlertCircle } from 'lucide-react';
 import { acceptInvite, fetchInviteDetails, errorMessage } from '../lib/api';
 import type { InviteDetails } from '../lib/api';
 import { pushToast } from '../lib/toast';
+import { PasswordField } from '../components/ui/PasswordField';
 
 export const AcceptInvitePage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -18,7 +19,6 @@ export const AcceptInvitePage: React.FC = () => {
   );
 
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -48,10 +48,6 @@ export const AcceptInvitePage: React.FC = () => {
       pushToast('Password must be at least 8 characters long', 'error');
       return;
     }
-    if (password !== confirmPassword) {
-      pushToast('Passwords do not match', 'error');
-      return;
-    }
 
     setSubmitting(true);
     try {
@@ -61,7 +57,7 @@ export const AcceptInvitePage: React.FC = () => {
         if (res.user) localStorage.setItem('vk_user', JSON.stringify(res.user));
         if (res.org) localStorage.setItem('vk_org', JSON.stringify(res.org));
       }
-      pushToast(`Welcome to ${invite?.org_name || 'the team'}! Your vault key is activated.`, 'success');
+      pushToast(`Welcome to ${invite?.org_name || 'the team'}!`, 'success');
       window.location.href = '/secrets';
     } catch (err) {
       pushToast(errorMessage(err, 'Failed to accept invitation'), 'error');
@@ -74,14 +70,14 @@ export const AcceptInvitePage: React.FC = () => {
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px 16px', background: 'var(--vk-bg)' }}>
       <div className="glass" style={{ width: '100%', maxWidth: '440px', padding: '36px 32px' }}>
         <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-          <div style={{ display: 'inline-flex', padding: '12px', borderRadius: 'var(--radius-sm)', background: 'var(--vk-accent-dim)', color: 'var(--vk-accent)', marginBottom: '14px', border: '1px solid rgba(60, 237, 235, 0.3)' }}>
+          <div style={{ display: 'inline-flex', padding: '12px', borderRadius: 'var(--radius-sm)', background: 'var(--vk-accent-dim)', color: 'var(--vk-accent)', marginBottom: '14px', border: '1px solid rgba(91, 141, 239, 0.3)' }}>
             <ShieldCheck size={28} />
           </div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--vk-text)', marginBottom: '4px' }}>
             Accept Invitation
           </h1>
           <p style={{ color: 'var(--vk-text-muted)', fontSize: '0.825rem' }}>
-            Set your password to derive your zero-knowledge vault key.
+            Create your password to join.
           </p>
         </div>
 
@@ -92,7 +88,7 @@ export const AcceptInvitePage: React.FC = () => {
         )}
 
         {!loading && error && (
-          <div style={{ padding: '14px', borderRadius: 'var(--radius-sm)', background: 'var(--vk-danger-dim)', border: '1px solid rgba(255, 107, 122, 0.3)', color: 'var(--vk-danger)', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+          <div style={{ padding: '14px', borderRadius: 'var(--radius-sm)', background: 'var(--vk-danger-dim)', border: '1px solid rgba(239, 68, 68, 0.3)', color: 'var(--vk-danger)', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
             <AlertCircle size={16} style={{ flexShrink: 0, marginTop: '2px' }} />
             <div style={{ fontSize: '0.825rem' }}>
               <strong>Invitation Error</strong>
@@ -112,37 +108,17 @@ export const AcceptInvitePage: React.FC = () => {
               </div>
             </div>
 
-            <div>
-              <label htmlFor="accept-password" style={labelStyle}>Choose Password</label>
-              <input
-                id="accept-password"
-                type="password"
-                required
-                minLength={8}
-                className="input"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="At least 8 characters"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="accept-confirm" style={labelStyle}>Confirm Password</label>
-              <input
-                id="accept-confirm"
-                type="password"
-                required
-                minLength={8}
-                className="input"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Re-enter your password"
-              />
-            </div>
+            <PasswordField
+              id="accept-password"
+              label="Choose Password"
+              placeholder="At least 8 characters"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              minLength={8}
+            />
 
             <button type="submit" className="btn btn-primary" disabled={submitting} style={{ width: '100%', padding: '11px', marginTop: '6px', justifyContent: 'center' }}>
-              <KeyRound size={14} />
-              {submitting ? 'Activating Key...' : 'Activate & Enter Vault'}
+              {submitting ? 'Joining…' : 'Join Organization'}
               {!submitting && <ArrowRight size={14} />}
             </button>
           </form>
@@ -159,12 +135,4 @@ export const AcceptInvitePage: React.FC = () => {
       </div>
     </div>
   );
-};
-
-const labelStyle: React.CSSProperties = {
-  display: 'block',
-  fontSize: '0.75rem',
-  fontWeight: 600,
-  color: 'var(--vk-text-secondary)',
-  marginBottom: '5px',
 };

@@ -5,33 +5,26 @@ const PIPELINE_STEPS = [
     step: '01',
     tag: 'DERIVATION',
     title: 'Client-Side KDF',
-    desc: 'Master secret is derived via Argon2id (m=64MB, t=3, p=4) purely on the client. The master key never leaves local memory.',
+    desc: 'Master key derived client-side; never leaves memory.',
   },
   {
     step: '02',
     tag: 'RAM BUFFER',
     title: 'Locked Memory Page',
-    desc: 'Decrypted secrets reside in locked RAM pages (mlock) protected against swap paging, core dumps, and inter-process reads.',
+    desc: 'Decrypted secrets reside in locked RAM pages.',
   },
   {
     step: '03',
     tag: 'INJECTION',
     title: 'Process Execve',
-    desc: 'VaultKey launches the target child process directly, passing decrypted environment variables into its memory space.',
+    desc: 'Credentials injected directly into child process memory.',
   },
   {
     step: '04',
     tag: 'ZEROIZATION',
     title: 'Atomic Scrub',
-    desc: 'The instant the child process terminates, all decrypted memory buffers are wiped with zeroes and the vault re-locks.',
+    desc: 'Buffers zeroed immediately upon process exit.',
   },
-];
-
-const ARCH_ATTRIBUTES = [
-  { label: 'Storage Engine', val: 'Embedded SQLite in WAL mode' },
-  { label: 'Cipher Suite', val: 'AES-256-GCM + CSPRNG 12B nonces' },
-  { label: 'Audit Verification', val: 'HMAC-SHA256 chained hash ledger' },
-  { label: 'Distribution', val: 'Single static Go binary (zero deps)' },
 ];
 
 export const ArchitectureSection: React.FC = () => {
@@ -71,8 +64,7 @@ export const ArchitectureSection: React.FC = () => {
           Memory-only pipeline. Zero plaintext on disk.
         </h2>
         <p style={{ color: 'var(--vk-text-muted)', fontSize: 'var(--font-size-base)', lineHeight: 1.65, margin: 0 }}>
-          Most secret leaks occur because dot-env files sit unencrypted on developer laptops or in CI cache disks.
-          VaultKey keeps secrets strictly in RAM during execution and securely encrypted at rest.
+          Secrets remain strictly in process memory during execution and encrypted at rest.
         </p>
       </div>
 
@@ -81,7 +73,6 @@ export const ArchitectureSection: React.FC = () => {
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
           gap: '16px',
-          marginBottom: '28px',
         }}
       >
         {PIPELINE_STEPS.map((s) => (
@@ -91,8 +82,6 @@ export const ArchitectureSection: React.FC = () => {
             style={{
               padding: '24px',
               borderRadius: 'var(--radius-lg)',
-              background: 'rgba(14, 18, 27, 0.7)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
@@ -116,43 +105,20 @@ export const ArchitectureSection: React.FC = () => {
                     fontSize: 'var(--font-size-2xs)',
                     padding: '2px 6px',
                     borderRadius: 'var(--radius-sm)',
-                    background: 'rgba(60, 237, 235, 0.1)',
+                    background: 'var(--vk-accent-dim)',
                     color: 'var(--vk-accent)',
-                    border: '1px solid rgba(60, 237, 235, 0.2)',
+                    border: '1px solid rgba(91, 141, 239, 0.25)',
                   }}
                 >
                   {s.tag}
                 </span>
               </div>
-              <h3 style={{ fontSize: 'var(--font-size-base)', fontWeight: 700, color: 'var(--vk-text)', marginBottom: '8px' }}>
+              <h3 style={{ fontSize: 'var(--font-size-base)', fontWeight: 600, color: 'var(--vk-text)', marginBottom: '8px' }}>
                 {s.title}
               </h3>
               <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--vk-text-muted)', lineHeight: 1.5, margin: 0 }}>
                 {s.desc}
               </p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div
-        style={{
-          padding: '20px 24px',
-          borderRadius: 'var(--radius-lg)',
-          background: 'rgba(10, 14, 22, 0.85)',
-          border: '1px solid rgba(255, 255, 255, 0.06)',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: '16px',
-        }}
-      >
-        {ARCH_ATTRIBUTES.map((attr) => (
-          <div key={attr.label}>
-            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--vk-text-muted)', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>
-              {attr.label}
-            </div>
-            <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--vk-text-secondary)', fontWeight: 600 }}>
-              {attr.val}
             </div>
           </div>
         ))}

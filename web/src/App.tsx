@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AppLayout } from './components/AppLayout';
@@ -20,7 +20,6 @@ import { AcceptInvitePage } from './pages/AcceptInvitePage';
 import { DocsPage } from './pages/DocsPage';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { NotFoundPage } from './pages/NotFoundPage';
-import PricingPage from './components/ui/demo';
 
 export const App: React.FC = () => {
   return (
@@ -36,7 +35,7 @@ export const App: React.FC = () => {
             <Route path="/reset-password" element={<ForgotPasswordPage />} />
             <Route path="/accept-invite" element={<AcceptInvitePage />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/pricing" element={<Navigate to="/#pricing" replace />} />
             <Route path="/share/:shareId" element={<SharePageWrapper />} />
             <Route path="/docs" element={<PublicShell><DocsPage /></PublicShell>} />
 

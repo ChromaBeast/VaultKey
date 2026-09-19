@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Download } from 'lucide-react';
 
 interface AuditFiltersBarProps {
@@ -93,7 +93,7 @@ export const AuditPaginationBar: React.FC<AuditFiltersBarProps> = ({
     </div>
 
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px', fontSize: '0.78rem', color: 'var(--vk-text-muted)' }}>
-      <span>Showing {rowCount} event{rowCount === 1 ? '' : 's'} (offset {offset})</span>
+      <span>{rowCount === 0 ? '0 events' : `${offset + 1}–${offset + rowCount} events`}</span>
       <div style={{ display: 'flex', gap: '6px' }}>
         <button
           className="btn btn-secondary"

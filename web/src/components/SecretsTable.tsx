@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Eye, History, Pencil, Trash2, FolderPlus } from 'lucide-react';
 import type { SecretItem } from '../lib/api';
 import { TableSkeleton } from './Skeletons';
@@ -77,35 +77,38 @@ export const SecretsTable: React.FC<SecretsTableProps> = ({
                       onClick={() => onReveal(s.key)}
                       disabled={revealPendingKey === s.key}
                       className="btn btn-secondary"
-                      style={{ padding: '5px 10px', fontSize: '0.75rem' }}
-                      title="Decrypt in RAM"
+                      style={{ padding: '6px 8px', fontSize: '0.75rem' }}
+                      title="Reveal secret"
+                      aria-label="Reveal secret"
                     >
-                      <Eye size={13} />
-                      {revealPendingKey === s.key ? 'Decrypting...' : 'Reveal'}
+                      <Eye size={14} />
                     </button>
                     <button
                       onClick={() => onHistory(s)}
                       className="btn btn-secondary"
-                      style={{ padding: '5px 10px', fontSize: '0.75rem' }}
-                      title="Version history & rollback"
+                      style={{ padding: '6px 8px', fontSize: '0.75rem' }}
+                      title="Version history"
+                      aria-label="Version history"
                     >
-                      <History size={13} /> History
+                      <History size={14} />
                     </button>
                     <button
                       onClick={() => onEdit(s)}
                       className="btn btn-secondary"
-                      style={{ padding: '5px 10px', fontSize: '0.75rem' }}
-                      title="Update secret value"
+                      style={{ padding: '6px 8px', fontSize: '0.75rem' }}
+                      title="Edit secret"
+                      aria-label="Edit secret"
                     >
-                      <Pencil size={12} /> Edit
+                      <Pencil size={14} />
                     </button>
                     <button
                       onClick={() => onDelete(s)}
                       className="btn btn-danger"
-                      style={{ padding: '5px 10px', fontSize: '0.75rem' }}
+                      style={{ padding: '6px 8px', fontSize: '0.75rem' }}
                       title="Delete secret"
+                      aria-label="Delete secret"
                     >
-                      <Trash2 size={12} />
+                      <Trash2 size={14} />
                     </button>
                   </div>
                 </td>
@@ -136,7 +139,7 @@ export const SecretsTable: React.FC<SecretsTableProps> = ({
                   No secrets in "{project}" yet
                 </h3>
                 <p style={{ color: 'var(--vk-text-muted)', fontSize: '0.85rem', maxWidth: '380px', margin: '0 auto 18px' }}>
-                  Create your first encrypted secret for this environment. Encrypted under team master key before storage.
+                  Create your first encrypted secret for this environment.
                 </p>
                 <button onClick={onCreate} className="btn btn-primary" style={{ padding: '7px 16px', fontSize: '0.85rem' }}>
                   Create First Secret

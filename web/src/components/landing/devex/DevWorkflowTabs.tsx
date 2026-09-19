@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 type WorkflowTab = 'cli' | 'docker' | 'ci' | 'sdk';
 
-const CODE_SNIPPETS: Record<WorkflowTab, { title: string; lang: string; code: string; note: string }> = {
+const CODE_SNIPPETS: Record<WorkflowTab, { title: string; lang: string; code: string }> = {
   cli: {
     title: 'Local CLI Injection',
     lang: 'bash',
@@ -13,7 +13,6 @@ $ vaultkey run --env=production -- npm start
 [vaultkey] Derived master key via Argon2id
 [vaultkey] Decrypted 14 secrets into locked memory
 [vaultkey] Spawned child process (PID: 8192)`,
-    note: 'Zero disk writes. Decrypted environment variables are zeroed upon process exit.',
   },
   docker: {
     title: 'Docker Runtimes',
@@ -26,7 +25,6 @@ services:
       - VAULTKEY_TOKEN=\${VK_PROD_TOKEN}
       - VAULTKEY_ENV=production
     entrypoint: ["vaultkey", "run", "--", "node", "dist/index.js"]`,
-    note: 'Eliminate plaintext secrets in container images or volume mounts.',
   },
   ci: {
     title: 'CI / CD Workflows',
@@ -43,7 +41,6 @@ jobs:
           token: \${{ secrets.VK_CI_TOKEN }}
           env: production
       - run: npm run build`,
-    note: 'Avoid synchronizing and rotating static secrets across multiple repository settings.',
   },
   sdk: {
     title: 'Programmatic API',
@@ -57,7 +54,6 @@ const vk = new VaultKeyClient({
 
 // Decrypt and fetch dynamic database credentials at runtime
 const dbUrl = await vk.getSecret('DATABASE_URL');`,
-    note: 'Designed for microservices requiring runtime credential polling and automated rotation.',
   },
 };
 
@@ -102,15 +98,14 @@ export const DevWorkflowTabs: React.FC = () => {
                 style={{
                   background: isActive ? 'var(--vk-accent)' : 'transparent',
                   border: isActive ? '1px solid var(--vk-accent)' : '1px solid transparent',
-                  color: isActive ? '#020811' : 'var(--vk-text-muted)',
+                  color: isActive ? '#ffffff' : 'var(--vk-text-muted)',
                   fontSize: 'var(--font-size-xs)',
-                  fontWeight: isActive ? 700 : 500,
+                  fontWeight: isActive ? 600 : 500,
                   padding: '6px 14px',
                   borderRadius: 'var(--radius-sm)',
                   cursor: 'pointer',
                   fontFamily: 'var(--font-mono)',
                   textTransform: 'uppercase',
-                  boxShadow: isActive ? '0 0 14px rgba(60, 237, 235, 0.25)' : 'none',
                   transition: 'all 0.15s ease',
                 }}
               >
@@ -143,19 +138,6 @@ export const DevWorkflowTabs: React.FC = () => {
         >
           {current.code}
         </pre>
-      </div>
-
-      <div
-        style={{
-          padding: '12px 20px',
-          borderTop: '1px solid rgba(255, 255, 255, 0.05)',
-          background: 'rgba(0, 0, 0, 0.25)',
-          fontSize: '0.78rem',
-          color: '#8b93a3',
-          fontFamily: 'var(--font-mono)',
-        }}
-      >
-        NOTE: {current.note}
       </div>
     </div>
   );

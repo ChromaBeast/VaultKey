@@ -31,25 +31,25 @@
 
 :root,
 .dark {
-  /* 21st.dev Cyber Cyan (CCyan) Theme */
-  --background: #020811;
-  --foreground: #def7fb;
-  --card: #0a0c13;
-  --card-foreground: #c7e9fb;
-  --popover: #0a0c13;
-  --popover-foreground: #def7fb;
-  --primary: #3cedeb;
-  --primary-foreground: #000000;
-  --secondary: #112a37;
-  --secondary-foreground: #def7fb;
-  --muted: #112a37;
-  --muted-foreground: #60a5c2;
-  --accent: #152e39;
-  --accent-foreground: #b9e7f8;
-  --destructive: #ff6b7a;
+  /* Ink & Signal Theme */
+  --background: #0a0b0d;
+  --foreground: #edeef0;
+  --card: #131417;
+  --card-foreground: #edeef0;
+  --popover: #131417;
+  --popover-foreground: #edeef0;
+  --primary: #5b8def;
+  --primary-foreground: #ffffff;
+  --secondary: #1c1e22;
+  --secondary-foreground: #edeef0;
+  --muted: #1c1e22;
+  --muted-foreground: #9a9da4;
+  --accent: #1c1e22;
+  --accent-foreground: #edeef0;
+  --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #112a37;
-  --input: #112a37;
-  --ring: #3cedeb;
+  --border: #26292e;
+  --input: #1c1e22;
+  --ring: #5b8def;
   --radius: 0.5rem;
 }

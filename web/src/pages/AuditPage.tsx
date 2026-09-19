@@ -82,12 +82,6 @@ export const AuditPage: React.FC = () => {
       <PageHeader
         breadcrumb="SECURITY OBSERVABILITY"
         title="Audit Ledger"
-        description="Append-only cryptographic HMAC-SHA256 chained audit entries guarantee immutable log integrity."
-        badge={
-          <span className="badge badge-read" style={{ fontSize: '0.72rem' }}>
-            HMAC-SHA256 Chained
-          </span>
-        }
         actions={
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             {chain === 'valid' && (
@@ -110,7 +104,7 @@ export const AuditPage: React.FC = () => {
       />
 
       {verifyError && (
-        <div style={{ background: 'var(--vk-danger-dim)', border: '1px solid rgba(255, 107, 122, 0.3)', borderRadius: 'var(--radius-sm)', padding: '12px 16px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px' }}>
+        <div style={{ background: 'var(--vk-danger-dim)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: 'var(--radius-sm)', padding: '12px 16px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px' }}>
           <span style={{ color: 'var(--vk-danger)', fontSize: '0.85rem' }}>Verification request failed: {verifyError}</span>
           <button onClick={() => void retryVerify()} className="btn btn-danger" style={{ padding: '4px 10px', fontSize: '0.75rem' }}>
             Retry
@@ -133,7 +127,7 @@ export const AuditPage: React.FC = () => {
       />
 
       {loadError && (
-        <div style={{ background: 'var(--vk-danger-dim)', border: '1px solid rgba(255, 107, 122, 0.3)', color: 'var(--vk-danger)', borderRadius: 'var(--radius-sm)', padding: '10px 14px', marginBottom: '16px', fontSize: '0.85rem' }}>
+        <div style={{ background: 'var(--vk-danger-dim)', border: '1px solid rgba(239, 68, 68, 0.3)', color: 'var(--vk-danger)', borderRadius: 'var(--radius-sm)', padding: '10px 14px', marginBottom: '16px', fontSize: '0.85rem' }}>
           {loadError}
         </div>
       )}
@@ -162,8 +156,8 @@ export const AuditPage: React.FC = () => {
                   </td>
                   <td className="code-font" style={{ color: 'var(--vk-text-muted)', fontSize: '0.78rem' }}>{l.ip_address || '—'}</td>
                   <td style={{ color: 'var(--vk-text-muted)', fontSize: '0.78rem' }}>{new Date(l.created_at).toLocaleString()}</td>
-                  <td className="code-font" style={{ fontSize: '0.72rem', color: 'var(--vk-accent)', maxWidth: '130px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={l.hmac}>
-                    {l.hmac}
+                  <td className="code-font" style={{ fontSize: '0.75rem', color: 'var(--vk-accent)', cursor: 'help' }} title={l.hmac}>
+                    {l.hmac ? `${l.hmac.slice(0, 8)}…` : '—'}
                   </td>
                 </tr>
               ))}

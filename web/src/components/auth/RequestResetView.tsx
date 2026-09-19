@@ -1,6 +1,5 @@
 import React from 'react';
 import { AuthCardLayout } from './AuthCardLayout';
-import { KeyboardHint } from './KeyboardHint';
 
 interface RequestResetViewProps {
   email: string;
@@ -53,18 +52,7 @@ export const RequestResetView: React.FC<RequestResetViewProps> = ({
           />
         </div>
 
-        <p
-          style={{
-            fontSize: '0.78rem',
-            color: 'var(--vk-text-muted)',
-            lineHeight: 1.5,
-            margin: '0',
-          }}
-        >
-          If your email address exists in our database, you will receive a 6-digit verification code to securely reset your master password.
-        </p>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginTop: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginTop: '6px' }}>
           <button
             type="submit"
             disabled={loading || !email}
@@ -78,7 +66,6 @@ export const RequestResetView: React.FC<RequestResetViewProps> = ({
           >
             {loading ? 'Sending...' : 'Send code'}
           </button>
-          <KeyboardHint />
         </div>
       </form>
     </AuthCardLayout>

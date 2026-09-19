@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link2, ShieldAlert } from 'lucide-react';
+import { Link2 } from 'lucide-react';
 import { createShareLink, errorMessage } from '../lib/api';
 import { pushToast } from '../lib/toast';
 import { Modal } from './ui/Modal';
@@ -21,7 +21,7 @@ export const RevealSecretModal: React.FC<RevealSecretModalProps> = ({ secretKey,
     try {
       const res = await createShareLink(secretVal);
       setShareUrl(`${window.location.origin}${res.share_url}`);
-      pushToast('1-time self-destructing link created', 'success');
+      pushToast('1-time share link created', 'success');
     } catch (err) {
       pushToast(errorMessage(err), 'error');
     } finally {
@@ -37,9 +37,6 @@ export const RevealSecretModal: React.FC<RevealSecretModalProps> = ({ secretKey,
             <h3 className="code-font" style={{ fontSize: '1.15rem', color: 'var(--vk-text)', fontWeight: 700 }}>
               {secretKey}
             </h3>
-            <div style={{ fontSize: '0.75rem', color: 'var(--vk-text-muted)', display: 'flex', alignItems: 'center', gap: '5px', marginTop: '2px' }}>
-              <ShieldAlert size={12} color="var(--vk-warning)" /> Decrypted temporarily in client RAM
-            </div>
           </div>
           <span className="badge badge-write">DECRYPTED</span>
         </div>
@@ -69,11 +66,11 @@ export const RevealSecretModal: React.FC<RevealSecretModalProps> = ({ secretKey,
               background: 'var(--vk-accent-dim)',
               padding: '10px 12px',
               borderRadius: 'var(--radius-sm)',
-              border: '1px solid rgba(60, 237, 235, 0.25)',
+              border: '1px solid rgba(91, 141, 239, 0.25)',
             }}
           >
             <div style={{ fontSize: '0.72rem', color: 'var(--vk-text-muted)', marginBottom: '3px', fontWeight: 600 }}>
-              Self-Destructing 1-Time Link (Single View):
+              1-Time Share Link:
             </div>
             <div className="code-font" style={{ fontSize: '0.8rem', color: 'var(--vk-accent)', wordBreak: 'break-all' }}>
               {shareUrl}
@@ -88,7 +85,7 @@ export const RevealSecretModal: React.FC<RevealSecretModalProps> = ({ secretKey,
             className="btn btn-secondary"
             style={{ fontSize: '0.78rem' }}
           >
-            <Link2 size={13} /> {sharing ? 'Creating...' : '1-Time Link'}
+            <Link2 size={13} /> {sharing ? 'Creating…' : '1-Time Link'}
           </button>
           <button
             onClick={() => void copy(secretVal)}

@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { LandingHeader } from '../components/landing/LandingHeader';
 import { HeroSection } from '../components/landing/hero/HeroSection';
-import { TrustProofBar } from '../components/landing/hero/TrustProofBar';
 import { ArchitectureSection } from '../components/landing/architecture/ArchitectureSection';
 import { DevExperienceSection } from '../components/landing/devex/DevExperienceSection';
 import { WhyNotEnvSection } from '../components/landing/comparison/WhyNotEnvSection';
@@ -32,7 +31,6 @@ export const LandingPage: React.FC = () => {
       <LandingHeader />
       <main>
         <HeroSection />
-        <TrustProofBar />
         <ArchitectureSection />
         <DevExperienceSection />
         <WhyNotEnvSection />

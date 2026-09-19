@@ -34,7 +34,7 @@ export const BillingPage: React.FC = () => {
       <PageHeader
         breadcrumb="BILLING & TIERS"
         title="Team Plans & Subscriptions"
-        description="Zero-trust secret management with team isolation and Razorpay AutoPay recurring billing."
+        description="Manage your plan and invoices."
       />
 
       {org?.subscription_id && (
@@ -48,7 +48,7 @@ export const BillingPage: React.FC = () => {
             justifyContent: 'space-between',
             flexWrap: 'wrap',
             gap: '14px',
-            borderColor: 'rgba(60, 237, 235, 0.25)',
+            borderColor: 'rgba(91, 141, 239, 0.25)',
           }}
         >
           <div>
@@ -81,13 +81,9 @@ export const BillingPage: React.FC = () => {
           <div style={{ fontSize: '2rem', fontWeight: 800, margin: '14px 0 4px', color: 'var(--vk-text)' }}>
             $0 <span style={{ fontSize: '0.85rem', color: 'var(--vk-text-muted)', fontWeight: 400 }}>/ forever</span>
           </div>
-          <p style={{ fontSize: '0.825rem', color: 'var(--vk-text-muted)', marginBottom: '20px' }}>For individual engineers & micro projects</p>
-          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.825rem', color: 'var(--vk-text-secondary)', marginBottom: '24px', flex: 1 }}>
-            <li>✓ Up to 25 encrypted secrets</li>
-            <li>✓ 2 scoped machine access keys</li>
-            <li>✓ Argon2id + AES-256-GCM encryption</li>
-            <li>✓ 7-day HMAC audit ledger</li>
-          </ul>
+          <p style={{ fontSize: '0.875rem', color: 'var(--vk-text-secondary)', marginBottom: '24px', flex: 1 }}>
+            25 secrets, 2 keys
+          </p>
           <button className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }} disabled>
             {currentPlan === 'free' ? 'Active Plan' : 'Free Tier'}
           </button>
@@ -102,14 +98,9 @@ export const BillingPage: React.FC = () => {
           <div style={{ fontSize: '2rem', fontWeight: 800, margin: '14px 0 4px', color: 'var(--vk-text)' }}>
             ₹1,499 <span style={{ fontSize: '0.85rem', color: 'var(--vk-text-muted)', fontWeight: 400 }}>($19) / mo</span>
           </div>
-          <p style={{ fontSize: '0.825rem', color: 'var(--vk-text-muted)', marginBottom: '20px' }}>Auto-renewing monthly subscription via UPI / Card</p>
-          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.825rem', color: 'var(--vk-text-secondary)', marginBottom: '24px', flex: 1 }}>
-            <li>✓ <strong>Unlimited encrypted secrets</strong></li>
-            <li>✓ <strong>Unlimited machine access keys</strong></li>
-            <li>✓ RBAC Team Role Permissions</li>
-            <li>✓ 90-day HMAC audit ledger history</li>
-            <li>✓ Priority technical support</li>
-          </ul>
+          <p style={{ fontSize: '0.875rem', color: 'var(--vk-text-secondary)', marginBottom: '24px', flex: 1 }}>
+            Unlimited secrets + team roles
+          </p>
           <RazorpayCheckoutButton
             plan="pro"
             planName="Pro Team"
@@ -126,13 +117,9 @@ export const BillingPage: React.FC = () => {
             {currentPlan === 'enterprise' && <span className="badge badge-read">Active</span>}
           </div>
           <div style={{ fontSize: '2rem', fontWeight: 800, margin: '14px 0 4px', color: 'var(--vk-text)' }}>Custom</div>
-          <p style={{ fontSize: '0.825rem', color: 'var(--vk-text-muted)', marginBottom: '20px' }}>Dedicated infrastructure & custom governance</p>
-          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.825rem', color: 'var(--vk-text-secondary)', marginBottom: '24px', flex: 1 }}>
-            <li>✓ Dedicated isolated VPS instance</li>
-            <li>✓ Custom domain SSL termination</li>
-            <li>✓ Custom audit retention rules</li>
-            <li>✓ 99.99% Uptime SLA Guarantee</li>
-          </ul>
+          <p style={{ fontSize: '0.875rem', color: 'var(--vk-text-secondary)', marginBottom: '24px', flex: 1 }}>
+            Dedicated infrastructure
+          </p>
           <a href={ENTERPRISE_MAILTO} className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
             Contact Sales
           </a>

@@ -4,12 +4,12 @@ import { useAuth } from '../context/AuthContext';
 import type { Org, User } from '../lib/api';
 import { apiFetch } from '../lib/api';
 import { AuthSplitLayout } from '../components/auth/AuthSplitLayout';
+import { PasswordField } from '../components/ui/PasswordField';
 
 export const Signup: React.FC = () => {
   const [email, setEmail] = useState('');
   const [orgName, setOrgName] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -18,10 +18,6 @@ export const Signup: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      setError('Passwords do not match.');
-      return;
-    }
     setLoading(true);
     setError('');
 
@@ -47,7 +43,7 @@ export const Signup: React.FC = () => {
   return (
     <AuthSplitLayout
       title="Create your account"
-      subtitle="Provision an isolated zero-trust encrypted vault for your engineering team"
+      subtitle="Set up your team vault."
       error={error}
       footer={
         <>
@@ -103,45 +99,14 @@ export const Signup: React.FC = () => {
           />
         </div>
 
-        <div>
-          <label
-            htmlFor="signup-password"
-            style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'var(--vk-text-secondary)', marginBottom: '5px' }}
-          >
-            Master Password
-          </label>
-          <input
-            id="signup-password"
-            type="password"
-            required
-            minLength={8}
-            className="input"
-            placeholder="••••••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="new-password"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="signup-confirm"
-            style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'var(--vk-text-secondary)', marginBottom: '5px' }}
-          >
-            Confirm Password
-          </label>
-          <input
-            id="signup-confirm"
-            type="password"
-            required
-            minLength={8}
-            className="input"
-            placeholder="••••••••••••"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            autoComplete="new-password"
-          />
-        </div>
+        <PasswordField
+          id="signup-password"
+          label="Master Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          minLength={8}
+          autoComplete="new-password"
+        />
 
         <button
           type="submit"
@@ -156,13 +121,12 @@ export const Signup: React.FC = () => {
             fontWeight: 600,
           }}
         >
-          {loading ? 'Initializing Vault...' : 'Create your account'}
+          {loading ? 'Signing up…' : 'Create your account'}
         </button>
 
         <p style={{ fontSize: '0.74rem', color: 'var(--vk-text-muted)', lineHeight: 1.4, margin: '6px 0 0', textAlign: 'center' }}>
-          By clicking &ldquo;Create your account&rdquo;, you agree to our{' '}
-          <Link to="/privacy" style={{ color: 'var(--vk-text-secondary)', textDecoration: 'none' }}>Privacy Policy</Link>
-          {' '}and security terms.
+          By signing up, you agree to our{' '}
+          <Link to="/privacy" style={{ color: 'var(--vk-text-secondary)', textDecoration: 'none' }}>Privacy Policy</Link>.
         </p>
       </form>
     </AuthSplitLayout>

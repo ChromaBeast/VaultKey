@@ -1,53 +1,53 @@
-/* VaultKey Design Tokens — 21st.dev Cyber Cyan (CCyan) Palette */
+/* VaultKey Design Tokens — Ink & Signal Palette */
 :root {
-  /* Surfaces — Cyber Obsidian */
-  --vk-bg: #020811;
-  --vk-surface-1: #0a0c13;
-  --vk-surface-2: #111822;
-  --vk-surface-3: #152e39;
+  /* Surfaces — Ink & Signal */
+  --vk-bg: #0A0B0D;
+  --vk-surface-1: #131417;
+  --vk-surface-2: #1C1E22;
+  --vk-surface-3: #26292E;
 
   /* Borders */
-  --vk-border: #112a37;
-  --vk-border-strong: #1b384a;
-  --vk-border-subtle: #0d1e28;
-  --vk-border-focus: rgba(60, 237, 235, 0.5);
+  --vk-border: #26292E;
+  --vk-border-strong: #363A42;
+  --vk-border-subtle: #1C1E22;
+  --vk-border-focus: rgba(91, 141, 239, 0.5);
 
   /* Typography Colors */
-  --vk-text: #def7fb;
-  --vk-text-secondary: #c7e9fb;
-  --vk-text-muted: #60a5c2;
+  --vk-text: #EDEEF0;
+  --vk-text-secondary: #9A9DA4;
+  --vk-text-muted: #6B6F76;
 
-  /* Accents — 21st.dev Cyber Cyan */
-  --vk-accent: #3cedeb;
-  --vk-accent-hover: #22d3ee;
-  --vk-accent-dim: rgba(60, 237, 235, 0.12);
-  --vk-accent-secondary: #2bcc85;
+  /* Accents — Signal Blue */
+  --vk-accent: #5B8DEF;
+  --vk-accent-hover: #4A7BE0;
+  --vk-accent-dim: rgba(91, 141, 239, 0.12);
+  --vk-accent-secondary: #5B8DEF;
 
   /* Semantic */
-  --vk-success: #2bcc85;
-  --vk-success-dim: rgba(43, 204, 133, 0.12);
-  --vk-warning: #f4c76a;
-  --vk-warning-dim: rgba(244, 199, 106, 0.12);
-  --vk-danger: #ff6b7a;
-  --vk-danger-dim: rgba(255, 107, 122, 0.12);
+  --vk-success: #34D399;
+  --vk-success-dim: rgba(52, 211, 153, 0.12);
+  --vk-warning: #F5A623;
+  --vk-warning-dim: rgba(245, 166, 35, 0.12);
+  --vk-danger: #EF4444;
+  --vk-danger-dim: rgba(239, 68, 68, 0.12);
 
   /* Backward Compatibility Aliases */
   --bg-main: var(--vk-bg);
   --bg-card: var(--vk-surface-1);
   --bg-card-hover: var(--vk-surface-2);
-  --bg-input: #0a0c13;
+  --bg-input: #131417;
   --border-subtle: var(--vk-border);
   --border-highlight: var(--vk-border-strong);
   --border-focus: var(--vk-accent);
   --text-main: var(--vk-text);
   --text-muted: var(--vk-text-secondary);
   --text-label: var(--vk-text);
-  --accent-primary: #3cedeb;
+  --accent-primary: #5B8DEF;
 
   /* Radii — Standardized 4-tier scale */
   --radius-sm: 6px;
   --radius-md: 8px;
-  --radius-lg: 16px;
+  --radius-lg: 14px;
   --radius-full: 9999px;
   --radius-xs: var(--radius-sm);
   --radius-xl: var(--radius-lg);

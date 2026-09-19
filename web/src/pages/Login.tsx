@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import type { Org, User } from '../lib/api';
 import { apiFetch } from '../lib/api';
 import { AuthSplitLayout } from '../components/auth/AuthSplitLayout';
+import { PasswordField } from '../components/ui/PasswordField';
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -38,7 +39,7 @@ export const Login: React.FC = () => {
   return (
     <AuthSplitLayout
       title="Sign in to your vault"
-      subtitle="Enter your credentials to derive your team master key in memory"
+      subtitle="Welcome back."
       error={error}
       footer={
         <>
@@ -78,12 +79,9 @@ export const Login: React.FC = () => {
 
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-            <label
-              htmlFor="login-password"
-              style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--vk-text-secondary)' }}
-            >
+            <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--vk-text-secondary)' }}>
               Master Password
-            </label>
+            </span>
             <Link
               to="/forgot-password"
               style={{
@@ -96,12 +94,9 @@ export const Login: React.FC = () => {
               Forgot password?
             </Link>
           </div>
-          <input
+          <PasswordField
             id="login-password"
-            type="password"
-            required
-            className="input"
-            placeholder="••••••••••••"
+            label=""
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
@@ -121,7 +116,7 @@ export const Login: React.FC = () => {
             fontWeight: 600,
           }}
         >
-          {loading ? 'Deriving Key...' : 'Log in'}
+          {loading ? 'Signing in…' : 'Log in'}
         </button>
       </form>
     </AuthSplitLayout>

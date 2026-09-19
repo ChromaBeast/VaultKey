@@ -14,14 +14,13 @@ export const HeroSection: React.FC = () => {
         <span className="text-primary">Never on disk.</span>
       </>
     ),
-    subtitle:
-      'A single-binary secrets engine for engineering teams. Inject encrypted credentials directly into process memory via Argon2id and AES-256-GCM zero-knowledge encryption.',
+    subtitle: 'Secrets live in memory, never on disk.',
     actions: [
       {
         text: 'Get Started Free',
         onClick: () => navigate('/signup'),
         variant: 'default' as const,
-        className: 'bg-primary text-black font-semibold hover:bg-primary/90 shadow-lg shadow-primary/25 px-6',
+        className: 'bg-primary text-white font-semibold hover:bg-primary/90 shadow-lg shadow-primary/25 px-6',
       },
       {
         text: 'View Documentation',

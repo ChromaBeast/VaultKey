@@ -14,7 +14,6 @@ export const ForgotPasswordPage: React.FC = () => {
   const [otp, setOtp] = useState('');
   const [resetToken, setResetToken] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -72,8 +71,8 @@ export const ForgotPasswordPage: React.FC = () => {
 
   const handleSetNewPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.');
       return;
     }
     setLoading(true);
@@ -128,8 +127,6 @@ export const ForgotPasswordPage: React.FC = () => {
       <SetNewPasswordView
         password={password}
         setPassword={setPassword}
-        confirmPassword={confirmPassword}
-        setConfirmPassword={setConfirmPassword}
         onSubmit={handleSetNewPassword}
         onBack={() => {
           setError('');

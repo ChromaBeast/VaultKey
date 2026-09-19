@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import type { APIKeyItem } from '../lib/api';
@@ -90,7 +90,7 @@ export const ApiKeysPage: React.FC = () => {
       <PageHeader
         breadcrumb="MACHINE ACCESS"
         title="API Keys"
-        description="Scoped credentials for CLI, GitHub Actions CI/CD pipelines, and SDK integrations."
+        description="Scoped tokens for automation."
         badge={
           <span className="badge badge-read" style={{ fontSize: '0.72rem' }}>
             {org?.plan === 'pro' ? 'Pro Plan: Unlimited' : `Quota: ${activeKeys.length} / 2 active tokens`}
@@ -108,29 +108,28 @@ export const ApiKeysPage: React.FC = () => {
           <thead>
             <tr>
               <th>KEY LABEL</th>
-              <th>TOKEN PREFIX</th>
               <th>SCOPE</th>
               <th>LAST USED</th>
-              <th>CREATED</th>
               <th>STATUS</th>
               <th style={{ textAlign: 'right' }}>ACTION</th>
             </tr>
           </thead>
           <tbody>
-            {loading && <TableSkeleton rows={4} cols={7} />}
+            {loading && <TableSkeleton rows={4} cols={5} />}
             {!loading &&
               keys.map((k) => (
                 <tr key={k.id}>
-                  <td style={{ fontWeight: 600, color: 'var(--vk-text)', fontSize: '0.875rem' }}>{k.name}</td>
-                  <td className="code-font" style={{ color: 'var(--vk-accent)', fontSize: '0.8rem' }}>{k.id}</td>
+                  <td>
+                    <div style={{ fontWeight: 600, color: 'var(--vk-text)', fontSize: '0.875rem' }}>{k.name}</div>
+                    <div className="code-font" style={{ color: 'var(--vk-text-muted)', fontSize: '0.75rem', marginTop: '2px' }}>
+                      {k.id}
+                    </div>
+                  </td>
                   <td>
                     <span className={`badge badge-${k.permissions}`}>{k.permissions}</span>
                   </td>
                   <td style={{ color: 'var(--vk-text-secondary)', fontSize: '0.8rem' }}>
                     {k.last_used ? new Date(k.last_used).toLocaleString() : 'Never'}
-                  </td>
-                  <td style={{ color: 'var(--vk-text-secondary)', fontSize: '0.8rem' }}>
-                    {new Date(k.created_at).toLocaleDateString()}
                   </td>
                   <td>
                     <span className={k.active ? 'badge badge-write' : 'badge badge-danger'}>
@@ -148,7 +147,7 @@ export const ApiKeysPage: React.FC = () => {
               ))}
             {!loading && keys.length === 0 && (
               <tr>
-                <td colSpan={7} style={{ textAlign: 'center', color: 'var(--vk-text-muted)', padding: '48px' }}>
+                <td colSpan={5} style={{ textAlign: 'center', color: 'var(--vk-text-muted)', padding: '48px' }}>
                   No machine access tokens generated yet.
                 </td>
               </tr>

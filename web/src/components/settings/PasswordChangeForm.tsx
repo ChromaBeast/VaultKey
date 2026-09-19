@@ -1,11 +1,11 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { changePassword, errorMessage } from '../../lib/api';
 import { pushToast } from '../../lib/toast';
+import { PasswordField } from '../ui/PasswordField';
 
 export const PasswordChangeForm: React.FC = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,17 +16,12 @@ export const PasswordChangeForm: React.FC = () => {
       setError('New password must be at least 8 characters.');
       return;
     }
-    if (newPassword !== confirmPassword) {
-      setError('New password entries do not match.');
-      return;
-    }
     setSubmitting(true);
     try {
       await changePassword(currentPassword, newPassword);
-      pushToast('Password updated & master key re-wrapped', 'success');
+      pushToast('Password updated', 'success');
       setCurrentPassword('');
       setNewPassword('');
-      setConfirmPassword('');
     } catch (err) {
       setError(errorMessage(err, 'Failed to update password'));
     } finally {
@@ -36,36 +31,31 @@ export const PasswordChangeForm: React.FC = () => {
 
   return (
     <form onSubmit={(e) => void handleSubmit(e)} style={{ display: 'flex', flexDirection: 'column', gap: '14px', maxWidth: '480px' }}>
-      <div>
-        <label htmlFor="current-password" style={labelStyle}>Current Password</label>
-        <input id="current-password" type="password" className="input" required autoComplete="current-password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
-      </div>
-      <div>
-        <label htmlFor="new-password" style={labelStyle}>New Password (min. 8 characters)</label>
-        <input id="new-password" type="password" className="input" required minLength={8} autoComplete="new-password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
-      </div>
-      <div>
-        <label htmlFor="confirm-password" style={labelStyle}>Confirm New Password</label>
-        <input id="confirm-password" type="password" className="input" required autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-      </div>
+      <PasswordField
+        id="current-password"
+        label="Current Password"
+        autoComplete="current-password"
+        value={currentPassword}
+        onChange={(e) => setCurrentPassword(e.target.value)}
+      />
+      <PasswordField
+        id="new-password"
+        label="New Password (min. 8 characters)"
+        minLength={8}
+        autoComplete="new-password"
+        value={newPassword}
+        onChange={(e) => setNewPassword(e.target.value)}
+      />
 
       {error && (
-        <div role="alert" style={{ background: 'var(--vk-danger-dim)', border: '1px solid rgba(255, 107, 122, 0.3)', color: 'var(--vk-danger)', padding: '8px 12px', borderRadius: 'var(--radius-sm)', fontSize: '0.8rem' }}>
+        <div role="alert" style={{ background: 'var(--vk-danger-dim)', border: '1px solid rgba(239, 68, 68, 0.3)', color: 'var(--vk-danger)', padding: '8px 12px', borderRadius: 'var(--radius-sm)', fontSize: '0.8rem' }}>
           {error}
         </div>
       )}
 
       <button type="submit" className="btn btn-primary" disabled={submitting} style={{ alignSelf: 'flex-start', marginTop: '4px' }}>
-        {submitting ? 'Re-wrapping Key...' : 'Update Password'}
+        {submitting ? 'Updating…' : 'Update Password'}
       </button>
     </form>
   );
-};
-
-const labelStyle: React.CSSProperties = {
-  display: 'block',
-  fontSize: '0.75rem',
-  fontWeight: 600,
-  color: 'var(--vk-text-secondary)',
-  marginBottom: '5px',
 };

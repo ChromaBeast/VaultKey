@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AuthCardLayout } from './AuthCardLayout';
 import { OtpSegmentedInput } from './OtpSegmentedInput';
-import { KeyboardHint } from './KeyboardHint';
 
 interface VerifyOtpViewProps {
   email: string;
@@ -82,7 +81,7 @@ export const VerifyOtpView: React.FC<VerifyOtpViewProps> = ({
           </button>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '14px', width: '100%' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
           <button
             type="submit"
             disabled={loading || otp.length < 6}
@@ -96,7 +95,6 @@ export const VerifyOtpView: React.FC<VerifyOtpViewProps> = ({
           >
             {loading ? 'Verifying...' : 'Submit'}
           </button>
-          <KeyboardHint />
         </div>
       </form>
     </AuthCardLayout>

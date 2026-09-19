@@ -9,27 +9,27 @@ const FAQS: FaqItem[] = [
   {
     question: 'How does VaultKey prevent secrets from ever touching the disk?',
     answer:
-      'The VaultKey CLI unlocks your vault in RAM and directly populates process memory environments (via execve on POSIX, CreateProcess on Windows) when launching your application. Plaintext secrets are never written to temporary files, bash histories, or swap storage.',
+      'VaultKey unlocks secrets in RAM and injects them directly into child process memory via execve, never writing plaintext to disk.',
   },
   {
     question: 'Can VaultKey be self-hosted in an air-gapped environment?',
     answer:
-      'Yes. VaultKey is compiled as a single static Go binary with an embedded SQLite engine. It has zero external database or cloud phone-home dependencies, making it fully operational in completely air-gapped or restricted internal networks.',
+      'Yes, VaultKey is a single static Go binary with an embedded SQLite engine and zero external dependencies.',
   },
   {
     question: 'How is the master encryption key derived and protected?',
     answer:
-      'We use Argon2id with m=64MB memory bounds, 3 iterations, and 4 parallel threads. Decrypted key material is held exclusively in locked RAM pages (mlock) and scrubbed with zeroes the instant the lock trigger or child process exits.',
+      'Keys are derived client-side via Argon2id, held strictly in locked RAM pages, and scrubbed with zeroes on process exit.',
   },
   {
     question: 'How does the tamper-evident HMAC audit ledger work?',
     answer:
-      'Every secret access, injection, update, or token creation generates a ledger entry cryptographically bound to the HMAC-SHA256 signature of the preceding row. Modifying or deleting any historical log record breaks chain validation.',
+      'Every secret operation cryptographically signs and chains to the preceding log row using HMAC-SHA256.',
   },
   {
     question: 'How do CI/CD pipelines authenticate without storing static keys?',
     answer:
-      'VaultKey provisions scoped, short-lived machine tokens with granular read-only policies. Tokens can be restricted to specific environments (e.g. production-only) and revoked instantly from the dashboard or CLI.',
+      'Pipelines authenticate via scoped, short-lived machine tokens that can be restricted to specific environments and revoked instantly.',
   },
 ];
 
@@ -124,7 +124,7 @@ export const FaqSection: React.FC = () => {
                     width: '28px',
                     height: '28px',
                     borderRadius: 'var(--radius-full)',
-                    background: isOpen ? 'rgba(60, 237, 235, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                    background: isOpen ? 'var(--vk-accent-dim)' : 'rgba(255, 255, 255, 0.05)',
                     color: 'var(--vk-accent)',
                     fontFamily: 'var(--font-mono)',
                     fontSize: '1.1rem',

@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Dices, Plus, Search } from 'lucide-react';
 import { PageHeader } from './ui/PageHeader';
 
@@ -29,7 +29,6 @@ export const SecretsHeaderBar: React.FC<SecretsHeaderBarProps> = ({
     <PageHeader
       breadcrumb="VAULT SECRETS"
       title="Secrets"
-      description="Zero-trust end-to-end encrypted under team master key (AES-256-GCM)."
       badge={
         showBadge ? (
           <span className="badge badge-read" style={{ fontSize: '0.72rem' }}>
@@ -67,10 +66,10 @@ export const SecretsHeaderBar: React.FC<SecretsHeaderBarProps> = ({
         />
         <input
           className="input"
-          placeholder="Search secrets... (⌘K for command palette)"
+          placeholder="Filter secrets…"
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          aria-label="Search secrets"
+          aria-label="Filter secrets"
           style={{ paddingLeft: '36px' }}
         />
       </div>
