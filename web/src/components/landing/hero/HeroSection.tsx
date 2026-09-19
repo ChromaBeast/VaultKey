@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import HeroSectionUI from '@/components/ui/hero-section-9';
-import { Shield, KeyRound, Terminal } from 'lucide-react';
 import { VaultKeyHeroVisual } from './VaultKeyHeroVisual';
 
 export const HeroSection: React.FC = () => {
@@ -14,7 +13,6 @@ export const HeroSection: React.FC = () => {
         <span className="text-primary">Never on disk.</span>
       </>
     ),
-    subtitle: 'Secrets live in memory, never on disk.',
     actions: [
       {
         text: 'Get Started Free',
@@ -29,23 +27,6 @@ export const HeroSection: React.FC = () => {
         className: 'bg-card/70 border-white/15 text-foreground hover:bg-surface-2 hover:border-primary/40 px-6',
       },
     ],
-    stats: [
-      {
-        value: '0 ms',
-        label: 'Disk exposure (RAM-only)',
-        icon: <Terminal className="h-5 w-5 text-primary" />,
-      },
-      {
-        value: '256-bit',
-        label: 'AES-GCM Encryption',
-        icon: <Shield className="h-5 w-5 text-primary" />,
-      },
-      {
-        value: '100%',
-        label: 'Single-binary engine',
-        icon: <KeyRound className="h-5 w-5 text-primary" />,
-      },
-    ],
   };
 
   return (
@@ -54,16 +35,14 @@ export const HeroSection: React.FC = () => {
       style={{
         maxWidth: '1200px',
         margin: '0 auto',
-        padding: '40px 24px 20px',
+        padding: '64px 24px 32px',
         boxSizing: 'border-box',
         width: '100%',
       }}
     >
       <HeroSectionUI
         title={heroData.title}
-        subtitle={heroData.subtitle}
         actions={heroData.actions}
-        stats={heroData.stats}
         visualContent={<VaultKeyHeroVisual />}
       />
     </section>

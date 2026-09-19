@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react';
 import { LandingHeader } from '../components/landing/LandingHeader';
 import { HeroSection } from '../components/landing/hero/HeroSection';
-import { ArchitectureSection } from '../components/landing/architecture/ArchitectureSection';
 import { DevExperienceSection } from '../components/landing/devex/DevExperienceSection';
 import { WhyNotEnvSection } from '../components/landing/comparison/WhyNotEnvSection';
 import { PricingSection } from '../components/landing/pricing/PricingSection';
 import { FaqSection } from '../components/landing/faq/FaqSection';
-import { FinalCtaSection } from '../components/landing/cta/FinalCtaSection';
 import { LandingFooter } from '../components/landing/LandingFooter';
 
 export const LandingPage: React.FC = () => {
@@ -31,12 +29,10 @@ export const LandingPage: React.FC = () => {
       <LandingHeader />
       <main>
         <HeroSection />
-        <ArchitectureSection />
         <DevExperienceSection />
         <WhyNotEnvSection />
         <PricingSection />
         <FaqSection />
-        <FinalCtaSection />
       </main>
       <LandingFooter />
     </div>

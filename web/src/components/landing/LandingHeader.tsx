@@ -64,11 +64,8 @@ export const LandingHeader: React.FC = () => {
 
         {/* Center Nav */}
         <nav style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-          <a href="#architecture" style={{ fontSize: '0.825rem', color: 'var(--vk-text-secondary)', fontWeight: 500 }}>
-            Architecture
-          </a>
           <a href="#workflow" style={{ fontSize: '0.825rem', color: 'var(--vk-text-secondary)', fontWeight: 500 }}>
-            CLI & Workflows
+            Workflows
           </a>
           <a href="#comparison" style={{ fontSize: '0.825rem', color: 'var(--vk-text-secondary)', fontWeight: 500 }}>
             Comparison

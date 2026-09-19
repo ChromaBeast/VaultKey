@@ -18,9 +18,9 @@ export interface ActionProps {
 
 export interface HeroSectionProps {
   title: React.ReactNode;
-  subtitle: string;
+  subtitle?: string;
   actions: ActionProps[];
-  stats: StatProps[];
+  stats?: StatProps[];
   images?: string[];
   visualContent?: React.ReactNode;
   className?: string;
@@ -84,9 +84,11 @@ export const HeroSection = ({
           >
             {title}
           </motion.h1>
-          <motion.p className="mt-5 max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed" variants={itemVariants}>
-            {subtitle}
-          </motion.p>
+          {subtitle ? (
+            <motion.p className="mt-5 max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed" variants={itemVariants}>
+              {subtitle}
+            </motion.p>
+          ) : null}
           <motion.div className="mt-7 flex flex-wrap justify-center gap-3.5 lg:justify-start" variants={itemVariants}>
             {actions.map((action, index) => (
               <Button
@@ -103,19 +105,21 @@ export const HeroSection = ({
               </Button>
             ))}
           </motion.div>
-          <motion.div className="mt-8 flex flex-wrap justify-center gap-3 sm:gap-4 lg:justify-start" variants={itemVariants}>
-            {stats.map((stat, index) => (
-              <div key={index} className="flex items-center gap-3 bg-card/60 border border-white/10 rounded-xl px-3.5 py-2 sm:px-4 sm:py-2.5 shadow-sm">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 text-primary border border-primary/25 shrink-0">
-                  {stat.icon}
+          {stats && stats.length > 0 ? (
+            <motion.div className="mt-8 flex flex-wrap justify-center gap-3 sm:gap-4 lg:justify-start" variants={itemVariants}>
+              {stats.map((stat, index) => (
+                <div key={index} className="flex items-center gap-3 bg-card/60 border border-white/10 rounded-xl px-3.5 py-2 sm:px-4 sm:py-2.5 shadow-sm">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 text-primary border border-primary/25 shrink-0">
+                    {stat.icon}
+                  </div>
+                  <div>
+                    <p className="text-base sm:text-lg font-bold text-foreground leading-tight">{stat.value}</p>
+                    <p className="text-xs text-muted-foreground">{stat.label}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-base sm:text-lg font-bold text-foreground leading-tight">{stat.value}</p>
-                  <p className="text-xs text-muted-foreground">{stat.label}</p>
-                </div>
-              </div>
-            ))}
-          </motion.div>
+              ))}
+            </motion.div>
+          ) : null}
         </motion.div>
 
         {/* Right Column: Visual Content or Image Collage */}

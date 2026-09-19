@@ -51,7 +51,7 @@ export const LandingFooter: React.FC = () => {
           <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: 'var(--font-size-sm)', color: 'var(--vk-text-secondary)' }}>
             <li><Link to="/docs">CLI Setup</Link></li>
             <li><Link to="/docs">REST API Reference</Link></li>
-            <li><a href="#architecture">Cryptographic Architecture</a></li>
+            <li><a href="#workflow">Developer Workflows</a></li>
             <li><a href="https://github.com/ChromaBeast/VaultKey" target="_blank" rel="noreferrer">GitHub Repository</a></li>
           </ul>
         </div>
