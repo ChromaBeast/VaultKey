@@ -32,7 +32,7 @@ export const PricingCard: React.FC<PricingCardProps> = ({
       borderRadius: '14px',
       padding: '24px',
       boxShadow: plan.recommended
-        ? '0 0 0 1px rgba(91,141,239,0.2), 0 8px 32px rgba(91,141,239,0.08)'
+        ? '0 0 0 1px rgba(106, 141, 216, 0.2), 0 8px 32px rgba(106, 141, 216, 0.08)'
         : 'none',
     }}>
       {/* Recommended badge row — always reserved, never overflows */}
@@ -59,8 +59,8 @@ export const PricingCard: React.FC<PricingCardProps> = ({
         <div style={{
           width: 32, height: 32,
           borderRadius: '8px',
-          background: 'rgba(91,141,239,0.1)',
-          border: '1px solid rgba(91,141,239,0.2)',
+          background: 'rgba(106, 141, 216, 0.1)',
+          border: '1px solid rgba(106, 141, 216, 0.2)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           color: 'var(--vk-accent)',
           flexShrink: 0,

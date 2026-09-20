@@ -31,25 +31,25 @@
 
 :root,
 .dark {
-  /* Ink & Signal Theme */
-  --background: #0a0b0d;
-  --foreground: #edeef0;
-  --card: #131417;
-  --card-foreground: #edeef0;
-  --popover: #131417;
-  --popover-foreground: #edeef0;
-  --primary: #5b8def;
+  /* SKEELLS-derived dark palette — tuned for VaultKey */
+  --background: #060608;
+  --foreground: #f0f1f3;
+  --card: #0d0e11;
+  --card-foreground: #f0f1f3;
+  --popover: #14151a;
+  --popover-foreground: #f0f1f3;
+  --primary: #6a8dd8;
   --primary-foreground: #ffffff;
-  --secondary: #1c1e22;
-  --secondary-foreground: #edeef0;
-  --muted: #1c1e22;
-  --muted-foreground: #9a9da4;
-  --accent: #1c1e22;
-  --accent-foreground: #edeef0;
-  --destructive: #ef4444;
+  --secondary: #14151a;
+  --secondary-foreground: #f0f1f3;
+  --muted: #1d1f25;
+  --muted-foreground: #8c909a;
+  --accent: #1d1f25;
+  --accent-foreground: #f0f1f3;
+  --destructive: #f87171;
   --destructive-foreground: #ffffff;
-  --border: #26292e;
-  --input: #1c1e22;
-  --ring: #5b8def;
+  --border: #21232a;
+  --input: #14151a;
+  --ring: #6a8dd8;
   --radius: 0.5rem;
 }

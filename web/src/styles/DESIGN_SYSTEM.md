@@ -7,8 +7,8 @@ The VaultKey Design System enforces a dark-mode-first, high-density, terminal-ad
 ## 1. Core Principles
 
 1. **Restraint Over Decoration**: Zero unnecessary gradients, 3D shadows, or glowing orbs. Surfaces are matte, borders are crisp, contrast is calculated.
-2. **Typography as Structure**: Inter for interface elements and narrative text; JetBrains Mono for secrets, keys, hashes, CLI commands, and metrics.
-3. **Signal Accents**: `#5B8DEF` (Signal Blue) is the single primary accent. Used strictly for interactive primary actions, active tabs, and focus rings. Never for large background fills.
+2. **Typography as Structure**: Cabinet Grotesk for high-contrast headings and brand identity; General Sans for clean geometric body and UI labels; JetBrains Mono for secrets, keys, hashes, CLI commands, and telemetry.
+3. **Signal Accents**: `#6A8DD8` (Slate Blue, derived from 21st.dev SKEELLS theme) is the primary accent. Used strictly for interactive primary actions, active indicators, and focus rings. Never for large background fills.
 4. **Token Strictness**: No raw hex values in JSX or inline styles. Every component must reference standard CSS variables (`var(--vk-*)`) or Tailwind theme classes.
 5. **Modularity & 200 LoC Rule**: Every file must remain single-responsibility and strictly under 200 Lines of Code.
 
@@ -19,33 +19,33 @@ The VaultKey Design System enforces a dark-mode-first, high-density, terminal-ad
 ### Surface Hierarchy
 | Token | Hex | Role |
 |---|---|---|
-| `--vk-bg` | `#0A0B0D` | Canvas background |
-| `--vk-surface-1` | `#131417` | Primary cards, panels, modals, dropdowns |
-| `--vk-surface-2` | `#1C1E22` | Hovered cards, secondary buttons, inputs |
-| `--vk-surface-3` | `#26292E` | Active states, elevated chips |
+| `--vk-bg` | `#060608` | Deep void canvas background |
+| `--vk-surface-1` | `#0D0E11` | Primary cards, panels, modals, dropdowns |
+| `--vk-surface-2` | `#14151A` | Hovered cards, secondary buttons, inputs |
+| `--vk-surface-3` | `#1D1F25` | Active states, elevated chips |
 
 ### Border Hierarchy
 | Token | Value | Role |
 |---|---|---|
-| `--vk-border` | `#26292E` | Standard component border |
-| `--vk-border-strong` | `#363A42` | Hovered cards, active inputs |
-| `--vk-border-subtle` | `#1C1E22` | Subtle dividers, table row borders |
-| `--vk-border-focus` | `rgba(91, 141, 239, 0.5)` | Keyboard focus ring |
+| `--vk-border` | `#21232A` | Standard component border |
+| `--vk-border-strong` | `#2E313B` | Hovered cards, active inputs |
+| `--vk-border-subtle` | `#16181E` | Subtle dividers, table row borders |
+| `--vk-border-focus` | `rgba(106, 141, 216, 0.5)` | Keyboard focus ring |
 
 ### Typography Colors
 | Token | Hex | Contrast / Role |
 |---|---|---|
-| `--vk-text` | `#EDEEF0` | Primary headings, titles, active labels |
-| `--vk-text-secondary` | `#9A9DA4` | Descriptions, inactive tabs, table data |
-| `--vk-text-muted` | `#6B6F76` | Placeholders, timestamps, breadcrumbs |
+| `--vk-text` | `#F0F1F3` | Primary headings, titles, active labels |
+| `--vk-text-secondary` | `#8C909A` | Descriptions, inactive tabs, table data |
+| `--vk-text-muted` | `#55585F` | Placeholders, timestamps, breadcrumbs |
 
 ### Signal & Semantic Tokens
 | Role | Token | Tint / Dim Token |
 |---|---|---|
-| Signal Blue (Primary) | `--vk-accent: #5B8DEF` | `--vk-accent-dim: rgba(91, 141, 239, 0.12)` |
-| Success (Green) | `--vk-success: #34D399` | `--vk-success-dim: rgba(52, 211, 153, 0.12)` |
-| Warning (Amber) | `--vk-warning: #F5A623` | `--vk-warning-dim: rgba(245, 166, 35, 0.12)` |
-| Danger (Red) | `--vk-danger: #EF4444` | `--vk-danger-dim: rgba(239, 68, 68, 0.12)` |
+| Slate Blue (Primary) | `--vk-accent: #6A8DD8` | `--vk-accent-dim: rgba(106, 141, 216, 0.10)` |
+| Success (Green) | `--vk-success: #4ADE80` | `--vk-success-dim: rgba(74, 222, 128, 0.10)` |
+| Warning (Amber) | `--vk-warning: #F59E0B` | `--vk-warning-dim: rgba(245, 158, 11, 0.10)` |
+| Danger (Red) | `--vk-danger: #F87171` | `--vk-danger-dim: rgba(248, 113, 113, 0.10)` |
 
 ---
 
