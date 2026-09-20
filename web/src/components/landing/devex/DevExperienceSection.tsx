@@ -32,14 +32,11 @@ export const DevExperienceSection: React.FC = () => {
             color: 'var(--vk-text)',
             lineHeight: 1.2,
             marginTop: '8px',
-            marginBottom: '12px',
+            marginBottom: '0',
           }}
         >
           From dev to prod in one command.
         </h2>
-        <p style={{ color: 'var(--vk-text-secondary)', fontSize: '0.95rem', lineHeight: 1.5, margin: 0 }}>
-          Inject encrypted secrets into process memory without changing your code.
-        </p>
       </div>
 
       <DevWorkflowTabs />

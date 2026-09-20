@@ -32,14 +32,11 @@ export const WhyNotEnvSection: React.FC = () => {
             color: 'var(--vk-text)',
             lineHeight: 1.2,
             marginTop: '8px',
-            marginBottom: '12px',
+            marginBottom: '0',
           }}
         >
           No plaintext on disk. No cluster to manage.
         </h2>
-        <p style={{ color: 'var(--vk-text-secondary)', fontSize: '0.95rem', lineHeight: 1.5, margin: 0 }}>
-          Outgrew .env files, but don&apos;t need heavy cluster ops.
-        </p>
       </div>
 
       <ComparisonTable />

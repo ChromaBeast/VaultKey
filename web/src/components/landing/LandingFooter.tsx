@@ -58,7 +58,7 @@ export const LandingFooter: React.FC = () => {
 
         <div>
           <h3 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 700, color: 'var(--vk-text)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '16px' }}>
-            Governance
+            Legal
           </h3>
           <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.825rem', color: 'var(--vk-text-secondary)' }}>
             <li><Link to="/privacy">Privacy Policy</Link></li>
@@ -82,7 +82,6 @@ export const LandingFooter: React.FC = () => {
         }}
       >
         <span>© {new Date().getFullYear()} VaultKey.</span>
-        <span>Memory-first secrets engine.</span>
       </div>
     </footer>
   );

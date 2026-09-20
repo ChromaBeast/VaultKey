@@ -36,7 +36,6 @@ const CODE_SNIPPETS: Record<WorkflowTab, { title: string; lang: string; code: st
     lang: 'typescript',
     code: `import { VaultKey } from '@vaultkey/sdk';
 
-// Fetch decrypted secret directly in memory
 const dbUrl = await VaultKey.get('DATABASE_URL');`,
   },
 };
@@ -98,9 +97,6 @@ export const DevWorkflowTabs: React.FC = () => {
             );
           })}
         </div>
-        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--vk-text-muted)', fontFamily: 'var(--font-mono)' }}>
-          {current.title}
-        </span>
       </div>
 
       <div

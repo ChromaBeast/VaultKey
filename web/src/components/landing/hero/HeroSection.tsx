@@ -28,24 +28,6 @@ export const HeroSection: React.FC = () => {
       >
         {/* Left: Text */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-          {/* Eyebrow */}
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '4px 12px',
-            borderRadius: '9999px',
-            background: 'var(--vk-surface-2)',
-            border: '1px solid var(--vk-border)',
-            fontSize: '0.7rem',
-            fontFamily: 'var(--font-mono)',
-            color: 'var(--vk-accent)',
-            marginBottom: '24px',
-          }}>
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--vk-accent)' }} />
-            Zero-knowledge · v1.0
-          </div>
-
           {/* Headline */}
           <h1 style={{
             fontSize: 'clamp(2.2rem, 5vw, 3.5rem)',
@@ -64,20 +46,10 @@ export const HeroSection: React.FC = () => {
             fontSize: '1rem',
             color: 'var(--vk-text-secondary)',
             lineHeight: 1.6,
-            maxWidth: '480px',
+            maxWidth: '440px',
             margin: '0 0 32px',
           }}>
-            Inject encrypted environment variables directly into process memory.
-            No plaintext{' '}
-            <code style={{
-              fontSize: '0.8rem',
-              padding: '2px 6px',
-              borderRadius: '4px',
-              background: 'var(--vk-surface-2)',
-              border: '1px solid var(--vk-border)',
-              fontFamily: 'var(--font-mono)',
-            }}>.env</code>{' '}
-            files. Zero cluster overhead.
+            One binary. Secrets injected into RAM at runtime — never written to disk.
           </p>
 
           {/* Actions */}
