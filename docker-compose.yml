@@ -45,6 +45,10 @@ services:
     image: containrrr/watchtower:1.7.1
     container_name: vaultkey_watchtower
     command: --label-enable --interval 300
+    environment:
+      # Docker 28+ (server API 1.52) rejects watchtower's default client API
+      # 1.25; pin a compatible API version so auto-updates keep working.
+      DOCKER_API_VERSION: "1.44"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: unless-stopped
