@@ -11,10 +11,10 @@ export const VaultKeyHeroVisual: React.FC = () => {
       />
 
       {/* Double-bezel outer shell */}
-      <div className="p-2 sm:p-2.5 rounded-2xl bg-gradient-to-b from-white/[0.1] via-white/[0.03] to-transparent border border-white/[0.1] shadow-2xl shadow-black/90">
+      <div className="p-2.5 sm:p-3 rounded-2xl bg-gradient-to-b from-white/[0.1] via-white/[0.02] to-transparent border border-white/[0.08] shadow-2xl shadow-black/90">
         <div className="rounded-xl bg-[#0a0d14] border border-border overflow-hidden">
           {/* Title Bar */}
-          <div className="flex items-center justify-between px-4 py-3 bg-[#111724] border-b border-border/80">
+          <div className="flex items-center justify-between px-5 py-3.5 bg-[#111724] border-b border-border/80">
             {/* Traffic lights */}
             <div className="flex gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-red-500/85 block" />
@@ -34,9 +34,9 @@ export const VaultKeyHeroVisual: React.FC = () => {
           </div>
 
           {/* Terminal Body */}
-          <div className="p-5 sm:p-6 font-mono text-xs sm:text-sm leading-relaxed space-y-4 text-left">
+          <div className="p-6 sm:p-7 font-mono text-xs sm:text-sm leading-relaxed space-y-5 text-left">
             {/* Command */}
-            <div className="flex gap-2 items-center text-foreground font-medium flex-wrap">
+            <div className="flex gap-2.5 items-center text-foreground font-medium flex-wrap">
               <span className="text-primary font-bold select-none">$</span>
               <span className="font-semibold text-white">vaultkey run</span>
               <span className="text-primary">--env=production</span>
@@ -44,7 +44,7 @@ export const VaultKeyHeroVisual: React.FC = () => {
             </div>
 
             {/* Logs */}
-            <div className="flex flex-col gap-2 text-xs">
+            <div className="flex flex-col gap-2.5 text-xs">
               {[
                 { text: 'Authenticated machine session (ed25519 token)', success: true },
                 { text: '14 secrets decrypted into process RAM (1.2ms)', success: true },
@@ -60,15 +60,15 @@ export const VaultKeyHeroVisual: React.FC = () => {
             </div>
 
             {/* Stats Row */}
-            <div className="grid grid-cols-3 gap-2.5 border-t border-border/80 pt-4 text-center">
+            <div className="grid grid-cols-3 gap-3 border-t border-border/80 pt-5 pb-1 text-center">
               {[
                 { label: 'Disk Leak', value: '0 bytes', textClass: 'text-emerald-400' },
                 { label: 'Cipher', value: 'AES-256-GCM', textClass: 'text-foreground' },
                 { label: 'RAM State', value: 'Protected', textClass: 'text-primary' },
               ].map(({ label, value, textClass }) => (
-                <div key={label} className="bg-secondary/70 p-2.5 rounded-lg border border-border/60">
-                  <div className="text-[10px] uppercase font-mono text-muted-foreground tracking-wider">{label}</div>
-                  <div className={`font-bold text-xs mt-1 ${textClass}`}>{value}</div>
+                <div key={label} className="bg-secondary/80 p-3 rounded-xl border border-border/70">
+                  <div className="text-[10px] uppercase font-mono text-muted-foreground tracking-wider mb-1">{label}</div>
+                  <div className={`font-bold text-xs ${textClass}`}>{value}</div>
                 </div>
               ))}
             </div>

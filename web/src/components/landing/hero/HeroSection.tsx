@@ -15,35 +15,35 @@ export const HeroSection: React.FC = () => {
   };
 
   return (
-    <section id="hero" className="relative section-shell pt-12 sm:pt-16 lg:pt-20 pb-20 sm:pb-28 overflow-hidden">
+    <section id="hero" className="relative section-shell pt-14 sm:pt-20 pb-20 sm:pb-28 overflow-hidden">
       {/* Ambient background glow */}
       <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] sm:w-[900px] h-[350px] bg-[radial-gradient(ellipse_at_top,rgba(0,143,245,0.18),transparent_70%)] pointer-events-none -z-10"
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] sm:w-[900px] h-[360px] bg-[radial-gradient(ellipse_at_top,rgba(0,143,245,0.18),transparent_70%)] pointer-events-none -z-10"
         aria-hidden="true"
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
         {/* Left Column: Text & Actions */}
-        <div className="lg:col-span-6 flex flex-col items-start text-left">
+        <div className="lg:col-span-7 flex flex-col items-start text-left">
           {/* Eyebrow / Release Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium text-primary bg-primary/10 border border-primary/25 mb-6">
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full text-xs font-mono font-medium text-primary bg-primary/10 border border-primary/25 mb-8 shadow-sm">
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
             <span>Zero Plaintext on Disk · v1.0</span>
           </div>
 
-          {/* Headline — balanced 2-line structure */}
-          <h1 className="text-4xl sm:text-5xl lg:text-[3.75rem] font-extrabold tracking-tight text-foreground leading-[1.08] mb-6">
+          {/* Headline — balanced 2-line typography */}
+          <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight text-foreground leading-[1.12] mb-6">
             Secrets in runtime memory.
             <span className="text-primary block mt-2">Never on disk.</span>
           </h1>
 
           {/* Subtitle */}
-          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-8 max-w-lg">
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-10 max-w-xl">
             One lightweight binary. Inject encrypted secrets directly into process RAM at runtime with zero plaintext on disk.
           </p>
 
           {/* Actions */}
-          <div className="flex gap-4 flex-wrap items-center mb-8">
+          <div className="flex flex-wrap items-center gap-4 mb-8">
             <Button
               onClick={() => navigate('/signup')}
               size="lg"
@@ -63,22 +63,25 @@ export const HeroSection: React.FC = () => {
             </Button>
           </div>
 
-          {/* CLI install pill */}
-          <button
-            onClick={handleCopyInstall}
-            title="Click to copy"
-            className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-card border border-border text-xs font-mono text-muted-foreground hover:border-primary/50 hover:text-foreground transition-all cursor-pointer shadow-sm group"
-          >
-            <span className="text-primary font-bold">$</span>
-            <span className="text-foreground">curl -fsSL vaultkey.dev/install.sh | sh</span>
-            {copied
-              ? <Check size={14} className="text-emerald-400 shrink-0" />
-              : <Copy size={14} className="shrink-0 text-muted-foreground group-hover:text-primary transition-colors" />}
-          </button>
+          {/* CLI install snippet */}
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-muted-foreground font-mono hidden sm:inline">Install:</span>
+            <button
+              onClick={handleCopyInstall}
+              title="Click to copy"
+              className="inline-flex items-center gap-3.5 px-4 py-2.5 rounded-xl bg-card border border-border text-xs font-mono text-muted-foreground hover:border-primary/50 hover:text-foreground transition-all cursor-pointer shadow-sm group"
+            >
+              <span className="text-primary font-bold">$</span>
+              <span className="text-foreground">curl -fsSL vaultkey.dev/install.sh | sh</span>
+              {copied
+                ? <Check size={14} className="text-emerald-400 shrink-0" />
+                : <Copy size={14} className="shrink-0 text-muted-foreground group-hover:text-primary transition-colors" />}
+            </button>
+          </div>
         </div>
 
         {/* Right Column: Terminal Visual */}
-        <div className="lg:col-span-6 w-full flex justify-center lg:justify-end">
+        <div className="lg:col-span-5 w-full flex justify-center lg:justify-end">
           <VaultKeyHeroVisual />
         </div>
       </div>
