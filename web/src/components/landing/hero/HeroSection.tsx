@@ -15,7 +15,7 @@ export const HeroSection: React.FC = () => {
   };
 
   return (
-    <section id="hero" className="relative section-shell pt-14 sm:pt-20 pb-20 sm:pb-28 overflow-hidden">
+    <section id="hero" className="relative section-shell pt-16 sm:pt-24 pb-24 sm:pb-32 overflow-hidden">
       {/* Ambient background glow */}
       <div
         className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] sm:w-[900px] h-[360px] bg-[radial-gradient(ellipse_at_top,rgba(0,143,245,0.18),transparent_70%)] pointer-events-none -z-10"

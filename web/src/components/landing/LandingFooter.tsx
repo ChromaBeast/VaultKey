@@ -4,8 +4,8 @@ import { KeyRound } from 'lucide-react';
 
 export const LandingFooter: React.FC = () => {
   return (
-    <footer className="w-full border-t border-border mt-20 sm:mt-28 bg-[#06070a]">
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
+    <footer className="w-full border-t border-border bg-[#06070a]">
+      <div className="max-w-[var(--container-max)] mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-14 text-left">
           {/* Brand Col */}
           <div>
