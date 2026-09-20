@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Check } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import type { PricingPlan } from './pricing-module';
 
 interface PricingCardProps {
@@ -23,22 +22,28 @@ export const PricingCard: React.FC<PricingCardProps> = ({
       : plan.priceMonthly;
 
   return (
-    <div
-      className={cn(
-        'flex flex-col bg-[var(--vk-surface-1)] border border-[var(--vk-border)] rounded-[var(--radius-lg)] p-6 transition-all duration-200 hover:border-[var(--vk-border-strong)]',
-        plan.recommended && 'border-[var(--vk-accent)] shadow-lg'
-      )}
-    >
-      {/* Recommended badge — dedicated row, never overlaps */}
-      <div style={{ minHeight: '24px', marginBottom: '14px' }}>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      background: 'var(--vk-surface-1)',
+      border: plan.recommended
+        ? '1px solid var(--vk-accent)'
+        : '1px solid var(--vk-border)',
+      borderRadius: '14px',
+      padding: '24px',
+      boxShadow: plan.recommended
+        ? '0 0 0 1px rgba(91,141,239,0.2), 0 8px 32px rgba(91,141,239,0.08)'
+        : 'none',
+    }}>
+      {/* Recommended badge row — always reserved, never overflows */}
+      <div style={{ height: '28px', marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
         {plan.recommended && (
           <span style={{
-            display: 'inline-block',
             fontSize: '0.65rem',
             fontFamily: 'var(--font-mono)',
             fontWeight: 700,
             textTransform: 'uppercase',
-            letterSpacing: '0.08em',
+            letterSpacing: '0.1em',
             padding: '3px 10px',
             borderRadius: '9999px',
             background: 'var(--vk-accent)',
@@ -49,64 +54,68 @@ export const PricingCard: React.FC<PricingCardProps> = ({
         )}
       </div>
 
-      {/* Icon + Plan Name */}
-      <div className="flex items-center gap-2.5 mb-2">
+      {/* Icon + Name row */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
         <div style={{
-          width: 32,
-          height: 32,
+          width: 32, height: 32,
           borderRadius: '8px',
           background: 'rgba(91,141,239,0.1)',
           border: '1px solid rgba(91,141,239,0.2)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
           color: 'var(--vk-accent)',
           flexShrink: 0,
         }}>
           {plan.icon}
         </div>
-        <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--vk-text)', margin: 0 }}>
+        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: 'var(--vk-text)' }}>
           {plan.name}
         </h3>
       </div>
 
       {/* Description */}
-      <p style={{ fontSize: '0.8rem', color: 'var(--vk-text-secondary)', lineHeight: 1.5, margin: '0 0 20px' }}>
+      <p style={{
+        margin: '0 0 20px',
+        fontSize: '0.8rem',
+        color: 'var(--vk-text-secondary)',
+        lineHeight: 1.55,
+        minHeight: '40px',
+      }}>
         {plan.description}
       </p>
 
       {/* Price */}
       <div style={{ marginBottom: '20px' }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-          <span style={{ fontSize: '2.25rem', fontWeight: 800, color: 'var(--vk-text)', lineHeight: 1 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '5px' }}>
+          <span style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--vk-text)', lineHeight: 1 }}>
             ${displayPrice}
           </span>
           <span style={{ fontSize: '0.75rem', color: 'var(--vk-text-muted)' }}>
-            {plan.priceMonthly === 0 ? '/ forever' : '/ month'}
+            {plan.priceMonthly === 0 ? '/ forever' : '/ mo'}
           </span>
         </div>
         {isAnnual && plan.priceYearly > 0 && (
-          <p style={{ fontSize: '0.7rem', color: 'var(--vk-accent)', fontFamily: 'var(--font-mono)', marginTop: '4px' }}>
+          <div style={{ marginTop: '4px', fontSize: '0.7rem', color: 'var(--vk-accent)', fontFamily: 'var(--font-mono)' }}>
             ${plan.priceYearly} billed annually
-          </p>
+          </div>
         )}
       </div>
 
-      {/* CTA */}
+      {/* CTA button */}
       <button
         type="button"
         onClick={() => onSelectPlan?.(plan)}
         style={{
           width: '100%',
-          padding: '10px',
-          borderRadius: 'var(--radius-md)',
-          fontSize: '0.85rem',
+          padding: '10px 16px',
+          borderRadius: '8px',
+          fontSize: '0.875rem',
           fontWeight: 600,
           cursor: 'pointer',
-          border: plan.recommended ? 'none' : '1px solid var(--vk-border)',
           background: plan.recommended ? 'var(--vk-accent)' : 'var(--vk-surface-2)',
           color: plan.recommended ? '#fff' : 'var(--vk-text)',
+          border: plan.recommended ? 'none' : '1px solid var(--vk-border)',
           marginBottom: '24px',
+          transition: 'opacity 0.15s ease',
         }}
       >
         {buttonLabel}
@@ -116,9 +125,11 @@ export const PricingCard: React.FC<PricingCardProps> = ({
       <div style={{ borderTop: '1px solid var(--vk-border)', paddingTop: '20px', flex: 1 }}>
         <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {plan.features.map((f, i) => (
-            <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '9px', fontSize: '0.8rem', color: 'var(--vk-text-secondary)' }}>
+            <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
               <Check size={14} style={{ color: 'var(--vk-accent)', flexShrink: 0, marginTop: '2px' }} />
-              <span style={{ lineHeight: 1.4 }}>{f.label}</span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--vk-text-secondary)', lineHeight: 1.45 }}>
+                {f.label}
+              </span>
             </li>
           ))}
         </ul>

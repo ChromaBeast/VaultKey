@@ -67,7 +67,6 @@ export const PricingSection: React.FC = () => {
         subtitle="Free self-hosted OSS or managed cloud for teams."
         plans={VAULTKEY_PLANS}
         defaultAnnual={false}
-        className="py-0 px-0 bg-transparent"
         onSelectPlan={() => navigate('/signup')}
       />
     </section>
