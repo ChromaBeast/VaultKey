@@ -3,70 +3,91 @@ import { Terminal, Lock } from 'lucide-react';
 
 export const VaultKeyHeroVisual: React.FC = () => {
   return (
-    <div className="w-full max-w-lg lg:max-w-none">
-      {/* Terminal Mockup Window */}
-      <div className="rounded-[var(--radius-lg)] bg-[var(--vk-surface-1)] border border-[var(--vk-border)] shadow-2xl shadow-black/80 overflow-hidden">
-        {/* Terminal Header */}
-        <div className="flex items-center justify-between px-4 py-3 bg-[var(--vk-surface-2)] border-b border-[var(--vk-border)]">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#ef4444]" />
-            <span className="w-2.5 h-2.5 rounded-full bg-[#eab308]" />
-            <span className="w-2.5 h-2.5 rounded-full bg-[#22c55e]" />
+    <div style={{ width: '100%' }}>
+      <div style={{
+        borderRadius: 'var(--radius-lg)',
+        background: 'var(--vk-surface-1)',
+        border: '1px solid var(--vk-border)',
+        overflow: 'hidden',
+        boxShadow: '0 24px 80px rgba(0,0,0,0.7)',
+      }}>
+        {/* Title Bar */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '10px 16px',
+          background: 'var(--vk-surface-2)',
+          borderBottom: '1px solid var(--vk-border)',
+        }}>
+          {/* Traffic lights */}
+          <div style={{ display: 'flex', gap: '6px' }}>
+            <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#ef4444', display: 'block' }} />
+            <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#eab308', display: 'block' }} />
+            <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#22c55e', display: 'block' }} />
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-[var(--vk-text-muted)] font-mono">
-            <Terminal className="w-3.5 h-3.5 text-[var(--vk-accent)]" />
-            <span>vaultkey-runtime · pid 8192</span>
+          {/* Session label */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.7rem', fontFamily: 'var(--font-mono)', color: 'var(--vk-text-muted)' }}>
+            <Terminal size={12} style={{ color: 'var(--vk-accent)' }} />
+            vaultkey-runtime · pid 8192
           </div>
-          <div className="flex items-center gap-1 text-[10px] font-mono text-[var(--vk-success)] bg-[var(--vk-success-dim)] px-2 py-0.5 rounded border border-[rgba(34,197,94,0.25)]">
-            <Lock className="w-3 h-3" />
-            <span>MLOCK</span>
+          {/* RAM badge */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '3px',
+            fontSize: '0.6rem',
+            fontFamily: 'var(--font-mono)',
+            color: 'var(--vk-success)',
+            background: 'rgba(52,211,153,0.1)',
+            border: '1px solid rgba(52,211,153,0.25)',
+            padding: '2px 7px',
+            borderRadius: '4px',
+          }}>
+            <Lock size={9} />
+            MLOCK
           </div>
         </div>
 
         {/* Terminal Body */}
-        <div className="p-5 font-mono text-xs sm:text-sm leading-relaxed space-y-4 text-left">
-          {/* CLI Invocation */}
-          <div className="flex items-center gap-2 text-[var(--vk-text)]">
-            <span className="text-[var(--vk-accent)] font-bold select-none">$</span>
-            <span className="text-[var(--vk-text)] font-semibold">vaultkey run</span>
-            <span className="text-[var(--vk-accent)]">--env=production</span>
-            <span className="text-[var(--vk-text-muted)]">-- npm start</span>
+        <div style={{ padding: '20px', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', lineHeight: 1.7 }}>
+          {/* Command */}
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+            <span style={{ color: 'var(--vk-accent)', fontWeight: 700 }}>$</span>
+            <span>
+              <span style={{ color: 'var(--vk-text)', fontWeight: 600 }}>vaultkey run</span>
+              {' '}<span style={{ color: 'var(--vk-accent)' }}>--env=production</span>
+              {' '}<span style={{ color: 'var(--vk-text-muted)' }}>-- npm start</span>
+            </span>
           </div>
 
-          {/* Execution Telemetry Logs */}
-          <div className="space-y-2 text-xs">
-            <div className="flex items-center gap-2 text-[var(--vk-success)]">
-              <span className="select-none">✓</span>
-              <span>14 secrets decrypted into process RAM (1.2ms)</span>
-            </div>
-            <div className="flex items-center gap-2 text-[var(--vk-success)]">
-              <span className="select-none">✓</span>
-              <span>Memory locked via mlock(2) · zero disk footprint</span>
-            </div>
-            <div className="flex items-center gap-2 text-[var(--vk-text-muted)]">
-              <span className="select-none">✓</span>
-              <span>Spawned isolated child process (PID 8192)</span>
-            </div>
-            <div className="flex items-center gap-2 text-[var(--vk-text-muted)]">
-              <span className="select-none">✓</span>
-              <span>Server listening on http://localhost:3000</span>
-            </div>
+          {/* Logs */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.75rem', marginBottom: '16px' }}>
+            {[
+              { text: '14 secrets decrypted into process RAM (1.2ms)', success: true },
+              { text: 'Memory locked via mlock(2) · zero disk footprint', success: true },
+              { text: 'Spawned isolated child process (PID 8192)', success: false },
+              { text: 'Server listening on http://localhost:3000', success: false },
+            ].map(({ text, success }, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', color: success ? 'var(--vk-success)' : 'var(--vk-text-muted)' }}>
+                <span style={{ flexShrink: 0, userSelect: 'none' }}>✓</span>
+                <span>{text}</span>
+              </div>
+            ))}
           </div>
 
-          {/* Real-time Status & Metrics Bar */}
-          <div className="pt-3.5 border-t border-[var(--vk-border)] grid grid-cols-3 gap-2 text-center text-[10px] font-mono">
-            <div className="bg-[var(--vk-surface-2)] p-2 rounded-[var(--radius-sm)] border border-[var(--vk-border)]">
-              <div className="text-[var(--vk-text-muted)]">Disk Leak</div>
-              <div className="text-[var(--vk-success)] font-bold mt-0.5">0 bytes</div>
-            </div>
-            <div className="bg-[var(--vk-surface-2)] p-2 rounded-[var(--radius-sm)] border border-[var(--vk-border)]">
-              <div className="text-[var(--vk-text-muted)]">Cipher</div>
-              <div className="text-[var(--vk-text)] font-bold mt-0.5">Argon2id</div>
-            </div>
-            <div className="bg-[var(--vk-surface-2)] p-2 rounded-[var(--radius-sm)] border border-[var(--vk-border)]">
-              <div className="text-[var(--vk-text-muted)]">RAM State</div>
-              <div className="text-[var(--vk-accent)] font-bold mt-0.5">Protected</div>
-            </div>
+          {/* Stats Row */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', borderTop: '1px solid var(--vk-border)', paddingTop: '14px', fontSize: '0.65rem', textAlign: 'center' }}>
+            {[
+              { label: 'Disk Leak', value: '0 bytes', accent: 'var(--vk-success)' },
+              { label: 'Cipher', value: 'AES-256-GCM', accent: 'var(--vk-text)' },
+              { label: 'RAM State', value: 'Protected', accent: 'var(--vk-accent)' },
+            ].map(({ label, value, accent }) => (
+              <div key={label} style={{ background: 'var(--vk-surface-2)', padding: '8px 4px', borderRadius: '6px', border: '1px solid var(--vk-border)' }}>
+                <div style={{ color: 'var(--vk-text-muted)' }}>{label}</div>
+                <div style={{ color: accent, fontWeight: 700, marginTop: '3px' }}>{value}</div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

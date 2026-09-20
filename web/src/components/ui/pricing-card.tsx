@@ -25,72 +25,100 @@ export const PricingCard: React.FC<PricingCardProps> = ({
   return (
     <div
       className={cn(
-        'relative flex flex-col justify-between bg-[var(--vk-surface-1)] border border-[var(--vk-border)] rounded-[var(--radius-xl)] p-6 sm:p-7 transition-all duration-200 hover:border-[var(--vk-border-hover)] shadow-sm',
-        plan.recommended && 'border-[var(--vk-accent)] ring-1 ring-[var(--vk-accent)]/30 shadow-xl shadow-[var(--vk-accent)]/5'
+        'flex flex-col bg-[var(--vk-surface-1)] border border-[var(--vk-border)] rounded-[var(--radius-lg)] p-6 transition-all duration-200 hover:border-[var(--vk-border-strong)]',
+        plan.recommended && 'border-[var(--vk-accent)] shadow-lg'
       )}
     >
-      <div>
-        {/* Card Header: Icon + Name + Recommended Pill INSIDE header */}
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <div className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-lg bg-[var(--vk-accent-dim)] border border-[rgba(91,141,239,0.25)] flex items-center justify-center text-[var(--vk-accent)] shrink-0">
-              {plan.icon}
-            </div>
-            <h3 className="text-base sm:text-lg font-bold tracking-tight text-[var(--vk-text)]">
-              {plan.name}
-            </h3>
-          </div>
-          {plan.recommended && (
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[var(--vk-accent)] text-white shadow-sm shrink-0">
-              Recommended
-            </span>
-          )}
-        </div>
-
-        {/* Description */}
-        <p className="text-xs text-[var(--vk-text-secondary)] min-h-[36px] leading-relaxed mb-5">
-          {plan.description}
-        </p>
-
-        {/* Price */}
-        <div className="mb-6">
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[var(--vk-text)]">
-              ${displayPrice}
-            </span>
-            <span className="text-xs text-[var(--vk-text-muted)]">
-              {plan.priceMonthly === 0 ? '/ forever' : '/ month'}
-            </span>
-          </div>
-          {isAnnual && plan.priceYearly > 0 && (
-            <p className="text-[11px] text-[var(--vk-accent)] font-mono mt-1">
-              Billed annually (${plan.priceYearly}/yr)
-            </p>
-          )}
-        </div>
-
-        {/* Action Button */}
-        <button
-          type="button"
-          onClick={() => onSelectPlan?.(plan)}
-          className={cn(
-            'w-full py-2.5 px-4 rounded-[var(--radius-md)] font-semibold text-xs sm:text-sm transition-all cursor-pointer flex items-center justify-center',
-            plan.recommended
-              ? 'bg-[var(--vk-accent)] text-white hover:bg-[var(--vk-accent-hover)] shadow-sm'
-              : 'bg-[var(--vk-surface-2)] border border-[var(--vk-border)] text-[var(--vk-text)] hover:bg-[var(--vk-surface-3)] hover:border-[var(--vk-border-hover)]'
-          )}
-        >
-          {buttonLabel}
-        </button>
+      {/* Recommended badge — dedicated row, never overlaps */}
+      <div style={{ minHeight: '24px', marginBottom: '14px' }}>
+        {plan.recommended && (
+          <span style={{
+            display: 'inline-block',
+            fontSize: '0.65rem',
+            fontFamily: 'var(--font-mono)',
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            letterSpacing: '0.08em',
+            padding: '3px 10px',
+            borderRadius: '9999px',
+            background: 'var(--vk-accent)',
+            color: '#fff',
+          }}>
+            Recommended
+          </span>
+        )}
       </div>
 
-      {/* Feature List (clean and unified without duplicate headers) */}
-      <div className="pt-6 border-t border-[var(--vk-border)] mt-6">
-        <ul className="space-y-3">
+      {/* Icon + Plan Name */}
+      <div className="flex items-center gap-2.5 mb-2">
+        <div style={{
+          width: 32,
+          height: 32,
+          borderRadius: '8px',
+          background: 'rgba(91,141,239,0.1)',
+          border: '1px solid rgba(91,141,239,0.2)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'var(--vk-accent)',
+          flexShrink: 0,
+        }}>
+          {plan.icon}
+        </div>
+        <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--vk-text)', margin: 0 }}>
+          {plan.name}
+        </h3>
+      </div>
+
+      {/* Description */}
+      <p style={{ fontSize: '0.8rem', color: 'var(--vk-text-secondary)', lineHeight: 1.5, margin: '0 0 20px' }}>
+        {plan.description}
+      </p>
+
+      {/* Price */}
+      <div style={{ marginBottom: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+          <span style={{ fontSize: '2.25rem', fontWeight: 800, color: 'var(--vk-text)', lineHeight: 1 }}>
+            ${displayPrice}
+          </span>
+          <span style={{ fontSize: '0.75rem', color: 'var(--vk-text-muted)' }}>
+            {plan.priceMonthly === 0 ? '/ forever' : '/ month'}
+          </span>
+        </div>
+        {isAnnual && plan.priceYearly > 0 && (
+          <p style={{ fontSize: '0.7rem', color: 'var(--vk-accent)', fontFamily: 'var(--font-mono)', marginTop: '4px' }}>
+            ${plan.priceYearly} billed annually
+          </p>
+        )}
+      </div>
+
+      {/* CTA */}
+      <button
+        type="button"
+        onClick={() => onSelectPlan?.(plan)}
+        style={{
+          width: '100%',
+          padding: '10px',
+          borderRadius: 'var(--radius-md)',
+          fontSize: '0.85rem',
+          fontWeight: 600,
+          cursor: 'pointer',
+          border: plan.recommended ? 'none' : '1px solid var(--vk-border)',
+          background: plan.recommended ? 'var(--vk-accent)' : 'var(--vk-surface-2)',
+          color: plan.recommended ? '#fff' : 'var(--vk-text)',
+          marginBottom: '24px',
+        }}
+      >
+        {buttonLabel}
+      </button>
+
+      {/* Features */}
+      <div style={{ borderTop: '1px solid var(--vk-border)', paddingTop: '20px', flex: 1 }}>
+        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {plan.features.map((f, i) => (
-            <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-[var(--vk-text-secondary)]">
-              <Check className="w-4 h-4 text-[var(--vk-accent)] shrink-0 mt-0.5" />
-              <span className="leading-snug">{f.label}</span>
+            <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '9px', fontSize: '0.8rem', color: 'var(--vk-text-secondary)' }}>
+              <Check size={14} style={{ color: 'var(--vk-accent)', flexShrink: 0, marginTop: '2px' }} />
+              <span style={{ lineHeight: 1.4 }}>{f.label}</span>
             </li>
           ))}
         </ul>

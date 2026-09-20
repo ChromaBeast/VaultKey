@@ -8,7 +8,7 @@ export const HeroSection: React.FC = () => {
   const [copied, setCopied] = useState(false);
 
   const handleCopyInstall = () => {
-    navigator.clipboard.writeText('curl -fsSL https://vaultkey.dev/install.sh | sh');
+    void navigator.clipboard.writeText('curl -fsSL https://vaultkey.dev/install.sh | sh');
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -16,62 +16,139 @@ export const HeroSection: React.FC = () => {
   return (
     <section
       id="hero"
-      className="w-full max-w-[1200px] mx-auto px-6 pt-16 pb-12 box-border"
+      style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '80px 24px 64px',
+        boxSizing: 'border-box',
+      }}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
-        {/* Left Column: Headline, Subtitle, Actions, CLI Quick-install */}
-        <div className="lg:col-span-6 xl:col-span-7 flex flex-col items-start text-left">
-          {/* Eyebrow Pill */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--vk-surface-2)] border border-[var(--vk-border)] text-xs font-mono text-[var(--vk-accent)] mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--vk-accent)] animate-pulse" />
-            <span>Zero Plaintext on Disk · v1.0</span>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '48px', alignItems: 'center' }}
+        className="lg:grid-cols-[1fr_1fr]"
+      >
+        {/* Left: Text */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+          {/* Eyebrow */}
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '4px 12px',
+            borderRadius: '9999px',
+            background: 'var(--vk-surface-2)',
+            border: '1px solid var(--vk-border)',
+            fontSize: '0.7rem',
+            fontFamily: 'var(--font-mono)',
+            color: 'var(--vk-accent)',
+            marginBottom: '24px',
+          }}>
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--vk-accent)' }} />
+            Zero-knowledge · v1.0
           </div>
 
-          {/* Heading */}
-          <h1 className="text-4xl sm:text-5xl xl:text-6xl font-extrabold tracking-tight text-[var(--vk-text)] leading-[1.1] mb-5">
-            Secrets in runtime memory.{' '}
-            <span className="text-[var(--vk-accent)] block">Never on disk.</span>
+          {/* Headline */}
+          <h1 style={{
+            fontSize: 'clamp(2.2rem, 5vw, 3.5rem)',
+            fontWeight: 800,
+            letterSpacing: '-0.03em',
+            lineHeight: 1.1,
+            color: 'var(--vk-text)',
+            margin: '0 0 20px',
+          }}>
+            Secrets in runtime<br />memory.{' '}
+            <span style={{ color: 'var(--vk-accent)' }}>Never on disk.</span>
           </h1>
 
           {/* Subtitle */}
-          <p className="text-base sm:text-lg text-[var(--vk-text-secondary)] max-w-xl leading-relaxed mb-8">
-            Inject encrypted environment variables directly into process memory via a single lightweight binary. No plaintext <code className="text-xs px-1.5 py-0.5 rounded bg-[var(--vk-surface-2)] border border-[var(--vk-border)] font-mono text-[var(--vk-text)]">.env</code> files, zero cluster overhead.
+          <p style={{
+            fontSize: '1rem',
+            color: 'var(--vk-text-secondary)',
+            lineHeight: 1.6,
+            maxWidth: '480px',
+            margin: '0 0 32px',
+          }}>
+            Inject encrypted environment variables directly into process memory.
+            No plaintext{' '}
+            <code style={{
+              fontSize: '0.8rem',
+              padding: '2px 6px',
+              borderRadius: '4px',
+              background: 'var(--vk-surface-2)',
+              border: '1px solid var(--vk-border)',
+              fontFamily: 'var(--font-mono)',
+            }}>.env</code>{' '}
+            files. Zero cluster overhead.
           </p>
 
-          {/* Primary & Secondary Actions */}
-          <div className="flex flex-wrap items-center gap-3.5 mb-6">
+          {/* Actions */}
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '24px' }}>
             <button
               onClick={() => navigate('/signup')}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-[var(--radius-md)] bg-[var(--vk-accent)] text-white text-sm font-semibold hover:bg-[var(--vk-accent-hover)] transition-all cursor-pointer shadow-sm group"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '11px 22px',
+                borderRadius: 'var(--radius-md)',
+                background: 'var(--vk-accent)',
+                color: '#fff',
+                fontSize: '0.875rem',
+                fontWeight: 600,
+                border: 'none',
+                cursor: 'pointer',
+              }}
             >
-              <span>Get Started</span>
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+              Get Started <ArrowRight size={15} />
             </button>
             <button
               onClick={() => navigate('/docs')}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-[var(--radius-md)] bg-[var(--vk-surface-2)] border border-[var(--vk-border)] text-[var(--vk-text)] text-sm font-medium hover:bg-[var(--vk-surface-3)] hover:border-[var(--vk-border-hover)] transition-all cursor-pointer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '11px 20px',
+                borderRadius: 'var(--radius-md)',
+                background: 'var(--vk-surface-2)',
+                border: '1px solid var(--vk-border)',
+                color: 'var(--vk-text)',
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                cursor: 'pointer',
+              }}
             >
-              <BookOpen className="w-4 h-4 text-[var(--vk-text-muted)]" />
-              <span>Documentation</span>
+              <BookOpen size={15} style={{ color: 'var(--vk-text-muted)' }} />
+              Documentation
             </button>
           </div>
 
-          {/* Quick CLI Install Command */}
-          <div
+          {/* CLI install pill */}
+          <button
             onClick={handleCopyInstall}
-            className="inline-flex items-center gap-3 px-3.5 py-2 rounded-[var(--radius-md)] bg-[var(--vk-surface-1)] border border-[var(--vk-border)] text-xs font-mono text-[var(--vk-text-muted)] hover:border-[var(--vk-border-hover)] transition-colors cursor-pointer select-none"
-            title="Click to copy install command"
+            title="Click to copy"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '8px 14px',
+              borderRadius: 'var(--radius-md)',
+              background: 'var(--vk-surface-1)',
+              border: '1px solid var(--vk-border)',
+              fontSize: '0.75rem',
+              fontFamily: 'var(--font-mono)',
+              color: 'var(--vk-text-muted)',
+              cursor: 'pointer',
+            }}
           >
-            <span className="text-[var(--vk-accent)] select-none font-bold">$</span>
-            <span className="text-[var(--vk-text)]">curl -fsSL vaultkey.dev/install.sh | sh</span>
-            <span className="text-[var(--vk-text-muted)] hover:text-[var(--vk-text)] transition-colors ml-1 p-0.5">
-              {copied ? <Check className="w-3.5 h-3.5 text-[var(--vk-success)]" /> : <Copy className="w-3.5 h-3.5" />}
-            </span>
-          </div>
+            <span style={{ color: 'var(--vk-accent)', fontWeight: 700 }}>$</span>
+            <span style={{ color: 'var(--vk-text)' }}>curl -fsSL vaultkey.dev/install.sh | sh</span>
+            {copied
+              ? <Check size={13} style={{ color: 'var(--vk-success)', flexShrink: 0 }} />
+              : <Copy size={13} style={{ flexShrink: 0 }} />}
+          </button>
         </div>
 
-        {/* Right Column: Expansive Authentic Terminal Visual */}
-        <div className="lg:col-span-6 xl:col-span-5 w-full flex justify-center lg:justify-end">
+        {/* Right: Terminal Visual */}
+        <div style={{ width: '100%' }}>
           <VaultKeyHeroVisual />
         </div>
       </div>
