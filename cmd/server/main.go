@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"vaultkey"
 	"vaultkey/internal/api"
 	"vaultkey/internal/config"
 	"vaultkey/internal/db"
@@ -34,7 +33,7 @@ func main() {
 	defer database.Close()
 
 	fmt.Printf("Starting VaultKey REST API Server on port %d (env=%s)...\n", cfg.Port, cfg.Environment)
-	server := api.NewServer(cfg, database, vaultkey.WebFS)
+	server := api.NewServer(cfg, database)
 
 	errCh := make(chan error, 1)
 	go func() {

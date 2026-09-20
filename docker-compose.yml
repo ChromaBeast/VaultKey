@@ -1,6 +1,7 @@
 services:
+  # ── Backend API (Go) ──────────────────────────────────────
   vaultkey:
-    image: ghcr.io/chromabeast/vaultkey:latest
+    image: ghcr.io/chromabeast/vaultkey-server:latest
     container_name: vaultkey
     ports:
       - "127.0.0.1:8080:8080"
@@ -15,6 +16,7 @@ services:
       VAULTKEY_TRUSTED_PROXIES: "127.0.0.1"
       VAULTKEY_DOMAIN: "${VAULTKEY_DOMAIN:-localhost}"
       VAULTKEY_ALLOWED_ORIGINS: "${VAULTKEY_ALLOWED_ORIGINS:-}"
+      # API-only: no VAULTKEY_STATIC_DIR — web UI served by the web container
       EMAIL_PROVIDER: "${EMAIL_PROVIDER:-brevo}"
       BREVO_API_KEY: "${BREVO_API_KEY:-}"
       EMAIL_FROM: "${EMAIL_FROM:-}"
@@ -29,8 +31,18 @@ services:
     labels:
       com.centurylinklabs.watchtower.enable: "true"
 
+  # ── Frontend web UI (nginx + static build) ────────────────
+  web:
+    image: ghcr.io/chromabeast/vaultkey-web:latest
+    container_name: vaultkey_web
+    ports:
+      - "127.0.0.1:8081:80"
+    restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+
   watchtower:
-    image: containrrr/watchtower:latest
+    image: containrrr/watchtower:1.7.1
     container_name: vaultkey_watchtower
     command: --label-enable --interval 300
     volumes:

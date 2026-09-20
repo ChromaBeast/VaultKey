@@ -20,17 +20,6 @@ jobs:
         with:
           go-version: '1.26'
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Build Web
-        run: |
-          cd web
-          bun install --frozen-lockfile
-          bun run build
-
       - name: Build Binaries
         run: |
           mkdir -p bin
@@ -42,6 +31,7 @@ jobs:
           GOOS=linux GOARCH=amd64 go build -ldflags="$LDFLAGS" -o bin/vaultkey-linux-amd64 ./cmd/vaultkey
           GOOS=linux GOARCH=arm64 go build -ldflags="$LDFLAGS" -o bin/vaultkey-linux-arm64 ./cmd/vaultkey
           GOOS=linux GOARCH=amd64 go build -ldflags="$LDFLAGS" -o bin/server-linux-amd64 ./cmd/server
+          GOOS=linux GOARCH=arm64 go build -ldflags="$LDFLAGS" -o bin/server-linux-arm64 ./cmd/server
           # macOS
           GOOS=darwin GOARCH=amd64 go build -ldflags="$LDFLAGS" -o bin/vaultkey-darwin-amd64 ./cmd/vaultkey
           GOOS=darwin GOARCH=arm64 go build -ldflags="$LDFLAGS" -o bin/vaultkey-darwin-arm64 ./cmd/vaultkey

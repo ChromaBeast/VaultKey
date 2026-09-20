@@ -2,7 +2,6 @@ package api
 
 import (
 	"bytes"
-	"embed"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -21,8 +20,7 @@ func TestSecurityHeadersAndLockout(t *testing.T) {
 	cfg := config.Default()
 	cfg.Environment = "dev"
 	cfg.MaxLoginAttempts = 3 // Set to 3 for fast test execution
-	var mockFS embed.FS
-	server := NewServer(cfg, database, mockFS)
+	server := NewServer(cfg, database)
 
 	// 1. Verify Security Headers on /v1/vault/status
 	req := httptest.NewRequest("GET", "/v1/vault/status", nil)

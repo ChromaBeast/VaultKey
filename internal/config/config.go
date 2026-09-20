@@ -31,6 +31,7 @@ type Config struct {
 	AllowedOrigins        string `yaml:"allowed_origins"`
 	TurnstileSecretKey    string `yaml:"turnstile_secret_key"`
 	TrustedProxies        string `yaml:"trusted_proxies"`
+	StaticDir             string `yaml:"static_dir"`
 	MaxLoginAttempts      int         `yaml:"max_login_attempts"`
 	LockoutDuration       string      `yaml:"lockout_duration"`
 	Email                 EmailConfig `yaml:"email"`
@@ -50,6 +51,7 @@ func Default() *Config {
 		RazorpayPlanEntID:  "plan_enterprise_monthly_4999",
 		AllowedOrigins:     "http://localhost:8080,http://localhost:3000,http://localhost:5173",
 		TurnstileSecretKey: testTurnstile,
+		StaticDir:          "web/dist",
 		MaxLoginAttempts:   5,
 		LockoutDuration:    "5m",
 		Email:              DefaultEmailConfig(),
@@ -163,6 +165,9 @@ func applyEnv(cfg *Config) error {
 	}
 	if v := os.Getenv("VAULTKEY_TRUSTED_PROXIES"); v != "" {
 		cfg.TrustedProxies = v
+	}
+	if v := os.Getenv("VAULTKEY_STATIC_DIR"); v != "" {
+		cfg.StaticDir = v
 	}
 	ApplyEmailEnv(&cfg.Email)
 	return nil

@@ -13,43 +13,59 @@ concurrency:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: chromabeast/vaultkey
+  SERVER_IMAGE: chromabeast/vaultkey-server
+  WEB_IMAGE: chromabeast/vaultkey-web
 
 jobs:
   # ─────────────────────────────────────────────
-  # Job 1: Tests (runs on every push & PR)
+  # Change detection: figure out which side changed so we
+  # only build/deploy what actually changed.
   # ─────────────────────────────────────────────
-  test:
-    name: Test & Build Verification
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'cmd/**'
+              - 'internal/**'
+              - 'go.mod'
+              - 'go.sum'
+              - 'Dockerfile'
+            frontend:
+              - 'web/**'
+              - 'web/Dockerfile'
+
+  # ─────────────────────────────────────────────
+  # Backend: test + build/push API image (only when Go changes)
+  # ─────────────────────────────────────────────
+  backend-test:
+    name: Backend Tests
+    needs: changes
+    if: needs.changes.outputs.backend == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.2.2
-
       - uses: actions/setup-go@v5.5.0
         with:
           go-version: '1.26'
           cache: true
           cache-dependency-path: go.sum
-
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Build Web Frontend
-        run: cd web && bun install --frozen-lockfile && bun run lint && bun run build
-
       - name: Run Backend Tests
         run: go test ./... -v
-
       - name: Vet
         run: go vet ./...
 
-  # ─────────────────────────────────────────────
-  # Job 2: Build & push image to ghcr.io
-  # ─────────────────────────────────────────────
-  build-and-push:
-    name: Build & Push Docker Image
-    needs: test
+  build-server:
+    name: Build & Push API Image
+    needs: backend-test
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
     runs-on: ubuntu-latest
     permissions:
@@ -57,21 +73,18 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4.2.2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
+      - uses: docker/setup-buildx-action@v3
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build & Push Docker Image
+      - name: Build & Push API Image
         uses: docker/build-push-action@v6
         with:
           context: .
+          file: ./Dockerfile
           platforms: linux/amd64
           push: true
           cache-from: type=gha
@@ -79,16 +92,62 @@ jobs:
           build-args: |
             VERSION=sha-${{ github.sha }}
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.SERVER_IMAGE }}:latest
+            ${{ env.REGISTRY }}/${{ env.SERVER_IMAGE }}:sha-${{ github.sha }}
 
   # ─────────────────────────────────────────────
-  # Job 3: Instant SSH Deployment (Fallback to Watchtower)
+  # Frontend: lint/build + push web image (only when web changes)
+  # ─────────────────────────────────────────────
+  frontend-test:
+    name: Frontend Lint & Build
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Lint & Build Web
+        run: cd web && bun install --frozen-lockfile && bun run lint && bun run build
+
+  build-web:
+    name: Build & Push Web Image
+    needs: frontend-test
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: docker/setup-buildx-action@v3
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build & Push Web Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./web
+          file: ./web/Dockerfile
+          platforms: linux/amd64
+          push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.WEB_IMAGE }}:latest
+            ${{ env.REGISTRY }}/${{ env.WEB_IMAGE }}:sha-${{ github.sha }}
+
+  # ─────────────────────────────────────────────
+  # Deploy: pull whichever image(s) changed & restart (Watchtower fallback)
   # ─────────────────────────────────────────────
   deploy-to-vps:
-    name: Instant VPS Deployment
-    needs: build-and-push
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
+    name: VPS Deployment
+    needs: [build-server, build-web]
+    if: always() && (github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))) && (needs.build-server.result == 'success' || needs.build-web.result == 'success')
     runs-on: ubuntu-latest
     steps:
       - name: Setup SSH Config
@@ -104,6 +163,6 @@ jobs:
             "${{ secrets.VPS_HOST }}" "${{ secrets.VPS_USERNAME || 'ubuntu' }}" > ~/.ssh/config
           chmod 600 ~/.ssh/config
 
-      - name: SSH Pull & Restart
+      - name: SSH Pull & Restart Changed Services
         run: |
-          ssh vps "cd /opt/vaultkey && docker pull ghcr.io/chromabeast/vaultkey:latest && docker compose up -d" || true
+          ssh vps "cd /opt/vaultkey && docker compose pull && docker compose up -d" || true

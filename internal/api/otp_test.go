@@ -2,7 +2,6 @@ package api
 
 import (
 	"bytes"
-	"embed"
 	"encoding/json"
 	"net/http/httptest"
 	"os"
@@ -23,8 +22,7 @@ func setupTestServer(t *testing.T) (*Server, func()) {
 	cfg.DatabasePath = tmpDB
 	cfg.Email.Provider = "console"
 
-	var mockFS embed.FS
-	srv := NewServer(cfg, database, mockFS)
+	srv := NewServer(cfg, database)
 	cleanup := func() {
 		database.Close()
 		_ = os.Remove(tmpDB)

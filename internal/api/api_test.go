@@ -2,7 +2,6 @@ package api
 
 import (
 	"bytes"
-	"embed"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -20,8 +19,7 @@ func TestAPIServer(t *testing.T) {
 
 	cfg := config.Default()
 	cfg.Environment = "dev"
-	var mockFS embed.FS
-	server := NewServer(cfg, database, mockFS)
+	server := NewServer(cfg, database)
 
 	// 1. Vault Status requires auth now
 	req := httptest.NewRequest("GET", "/v1/vault/status", nil)

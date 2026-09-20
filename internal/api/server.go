@@ -1,8 +1,10 @@
 package api
 
 import (
-	"embed"
+	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -22,7 +24,6 @@ type Server struct {
 	DB           *db.DB
 	Config       *config.Config
 	Email        email.Service
-	WebFS        embed.FS
 	ActiveMutex  sync.Mutex
 	lastActivity map[string]time.Time
 	stopAutoLock chan struct{}
@@ -30,7 +31,11 @@ type Server struct {
 	auditLocksMu sync.Mutex
 }
 
-func NewServer(cfg *config.Config, database *db.DB, webFS embed.FS) *Server {
+// NewServer builds the API server. The frontend is served from cfg.StaticDir
+// on disk (default "web/dist", overridable via VAULTKEY_STATIC_DIR), so the
+// web UI and this binary can be built and deployed fully independently.
+// If StaticDir is empty, the server runs in API-only mode (no web UI routes).
+func NewServer(cfg *config.Config, database *db.DB) *Server {
 	fiberCfg := fiber.Config{
 		DisableStartupMessage: true,
 		ReadTimeout:           15 * time.Second,
@@ -49,7 +54,6 @@ func NewServer(cfg *config.Config, database *db.DB, webFS embed.FS) *Server {
 		DB:           database,
 		Config:       cfg,
 		Email:        email.NewService(cfg.Email),
-		WebFS:        webFS,
 		lastActivity: map[string]time.Time{},
 		stopAutoLock: make(chan struct{}),
 		auditLocks:   map[string]*sync.Mutex{},
@@ -140,28 +144,35 @@ func (s *Server) setupRoutes() {
 	authGroup.Post("/subscriptions/verify", s.handleVerifySubscription)
 	authGroup.Post("/subscriptions/cancel", s.handleCancelSubscription)
 
-	s.App.Get("/", s.serveIndex)
-	s.App.Use("/", filesystem.New(filesystem.Config{
-		Root:       http.FS(s.WebFS),
-		PathPrefix: "web/dist",
-		MaxAge:     31536000,
-	}))
-
-	s.App.Get("*", func(c *fiber.Ctx) error {
-		path := c.Path()
-		if strings.HasPrefix(path, "/v1/") {
-			return c.Status(404).JSON(fiber.Map{"error": "endpoint not found"})
+	// ── Static web UI (optional, served from disk) ──
+	// Served after all API routes so /v1/* always wins. When StaticDir is
+	// empty or missing on disk, the server runs in API-only mode and only
+	// /v1/* + /healthz respond — pair it with the separate web container.
+	if dir := strings.TrimSpace(s.Config.StaticDir); dir != "" {
+		if info, err := os.Stat(dir); err == nil && info.IsDir() {
+			s.App.Get("/", s.serveIndex)
+			s.App.Use("/", filesystem.New(filesystem.Config{
+				Root:         http.Dir(dir),
+				MaxAge:       31536000,
+				NotFoundFile: "index.html", // SPA fallback for client-side routes
+			}))
+			log.Printf("Serving web UI from disk: %s", dir)
+		} else {
+			log.Printf("API-only mode: static dir %q not found, web UI routes disabled", dir)
 		}
-		return s.serveIndex(c)
-	})
+	} else {
+		log.Printf("API-only mode: static_dir not configured, web UI routes disabled")
+	}
 }
 
+// serveIndex returns index.html from the configured static directory so the
+// SPA can handle client-side routing. Always served fresh (no-cache).
 func (s *Server) serveIndex(c *fiber.Ctx) error {
 	c.Set("Cache-Control", "no-cache, no-store, must-revalidate")
 	c.Set("Content-Type", "text/html; charset=utf-8")
-	indexBytes, err := s.WebFS.ReadFile("web/dist/index.html")
+	indexBytes, err := os.ReadFile(filepath.Join(s.Config.StaticDir, "index.html"))
 	if err != nil {
-		return c.Status(500).SendString("Index file missing")
+		return c.Status(404).SendString("Web UI not deployed (API-only mode)")
 	}
 	return c.Send(indexBytes)
 }

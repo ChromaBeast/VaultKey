@@ -13,7 +13,12 @@
 		max_size 2MB
 	}
 
-	reverse_proxy vaultkey:8080
+	# API + health endpoint → Go backend
+	reverse_proxy /v1/* vaultkey:8080
+	reverse_proxy /healthz vaultkey:8080
+
+	# Everything else (SPA + static assets) → nginx web container
+	reverse_proxy web:80
 
 	header {
 		Strict-Transport-Security "max-age=31536000; includeSubDomains"
@@ -29,5 +34,7 @@
 # comment out the block above and uncomment this one.
 #:80 {
 #	encode zstd gzip
-#	reverse_proxy vaultkey:8080
+#	reverse_proxy /v1/* vaultkey:8080
+#	reverse_proxy /healthz vaultkey:8080
+#	reverse_proxy web:80
 #}

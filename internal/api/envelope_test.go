@@ -3,7 +3,6 @@ package api
 import (
 	"bytes"
 	"crypto/sha256"
-	"embed"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -30,8 +29,7 @@ func testServer(t *testing.T) (*Server, *db.DB) {
 	t.Cleanup(func() { database.Close() })
 	cfg := config.Default()
 	cfg.Environment = "dev"
-	var mockFS embed.FS
-	return NewServer(cfg, database, mockFS), database
+	return NewServer(cfg, database), database
 }
 
 func doJSON(t *testing.T, app interface {
