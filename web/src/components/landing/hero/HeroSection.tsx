@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, BookOpen, Copy, Check } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { VaultKeyHeroVisual } from './VaultKeyHeroVisual';
 
 export const HeroSection: React.FC = () => {
@@ -53,44 +54,23 @@ export const HeroSection: React.FC = () => {
           </p>
 
           {/* Actions */}
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '24px' }}>
-            <button
+          <div className="flex gap-3 flex-wrap mb-6">
+            <Button
               onClick={() => navigate('/signup')}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '11px 22px',
-                borderRadius: 'var(--radius-md)',
-                background: 'var(--vk-accent)',
-                color: '#fff',
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                border: 'none',
-                cursor: 'pointer',
-              }}
+              size="lg"
+              className="gap-2 font-semibold"
             >
               Get Started <ArrowRight size={15} />
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="secondary"
               onClick={() => navigate('/docs')}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '11px 20px',
-                borderRadius: 'var(--radius-md)',
-                background: 'var(--vk-surface-2)',
-                border: '1px solid var(--vk-border)',
-                color: 'var(--vk-text)',
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                cursor: 'pointer',
-              }}
+              size="lg"
+              className="gap-2"
             >
-              <BookOpen size={15} style={{ color: 'var(--vk-text-muted)' }} />
+              <BookOpen size={15} className="text-muted-foreground" />
               Documentation
-            </button>
+            </Button>
           </div>
 
           {/* CLI install pill */}

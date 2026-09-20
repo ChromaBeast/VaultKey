@@ -1,40 +1,63 @@
-/* VaultKey Design Tokens — sourced from 21st.dev SKEELLS theme (dark), tuned for security tool aesthetic */
+/* VaultKey Design Tokens — Unified Global Theme */
 :root {
   /* Font Families */
   --font-display: 'Cabinet Grotesk', 'General Sans', -apple-system, sans-serif;
   --font-sans: 'General Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
-  /* Surfaces — deep void progression (SKEELLS-derived) */
-  --vk-bg: #060608;
-  --vk-surface-1: #0d0e11;
-  --vk-surface-2: #14151a;
-  --vk-surface-3: #1d1f25;
+  /* Global Theme Colors (Single Source of Truth) */
+  --background: #060608;
+  --foreground: #f0f1f3;
+  --card: #0d0e11;
+  --card-foreground: #f0f1f3;
+  --popover: #14151a;
+  --popover-foreground: #f0f1f3;
+  --primary: #008ff5;
+  --primary-hover: #0077e6;
+  --primary-foreground: #ffffff;
+  --secondary: #14151a;
+  --secondary-foreground: #f0f1f3;
+  --muted: #1d1f25;
+  --muted-foreground: #8c909a;
+  --accent: #1d1f25;
+  --accent-foreground: #f0f1f3;
+  --destructive: #f87171;
+  --destructive-foreground: #ffffff;
+  --border: #21232a;
+  --border-strong: #2e313b;
+  --border-subtle: #16181e;
+  --border-focus: rgba(0, 143, 245, 0.5);
+  --border-hover: #2e313b;
+  --input: #14151a;
+  --ring: #008ff5;
 
-  /* Borders — tight, barely-there separators */
-  --vk-border: #21232a;
-  --vk-border-strong: #2e313b;
-  --vk-border-subtle: #16181e;
-  --vk-border-focus: rgba(106, 141, 216, 0.5);
-  --vk-border-hover: #2e313b;
+  /* Semantic Colors */
+  --success: #4ade80;
+  --warning: #f59e0b;
+  --danger: #f87171;
 
-  /* Typography — warm-cool balanced off-whites */
-  --vk-text: #f0f1f3;
-  --vk-text-secondary: #8c909a;
+  /* Direct Token Mappings (components and CSS variables inherit automatically) */
+  --vk-bg: var(--background);
+  --vk-surface-1: var(--card);
+  --vk-surface-2: var(--secondary);
+  --vk-surface-3: var(--muted);
+  --vk-border: var(--border);
+  --vk-border-strong: var(--border-strong);
+  --vk-border-subtle: var(--border-subtle);
+  --vk-border-focus: var(--border-focus);
+  --vk-border-hover: var(--border-hover);
+  --vk-text: var(--foreground);
+  --vk-text-secondary: var(--muted-foreground);
   --vk-text-muted: #55585f;
-
-  /* Accent — SKEELLS slate-blue #6a8dd8, refined to VaultKey identity */
-  --vk-accent: #6a8dd8;
-  --vk-accent-hover: #5a7dcc;
-  --vk-accent-dim: rgba(106, 141, 216, 0.1);
-  --vk-accent-secondary: #6a8dd8;
-
-  /* Semantic — desaturated for professionalism */
-  --vk-success: #4ade80;
+  --vk-accent: var(--primary);
+  --vk-accent-hover: var(--primary-hover);
+  --vk-accent-dim: rgba(0, 143, 245, 0.12);
+  --vk-accent-secondary: var(--primary);
+  --vk-success: var(--success);
   --vk-success-dim: rgba(74, 222, 128, 0.1);
-  --vk-warning: #f59e0b;
+  --vk-warning: var(--warning);
   --vk-warning-dim: rgba(245, 158, 11, 0.1);
-  --vk-danger: #f87171;
+  --vk-danger: var(--danger);
   --vk-danger-dim: rgba(248, 113, 113, 0.1);
 
   /* Backward Compatibility Aliases */

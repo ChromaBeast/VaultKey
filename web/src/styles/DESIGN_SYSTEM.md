@@ -8,7 +8,7 @@ The VaultKey Design System enforces a dark-mode-first, high-density, terminal-ad
 
 1. **Restraint Over Decoration**: Zero unnecessary gradients, 3D shadows, or glowing orbs. Surfaces are matte, borders are crisp, contrast is calculated.
 2. **Typography as Structure**: Cabinet Grotesk for high-contrast headings and brand identity; General Sans for clean geometric body and UI labels; JetBrains Mono for secrets, keys, hashes, CLI commands, and telemetry.
-3. **Signal Accents**: `#6A8DD8` (Slate Blue, derived from 21st.dev SKEELLS theme) is the primary accent. Used strictly for interactive primary actions, active indicators, and focus rings. Never for large background fills.
+3. **Signal Accents**: `#008FF5` (Vibrant Electric Azure, derived from 21st.dev Classic Blue palette) is the primary accent. Saturated, crisp, and high-contrast against deep black. Used strictly for interactive primary actions, active indicators, and focus rings. Never for large background fills.
 4. **Token Strictness**: No raw hex values in JSX or inline styles. Every component must reference standard CSS variables (`var(--vk-*)`) or Tailwind theme classes.
 5. **Modularity & 200 LoC Rule**: Every file must remain single-responsibility and strictly under 200 Lines of Code.
 
@@ -30,7 +30,7 @@ The VaultKey Design System enforces a dark-mode-first, high-density, terminal-ad
 | `--vk-border` | `#21232A` | Standard component border |
 | `--vk-border-strong` | `#2E313B` | Hovered cards, active inputs |
 | `--vk-border-subtle` | `#16181E` | Subtle dividers, table row borders |
-| `--vk-border-focus` | `rgba(106, 141, 216, 0.5)` | Keyboard focus ring |
+| `--vk-border-focus` | `rgba(0, 143, 245, 0.5)` | Keyboard focus ring |
 
 ### Typography Colors
 | Token | Hex | Contrast / Role |
@@ -42,7 +42,7 @@ The VaultKey Design System enforces a dark-mode-first, high-density, terminal-ad
 ### Signal & Semantic Tokens
 | Role | Token | Tint / Dim Token |
 |---|---|---|
-| Slate Blue (Primary) | `--vk-accent: #6A8DD8` | `--vk-accent-dim: rgba(106, 141, 216, 0.10)` |
+| Electric Blue (Primary) | `--vk-accent: #008FF5` | `--vk-accent-dim: rgba(0, 143, 245, 0.12)` |
 | Success (Green) | `--vk-success: #4ADE80` | `--vk-success-dim: rgba(74, 222, 128, 0.10)` |
 | Warning (Amber) | `--vk-warning: #F59E0B` | `--vk-warning-dim: rgba(245, 158, 11, 0.10)` |
 | Danger (Red) | `--vk-danger: #F87171` | `--vk-danger-dim: rgba(248, 113, 113, 0.10)` |

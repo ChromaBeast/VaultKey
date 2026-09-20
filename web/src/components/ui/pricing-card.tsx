@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { Check } from 'lucide-react';
+import { Button } from './button';
+import { cn } from '@/lib/utils';
 import type { PricingPlan } from './pricing-module';
 
 interface PricingCardProps {
@@ -22,19 +24,10 @@ export const PricingCard: React.FC<PricingCardProps> = ({
       : plan.priceMonthly;
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      background: 'var(--vk-surface-1)',
-      border: plan.recommended
-        ? '1px solid var(--vk-accent)'
-        : '1px solid var(--vk-border)',
-      borderRadius: '14px',
-      padding: '24px',
-      boxShadow: plan.recommended
-        ? '0 0 0 1px rgba(106, 141, 216, 0.2), 0 8px 32px rgba(106, 141, 216, 0.08)'
-        : 'none',
-    }}>
+    <div className={cn(
+      "flex flex-col bg-card border border-border rounded-xl p-6 transition-all duration-200",
+      plan.recommended && "border-primary shadow-lg shadow-primary/10"
+    )}>
       {/* Recommended badge row — always reserved, never overflows */}
       <div style={{ height: '28px', marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
         {plan.recommended && (
@@ -59,8 +52,8 @@ export const PricingCard: React.FC<PricingCardProps> = ({
         <div style={{
           width: 32, height: 32,
           borderRadius: '8px',
-          background: 'rgba(106, 141, 216, 0.1)',
-          border: '1px solid rgba(106, 141, 216, 0.2)',
+          background: 'rgba(0, 143, 245, 0.12)',
+          border: '1px solid rgba(0, 143, 245, 0.25)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           color: 'var(--vk-accent)',
           flexShrink: 0,
@@ -101,25 +94,14 @@ export const PricingCard: React.FC<PricingCardProps> = ({
       </div>
 
       {/* CTA button */}
-      <button
+      <Button
         type="button"
+        variant={plan.recommended ? "default" : "secondary"}
         onClick={() => onSelectPlan?.(plan)}
-        style={{
-          width: '100%',
-          padding: '10px 16px',
-          borderRadius: '8px',
-          fontSize: '0.875rem',
-          fontWeight: 600,
-          cursor: 'pointer',
-          background: plan.recommended ? 'var(--vk-accent)' : 'var(--vk-surface-2)',
-          color: plan.recommended ? '#fff' : 'var(--vk-text)',
-          border: plan.recommended ? 'none' : '1px solid var(--vk-border)',
-          marginBottom: '24px',
-          transition: 'opacity 0.15s ease',
-        }}
+        className="w-full mb-6 font-semibold"
       >
         {buttonLabel}
-      </button>
+      </Button>
 
       {/* Features */}
       <div style={{ borderTop: '1px solid var(--vk-border)', paddingTop: '20px', flex: 1 }}>
