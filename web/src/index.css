@@ -1,11 +1,15 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+@source "./**/*.{ts,tsx}";
+@source "../index.html";
+
 @import './styles/fonts.css';
 @import './styles/tokens.css';
 @import './styles/base.css';
 @import './styles/components.css';
+@import './styles/sections.css';
 @import './styles/modals.css';
 @import './styles/responsive.css';
-
-@import "tailwindcss";
 
 @theme {
   --color-background: var(--background);
@@ -31,25 +35,6 @@
 
 :root,
 .dark {
-  /* SKEELLS-derived dark palette — tuned for VaultKey */
-  --background: #060608;
-  --foreground: #f0f1f3;
-  --card: #0d0e11;
-  --card-foreground: #f0f1f3;
-  --popover: #14151a;
-  --popover-foreground: #f0f1f3;
-  --primary: #008ff5;
-  --primary-foreground: #ffffff;
-  --secondary: #14151a;
-  --secondary-foreground: #f0f1f3;
-  --muted: #1d1f25;
-  --muted-foreground: #8c909a;
-  --accent: #1d1f25;
-  --accent-foreground: #f0f1f3;
-  --destructive: #f87171;
-  --destructive-foreground: #ffffff;
-  --border: #21232a;
-  --input: #14151a;
-  --ring: #008ff5;
-  --radius: 0.5rem;
+  /* Inherit directly from tokens.css */
+  --radius: 1rem;
 }

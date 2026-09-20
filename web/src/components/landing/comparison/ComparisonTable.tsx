@@ -42,24 +42,24 @@ const COMPARISON_DATA: ComparisonDimension[] = [
 
 export const ComparisonTable: React.FC = () => {
   return (
-    <div className="bg-card border border-border rounded-xl overflow-hidden shadow-lg shadow-black/40">
+    <div className="rounded-2xl border border-border bg-card shadow-2xl shadow-black/30 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-left min-w-[560px]">
           <thead>
-            <tr className="border-b border-border bg-secondary/70">
-              <th className="px-5 py-3.5 text-muted-foreground text-xs font-semibold uppercase tracking-wider">Capability</th>
-              <th className="px-5 py-3.5 text-primary text-xs font-semibold uppercase tracking-wider bg-primary/5">VaultKey</th>
-              <th className="px-5 py-3.5 text-rose-400 text-xs font-semibold uppercase tracking-wider">Plain .env</th>
-              <th className="px-5 py-3.5 text-muted-foreground text-xs font-semibold uppercase tracking-wider">HashiCorp Vault</th>
+            <tr className="border-b border-border bg-secondary/80">
+              <th className="px-6 py-4 text-muted-foreground text-xs font-semibold uppercase tracking-wider">Capability</th>
+              <th className="px-6 py-4 text-primary text-xs font-bold uppercase tracking-wider bg-primary/10 border-x border-primary/20">VaultKey</th>
+              <th className="px-6 py-4 text-rose-400 text-xs font-semibold uppercase tracking-wider">Plain .env</th>
+              <th className="px-6 py-4 text-muted-foreground text-xs font-semibold uppercase tracking-wider">HashiCorp Vault</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/60 text-sm">
             {COMPARISON_DATA.map((row) => (
-              <tr key={row.feature} className="hover:bg-secondary/30 transition-colors">
-                <td className="px-5 py-3.5 font-semibold text-foreground">{row.feature}</td>
-                <td className="px-5 py-3.5 text-primary font-semibold bg-primary/5">{row.vaultkey}</td>
-                <td className="px-5 py-3.5 text-muted-foreground">{row.dotenv}</td>
-                <td className="px-5 py-3.5 text-muted-foreground">{row.hashi}</td>
+              <tr key={row.feature} className="hover:bg-secondary/40 transition-colors">
+                <td className="px-6 py-4 font-semibold text-foreground">{row.feature}</td>
+                <td className="px-6 py-4 text-primary font-bold bg-primary/10 border-x border-primary/20">{row.vaultkey}</td>
+                <td className="px-6 py-4 text-muted-foreground">{row.dotenv}</td>
+                <td className="px-6 py-4 text-muted-foreground">{row.hashi}</td>
               </tr>
             ))}
           </tbody>

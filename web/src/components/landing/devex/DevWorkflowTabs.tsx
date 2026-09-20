@@ -42,12 +42,19 @@ const dbUrl = await VaultKey.get('DATABASE_URL');`,
 
 export const DevWorkflowTabs: React.FC = () => {
   const [tab, setTab] = useState<WorkflowTab>('cli');
+  const [copied, setCopied] = useState(false);
 
   const current = CODE_SNIPPETS[tab];
 
+  const handleCopy = () => {
+    void navigator.clipboard.writeText(current.code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
-    <div className="bg-card border border-border rounded-xl overflow-hidden shadow-lg shadow-black/40">
-      <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b border-border bg-secondary/80 flex-wrap gap-2">
+    <div className="rounded-2xl border border-border bg-card shadow-2xl shadow-black/40 overflow-hidden">
+      <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-border bg-secondary/80 flex-wrap gap-2">
         <div role="tablist" aria-label="Workflow implementation environments" className="flex gap-2">
           {(['cli', 'docker', 'ci', 'sdk'] as WorkflowTab[]).map((t) => {
             const isActive = tab === t;
@@ -59,16 +66,28 @@ export const DevWorkflowTabs: React.FC = () => {
                 aria-selected={isActive}
                 aria-controls={`panel-${t}`}
                 onClick={() => setTab(t)}
-                className={`px-3.5 py-1.5 rounded-md text-xs font-mono font-semibold uppercase transition-colors cursor-pointer ${
+                className={`px-4 py-1.5 rounded-lg text-xs font-mono font-semibold uppercase transition-all duration-150 cursor-pointer ${
                   isActive
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                    ? 'bg-primary text-primary-foreground shadow-sm shadow-primary/30'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                 }`}
               >
                 {t}
               </button>
             );
           })}
+        </div>
+
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-mono text-muted-foreground hidden sm:inline">
+            {current.title}
+          </span>
+          <button
+            onClick={handleCopy}
+            className="text-xs font-mono px-3 py-1 rounded-md bg-secondary text-muted-foreground hover:text-foreground hover:bg-muted border border-border/60 transition-colors cursor-pointer"
+          >
+            {copied ? 'Copied!' : 'Copy'}
+          </button>
         </div>
       </div>
 
@@ -77,7 +96,7 @@ export const DevWorkflowTabs: React.FC = () => {
         id={`panel-${tab}`}
         aria-labelledby={`tab-${tab}`}
         tabIndex={0}
-        className="p-5 sm:p-6 bg-background/80 overflow-x-auto"
+        className="p-6 sm:p-8 bg-[#0a0d14] overflow-x-auto text-left"
       >
         <pre className="m-0 font-mono text-xs sm:text-sm leading-relaxed text-foreground">
           {current.code}

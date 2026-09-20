@@ -24,70 +24,74 @@ export const PricingCard: React.FC<PricingCardProps> = ({
       : plan.priceMonthly;
 
   return (
-    <div className={cn(
-      "flex flex-col justify-between bg-card border border-border rounded-xl p-6 sm:p-7 transition-all duration-200 text-left",
-      plan.recommended && "border-primary shadow-xl shadow-primary/10"
-    )}>
-      {/* Top section: Header, Price & CTA */}
+    <div
+      className={cn(
+        "relative flex flex-col justify-between rounded-2xl border transition-all duration-300 text-left p-7 sm:p-8",
+        plan.recommended
+          ? "bg-gradient-to-b from-[#141d2e] via-card to-card border-primary/50 shadow-2xl shadow-primary/15 ring-1 ring-primary/30"
+          : "bg-card border-border hover:border-border-strong shadow-xl shadow-black/25"
+      )}
+    >
       <div>
-        {/* Recommended badge row — always reserved, never overflows */}
-        <div className="h-7 mb-3 flex items-center">
+        {/* Top row: Icon and Recommended Badge */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="w-9 h-9 rounded-xl bg-primary/10 border border-primary/25 flex items-center justify-center text-primary shrink-0">
+            {plan.icon}
+          </div>
           {plan.recommended && (
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-primary text-primary-foreground">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-primary text-primary-foreground shadow-sm shadow-primary/40">
               Recommended
             </span>
           )}
         </div>
 
-        {/* Icon + Name row */}
-        <div className="flex items-center gap-2.5 mb-2">
-          <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/25 flex items-center justify-center text-primary shrink-0">
-            {plan.icon}
-          </div>
-          <h3 className="text-base font-bold text-foreground m-0">
-            {plan.name}
-          </h3>
-        </div>
-
-        {/* Description */}
-        <p className="text-xs text-muted-foreground leading-relaxed mb-5 min-h-[38px]">
+        {/* Plan Name & Description */}
+        <h3 className="text-xl font-bold text-foreground">
+          {plan.name}
+        </h3>
+        <p className="text-sm text-muted-foreground leading-relaxed mt-2 min-h-[42px]">
           {plan.description}
         </p>
 
-        {/* Price */}
-        <div className="mb-5">
-          <div className="flex items-baseline gap-1">
-            <span className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight leading-none">
+        {/* Price Display */}
+        <div className="mt-6 mb-6">
+          <div className="flex items-baseline">
+            <span className="text-4xl sm:text-5xl font-extrabold text-foreground tracking-tight leading-none">
               ${displayPrice}
             </span>
-            <span className="text-xs text-muted-foreground">
-              {plan.priceMonthly === 0 ? '/ forever' : '/ mo'}
+            <span className="text-sm text-muted-foreground font-medium ml-2">
+              {plan.priceMonthly === 0 ? '/ forever' : '/ month'}
             </span>
           </div>
           {isAnnual && plan.priceYearly > 0 && (
-            <div className="text-[11px] font-mono text-primary mt-1.5">
-              ${plan.priceYearly} billed annually
+            <div className="text-xs font-mono text-primary font-medium mt-2">
+              ${plan.priceYearly} billed annually (save 20%)
             </div>
           )}
         </div>
 
-        {/* CTA button */}
+        {/* Action Button */}
         <Button
           type="button"
           variant={plan.recommended ? "default" : "secondary"}
           onClick={() => onSelectPlan?.(plan)}
-          className="w-full h-10 mb-6 font-semibold"
+          className="w-full h-11 rounded-xl mb-6 font-semibold text-sm"
         >
           {buttonLabel}
         </Button>
       </div>
 
-      {/* Features */}
-      <div className="border-t border-border pt-5 mt-auto">
-        <ul className="space-y-3 m-0 p-0 list-none">
+      {/* Feature List */}
+      <div className="border-t border-border/80 pt-6 mt-auto">
+        <div className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground mb-4">
+          What&apos;s included
+        </div>
+        <ul className="space-y-3.5 m-0 p-0 list-none">
           {plan.features.map((f, i) => (
-            <li key={i} className="flex items-start gap-2.5 text-xs text-muted-foreground leading-snug">
-              <Check size={14} className="text-primary shrink-0 mt-0.5" />
+            <li key={i} className="flex items-start gap-3 text-sm text-foreground/90 leading-snug">
+              <div className="w-4 h-4 rounded-full bg-primary/15 text-primary flex items-center justify-center shrink-0 mt-0.5">
+                <Check size={11} strokeWidth={3} />
+              </div>
               <span>{f.label}</span>
             </li>
           ))}

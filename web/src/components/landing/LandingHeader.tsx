@@ -16,80 +16,62 @@ export const LandingHeader: React.FC = () => {
 
   return (
     <header
-      style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 100,
-        width: '100%',
-        height: '56px',
-        boxSizing: 'border-box',
-        background: scrolled ? 'rgba(6, 6, 8, 0.88)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(10px)' : 'none',
-        WebkitBackdropFilter: scrolled ? 'blur(10px)' : 'none',
-        borderBottom: `1px solid ${scrolled ? 'var(--vk-border)' : 'transparent'}`,
-        transition: 'background var(--duration-fast) ease, border-color var(--duration-fast) ease',
-      }}
+      className={`sticky top-0 z-50 w-full h-16 transition-all duration-200 ${
+        scrolled
+          ? 'bg-background/85 backdrop-blur-md border-b border-border shadow-md shadow-black/20'
+          : 'bg-transparent border-b border-transparent'
+      }`}
     >
-      <div
-        style={{
-          maxWidth: '1200px',
-          height: '100%',
-          margin: '0 auto',
-          padding: '0 24px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
+      <div className="max-w-[1200px] h-full mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Brand */}
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div
-            style={{
-              width: '28px',
-              height: '28px',
-              borderRadius: 'var(--radius-sm)',
-              background: 'linear-gradient(135deg, rgba(0, 143, 245, 0.25) 0%, rgba(0, 119, 230, 0.15) 100%)',
-              border: '1px solid rgba(0, 143, 245, 0.35)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <KeyRound size={14} color="var(--vk-accent)" />
+        <Link to="/" className="flex items-center gap-2.5 group">
+          <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/25 flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
+            <KeyRound size={16} />
           </div>
-          <span className="brand-text" style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--vk-text)' }}>
+          <span className="brand-text text-lg font-extrabold tracking-tight text-foreground">
             VaultKey
           </span>
         </Link>
 
         {/* Center Nav */}
-        <nav style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-          <a href="#workflow" style={{ fontSize: '0.825rem', color: 'var(--vk-text-secondary)', fontWeight: 500 }}>
+        <nav className="hidden md:flex items-center gap-7">
+          <a
+            href="#workflow"
+            className="text-xs uppercase font-mono font-medium text-muted-foreground hover:text-foreground tracking-wider transition-colors"
+          >
             Workflows
           </a>
-          <a href="#comparison" style={{ fontSize: '0.825rem', color: 'var(--vk-text-secondary)', fontWeight: 500 }}>
+          <a
+            href="#comparison"
+            className="text-xs uppercase font-mono font-medium text-muted-foreground hover:text-foreground tracking-wider transition-colors"
+          >
             Comparison
           </a>
-          <a href="#pricing" style={{ fontSize: '0.825rem', color: 'var(--vk-text-secondary)', fontWeight: 500 }}>
+          <a
+            href="#pricing"
+            className="text-xs uppercase font-mono font-medium text-muted-foreground hover:text-foreground tracking-wider transition-colors"
+          >
             Pricing
           </a>
-          <Link to="/docs" style={{ fontSize: '0.825rem', color: 'var(--vk-text-secondary)', fontWeight: 500 }}>
+          <Link
+            to="/docs"
+            className="text-xs uppercase font-mono font-medium text-muted-foreground hover:text-foreground tracking-wider transition-colors"
+          >
             Docs
           </Link>
         </nav>
 
         {/* Right Auth */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div className="flex items-center gap-3">
           <Link
             to="/login"
-            style={{ fontSize: '0.825rem', fontWeight: 500, color: 'var(--vk-text)', padding: '6px 12px' }}
+            className="text-xs font-semibold text-muted-foreground hover:text-foreground px-3 py-2 transition-colors"
           >
             Sign in
           </Link>
           <Link
             to="/signup"
-            className="btn btn-primary"
-            style={{ fontSize: '0.8rem', padding: '7px 14px' }}
+            className="btn btn-primary text-xs font-semibold px-4 py-2"
           >
             Get Started
           </Link>

@@ -54,7 +54,7 @@ export const PricingSection: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <section id="pricing" className="section-shell pb-16">
+    <section id="pricing" className="section-shell">
       <PricingModule
         title="Simple, transparent pricing."
         plans={VAULTKEY_PLANS}

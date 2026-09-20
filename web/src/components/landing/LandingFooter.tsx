@@ -4,70 +4,68 @@ import { KeyRound } from 'lucide-react';
 
 export const LandingFooter: React.FC = () => {
   return (
-    <footer className="w-full max-w-[1200px] mx-auto px-6 pt-16 pb-12 border-t border-border mt-16">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-            <KeyRound size={16} color="var(--vk-accent)" />
-            <span className="brand-text" style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--vk-text)' }}>
-              VaultKey
-            </span>
+    <footer className="w-full border-t border-border mt-20 sm:mt-28 bg-[#06070a]">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-14 text-left">
+          {/* Brand Col */}
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-7 h-7 rounded-lg bg-primary/10 border border-primary/25 flex items-center justify-center text-primary">
+                <KeyRound size={15} />
+              </div>
+              <span className="brand-text text-base font-extrabold text-foreground">
+                VaultKey
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed max-w-[240px]">
+              Secrets in runtime memory. Never on disk.
+            </p>
           </div>
-          <p style={{ color: 'var(--vk-text-muted)', fontSize: '0.825rem', lineHeight: 1.5, maxWidth: '260px' }}>
-            Secrets in runtime memory. Never on disk.
-          </p>
+
+          {/* Product Links */}
+          <div>
+            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-foreground mb-4">
+              Product
+            </h4>
+            <ul className="space-y-2.5 text-xs text-muted-foreground list-none p-0 m-0">
+              <li><Link to="/secrets" className="hover:text-foreground transition-colors">Secrets Vault</Link></li>
+              <li><Link to="/keys" className="hover:text-foreground transition-colors">Machine Access Keys</Link></li>
+              <li><Link to="/audit" className="hover:text-foreground transition-colors">Audit Ledger</Link></li>
+              <li><a href="#pricing" className="hover:text-foreground transition-colors">Pricing &amp; Plans</a></li>
+            </ul>
+          </div>
+
+          {/* Dev Links */}
+          <div>
+            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-foreground mb-4">
+              Developers
+            </h4>
+            <ul className="space-y-2.5 text-xs text-muted-foreground list-none p-0 m-0">
+              <li><Link to="/docs" className="hover:text-foreground transition-colors">CLI Setup Guide</Link></li>
+              <li><Link to="/docs" className="hover:text-foreground transition-colors">REST API Reference</Link></li>
+              <li><a href="#workflow" className="hover:text-foreground transition-colors">Dev Workflows</a></li>
+              <li><a href="https://github.com/ChromaBeast/VaultKey" target="_blank" rel="noreferrer" className="hover:text-foreground transition-colors">GitHub Repository</a></li>
+            </ul>
+          </div>
+
+          {/* Legal / Contact */}
+          <div>
+            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-foreground mb-4">
+              Trust &amp; Legal
+            </h4>
+            <ul className="space-y-2.5 text-xs text-muted-foreground list-none p-0 m-0">
+              <li><Link to="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link></li>
+              <li><a href="mailto:security@vaultkey.sheershjaiswal.in" className="hover:text-foreground transition-colors">Responsible Disclosure</a></li>
+              <li><a href="mailto:sheersh@vaultkey.dev" className="hover:text-foreground transition-colors">Contact Engineering</a></li>
+            </ul>
+          </div>
         </div>
 
-        <div>
-          <h3 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 700, color: 'var(--vk-text)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '16px' }}>
-            Product
-          </h3>
-          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: 'var(--font-size-sm)', color: 'var(--vk-text-secondary)' }}>
-            <li><Link to="/secrets">Secrets Vault</Link></li>
-            <li><Link to="/keys">Machine Access Keys</Link></li>
-            <li><Link to="/audit">Audit Ledger</Link></li>
-            <li><a href="#pricing">Pricing & Tiers</a></li>
-          </ul>
+        {/* Bottom copyright row */}
+        <div className="border-t border-border/80 pt-6 flex flex-wrap justify-between items-center text-xs text-muted-foreground gap-4">
+          <span>&copy; {new Date().getFullYear()} VaultKey Systems. Released under MIT license.</span>
+          <span className="font-mono text-[11px] text-muted-foreground/70">AES-256-GCM &middot; RAM-Locked</span>
         </div>
-
-        <div>
-          <h3 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 700, color: 'var(--vk-text)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '16px' }}>
-            Developers
-          </h3>
-          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: 'var(--font-size-sm)', color: 'var(--vk-text-secondary)' }}>
-            <li><Link to="/docs">CLI Setup</Link></li>
-            <li><Link to="/docs">REST API Reference</Link></li>
-            <li><a href="#workflow">Developer Workflows</a></li>
-            <li><a href="https://github.com/ChromaBeast/VaultKey" target="_blank" rel="noreferrer">GitHub Repository</a></li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 700, color: 'var(--vk-text)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '16px' }}>
-            Legal
-          </h3>
-          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.825rem', color: 'var(--vk-text-secondary)' }}>
-            <li><Link to="/privacy">Privacy Policy</Link></li>
-            <li><a href="mailto:security@vaultkey.sheershjaiswal.in">Responsible Disclosure</a></li>
-            <li><a href="mailto:sheersh@vaultkey.dev">Contact Support</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div
-        style={{
-          borderTop: '1px solid var(--vk-border)',
-          paddingTop: '24px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          fontSize: '0.75rem',
-          color: 'var(--vk-text-muted)',
-          flexWrap: 'wrap',
-          gap: '10px',
-        }}
-      >
-        <span>© {new Date().getFullYear()} VaultKey.</span>
       </div>
     </footer>
   );
