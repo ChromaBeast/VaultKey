@@ -4,56 +4,40 @@ type WorkflowTab = 'cli' | 'docker' | 'ci' | 'sdk';
 
 const CODE_SNIPPETS: Record<WorkflowTab, { title: string; lang: string; code: string }> = {
   cli: {
-    title: 'Local CLI Injection',
+    title: 'Local CLI',
     lang: 'bash',
-    code: `# Launch process with secrets injected directly into RAM
-$ vaultkey run --env=production -- npm start
+    code: `$ vaultkey run -- npm start
 
-[vaultkey] Authenticated as operator
-[vaultkey] Derived master key via Argon2id
-[vaultkey] Decrypted 14 secrets into locked memory
-[vaultkey] Spawned child process (PID: 8192)`,
+✓ 14 secrets injected into memory
+✓ Process started (PID 8192)
+✓ Server listening on http://localhost:3000`,
   },
   docker: {
-    title: 'Docker Runtimes',
+    title: 'Docker',
     lang: 'yaml',
-    code: `version: '3.8'
-services:
-  api:
-    image: myorg/api:latest
+    code: `services:
+  app:
+    image: node:20-alpine
     environment:
-      - VAULTKEY_TOKEN=\${VK_PROD_TOKEN}
-      - VAULTKEY_ENV=production
-    entrypoint: ["vaultkey", "run", "--", "node", "dist/index.js"]`,
+      - VAULTKEY_TOKEN=\${VK_TOKEN}
+    entrypoint: ["vaultkey", "run", "--", "npm", "start"]`,
   },
   ci: {
-    title: 'CI / CD Workflows',
+    title: 'GitHub Actions',
     lang: 'yaml',
-    code: `name: Deploy Production
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Inject VaultKey Secrets
-        uses: vaultkey/action@v1
-        with:
-          token: \${{ secrets.VK_CI_TOKEN }}
-          env: production
-      - run: npm run build`,
+    code: `- name: Inject Secrets & Run Tests
+  uses: vaultkey/action@v1
+  with:
+    token: \${{ secrets.VK_TOKEN }}
+    run: npm test`,
   },
   sdk: {
-    title: 'Programmatic API',
+    title: 'TypeScript SDK',
     lang: 'typescript',
-    code: `import { VaultKeyClient } from '@vaultkey/sdk';
+    code: `import { VaultKey } from '@vaultkey/sdk';
 
-const vk = new VaultKeyClient({
-  token: process.env.VAULTKEY_TOKEN,
-  endpoint: 'https://vault.internal:8080'
-});
-
-// Decrypt and fetch dynamic database credentials at runtime
-const dbUrl = await vk.getSecret('DATABASE_URL');`,
+// Fetch decrypted secret directly in memory
+const dbUrl = await VaultKey.get('DATABASE_URL');`,
   },
 };
 
@@ -65,11 +49,11 @@ export const DevWorkflowTabs: React.FC = () => {
   return (
     <div
       style={{
-        background: '#090c14',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '14px',
+        background: 'var(--vk-surface-1)',
+        border: '1px solid var(--vk-border)',
+        borderRadius: 'var(--radius-lg)',
         overflow: 'hidden',
-        boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5)',
+        boxShadow: 'var(--vk-shadow-md)',
       }}
     >
       <div
@@ -78,8 +62,8 @@ export const DevWorkflowTabs: React.FC = () => {
           justifyContent: 'space-between',
           alignItems: 'center',
           padding: '12px 18px',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.07)',
-          background: 'rgba(255, 255, 255, 0.02)',
+          borderBottom: '1px solid var(--vk-border)',
+          background: 'var(--vk-surface-2)',
           flexWrap: 'wrap',
           gap: '8px',
         }}
@@ -124,7 +108,7 @@ export const DevWorkflowTabs: React.FC = () => {
         id={`panel-${tab}`}
         aria-labelledby={`tab-${tab}`}
         tabIndex={0}
-        style={{ padding: '20px', background: '#06070b' }}
+        style={{ padding: '20px', background: 'var(--vk-bg)' }}
       >
         <pre
           style={{

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dices, Plus, Search } from 'lucide-react';
 import { PageHeader } from './ui/PageHeader';
+import { Input, Select } from './ui';
 
 interface SecretsHeaderBarProps {
   secretCount: number;
@@ -58,35 +59,29 @@ export const SecretsHeaderBar: React.FC<SecretsHeaderBarProps> = ({
         flexWrap: 'wrap',
       }}
     >
-      <div style={{ position: 'relative', flex: '1 1 300px', maxWidth: '420px' }}>
-        <Search
-          size={15}
-          color="var(--vk-text-muted)"
-          style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
-        />
-        <input
-          className="input"
+      <div style={{ flex: '1 1 300px', maxWidth: '420px' }}>
+        <Input
+          icon={<Search size={15} />}
           placeholder="Filter secrets…"
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
           aria-label="Filter secrets"
-          style={{ paddingLeft: '36px' }}
         />
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         <span style={{ fontSize: '0.8rem', color: 'var(--vk-text-muted)', fontWeight: 600 }}>Environment:</span>
-        <select
-          className="input"
-          value={project}
-          onChange={(e) => onProjectChange(e.target.value)}
-          style={{ width: '160px', padding: '7px 10px', fontSize: '0.825rem' }}
-          aria-label="Select environment"
-        >
-          {projects.map((p) => (
-            <option key={p} value={p}>{p}</option>
-          ))}
-        </select>
+        <div style={{ width: '160px' }}>
+          <Select
+            value={project}
+            onChange={(e) => onProjectChange(e.target.value)}
+            aria-label="Select environment"
+          >
+            {projects.map((p) => (
+              <option key={p} value={p}>{p}</option>
+            ))}
+          </Select>
+        </div>
       </div>
     </div>
   </>

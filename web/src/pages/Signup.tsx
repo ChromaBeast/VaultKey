@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import type { Org, User } from '../lib/api';
 import { apiFetch } from '../lib/api';
 import { AuthSplitLayout } from '../components/auth/AuthSplitLayout';
-import { PasswordField } from '../components/ui/PasswordField';
+import { PasswordField, Input } from '../components/ui';
 
 export const Signup: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -69,11 +69,10 @@ export const Signup: React.FC = () => {
           >
             Work Email
           </label>
-          <input
+          <Input
             id="signup-email"
             type="email"
             required
-            className="input"
             placeholder="engineer@company.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -88,11 +87,10 @@ export const Signup: React.FC = () => {
           >
             Organization / Team Name
           </label>
-          <input
+          <Input
             id="signup-org"
             type="text"
             required
-            className="input"
             placeholder="e.g. Acme Cloud"
             value={orgName}
             onChange={(e) => setOrgName(e.target.value)}

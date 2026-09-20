@@ -91,7 +91,7 @@ export const LandingHeader: React.FC = () => {
             className="btn btn-primary"
             style={{ fontSize: '0.8rem', padding: '7px 14px' }}
           >
-            Deploy VaultKey
+            Get Started
           </Link>
         </div>
       </div>

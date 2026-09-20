@@ -7,42 +7,42 @@ const VAULTKEY_PLANS: PricingPlan[] = [
   {
     id: 'community',
     name: 'Developer (OSS)',
-    description: 'Self-hosted zero-telemetry single binary engine for local and VPS environments.',
+    description: 'Self-hosted single binary engine.',
     icon: <Terminal className="w-6 h-6" />,
     priceMonthly: 0,
     priceYearly: 0,
     users: 'Unlimited local seats',
     features: [
-      { label: 'Unlimited secrets & local vaults', included: true },
+      { label: 'Unlimited local secrets', included: true },
       { label: 'RAM-only process injection', included: true },
-      { label: 'Full offline CLI execution', included: true },
+      { label: '100% offline & zero telemetry', included: true },
     ],
   },
   {
     id: 'developer',
     name: 'Developer Pro',
-    description: 'Encrypted cloud backup and automated sync across dev workstations and CI pipelines.',
+    description: 'Encrypted cloud backup & sync.',
     icon: <Cpu className="w-6 h-6" />,
     priceMonthly: 9,
     priceYearly: 90,
     users: 'Up to 3 workstations',
     features: [
-      { label: 'Encrypted cloud sync across devices', included: true },
+      { label: 'Encrypted sync across devices', included: true },
       { label: 'Automated backup snapshots', included: true },
-      { label: 'CI/CD service tokens', included: true },
+      { label: 'CI/CD machine tokens', included: true },
     ],
   },
   {
     id: 'team',
     name: 'Team Cloud',
-    description: 'Managed cloud instance for engineering teams with centralized RBAC and audit ledger.',
+    description: 'Managed cloud for engineering teams.',
     icon: <Shield className="w-6 h-6" />,
     priceMonthly: 29,
     priceYearly: 290,
     users: 'Up to 25 engineers',
     features: [
-      { label: 'Team RBAC (Admin / Developer / CI)', included: true },
-      { label: '90-day HMAC audit ledger retention', included: true },
+      { label: 'Team access & roles (RBAC)', included: true },
+      { label: '90-day HMAC audit ledger', included: true },
       { label: 'Centralized team management', included: true },
     ],
     recommended: true,
@@ -50,15 +50,15 @@ const VAULTKEY_PLANS: PricingPlan[] = [
   {
     id: 'enterprise',
     name: 'Enterprise',
-    description: 'Dedicated single-tenant infrastructure, custom SLA, and SOC2 / HIPAA readiness.',
+    description: 'Dedicated VPC & enterprise SSO.',
     icon: <Building2 className="w-6 h-6" />,
     priceMonthly: 199,
     priceYearly: 1990,
-    users: 'Unlimited team members',
+    users: 'Unlimited seats',
     features: [
-      { label: 'Dedicated isolated VPC deployment', included: true },
-      { label: 'SAML 2.0 & Okta SSO directory sync', included: true },
-      { label: '99.99% uptime guarantee SLA', included: true },
+      { label: 'Dedicated isolated VPC', included: true },
+      { label: 'SAML 2.0 & Okta SSO', included: true },
+      { label: 'Priority 99.99% SLA', included: true },
     ],
   },
 ];
@@ -71,13 +71,13 @@ export const PricingSection: React.FC = () => {
       id="pricing"
       style={{
         maxWidth: '1200px',
-        margin: '100px auto 0',
+        margin: '72px auto 0',
         padding: '0 24px',
       }}
     >
       <PricingModule
-        title="Self-host for free. Upgrade when your team grows."
-        subtitle="VaultKey is open-core. Run it yourself with zero telemetry, or let us manage uptime, team RBAC, and backups."
+        title="Simple, transparent pricing."
+        subtitle="Free self-hosted OSS or managed cloud for teams."
         annualBillingLabel="Pay annually (save 20%)"
         buttonLabel="Get Started"
         plans={VAULTKEY_PLANS}

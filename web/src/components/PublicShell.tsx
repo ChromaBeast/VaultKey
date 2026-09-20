@@ -22,7 +22,7 @@ export const PublicShell: React.FC<{ children: React.ReactNode }> = ({ children 
       >
         <Link
           to="/"
-          style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#94a3b8', fontSize: '0.85rem', fontWeight: 500 }}
+          style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--vk-text-secondary)', fontSize: '0.85rem', fontWeight: 500 }}
         >
           <ArrowLeft size={15} /> Back to home
         </Link>
@@ -33,14 +33,15 @@ export const PublicShell: React.FC<{ children: React.ReactNode }> = ({ children 
               style={{
                 width: '24px',
                 height: '24px',
-                borderRadius: '6px',
-                background: 'linear-gradient(135deg, #3cedeb 0%, #06b6d4 100%)',
+                borderRadius: 'var(--radius-sm)',
+                background: 'linear-gradient(135deg, rgba(91, 141, 239, 0.25) 0%, rgba(59, 130, 246, 0.15) 100%)',
+                border: '1px solid rgba(91, 141, 239, 0.35)',
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <KeyRound size={13} color="#020811" />
+              <KeyRound size={13} color="var(--vk-accent)" />
             </span>
             <span className="brand-text" style={{ fontSize: '1rem', fontWeight: 800 }}>
               VaultKey

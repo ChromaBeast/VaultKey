@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   BookOpen,
@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Modal } from './ui/Modal';
+import { Input, Kbd } from './ui';
 import type { LucideIcon } from 'lucide-react';
 
 interface CommandPaletteModalProps {
@@ -80,10 +81,9 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} width={560} align="top">
       <div style={{ padding: '14px' }}>
-        <div style={{ position: 'relative', marginBottom: '10px' }}>
-          <input
+        <div style={{ marginBottom: '10px' }}>
+          <Input
             autoFocus
-            className="input"
             placeholder="Type a command or search... (Esc to close)"
             value={query}
             onChange={(e) => {
@@ -96,7 +96,6 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
             aria-controls="command-palette-listbox"
             aria-activedescendant={filtered[clamped] ? `cmd-opt-${clamped}` : undefined}
             aria-label="Search commands"
-            style={{ fontSize: '0.95rem', padding: '10px 14px', background: 'var(--vk-surface-2)', border: '1px solid var(--vk-border)' }}
           />
         </div>
 
@@ -147,14 +146,20 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
             marginTop: '8px',
             display: 'flex',
             justifyContent: 'space-between',
+            alignItems: 'center',
             fontSize: '0.72rem',
             color: 'var(--vk-text-muted)',
-            fontFamily: 'JetBrains Mono, monospace',
           }}
         >
-          <span>↑ ↓ navigate</span>
-          <span>↵ select</span>
-          <span>esc close</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <Kbd>↑</Kbd><Kbd>↓</Kbd> navigate
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <Kbd>↵</Kbd> select
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <Kbd>esc</Kbd> close
+          </span>
         </div>
       </div>
     </Modal>

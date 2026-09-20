@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import type { Org, User } from '../lib/api';
 import { apiFetch } from '../lib/api';
 import { AuthSplitLayout } from '../components/auth/AuthSplitLayout';
-import { PasswordField } from '../components/ui/PasswordField';
+import { PasswordField, Input } from '../components/ui';
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -65,11 +65,10 @@ export const Login: React.FC = () => {
           >
             Work Email
           </label>
-          <input
+          <Input
             id="login-email"
             type="email"
             required
-            className="input"
             placeholder="engineer@company.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}

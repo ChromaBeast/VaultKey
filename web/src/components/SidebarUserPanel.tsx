@@ -1,8 +1,9 @@
-﻿import React from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { pushToast } from '../lib/toast';
+import { Kbd } from './ui';
 
 export const SidebarUserPanel: React.FC = () => {
   const { user, lockVault } = useAuth();
@@ -84,7 +85,7 @@ export const SidebarUserPanel: React.FC = () => {
         <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <Lock size={13} /> Lock Vault
         </span>
-        <kbd style={{ fontSize: '0.65rem', opacity: 0.7, fontFamily: 'monospace' }}>⌘K</kbd>
+        <Kbd>⌘K</Kbd>
       </button>
     </div>
   );

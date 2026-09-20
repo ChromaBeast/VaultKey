@@ -1,0 +1,88 @@
+# VaultKey Design System — Ink & Signal Specification
+
+The VaultKey Design System enforces a dark-mode-first, high-density, terminal-adjacent aesthetic inspired by high-end developer infrastructure tools (Linear, Tailscale, Fly.io).
+
+---
+
+## 1. Core Principles
+
+1. **Restraint Over Decoration**: Zero unnecessary gradients, 3D shadows, or glowing orbs. Surfaces are matte, borders are crisp, contrast is calculated.
+2. **Typography as Structure**: Inter for interface elements and narrative text; JetBrains Mono for secrets, keys, hashes, CLI commands, and metrics.
+3. **Signal Accents**: `#5B8DEF` (Signal Blue) is the single primary accent. Used strictly for interactive primary actions, active tabs, and focus rings. Never for large background fills.
+4. **Token Strictness**: No raw hex values in JSX or inline styles. Every component must reference standard CSS variables (`var(--vk-*)`) or Tailwind theme classes.
+5. **Modularity & 200 LoC Rule**: Every file must remain single-responsibility and strictly under 200 Lines of Code.
+
+---
+
+## 2. Color Tokens
+
+### Surface Hierarchy
+| Token | Hex | Role |
+|---|---|---|
+| `--vk-bg` | `#0A0B0D` | Canvas background |
+| `--vk-surface-1` | `#131417` | Primary cards, panels, modals, dropdowns |
+| `--vk-surface-2` | `#1C1E22` | Hovered cards, secondary buttons, inputs |
+| `--vk-surface-3` | `#26292E` | Active states, elevated chips |
+
+### Border Hierarchy
+| Token | Value | Role |
+|---|---|---|
+| `--vk-border` | `#26292E` | Standard component border |
+| `--vk-border-strong` | `#363A42` | Hovered cards, active inputs |
+| `--vk-border-subtle` | `#1C1E22` | Subtle dividers, table row borders |
+| `--vk-border-focus` | `rgba(91, 141, 239, 0.5)` | Keyboard focus ring |
+
+### Typography Colors
+| Token | Hex | Contrast / Role |
+|---|---|---|
+| `--vk-text` | `#EDEEF0` | Primary headings, titles, active labels |
+| `--vk-text-secondary` | `#9A9DA4` | Descriptions, inactive tabs, table data |
+| `--vk-text-muted` | `#6B6F76` | Placeholders, timestamps, breadcrumbs |
+
+### Signal & Semantic Tokens
+| Role | Token | Tint / Dim Token |
+|---|---|---|
+| Signal Blue (Primary) | `--vk-accent: #5B8DEF` | `--vk-accent-dim: rgba(91, 141, 239, 0.12)` |
+| Success (Green) | `--vk-success: #34D399` | `--vk-success-dim: rgba(52, 211, 153, 0.12)` |
+| Warning (Amber) | `--vk-warning: #F5A623` | `--vk-warning-dim: rgba(245, 166, 35, 0.12)` |
+| Danger (Red) | `--vk-danger: #EF4444` | `--vk-danger-dim: rgba(239, 68, 68, 0.12)` |
+
+---
+
+## 3. Radii Scale
+
+| Token | Size | Application |
+|---|---|---|
+| `--radius-sm` | `6px` | Badges, tags, code chips, checkboxes |
+| `--radius-md` | `8px` | Buttons, text inputs, dropdown selects |
+| `--radius-lg` | `14px` | Cards, modals, workflow preview windows |
+| `--radius-full` | `9999px` | Avatars, indicator dots |
+
+---
+
+## 4. Spacing Scale (4px Base Grid)
+
+- `4px` (`gap-1`, `p-1`): Micro gaps, badge icon spacing
+- `8px` (`gap-2`, `p-2`): Button inner gap, input padding-y
+- `12px` (`gap-3`, `p-3`): Input padding-x, list spacing
+- `16px` (`gap-4`, `p-4`): Card inner padding, section headers
+- `24px` (`gap-6`, `p-6`): Modal padding, desktop card padding
+- `32px` (`gap-8`, `p-8`): Page header bottom margin, section gap
+- `64px` - `80px`: Major landing section vertical margins
+
+---
+
+## 5. Standard Component Primitives
+
+All UI components reside in `web/src/components/ui/`:
+
+1. **`Button`**: Variants: `default` (primary signal), `secondary` (surface-2), `outline`, `ghost`, `destructive`.
+2. **`Input`**: Standard text input with optional `icon`, `error`, and `mono` font support.
+3. **`Textarea`**: Multi-line input styled with identical focus and border tokens as `Input`.
+4. **`Select`**: Dropdown select styled with identical tokens as `Input`.
+5. **`StatusBadge`**: Pill badge for environments, roles, and status states (`success`, `warning`, `danger`, `accent`, `neutral`).
+6. **`Card`**: Standard surface-1 container with subtle border.
+7. **`Modal`**: Accessible dialog with backdrop blur, focus trap, and Escape key dismissal.
+8. **`PageHeader`**: Consistent breadcrumb + title + description + actions bar across all app screens.
+9. **`EmptyState`**: Standard empty list / zero-results presentation.
+10. **`Kbd`**: Keyboard shortcut indicator with monospace styling.

@@ -12,25 +12,25 @@ const VARIANT_MAP: Record<StatusVariant, { bg: string; color: string; border: st
   success: {
     bg: 'var(--vk-success-dim)',
     color: 'var(--vk-success)',
-    border: 'rgba(67, 211, 158, 0.25)',
+    border: 'rgba(52, 211, 153, 0.25)',
     dot: 'var(--vk-success)',
   },
   warning: {
     bg: 'var(--vk-warning-dim)',
     color: 'var(--vk-warning)',
-    border: 'rgba(244, 199, 106, 0.25)',
+    border: 'rgba(245, 166, 35, 0.25)',
     dot: 'var(--vk-warning)',
   },
   danger: {
     bg: 'var(--vk-danger-dim)',
     color: 'var(--vk-danger)',
-    border: 'rgba(255, 107, 122, 0.25)',
+    border: 'rgba(239, 68, 68, 0.25)',
     dot: 'var(--vk-danger)',
   },
   accent: {
     bg: 'var(--vk-accent-dim)',
     color: 'var(--vk-accent)',
-    border: 'rgba(60, 237, 235, 0.25)',
+    border: 'rgba(91, 141, 239, 0.25)',
     dot: 'var(--vk-accent)',
   },
   neutral: {

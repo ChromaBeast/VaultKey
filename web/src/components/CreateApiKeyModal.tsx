@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal } from './ui/Modal';
+import { Input, Select } from './ui';
 
 interface CreateApiKeyModalProps {
   isOpen: boolean;
@@ -34,17 +35,16 @@ export const CreateApiKeyModal: React.FC<CreateApiKeyModalProps> = ({
         }}
         style={{ padding: '32px' }}
       >
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#f8fafc', marginBottom: '16px' }}>
+        <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--vk-text)', marginBottom: '16px' }}>
           Generate Scoped API Key
         </h3>
 
         <div style={{ marginBottom: '16px' }}>
-          <label htmlFor="apikey-label-input" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '6px' }}>
+          <label htmlFor="apikey-label-input" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--vk-text-secondary)', marginBottom: '6px' }}>
             Key Label / Application Name
           </label>
-          <input
+          <Input
             id="apikey-label-input"
-            className="input"
             placeholder="e.g. GitHub Actions CI / Prod SDK"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -53,14 +53,14 @@ export const CreateApiKeyModal: React.FC<CreateApiKeyModalProps> = ({
         </div>
 
         <div style={{ marginBottom: '24px' }}>
-          <label htmlFor="apikey-scope-select" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '6px' }}>
+          <label htmlFor="apikey-scope-select" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--vk-text-secondary)', marginBottom: '6px' }}>
             Permissions Scope
           </label>
-          <select id="apikey-scope-select" className="input" value={permissions} onChange={(e) => setPermissions(e.target.value)}>
+          <Select id="apikey-scope-select" value={permissions} onChange={(e) => setPermissions(e.target.value)}>
             <option value="read">Read Only (Fetch Secrets)</option>
             <option value="write">Read & Write (Manage Secrets)</option>
             <option value="admin">Full Admin (Org & Key Management)</option>
-          </select>
+          </Select>
         </div>
 
         <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>

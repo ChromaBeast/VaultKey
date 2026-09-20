@@ -112,7 +112,7 @@ export const SharePage: React.FC<{ shareId: string }> = ({ shareId }) => {
             <div
               className="code-font"
               style={{
-                background: '#07090e',
+                background: 'var(--vk-bg)',
                 padding: '14px',
                 borderRadius: 'var(--radius-sm)',
                 border: '1px solid rgba(52, 211, 153, 0.3)',

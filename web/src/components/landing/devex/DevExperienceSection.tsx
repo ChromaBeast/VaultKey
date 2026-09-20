@@ -7,11 +7,11 @@ export const DevExperienceSection: React.FC = () => {
       id="workflow"
       style={{
         maxWidth: '1200px',
-        margin: '100px auto 0',
+        margin: '72px auto 0',
         padding: '0 24px',
       }}
     >
-      <div style={{ maxWidth: '720px', marginBottom: '36px' }}>
+      <div style={{ maxWidth: '640px', marginBottom: '28px' }}>
         <span
           style={{
             fontSize: '0.75rem',
@@ -22,23 +22,23 @@ export const DevExperienceSection: React.FC = () => {
             textTransform: 'uppercase',
           }}
         >
-          CLI & Workflows
+          Workflows
         </span>
         <h2
           style={{
-            fontSize: 'clamp(1.8rem, 3.2vw, 2.4rem)',
+            fontSize: 'clamp(1.7rem, 3vw, 2.2rem)',
             fontWeight: 800,
             letterSpacing: '-0.025em',
-            color: '#f5f7fa',
+            color: 'var(--vk-text)',
             lineHeight: 1.2,
             marginTop: '8px',
-            marginBottom: '16px',
+            marginBottom: '12px',
           }}
         >
-          From local dev to production in one command.
+          From dev to prod in one command.
         </h2>
-        <p style={{ color: '#8b93a3', fontSize: '0.95rem', lineHeight: 1.65, margin: 0 }}>
-          No cumbersome SDK refactors required. With <code>vaultkey run</code>, your existing scripts, Dockerfiles, and CI jobs receive secrets directly in process memory at boot time.
+        <p style={{ color: 'var(--vk-text-secondary)', fontSize: '0.95rem', lineHeight: 1.5, margin: 0 }}>
+          Inject encrypted secrets into process memory without changing your code.
         </p>
       </div>
 

@@ -7,9 +7,9 @@ export const LandingFooter: React.FC = () => {
     <footer
       style={{
         borderTop: '1px solid var(--vk-border)',
-        padding: '64px 24px 40px',
+        padding: '48px 24px 36px',
         maxWidth: '1200px',
-        margin: '80px auto 0',
+        margin: '64px auto 0',
       }}
     >
       <div
@@ -17,7 +17,7 @@ export const LandingFooter: React.FC = () => {
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
           gap: '40px',
-          marginBottom: '56px',
+          marginBottom: '40px',
         }}
       >
         <div>
@@ -27,8 +27,8 @@ export const LandingFooter: React.FC = () => {
               VaultKey
             </span>
           </div>
-          <p style={{ color: 'var(--vk-text-muted)', fontSize: '0.825rem', lineHeight: 1.6, maxWidth: '280px' }}>
-            Secure secrets for modern engineering teams. Keep credentials out of code with zero-trust encryption.
+          <p style={{ color: 'var(--vk-text-muted)', fontSize: '0.825rem', lineHeight: 1.5, maxWidth: '260px' }}>
+            Secrets in runtime memory. Never on disk.
           </p>
         </div>
 
@@ -81,8 +81,8 @@ export const LandingFooter: React.FC = () => {
           gap: '10px',
         }}
       >
-        <span>© {new Date().getFullYear()} VaultKey. All rights reserved.</span>
-        <span>Engineered for zero-knowledge security.</span>
+        <span>© {new Date().getFullYear()} VaultKey.</span>
+        <span>Memory-first secrets engine.</span>
       </div>
     </footer>
   );

@@ -15,13 +15,13 @@ export const HeroSection: React.FC = () => {
     ),
     actions: [
       {
-        text: 'Get Started Free',
+        text: 'Get Started',
         onClick: () => navigate('/signup'),
         variant: 'default' as const,
         className: 'bg-primary text-white font-semibold hover:bg-primary/90 shadow-lg shadow-primary/25 px-6',
       },
       {
-        text: 'View Documentation',
+        text: 'Documentation',
         onClick: () => navigate('/docs'),
         variant: 'outline' as const,
         className: 'bg-card/70 border-white/15 text-foreground hover:bg-surface-2 hover:border-primary/40 px-6',

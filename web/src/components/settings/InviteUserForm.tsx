@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { UserPlus, Copy, Check } from 'lucide-react';
 import { inviteUser, errorMessage } from '../../lib/api';
 import { pushToast } from '../../lib/toast';
+import { Input, Select } from '../ui';
 
 interface InviteUserFormProps {
   onUserInvited: () => void;
@@ -50,10 +51,9 @@ export const InviteUserForm: React.FC<InviteUserFormProps> = ({ onUserInvited })
       <form onSubmit={(e) => void handleInvite(e)} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
         <div style={{ flex: '1 1 240px' }}>
           <label htmlFor="invite-email" style={labelStyle}>Email Address</label>
-          <input
+          <Input
             id="invite-email"
             type="email"
-            className="input"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -62,11 +62,11 @@ export const InviteUserForm: React.FC<InviteUserFormProps> = ({ onUserInvited })
         </div>
         <div style={{ width: '130px' }}>
           <label htmlFor="invite-role" style={labelStyle}>Role</label>
-          <select id="invite-role" className="input" value={role} onChange={(e) => setRole(e.target.value)}>
+          <Select id="invite-role" value={role} onChange={(e) => setRole(e.target.value)}>
             <option value="read">Read Only</option>
             <option value="write">Read & Write</option>
             <option value="admin">Admin</option>
-          </select>
+          </Select>
         </div>
         <button type="submit" className="btn btn-primary" disabled={inviting}>
           <UserPlus size={14} /> {inviting ? 'Generating...' : 'Create Invite Link'}
@@ -78,7 +78,7 @@ export const InviteUserForm: React.FC<InviteUserFormProps> = ({ onUserInvited })
           style={{
             padding: '12px 16px',
             background: 'var(--vk-accent-dim)',
-            border: '1px solid rgba(60, 237, 235, 0.3)',
+            border: '1px solid rgba(91, 141, 239, 0.3)',
             borderRadius: 'var(--radius-sm)',
             display: 'flex',
             flexDirection: 'column',
@@ -97,19 +97,18 @@ export const InviteUserForm: React.FC<InviteUserFormProps> = ({ onUserInvited })
             </button>
           </div>
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <input
+            <Input
               type="text"
               readOnly
+              mono
               value={inviteUrl}
-              className="input code-font"
-              style={{ flex: 1, fontSize: '0.8rem', padding: '6px 10px' }}
               onClick={(e) => (e.target as HTMLInputElement).select()}
             />
             <button
               type="button"
               onClick={() => void handleCopy()}
               className="btn btn-primary"
-              style={{ padding: '6px 12px', fontSize: '0.78rem' }}
+              style={{ padding: '8px 14px', fontSize: '0.78rem', whiteSpace: 'nowrap' }}
             >
               {copied ? <Check size={13} /> : <Copy size={13} />}
               {copied ? 'Copied' : 'Copy'}

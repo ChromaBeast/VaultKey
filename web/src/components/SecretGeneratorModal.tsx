@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Dices, Check, Copy } from 'lucide-react';
 import { Modal } from './ui/Modal';
 import { useClipboard } from '../hooks/useClipboard';
@@ -55,7 +55,7 @@ export const SecretGeneratorModal: React.FC<GeneratorProps> = ({ isOpen, onClose
         <div
           className="code-font"
           style={{
-            background: '#07090e',
+            background: 'var(--vk-bg)',
             padding: '14px',
             borderRadius: 'var(--radius-sm)',
             border: '1px solid var(--vk-border)',

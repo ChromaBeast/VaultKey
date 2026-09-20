@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TriangleAlert } from 'lucide-react';
 import { Modal } from './ui/Modal';
+import { Input } from './ui';
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -39,12 +40,12 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     <Modal isOpen={isOpen} onClose={loading ? () => undefined : onClose} width={430}>
       <div style={{ padding: '28px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-          {danger && <TriangleAlert size={20} color="#f87171" />}
-          <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#f8fafc' }}>{title}</h3>
+          {danger && <TriangleAlert size={20} color="var(--vk-danger)" />}
+          <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--vk-text)' }}>{title}</h3>
         </div>
 
         {message && (
-          <div style={{ color: '#94a3b8', fontSize: '0.875rem', marginBottom: '16px', lineHeight: 1.55 }}>
+          <div style={{ color: 'var(--vk-text-secondary)', fontSize: '0.875rem', marginBottom: '16px', lineHeight: 1.55 }}>
             {message}
           </div>
         )}
@@ -54,13 +55,13 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             <label
               htmlFor="confirm-word-input"
               className="code-font"
-              style={{ display: 'block', fontSize: '0.78rem', color: '#cbd5e1', marginBottom: '6px' }}
+              style={{ display: 'block', fontSize: '0.78rem', color: 'var(--vk-text-secondary)', marginBottom: '6px' }}
             >
-              Type <span style={{ color: '#f87171' }}>{confirmWord}</span> to confirm
+              Type <span style={{ color: 'var(--vk-danger)' }}>{confirmWord}</span> to confirm
             </label>
-            <input
+            <Input
               id="confirm-word-input"
-              className="input code-font"
+              mono
               value={typed}
               onChange={(e) => setTyped(e.target.value)}
               autoComplete="off"

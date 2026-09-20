@@ -27,7 +27,7 @@ vaultkey run --project=backend -- npm start`;
           {copiedSnippet === 'cli' ? 'Copied' : 'Copy Commands'}
         </button>
       </div>
-      <pre className="code-font" style={{ background: '#090d16', padding: '18px', borderRadius: '12px', overflowX: 'auto', border: '1px solid rgba(255,255,255,0.1)', color: '#10b981', fontSize: '0.85rem', lineHeight: '1.6' }}>
+      <pre className="code-font" style={{ background: 'var(--vk-bg)', padding: '18px', borderRadius: '12px', overflowX: 'auto', border: '1px solid var(--vk-border)', color: 'var(--vk-success)', fontSize: '0.85rem', lineHeight: '1.6' }}>
         {cliCode}
       </pre>
     </div>

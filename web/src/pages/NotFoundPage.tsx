@@ -12,7 +12,7 @@ export const NotFoundPage: React.FC = () => (
       <h1 style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.02em', marginBottom: '8px' }}>
         Page not found
       </h1>
-      <p style={{ color: '#94a3b8', fontSize: '0.875rem', marginBottom: '28px' }}>
+      <p style={{ color: 'var(--vk-text-secondary)', fontSize: '0.875rem', marginBottom: '28px' }}>
         The page you are looking for does not exist or has been moved.
       </p>
       <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>

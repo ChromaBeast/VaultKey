@@ -1,5 +1,6 @@
 import React from 'react';
 import { Download } from 'lucide-react';
+import { Input, Select } from './ui';
 
 interface AuditFiltersBarProps {
   actionFilter: string;
@@ -39,46 +40,44 @@ export const AuditPaginationBar: React.FC<AuditFiltersBarProps> = ({
         flexWrap: 'wrap',
       }}
     >
-      <select
-        id="audit-action-filter"
-        className="input"
-        value={actionFilter}
-        onChange={(e) => onActionChange(e.target.value)}
-        style={{ width: '130px', padding: '6px 10px', fontSize: '0.8rem' }}
-        aria-label="Filter by action"
-      >
-        <option value="">All Actions</option>
-        <option value="READ">READ</option>
-        <option value="WRITE">WRITE</option>
-        <option value="DELETE">DELETE</option>
-        <option value="ROLLBACK">ROLLBACK</option>
-        <option value="LOCK">LOCK</option>
-      </select>
+      <div style={{ width: '130px' }}>
+        <Select
+          id="audit-action-filter"
+          value={actionFilter}
+          onChange={(e) => onActionChange(e.target.value)}
+          aria-label="Filter by action"
+        >
+          <option value="">All Actions</option>
+          <option value="READ">READ</option>
+          <option value="WRITE">WRITE</option>
+          <option value="DELETE">DELETE</option>
+          <option value="ROLLBACK">ROLLBACK</option>
+          <option value="LOCK">LOCK</option>
+        </Select>
+      </div>
 
       <form onSubmit={(e) => { e.preventDefault(); onProjectSubmit(); }} style={{ flex: '1 1 180px', maxWidth: '240px' }}>
-        <input
+        <Input
           id="audit-project-filter"
-          className="input"
           placeholder="Filter by environment..."
           value={projectInput}
           onChange={(e) => onProjectInputChange(e.target.value)}
-          style={{ padding: '6px 10px', fontSize: '0.8rem' }}
           aria-label="Filter by environment"
         />
       </form>
 
-      <select
-        id="audit-limit-select"
-        className="input"
-        value={limit}
-        onChange={(e) => onLimitChange(Number(e.target.value))}
-        style={{ width: '100px', padding: '6px 10px', fontSize: '0.8rem' }}
-        aria-label="Rows per page"
-      >
-        {[25, 50, 100, 200].map((n) => (
-          <option key={n} value={n}>{n} rows</option>
-        ))}
-      </select>
+      <div style={{ width: '110px' }}>
+        <Select
+          id="audit-limit-select"
+          value={limit}
+          onChange={(e) => onLimitChange(Number(e.target.value))}
+          aria-label="Rows per page"
+        >
+          {[25, 50, 100, 200].map((n) => (
+            <option key={n} value={n}>{n} rows</option>
+          ))}
+        </Select>
+      </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: 'auto' }}>
         <button

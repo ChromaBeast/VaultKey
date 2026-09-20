@@ -34,8 +34,7 @@ export const CancelSubscriptionButton: React.FC<CancelSubscriptionButtonProps> =
   return (
     <>
       <button
-        className="btn btn-secondary"
-        style={{ borderColor: 'rgba(239, 68, 68, 0.4)', color: '#f87171' }}
+        className="btn btn-danger"
         onClick={() => setConfirmOpen(true)}
         disabled={loading}
       >

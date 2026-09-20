@@ -4,7 +4,6 @@ import { HeroSection } from '../components/landing/hero/HeroSection';
 import { DevExperienceSection } from '../components/landing/devex/DevExperienceSection';
 import { WhyNotEnvSection } from '../components/landing/comparison/WhyNotEnvSection';
 import { PricingSection } from '../components/landing/pricing/PricingSection';
-import { FaqSection } from '../components/landing/faq/FaqSection';
 import { LandingFooter } from '../components/landing/LandingFooter';
 
 export const LandingPage: React.FC = () => {
@@ -32,7 +31,6 @@ export const LandingPage: React.FC = () => {
         <DevExperienceSection />
         <WhyNotEnvSection />
         <PricingSection />
-        <FaqSection />
       </main>
       <LandingFooter />
     </div>

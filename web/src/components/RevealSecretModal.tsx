@@ -44,7 +44,7 @@ export const RevealSecretModal: React.FC<RevealSecretModalProps> = ({ secretKey,
         <div
           className="code-font"
           style={{
-            background: '#07090e',
+            background: 'var(--vk-bg)',
             padding: '14px',
             borderRadius: 'var(--radius-sm)',
             border: '1px solid var(--vk-border)',

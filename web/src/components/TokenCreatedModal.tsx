@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Modal } from './ui/Modal';
 import { useClipboard } from '../hooks/useClipboard';
 import { Check, Copy, ShieldAlert } from 'lucide-react';
@@ -26,10 +26,10 @@ export const TokenCreatedModal: React.FC<TokenCreatedModalProps> = ({ createdTok
         <div
           className="code-font"
           style={{
-            background: '#07090e',
+            background: 'var(--vk-bg)',
             padding: '12px 14px',
             borderRadius: 'var(--radius-sm)',
-            border: '1px solid rgba(67, 211, 158, 0.3)',
+            border: '1px solid rgba(52, 211, 153, 0.3)',
             wordBreak: 'break-all',
             marginBottom: '16px',
             color: 'var(--vk-success)',
@@ -47,7 +47,7 @@ export const TokenCreatedModal: React.FC<TokenCreatedModalProps> = ({ createdTok
             alignItems: 'center',
             gap: '8px',
             background: 'var(--vk-warning-dim)',
-            border: '1px solid rgba(244, 199, 106, 0.25)',
+            border: '1px solid rgba(245, 166, 35, 0.25)',
             padding: '8px 12px',
             borderRadius: 'var(--radius-sm)',
             marginBottom: '20px',

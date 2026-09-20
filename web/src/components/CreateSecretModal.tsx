@@ -1,6 +1,7 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Dices } from 'lucide-react';
 import { Modal } from './ui/Modal';
+import { Input, Textarea } from './ui';
 
 interface CreateSecretModalProps {
   isOpen: boolean;
@@ -69,15 +70,14 @@ export const CreateSecretModal: React.FC<CreateSecretModalProps> = ({
           <label htmlFor="secret-key-input" style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'var(--vk-text-secondary)', marginBottom: '5px' }}>
             Secret Name
           </label>
-          <input
+          <Input
             id="secret-key-input"
-            className="input code-font"
+            mono
             placeholder="DATABASE_URL / STRIPE_SECRET_KEY"
             value={key}
             onChange={(e) => setKey(e.target.value.toUpperCase().replace(/\s+/g, '_'))}
             readOnly={isEdit}
             required
-            style={{ fontSize: '0.875rem' }}
           />
           {isEdit && (
             <span style={{ fontSize: '0.7rem', color: 'var(--vk-text-muted)', marginTop: '4px', display: 'block' }}>
@@ -90,14 +90,14 @@ export const CreateSecretModal: React.FC<CreateSecretModalProps> = ({
           <label htmlFor="secret-value-input" style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'var(--vk-text-secondary)', marginBottom: '5px' }}>
             Secret Value
           </label>
-          <textarea
+          <Textarea
             id="secret-value-input"
-            className="input code-font"
+            mono
             placeholder="Enter or paste secret payload..."
             value={value}
             onChange={(e) => setValue(e.target.value)}
             required
-            style={{ minHeight: '96px', resize: 'vertical', fontSize: '0.85rem' }}
+            rows={4}
           />
         </div>
 

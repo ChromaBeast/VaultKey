@@ -7,11 +7,11 @@ export const WhyNotEnvSection: React.FC = () => {
       id="comparison"
       style={{
         maxWidth: '1200px',
-        margin: '100px auto 0',
+        margin: '72px auto 0',
         padding: '0 24px',
       }}
     >
-      <div style={{ maxWidth: '720px', marginBottom: '36px' }}>
+      <div style={{ maxWidth: '640px', marginBottom: '28px' }}>
         <span
           style={{
             fontSize: '0.75rem',
@@ -22,24 +22,23 @@ export const WhyNotEnvSection: React.FC = () => {
             textTransform: 'uppercase',
           }}
         >
-          Tooling Comparison
+          Comparison
         </span>
         <h2
           style={{
-            fontSize: 'clamp(1.8rem, 3.2vw, 2.4rem)',
+            fontSize: 'clamp(1.7rem, 3vw, 2.2rem)',
             fontWeight: 800,
             letterSpacing: '-0.025em',
             color: 'var(--vk-text)',
             lineHeight: 1.2,
             marginTop: '8px',
-            marginBottom: '16px',
+            marginBottom: '12px',
           }}
         >
-          Built for teams that outgrew .env but don't need cluster ops.
+          No plaintext on disk. No cluster to manage.
         </h2>
-        <p style={{ color: 'var(--vk-text-muted)', fontSize: 'var(--font-size-base)', lineHeight: 1.65, margin: 0 }}>
-          Plain .env files leak secrets to disk and git history. Enterprise tools like HashiCorp Vault require dedicated cluster infrastructure.
-          VaultKey delivers zero-knowledge encryption and RAM injection with zero operational overhead.
+        <p style={{ color: 'var(--vk-text-secondary)', fontSize: '0.95rem', lineHeight: 1.5, margin: 0 }}>
+          Outgrew .env files, but don&apos;t need heavy cluster ops.
         </p>
       </div>
 
