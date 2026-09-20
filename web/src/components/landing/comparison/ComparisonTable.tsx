@@ -42,41 +42,24 @@ const COMPARISON_DATA: ComparisonDimension[] = [
 
 export const ComparisonTable: React.FC = () => {
   return (
-    <div
-      style={{
-        background: 'var(--vk-surface-1)',
-        border: '1px solid var(--vk-border)',
-        borderRadius: 'var(--radius-lg)',
-        overflow: 'hidden',
-        boxShadow: 'var(--vk-shadow-md)',
-        marginBottom: '20px',
-      }}
-    >
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '600px' }}>
+    <div className="bg-card border border-border rounded-xl overflow-hidden shadow-lg shadow-black/40">
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse text-left min-w-[560px]">
           <thead>
-            <tr style={{ borderBottom: '1px solid var(--vk-border)', background: 'var(--vk-surface-2)' }}>
-              <th style={{ padding: '12px 18px', color: 'var(--vk-text-muted)', fontSize: 'var(--font-size-xs)', fontWeight: 600 }}>Capability</th>
-              <th style={{ padding: '12px 18px', color: 'var(--vk-accent)', fontSize: 'var(--font-size-xs)', fontWeight: 600 }}>VaultKey</th>
-              <th style={{ padding: '12px 18px', color: 'var(--vk-danger)', fontSize: 'var(--font-size-xs)', fontWeight: 600 }}>Plain .env Files</th>
-              <th style={{ padding: '12px 18px', color: 'var(--vk-text-muted)', fontSize: 'var(--font-size-xs)', fontWeight: 600 }}>HashiCorp Vault</th>
+            <tr className="border-b border-border bg-secondary/70">
+              <th className="px-5 py-3.5 text-muted-foreground text-xs font-semibold uppercase tracking-wider">Capability</th>
+              <th className="px-5 py-3.5 text-primary text-xs font-semibold uppercase tracking-wider bg-primary/5">VaultKey</th>
+              <th className="px-5 py-3.5 text-rose-400 text-xs font-semibold uppercase tracking-wider">Plain .env</th>
+              <th className="px-5 py-3.5 text-muted-foreground text-xs font-semibold uppercase tracking-wider">HashiCorp Vault</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-border/60 text-sm">
             {COMPARISON_DATA.map((row) => (
-              <tr key={row.feature} style={{ borderBottom: '1px solid var(--vk-border-subtle)' }}>
-                <td style={{ padding: '12px 18px', fontWeight: 600, color: 'var(--vk-text)', fontSize: 'var(--font-size-sm)' }}>
-                  {row.feature}
-                </td>
-                <td style={{ padding: '12px 18px', color: 'var(--vk-accent)', fontWeight: 600, fontSize: 'var(--font-size-sm)', background: 'var(--vk-accent-dim)' }}>
-                  {row.vaultkey}
-                </td>
-                <td style={{ padding: '12px 18px', color: 'var(--vk-text-muted)', fontSize: 'var(--font-size-sm)' }}>
-                  {row.dotenv}
-                </td>
-                <td style={{ padding: '12px 18px', color: 'var(--vk-text-muted)', fontSize: 'var(--font-size-sm)' }}>
-                  {row.hashi}
-                </td>
+              <tr key={row.feature} className="hover:bg-secondary/30 transition-colors">
+                <td className="px-5 py-3.5 font-semibold text-foreground">{row.feature}</td>
+                <td className="px-5 py-3.5 text-primary font-semibold bg-primary/5">{row.vaultkey}</td>
+                <td className="px-5 py-3.5 text-muted-foreground">{row.dotenv}</td>
+                <td className="px-5 py-3.5 text-muted-foreground">{row.hashi}</td>
               </tr>
             ))}
           </tbody>

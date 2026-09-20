@@ -4,22 +4,8 @@ import { KeyRound } from 'lucide-react';
 
 export const LandingFooter: React.FC = () => {
   return (
-    <footer
-      style={{
-        borderTop: '1px solid var(--vk-border)',
-        padding: '48px 24px 36px',
-        maxWidth: '1200px',
-        margin: '64px auto 0',
-      }}
-    >
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '40px',
-          marginBottom: '40px',
-        }}
-      >
+    <footer className="w-full max-w-[1200px] mx-auto px-6 pt-16 pb-12 border-t border-border mt-16">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
             <KeyRound size={16} color="var(--vk-accent)" />

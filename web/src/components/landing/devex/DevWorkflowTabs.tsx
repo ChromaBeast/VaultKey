@@ -46,28 +46,9 @@ export const DevWorkflowTabs: React.FC = () => {
   const current = CODE_SNIPPETS[tab];
 
   return (
-    <div
-      style={{
-        background: 'var(--vk-surface-1)',
-        border: '1px solid var(--vk-border)',
-        borderRadius: 'var(--radius-lg)',
-        overflow: 'hidden',
-        boxShadow: 'var(--vk-shadow-md)',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '12px 18px',
-          borderBottom: '1px solid var(--vk-border)',
-          background: 'var(--vk-surface-2)',
-          flexWrap: 'wrap',
-          gap: '8px',
-        }}
-      >
-        <div role="tablist" aria-label="Workflow implementation environments" style={{ display: 'flex', gap: '6px' }}>
+    <div className="bg-card border border-border rounded-xl overflow-hidden shadow-lg shadow-black/40">
+      <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b border-border bg-secondary/80 flex-wrap gap-2">
+        <div role="tablist" aria-label="Workflow implementation environments" className="flex gap-2">
           {(['cli', 'docker', 'ci', 'sdk'] as WorkflowTab[]).map((t) => {
             const isActive = tab === t;
             return (
@@ -78,19 +59,11 @@ export const DevWorkflowTabs: React.FC = () => {
                 aria-selected={isActive}
                 aria-controls={`panel-${t}`}
                 onClick={() => setTab(t)}
-                style={{
-                  background: isActive ? 'var(--vk-accent)' : 'transparent',
-                  border: isActive ? '1px solid var(--vk-accent)' : '1px solid transparent',
-                  color: isActive ? '#ffffff' : 'var(--vk-text-muted)',
-                  fontSize: 'var(--font-size-xs)',
-                  fontWeight: isActive ? 600 : 500,
-                  padding: '6px 14px',
-                  borderRadius: 'var(--radius-sm)',
-                  cursor: 'pointer',
-                  fontFamily: 'var(--font-mono)',
-                  textTransform: 'uppercase',
-                  transition: 'all 0.15s ease',
-                }}
+                className={`px-3.5 py-1.5 rounded-md text-xs font-mono font-semibold uppercase transition-colors cursor-pointer ${
+                  isActive
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                }`}
               >
                 {t}
               </button>
@@ -104,18 +77,9 @@ export const DevWorkflowTabs: React.FC = () => {
         id={`panel-${tab}`}
         aria-labelledby={`tab-${tab}`}
         tabIndex={0}
-        style={{ padding: '20px', background: 'var(--vk-bg)' }}
+        className="p-5 sm:p-6 bg-background/80 overflow-x-auto"
       >
-        <pre
-          style={{
-            margin: 0,
-            fontFamily: 'var(--font-mono)',
-            fontSize: 'var(--font-size-sm)',
-            lineHeight: 1.6,
-            color: 'var(--vk-text)',
-            overflowX: 'auto',
-          }}
-        >
+        <pre className="m-0 font-mono text-xs sm:text-sm leading-relaxed text-foreground">
           {current.code}
         </pre>
       </div>

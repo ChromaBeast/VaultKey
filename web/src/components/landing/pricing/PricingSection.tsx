@@ -54,14 +54,7 @@ export const PricingSection: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <section
-      id="pricing"
-      style={{
-        maxWidth: '1200px',
-        margin: '96px auto 0',
-        padding: '0 24px',
-      }}
-    >
+    <section id="pricing" className="section-shell pb-16">
       <PricingModule
         title="Simple, transparent pricing."
         plans={VAULTKEY_PLANS}

@@ -1,4 +1,37 @@
 /* Core Component Styles */
+.section-shell {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-px);
+  padding-right: var(--container-px);
+  padding-top: var(--section-py);
+  box-sizing: border-box;
+}
+
+.section-header { max-width: 640px; margin-bottom: var(--space-8); }
+.section-header-center { max-width: 640px; margin: 0 auto var(--space-8); text-align: center; }
+
+.section-eyebrow {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--primary);
+  margin-bottom: var(--space-2);
+}
+
+.section-title {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  color: var(--foreground);
+  margin: 0;
+}
 
 /* Surfaces */
 .glass {
@@ -8,10 +41,7 @@
   box-shadow: var(--vk-shadow-sm);
   transition: border-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
 }
-
-.glass:hover {
-  border-color: var(--vk-border-strong);
-}
+.glass:hover { border-color: var(--vk-border-strong); }
 
 .glass-glow {
   background: var(--vk-surface-1);

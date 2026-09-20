@@ -15,50 +15,27 @@ export const HeroSection: React.FC = () => {
   };
 
   return (
-    <section
-      id="hero"
-      style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: '80px 24px 64px',
-        boxSizing: 'border-box',
-      }}
-    >
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '48px', alignItems: 'center' }}
-        className="lg:grid-cols-[1fr_1fr]"
-      >
-        {/* Left: Text */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+    <section id="hero" className="w-full max-w-[1200px] mx-auto px-6 pt-16 sm:pt-20 pb-12 box-border">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+        {/* Left Column: Text & Actions */}
+        <div className="flex flex-col items-start text-left max-w-xl">
           {/* Headline */}
-          <h1 style={{
-            fontSize: 'clamp(2.2rem, 5vw, 3.5rem)',
-            fontWeight: 800,
-            letterSpacing: '-0.03em',
-            lineHeight: 1.1,
-            color: 'var(--vk-text)',
-            margin: '0 0 20px',
-          }}>
-            Secrets in runtime<br />memory.{' '}
-            <span style={{ color: 'var(--vk-accent)' }}>Never on disk.</span>
+          <h1 className="text-4xl sm:text-5xl lg:text-[3.25rem] font-extrabold tracking-tight text-foreground leading-[1.12] mb-5">
+            Secrets in runtime<br className="hidden sm:inline" /> memory.{' '}
+            <span className="text-primary">Never on disk.</span>
           </h1>
 
           {/* Subtitle */}
-          <p style={{
-            fontSize: '1rem',
-            color: 'var(--vk-text-secondary)',
-            lineHeight: 1.6,
-            maxWidth: '440px',
-            margin: '0 0 32px',
-          }}>
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-8 max-w-lg">
             One binary. Secrets injected into RAM at runtime — never written to disk.
           </p>
 
           {/* Actions */}
-          <div className="flex gap-3 flex-wrap mb-6">
+          <div className="flex gap-3.5 flex-wrap items-center mb-6">
             <Button
               onClick={() => navigate('/signup')}
               size="lg"
-              className="gap-2 font-semibold"
+              className="gap-2 font-semibold h-11 px-6 text-sm"
             >
               Get Started <ArrowRight size={15} />
             </Button>
@@ -66,7 +43,7 @@ export const HeroSection: React.FC = () => {
               variant="secondary"
               onClick={() => navigate('/docs')}
               size="lg"
-              className="gap-2"
+              className="gap-2 h-11 px-5 text-sm"
             >
               <BookOpen size={15} className="text-muted-foreground" />
               Documentation
@@ -77,30 +54,18 @@ export const HeroSection: React.FC = () => {
           <button
             onClick={handleCopyInstall}
             title="Click to copy"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '10px',
-              padding: '8px 14px',
-              borderRadius: 'var(--radius-md)',
-              background: 'var(--vk-surface-1)',
-              border: '1px solid var(--vk-border)',
-              fontSize: '0.75rem',
-              fontFamily: 'var(--font-mono)',
-              color: 'var(--vk-text-muted)',
-              cursor: 'pointer',
-            }}
+            className="inline-flex items-center gap-3 px-3.5 py-2 rounded-lg bg-card border border-border text-xs font-mono text-muted-foreground hover:border-primary/50 transition-colors cursor-pointer"
           >
-            <span style={{ color: 'var(--vk-accent)', fontWeight: 700 }}>$</span>
-            <span style={{ color: 'var(--vk-text)' }}>curl -fsSL vaultkey.dev/install.sh | sh</span>
+            <span className="text-primary font-bold">$</span>
+            <span className="text-foreground">curl -fsSL vaultkey.dev/install.sh | sh</span>
             {copied
-              ? <Check size={13} style={{ color: 'var(--vk-success)', flexShrink: 0 }} />
-              : <Copy size={13} style={{ flexShrink: 0 }} />}
+              ? <Check size={13} className="text-emerald-400 shrink-0" />
+              : <Copy size={13} className="shrink-0" />}
           </button>
         </div>
 
-        {/* Right: Terminal Visual */}
-        <div style={{ width: '100%' }}>
+        {/* Right Column: Terminal Visual */}
+        <div className="w-full flex justify-center lg:justify-end">
           <VaultKeyHeroVisual />
         </div>
       </div>

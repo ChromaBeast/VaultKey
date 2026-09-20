@@ -38,45 +38,24 @@ export function PricingModule({
   const [isAnnual, setIsAnnual] = React.useState(defaultAnnual);
 
   return (
-    <div style={{ width: '100%' }}>
+    <div className="w-full">
       {/* Header */}
-      <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-        <span style={{
-          display: 'block',
-          fontSize: '0.7rem',
-          fontFamily: 'var(--font-mono)',
-          color: 'var(--vk-accent)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.12em',
-          fontWeight: 700,
-          marginBottom: '12px',
-        }}>
+      <div className="section-header-center">
+        <span className="section-eyebrow">
           Pricing &amp; Plans
         </span>
-        <h2 style={{
-          fontSize: 'clamp(2rem, 4vw, 3rem)',
-          fontWeight: 800,
-          letterSpacing: '-0.025em',
-          color: 'var(--vk-text)',
-          margin: '0 0 12px',
-        }}>
+        <h2 className="section-title">
           {title}
         </h2>
         {subtitle && (
-          <p style={{
-            fontSize: '0.95rem',
-            color: 'var(--vk-text-secondary)',
-            margin: '0 auto',
-            maxWidth: '480px',
-            lineHeight: 1.6,
-          }}>
+          <p className="text-sm sm:text-base text-muted-foreground max-w-md mx-auto mt-2 leading-relaxed">
             {subtitle}
           </p>
         )}
       </div>
 
       {/* Billing Toggle */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '48px' }}>
+      <div className="flex justify-center items-center mb-10">
         <div style={{
           display: 'inline-flex',
           alignItems: 'center',
@@ -168,13 +147,7 @@ export function PricingModule({
       </div>
 
       {/* Cards Grid */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-        gap: '20px',
-        maxWidth: '960px',
-        margin: '0 auto',
-      }}>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
         {plans.map((plan) => (
           <PricingCard
             key={plan.id}

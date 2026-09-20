@@ -25,93 +25,70 @@ export const PricingCard: React.FC<PricingCardProps> = ({
 
   return (
     <div className={cn(
-      "flex flex-col bg-card border border-border rounded-xl p-6 transition-all duration-200",
-      plan.recommended && "border-primary shadow-lg shadow-primary/10"
+      "flex flex-col justify-between bg-card border border-border rounded-xl p-6 sm:p-7 transition-all duration-200 text-left",
+      plan.recommended && "border-primary shadow-xl shadow-primary/10"
     )}>
-      {/* Recommended badge row — always reserved, never overflows */}
-      <div style={{ height: '28px', marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
-        {plan.recommended && (
-          <span style={{
-            fontSize: '0.65rem',
-            fontFamily: 'var(--font-mono)',
-            fontWeight: 700,
-            textTransform: 'uppercase',
-            letterSpacing: '0.1em',
-            padding: '3px 10px',
-            borderRadius: '9999px',
-            background: 'var(--vk-accent)',
-            color: '#fff',
-          }}>
-            Recommended
-          </span>
-        )}
-      </div>
-
-      {/* Icon + Name row */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-        <div style={{
-          width: 32, height: 32,
-          borderRadius: '8px',
-          background: 'rgba(0, 143, 245, 0.12)',
-          border: '1px solid rgba(0, 143, 245, 0.25)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: 'var(--vk-accent)',
-          flexShrink: 0,
-        }}>
-          {plan.icon}
+      {/* Top section: Header, Price & CTA */}
+      <div>
+        {/* Recommended badge row — always reserved, never overflows */}
+        <div className="h-7 mb-3 flex items-center">
+          {plan.recommended && (
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-primary text-primary-foreground">
+              Recommended
+            </span>
+          )}
         </div>
-        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: 'var(--vk-text)' }}>
-          {plan.name}
-        </h3>
-      </div>
 
-      {/* Description */}
-      <p style={{
-        margin: '0 0 20px',
-        fontSize: '0.8rem',
-        color: 'var(--vk-text-secondary)',
-        lineHeight: 1.55,
-        minHeight: '40px',
-      }}>
-        {plan.description}
-      </p>
-
-      {/* Price */}
-      <div style={{ marginBottom: '20px' }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: '5px' }}>
-          <span style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--vk-text)', lineHeight: 1 }}>
-            ${displayPrice}
-          </span>
-          <span style={{ fontSize: '0.75rem', color: 'var(--vk-text-muted)' }}>
-            {plan.priceMonthly === 0 ? '/ forever' : '/ mo'}
-          </span>
-        </div>
-        {isAnnual && plan.priceYearly > 0 && (
-          <div style={{ marginTop: '4px', fontSize: '0.7rem', color: 'var(--vk-accent)', fontFamily: 'var(--font-mono)' }}>
-            ${plan.priceYearly} billed annually
+        {/* Icon + Name row */}
+        <div className="flex items-center gap-2.5 mb-2">
+          <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/25 flex items-center justify-center text-primary shrink-0">
+            {plan.icon}
           </div>
-        )}
-      </div>
+          <h3 className="text-base font-bold text-foreground m-0">
+            {plan.name}
+          </h3>
+        </div>
 
-      {/* CTA button */}
-      <Button
-        type="button"
-        variant={plan.recommended ? "default" : "secondary"}
-        onClick={() => onSelectPlan?.(plan)}
-        className="w-full mb-6 font-semibold"
-      >
-        {buttonLabel}
-      </Button>
+        {/* Description */}
+        <p className="text-xs text-muted-foreground leading-relaxed mb-5 min-h-[38px]">
+          {plan.description}
+        </p>
+
+        {/* Price */}
+        <div className="mb-5">
+          <div className="flex items-baseline gap-1">
+            <span className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight leading-none">
+              ${displayPrice}
+            </span>
+            <span className="text-xs text-muted-foreground">
+              {plan.priceMonthly === 0 ? '/ forever' : '/ mo'}
+            </span>
+          </div>
+          {isAnnual && plan.priceYearly > 0 && (
+            <div className="text-[11px] font-mono text-primary mt-1.5">
+              ${plan.priceYearly} billed annually
+            </div>
+          )}
+        </div>
+
+        {/* CTA button */}
+        <Button
+          type="button"
+          variant={plan.recommended ? "default" : "secondary"}
+          onClick={() => onSelectPlan?.(plan)}
+          className="w-full h-10 mb-6 font-semibold"
+        >
+          {buttonLabel}
+        </Button>
+      </div>
 
       {/* Features */}
-      <div style={{ borderTop: '1px solid var(--vk-border)', paddingTop: '20px', flex: 1 }}>
-        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div className="border-t border-border pt-5 mt-auto">
+        <ul className="space-y-3 m-0 p-0 list-none">
           {plan.features.map((f, i) => (
-            <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-              <Check size={14} style={{ color: 'var(--vk-accent)', flexShrink: 0, marginTop: '2px' }} />
-              <span style={{ fontSize: '0.8rem', color: 'var(--vk-text-secondary)', lineHeight: 1.45 }}>
-                {f.label}
-              </span>
+            <li key={i} className="flex items-start gap-2.5 text-xs text-muted-foreground leading-snug">
+              <Check size={14} className="text-primary shrink-0 mt-0.5" />
+              <span>{f.label}</span>
             </li>
           ))}
         </ul>
