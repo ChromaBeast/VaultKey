@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { KeyRound } from 'lucide-react';
 
 export const LandingHeader: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -26,7 +25,7 @@ export const LandingHeader: React.FC = () => {
         {/* Brand */}
         <Link to="/" className="flex items-center gap-2.5 group">
           <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/25 flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-            <KeyRound size={16} />
+            <img src="/vaultkey-mark.svg" alt="" className="h-5 w-5" />
           </div>
           <span className="brand-text text-lg font-extrabold tracking-tight text-foreground">
             VaultKey
@@ -37,25 +36,25 @@ export const LandingHeader: React.FC = () => {
         <nav className="hidden md:flex items-center gap-7">
           <a
             href="#workflow"
-            className="text-xs uppercase font-mono font-medium text-muted-foreground hover:text-foreground tracking-wider transition-colors"
+            className="text-xs font-mono font-medium text-muted-foreground hover:text-foreground tracking-wider transition-colors"
           >
             Workflows
           </a>
           <a
             href="#comparison"
-            className="text-xs uppercase font-mono font-medium text-muted-foreground hover:text-foreground tracking-wider transition-colors"
+            className="text-xs font-mono font-medium text-muted-foreground hover:text-foreground tracking-wider transition-colors"
           >
             Why VaultKey
           </a>
           <a
             href="#pricing"
-            className="text-xs uppercase font-mono font-medium text-muted-foreground hover:text-foreground tracking-wider transition-colors"
+            className="text-xs font-mono font-medium text-muted-foreground hover:text-foreground tracking-wider transition-colors"
           >
             Pricing
           </a>
           <Link
             to="/docs"
-            className="text-xs uppercase font-mono font-medium text-muted-foreground hover:text-foreground tracking-wider transition-colors"
+            className="text-xs font-mono font-medium text-muted-foreground hover:text-foreground tracking-wider transition-colors"
           >
             Docs
           </Link>
@@ -67,7 +66,7 @@ export const LandingHeader: React.FC = () => {
             to="/login"
             className="text-xs font-semibold text-muted-foreground hover:text-foreground px-3 py-2 transition-colors"
           >
-            Sign in
+            Sign In
           </Link>
           <Link
             to="/signup"

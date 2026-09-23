@@ -82,7 +82,7 @@ const SidebarHeader: React.FC<{ org: { plan?: string; name: string } | null }> =
   return (
     <div className="flex items-center gap-3 py-2 px-1 border-b border-border/50">
       <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary/25 to-blue-600/15 border border-primary/35 flex items-center justify-center shrink-0">
-        <KeyRound className="h-4 w-4 text-primary" />
+        <img src="/vaultkey-mark.svg" alt="" className="h-4 w-4" />
       </div>
       {open && (
         <div className="flex flex-col min-w-0">

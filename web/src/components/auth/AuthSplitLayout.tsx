@@ -1,5 +1,5 @@
 import React from 'react';
-import { KeyRound, AlertTriangle } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AuthHeroVisual } from './AuthHeroVisual';
 
@@ -62,7 +62,7 @@ export const AuthSplitLayout: React.FC<AuthSplitLayoutProps> = ({
                 justifyContent: 'center',
               }}
             >
-              <KeyRound size={20} color="var(--vk-accent)" />
+              <img src="/vaultkey-mark.svg" alt="" width="24" height="24" />
             </div>
             <div>
               <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--vk-text)', letterSpacing: '-0.02em', display: 'block', lineHeight: 1.1 }}>
