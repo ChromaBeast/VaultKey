@@ -1,4 +1,5 @@
 /* Core Component Styles (Section styles modularized in sections.css) */
+@layer components {
 /* Surfaces */
 .glass {
   background: var(--vk-surface-1);
@@ -148,4 +149,5 @@ tr:hover td { background: rgba(255, 255, 255, 0.02); }
 @keyframes skelShimmer {
   0% { background-position: 100% 0; }
   100% { background-position: -100% 0; }
+}
 }

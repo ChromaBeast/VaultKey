@@ -3,7 +3,7 @@ import React from 'react';
 const ROWS = [
   ['Plaintext on disk', 'Never', 'Stored in a .env file'],
   ['Run secrets', 'Directly in your app', 'Load them yourself'],
-  ['Setup', 'Single binary', 'No install'],
+  ['Setup', 'Single binary', 'Add a file'],
 ];
 
 export const ComparisonTable: React.FC = () => (

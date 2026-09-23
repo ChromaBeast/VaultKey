@@ -1,8 +1,7 @@
 /* Base resets and global typography */
+@layer base {
 *, *::before, *::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 html {
@@ -95,3 +94,4 @@ a, button, input, select, textarea {
 ::-webkit-scrollbar-track { background: var(--vk-bg); }
 ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.16); }
+}
