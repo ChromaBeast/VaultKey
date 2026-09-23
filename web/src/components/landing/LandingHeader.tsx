@@ -1,81 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
-export const LandingHeader: React.FC = () => {
-  const [scrolled, setScrolled] = useState(false);
+export const LandingHeader: React.FC = () => (
+  <header className="sticky top-0 z-50 h-16 w-full border-b border-border/70 bg-background/95 backdrop-blur-md">
+    <div className="mx-auto flex h-full max-w-[var(--container-max)] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+      <Link to="/" className="flex shrink-0 items-center gap-2.5" aria-label="VaultKey home">
+        <img src="/vaultkey-logo.png" alt="" className="h-8 w-8 object-contain" />
+        <span className="brand-text text-lg font-extrabold tracking-tight text-foreground">VaultKey</span>
+      </Link>
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+      <nav aria-label="Main navigation" className="hidden items-center gap-7 md:flex">
+        <a href="#workflow" className="text-sm text-muted-foreground hover:text-foreground">How it works</a>
+        <a href="#comparison" className="text-sm text-muted-foreground hover:text-foreground">Why VaultKey</a>
+        <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground">Pricing</a>
+        <Link to="/docs" className="text-sm text-muted-foreground hover:text-foreground">Docs</Link>
+      </nav>
 
-  return (
-    <header
-      className={`sticky top-0 z-50 w-full h-16 transition-all duration-200 ${
-        scrolled
-          ? 'bg-background/85 backdrop-blur-md border-b border-border shadow-md shadow-black/20'
-          : 'bg-transparent border-b border-transparent'
-      }`}
-    >
-      <div className="max-w-[var(--container-max)] h-full mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        {/* Brand */}
-        <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/25 flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-            <img src="/vaultkey-logo.png" alt="" className="h-6 w-6 object-contain" />
-          </div>
-          <span className="brand-text text-lg font-extrabold tracking-tight text-foreground">
-            VaultKey
-          </span>
-        </Link>
-
-        {/* Center Nav */}
-        <nav className="hidden md:flex items-center gap-7">
-          <a
-            href="#workflow"
-            className="text-xs font-mono font-medium text-muted-foreground hover:text-foreground tracking-wider transition-colors"
-          >
-            Workflows
-          </a>
-          <a
-            href="#comparison"
-            className="text-xs font-mono font-medium text-muted-foreground hover:text-foreground tracking-wider transition-colors"
-          >
-            Why VaultKey
-          </a>
-          <a
-            href="#pricing"
-            className="text-xs font-mono font-medium text-muted-foreground hover:text-foreground tracking-wider transition-colors"
-          >
-            Pricing
-          </a>
-          <Link
-            to="/docs"
-            className="text-xs font-mono font-medium text-muted-foreground hover:text-foreground tracking-wider transition-colors"
-          >
-            Docs
-          </Link>
-        </nav>
-
-        {/* Right Auth */}
-        <div className="flex items-center gap-3">
-          <Link
-            to="/login"
-            className="text-xs font-semibold text-muted-foreground hover:text-foreground px-3 py-2 transition-colors"
-          >
-            Sign In
-          </Link>
-          <Link
-            to="/signup"
-            className="btn btn-primary text-xs font-semibold px-4 py-2"
-          >
-            Get Started
-          </Link>
-        </div>
+      <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+        <Link to="/login" className="inline-flex px-1 py-2 text-sm font-medium text-muted-foreground hover:text-foreground sm:px-2">Sign in</Link>
+        <Button asChild size="sm" className="rounded-lg px-3 sm:px-4">
+          <Link to="/signup">Start free</Link>
+        </Button>
       </div>
-    </header>
-  );
-};
+    </div>
+  </header>
+);

@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { PricingCard } from "./pricing-card";
 
 export interface PlanFeature {
@@ -12,9 +11,7 @@ export interface PricingPlan {
   id: string;
   name: string;
   description: string;
-  icon: React.ReactNode;
   priceMonthly: number;
-  priceYearly: number;
   features: PlanFeature[];
   recommended?: boolean;
 }
@@ -48,7 +45,7 @@ export function PricingModule({
       </div>
 
       {/* Cards Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 max-w-6xl mx-auto items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 max-w-6xl mx-auto items-stretch">
         {plans.map((plan) => (
           <PricingCard
             key={plan.id}

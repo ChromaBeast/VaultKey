@@ -1,32 +1,18 @@
 import React from 'react';
 
-const ROWS = [
-  ['Secret storage', 'Encrypted at rest', 'Plaintext in a .env file'],
-  ['Run secrets', 'Directly in your app', 'Load them yourself'],
-  ['Setup', 'Single binary', 'Add a file'],
+const BENEFITS = [
+  ['Store safely', 'Passwords and API keys are encrypted before VaultKey saves them.'],
+  ['Share carefully', 'Choose who on your team can read or change secrets.'],
+  ['See what changed', 'Review a record of activity in your vault.'],
 ];
 
 export const ComparisonTable: React.FC = () => (
-  <div className="overflow-hidden rounded-2xl border border-border bg-card">
-    <div className="overflow-x-auto">
-      <table className="w-full border-collapse text-left min-w-[520px]">
-        <thead>
-          <tr className="border-b border-border bg-secondary/70">
-            <th className="px-5 py-4 text-muted-foreground text-xs font-semibold uppercase tracking-wider">At a glance</th>
-            <th className="px-5 py-4 text-primary text-xs font-bold uppercase tracking-wider">VaultKey</th>
-            <th className="px-5 py-4 text-muted-foreground text-xs font-semibold uppercase tracking-wider">.env file</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-border/60 text-sm">
-          {ROWS.map(([feature, vaultkey, dotenv]) => (
-            <tr key={feature}>
-              <td className="px-5 py-4 font-medium text-foreground">{feature}</td>
-              <td className="px-5 py-4 text-foreground">{vaultkey}</td>
-              <td className="px-5 py-4 text-muted-foreground">{dotenv}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+  <div className="border-t border-border">
+    {BENEFITS.map(([title, description]) => (
+      <div key={title} className="grid gap-2 border-b border-border py-6 text-left sm:grid-cols-[minmax(180px,1fr)_2fr] sm:gap-8">
+        <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+        <p className="max-w-2xl text-base leading-relaxed text-muted-foreground">{description}</p>
+      </div>
+    ))}
   </div>
 );

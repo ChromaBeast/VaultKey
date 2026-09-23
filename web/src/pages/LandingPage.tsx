@@ -24,7 +24,7 @@ export const LandingPage: React.FC = () => {
   }, []);
 
   return (
-    <div style={{ background: 'var(--vk-bg)', minHeight: '100vh', color: 'var(--vk-text)' }}>
+    <div className="landing-page" style={{ background: 'var(--vk-bg)', minHeight: '100dvh', color: 'var(--vk-text)' }}>
       <LandingHeader />
       <main>
         <HeroSection />

@@ -1,71 +1,28 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export const LandingFooter: React.FC = () => {
-  return (
-    <footer className="w-full border-t border-border bg-[#06070a]">
-      <div className="max-w-[var(--container-max)] mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-14 text-left">
-          {/* Brand Col */}
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-7 h-7 rounded-lg bg-primary/10 border border-primary/25 flex items-center justify-center text-primary">
-                <img src="/vaultkey-logo.png" alt="" className="h-6 w-6 object-contain" />
-              </div>
-              <span className="brand-text text-base font-extrabold text-foreground">
-                VaultKey
-              </span>
-            </div>
-            <p className="text-xs text-muted-foreground leading-relaxed max-w-[240px]">
-              Encrypted at rest. Decrypted for runtime use.
-            </p>
+export const LandingFooter: React.FC = () => (
+  <footer className="w-full border-t border-border bg-background">
+    <div className="mx-auto max-w-[var(--container-max)] px-4 py-10 sm:px-6 lg:px-8">
+      <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <div className="flex items-center gap-2">
+            <img src="/vaultkey-logo.png" alt="" className="h-7 w-7 object-contain" />
+            <span className="brand-text font-extrabold text-foreground">VaultKey</span>
           </div>
-
-          {/* Product Links */}
-          <div>
-            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-foreground mb-4">
-              Product
-            </h4>
-            <ul className="space-y-2.5 text-xs text-muted-foreground list-none p-0 m-0">
-              <li><Link to="/secrets" className="hover:text-foreground transition-colors">Secrets Vault</Link></li>
-              <li><Link to="/keys" className="hover:text-foreground transition-colors">Machine Access Keys</Link></li>
-              <li><Link to="/audit" className="hover:text-foreground transition-colors">Audit Ledger</Link></li>
-              <li><a href="#pricing" className="hover:text-foreground transition-colors">Pricing &amp; Plans</a></li>
-            </ul>
-          </div>
-
-          {/* Dev Links */}
-          <div>
-            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-foreground mb-4">
-              Developers
-            </h4>
-            <ul className="space-y-2.5 text-xs text-muted-foreground list-none p-0 m-0">
-              <li><Link to="/docs" className="hover:text-foreground transition-colors">CLI Setup Guide</Link></li>
-              <li><Link to="/docs" className="hover:text-foreground transition-colors">REST API Reference</Link></li>
-              <li><a href="#workflow" className="hover:text-foreground transition-colors">Dev Workflows</a></li>
-              <li><a href="https://github.com/ChromaBeast/VaultKey" target="_blank" rel="noreferrer" className="hover:text-foreground transition-colors">GitHub Repository</a></li>
-            </ul>
-          </div>
-
-          {/* Legal / Contact */}
-          <div>
-            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-foreground mb-4">
-              Trust &amp; Legal
-            </h4>
-            <ul className="space-y-2.5 text-xs text-muted-foreground list-none p-0 m-0">
-              <li><Link to="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link></li>
-              <li><a href="mailto:security@vaultkey.sheershjaiswal.in" className="hover:text-foreground transition-colors">Responsible Disclosure</a></li>
-              <li><a href="mailto:sheersh@vaultkey.dev" className="hover:text-foreground transition-colors">Contact Engineering</a></li>
-            </ul>
-          </div>
+          <p className="mt-3 max-w-xs text-sm text-muted-foreground">A safer home for the passwords and keys your app uses.</p>
         </div>
 
-        {/* Bottom copyright row */}
-        <div className="border-t border-border/80 pt-6 flex flex-wrap justify-between items-center text-xs text-muted-foreground gap-4">
-          <span>&copy; {new Date().getFullYear()} VaultKey Systems. Released under MIT license.</span>
-          <span className="font-mono text-xs text-muted-foreground/70">AES-256-GCM &middot; RAM-Locked</span>
-        </div>
+        <nav aria-label="Footer navigation" className="flex max-w-xl flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground">
+          <a href="#workflow" className="hover:text-foreground">How it works</a>
+          <a href="#pricing" className="hover:text-foreground">Pricing</a>
+          <Link to="/docs" className="hover:text-foreground">Docs</Link>
+          <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
+          <a href="https://github.com/ChromaBeast/VaultKey" target="_blank" rel="noreferrer" className="hover:text-foreground">GitHub</a>
+          <a href="mailto:sheersh@vaultkey.dev" className="hover:text-foreground">Contact</a>
+        </nav>
       </div>
-    </footer>
-  );
-};
+      <p className="mt-10 border-t border-border pt-5 text-xs text-muted-foreground">© {new Date().getFullYear()} VaultKey Systems</p>
+    </div>
+  </footer>
+);
