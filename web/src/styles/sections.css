@@ -27,23 +27,6 @@
   padding-bottom: clamp(3rem, 6vw, 5.5rem);
 }
 
-.section-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--primary);
-  background: var(--vk-accent-dim);
-  border: 1px solid rgba(0, 143, 245, 0.25);
-  padding: 4px 12px;
-  border-radius: 9999px;
-  margin-bottom: var(--space-3);
-}
-
 .section-title {
   font-size: clamp(2rem, 4vw, 2.85rem);
   font-weight: 800;

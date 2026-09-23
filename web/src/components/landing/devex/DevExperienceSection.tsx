@@ -5,9 +5,6 @@ export const DevExperienceSection: React.FC = () => {
   return (
     <section id="workflow" className="section-shell">
       <div className="section-header">
-        <span className="section-eyebrow">
-          Workflows
-        </span>
         <h2 className="section-title">
           One command. Any environment.
         </h2>

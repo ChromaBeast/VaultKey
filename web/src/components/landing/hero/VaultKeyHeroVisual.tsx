@@ -27,7 +27,7 @@ export const VaultKeyHeroVisual: React.FC = () => {
               vaultkey · runtime
             </div>
             {/* RAM badge */}
-            <div className="flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-2.5 py-0.5 rounded-full">
+            <div className="flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-400">
               <Lock size={10} />
               MLOCK
             </div>

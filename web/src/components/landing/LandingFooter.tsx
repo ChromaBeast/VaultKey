@@ -10,7 +10,7 @@ export const LandingFooter: React.FC = () => {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <div className="w-7 h-7 rounded-lg bg-primary/10 border border-primary/25 flex items-center justify-center text-primary">
-                <img src="/vaultkey-mark.svg" alt="" className="h-4 w-4" />
+                <img src="/vaultkey-logo.svg" alt="" className="h-6 w-6 object-contain" />
               </div>
               <span className="brand-text text-base font-extrabold text-foreground">
                 VaultKey

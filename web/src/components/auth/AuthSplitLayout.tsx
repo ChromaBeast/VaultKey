@@ -62,7 +62,7 @@ export const AuthSplitLayout: React.FC<AuthSplitLayoutProps> = ({
                 justifyContent: 'center',
               }}
             >
-              <img src="/vaultkey-mark.svg" alt="" width="24" height="24" />
+              <img src="/vaultkey-logo.svg" alt="" width="32" height="32" />
             </div>
             <div>
               <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--vk-text)', letterSpacing: '-0.02em', display: 'block', lineHeight: 1.1 }}>

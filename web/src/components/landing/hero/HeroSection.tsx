@@ -25,12 +25,6 @@ export const HeroSection: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
         {/* Left Column: Text & Actions */}
         <div className="lg:col-span-6 flex flex-col items-start text-left">
-          {/* Eyebrow / Release Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono font-medium text-primary bg-primary/10 border border-primary/25 mb-6">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span>Secrets stay off disk</span>
-          </div>
-
           {/* Headline — balanced 2-line typography */}
           <h1 className="text-4xl sm:text-5xl lg:text-[4rem] font-extrabold tracking-tight text-foreground leading-[1.02] mb-5">
             Keep secrets out of your files.

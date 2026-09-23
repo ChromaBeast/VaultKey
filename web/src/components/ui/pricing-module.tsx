@@ -37,7 +37,6 @@ export function PricingModule({
     <div className="w-full">
       {/* Header */}
       <div className="section-header-center">
-        <span className="section-eyebrow">Pricing</span>
         <h2 className="section-title">
           {title}
         </h2>
