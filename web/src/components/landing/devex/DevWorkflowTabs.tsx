@@ -96,7 +96,7 @@ export const DevWorkflowTabs: React.FC = () => {
         id={`panel-${tab}`}
         aria-labelledby={`tab-${tab}`}
         tabIndex={0}
-        className="p-6 sm:p-8 bg-[#0a0d14] overflow-x-auto text-left"
+        className="p-5 sm:p-7 bg-[#0a0d14] overflow-x-auto text-left min-h-[160px]"
       >
         <pre className="m-0 font-mono text-xs sm:text-sm leading-relaxed text-foreground">
           {current.code}

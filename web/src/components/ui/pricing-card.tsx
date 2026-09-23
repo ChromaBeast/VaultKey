@@ -6,23 +6,15 @@ import type { PricingPlan } from './pricing-module';
 
 interface PricingCardProps {
   plan: PricingPlan;
-  isAnnual: boolean;
   buttonLabel?: string;
   onSelectPlan?: (plan: PricingPlan) => void;
 }
 
 export const PricingCard: React.FC<PricingCardProps> = ({
   plan,
-  isAnnual,
   buttonLabel = 'Get Started',
   onSelectPlan,
 }) => {
-  const displayPrice = plan.priceMonthly === 0
-    ? 0
-    : isAnnual
-      ? Math.round(plan.priceYearly / 12)
-      : plan.priceMonthly;
-
   return (
     <div
       className={cn(
@@ -57,17 +49,10 @@ export const PricingCard: React.FC<PricingCardProps> = ({
         <div className="mt-6 mb-6">
           <div className="flex items-baseline">
             <span className="text-4xl sm:text-5xl font-extrabold text-foreground tracking-tight leading-none">
-              ${displayPrice}
+              {plan.id === 'enterprise' ? 'Custom' : plan.priceMonthly === 0 ? '$0' : '₹1,499'}
             </span>
-            <span className="text-sm text-muted-foreground font-medium ml-2">
-              {plan.priceMonthly === 0 ? '/ forever' : '/ month'}
-            </span>
+            {plan.id !== 'enterprise' && <span className="text-sm text-muted-foreground font-medium ml-2">{plan.priceMonthly === 0 ? '/ forever' : '/ month'}</span>}
           </div>
-          {isAnnual && plan.priceYearly > 0 && (
-            <div className="text-xs font-mono text-primary font-medium mt-2">
-              ${plan.priceYearly} billed annually (save 20%)
-            </div>
-          )}
         </div>
 
         {/* Action Button */}
@@ -77,7 +62,7 @@ export const PricingCard: React.FC<PricingCardProps> = ({
           onClick={() => onSelectPlan?.(plan)}
           className="w-full h-11 rounded-xl mb-6 font-semibold text-sm"
         >
-          {buttonLabel}
+          {plan.id === 'enterprise' ? 'Contact us' : buttonLabel}
         </Button>
       </div>
 

@@ -9,7 +9,7 @@ export const WhyNotEnvSection: React.FC = () => {
           Comparison
         </span>
         <h2 className="section-title">
-          No plaintext on disk. No cluster to manage.
+          Ditch `.env` files.
         </h2>
       </div>
 

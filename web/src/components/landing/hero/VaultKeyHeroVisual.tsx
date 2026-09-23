@@ -24,7 +24,7 @@ export const VaultKeyHeroVisual: React.FC = () => {
             {/* Session label */}
             <div className="flex items-center gap-1.5 text-xs font-mono text-muted-foreground font-medium">
               <Terminal size={13} className="text-primary" />
-              vaultkey-runtime · pid 8192
+              vaultkey · runtime
             </div>
             {/* RAM badge */}
             <div className="flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-2.5 py-0.5 rounded-full">
@@ -34,23 +34,21 @@ export const VaultKeyHeroVisual: React.FC = () => {
           </div>
 
           {/* Terminal Body */}
-          <div className="p-6 sm:p-7 font-mono text-xs sm:text-sm leading-relaxed space-y-5 text-left">
+          <div className="p-5 sm:p-6 font-mono text-xs sm:text-sm leading-relaxed space-y-4 text-left">
             {/* Command */}
             <div className="flex gap-2.5 items-center text-foreground font-medium flex-wrap">
               <span className="text-primary font-bold select-none">$</span>
               <span className="font-semibold text-white">vaultkey run</span>
-              <span className="text-primary">--env=production</span>
               <span className="text-muted-foreground">-- npm start</span>
             </div>
 
             {/* Logs */}
             <div className="flex flex-col gap-2.5 text-xs">
               {[
-                { text: 'Authenticated machine session (ed25519 token)', success: true },
-                { text: '14 secrets decrypted into process RAM (1.2ms)', success: true },
-                { text: 'Memory locked via mlock(2) · zero disk footprint', success: true },
-                { text: 'Spawned isolated child process (PID 8192)', success: false },
-                { text: 'Server listening on https://localhost:3000', success: false },
+                { text: 'Session authenticated', success: true },
+                { text: 'Secrets loaded into process memory', success: true },
+                { text: 'Plaintext not written to disk', success: true },
+                { text: 'Starting app…', success: false },
               ].map(({ text, success }, i) => (
                 <div key={i} className={`flex items-start gap-2.5 ${success ? 'text-emerald-400' : 'text-muted-foreground'}`}>
                   <span className="shrink-0 select-none font-bold">✓</span>
@@ -62,9 +60,9 @@ export const VaultKeyHeroVisual: React.FC = () => {
             {/* Stats Row */}
             <div className="grid grid-cols-3 gap-3 border-t border-border/80 pt-5 pb-1 text-center">
               {[
-                { label: 'Disk Leak', value: '0 bytes', textClass: 'text-emerald-400' },
-                { label: 'Cipher', value: 'AES-256-GCM', textClass: 'text-foreground' },
-                { label: 'RAM State', value: 'Protected', textClass: 'text-primary' },
+                { label: 'Plaintext on disk', value: 'None', textClass: 'text-emerald-400' },
+                { label: 'Encryption', value: 'AES-256-GCM', textClass: 'text-foreground' },
+                { label: 'Secrets', value: 'In memory', textClass: 'text-primary' },
               ].map(({ label, value, textClass }) => (
                 <div key={label} className="bg-secondary/80 p-3 rounded-xl border border-border/70">
                   <div className="text-[10px] uppercase font-mono text-muted-foreground tracking-wider mb-1">{label}</div>

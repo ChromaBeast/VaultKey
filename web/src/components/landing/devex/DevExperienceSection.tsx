@@ -9,7 +9,7 @@ export const DevExperienceSection: React.FC = () => {
           Workflows
         </span>
         <h2 className="section-title">
-          From dev to prod in one command.
+          One command. Any environment.
         </h2>
       </div>
 

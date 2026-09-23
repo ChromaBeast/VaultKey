@@ -45,7 +45,7 @@ export const LandingHeader: React.FC = () => {
             href="#comparison"
             className="text-xs uppercase font-mono font-medium text-muted-foreground hover:text-foreground tracking-wider transition-colors"
           >
-            Comparison
+            Why VaultKey
           </a>
           <a
             href="#pricing"
