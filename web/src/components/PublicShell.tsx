@@ -41,7 +41,7 @@ export const PublicShell: React.FC<{ children: React.ReactNode }> = ({ children 
                 justifyContent: 'center',
               }}
             >
-              <img src="/vaultkey-logo.svg" alt="" width="24" height="24" />
+              <img src="/vaultkey-logo.png" alt="" width="24" height="24" />
             </span>
             <span className="brand-text" style={{ fontSize: '1rem', fontWeight: 800 }}>
               VaultKey

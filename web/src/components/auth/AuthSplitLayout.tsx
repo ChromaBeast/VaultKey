@@ -20,6 +20,7 @@ export const AuthSplitLayout: React.FC<AuthSplitLayoutProps> = ({
 }) => {
   return (
     <div
+      className="auth-shell"
       style={{
         minHeight: '100vh',
         display: 'flex',
@@ -29,6 +30,7 @@ export const AuthSplitLayout: React.FC<AuthSplitLayoutProps> = ({
     >
       {/* Left Form Pane */}
       <div
+        className="auth-form-pane"
         style={{
           flex: '1 1 50%',
           display: 'flex',
@@ -55,21 +57,21 @@ export const AuthSplitLayout: React.FC<AuthSplitLayoutProps> = ({
                 width: '38px',
                 height: '38px',
                 borderRadius: 'var(--radius-sm)',
-                background: 'linear-gradient(135deg, rgba(60, 237, 235, 0.25) 0%, rgba(6, 182, 212, 0.15) 100%)',
-                border: '1px solid rgba(60, 237, 235, 0.4)',
+                background: 'rgba(0, 143, 245, 0.1)',
+                border: '1px solid rgba(0, 143, 245, 0.28)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <img src="/vaultkey-logo.svg" alt="" width="32" height="32" />
+              <img src="/vaultkey-logo.png" alt="" width="32" height="32" />
             </div>
             <div>
               <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--vk-text)', letterSpacing: '-0.02em', display: 'block', lineHeight: 1.1 }}>
                 VaultKey
               </span>
               <span style={{ fontSize: '0.68rem', fontWeight: 600, color: 'var(--vk-accent)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                Zero-Trust Engine
+                Secrets Manager
               </span>
             </div>
           </Link>

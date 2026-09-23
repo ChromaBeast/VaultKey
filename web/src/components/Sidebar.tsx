@@ -57,6 +57,7 @@ export const AppSidebar: React.FC = () => {
                     onClick: (e) => {
                       e.preventDefault();
                       navigate(item.path);
+                      if (window.innerWidth < 1024) setOpen(false);
                     },
                   }}
                 />
@@ -81,8 +82,8 @@ const SidebarHeader: React.FC<{ org: { plan?: string; name: string } | null }> =
   const { open } = useSidebar();
   return (
     <div className="flex items-center gap-3 py-2 px-1 border-b border-border/50">
-      <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary/25 to-blue-600/15 border border-primary/35 flex items-center justify-center shrink-0">
-        <img src="/vaultkey-logo.svg" alt="" className="h-6 w-6 object-contain" />
+              <div className="h-8 w-8 rounded-lg bg-primary/10 border border-primary/25 flex items-center justify-center shrink-0">
+        <img src="/vaultkey-logo.png" alt="" className="h-6 w-6 object-contain" />
       </div>
       {open && (
         <div className="flex flex-col min-w-0">
@@ -137,7 +138,6 @@ const SidebarFooter: React.FC<{
           <span className="flex items-center gap-1.5">
             <Lock className="h-3 w-3" /> Lock Vault
           </span>
-          <kbd className="text-[10px] opacity-70 font-mono">⌘K</kbd>
         </button>
       )}
     </div>

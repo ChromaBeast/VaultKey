@@ -47,13 +47,17 @@ export const AuthCardLayout: React.FC<AuthCardLayoutProps> = ({
           position: 'relative',
         }}
       >
+        <Link to="/" className="auth-card-brand" aria-label="VaultKey home">
+          <img src="/vaultkey-logo.png" alt="" />
+          <span>VaultKey</span>
+        </Link>
         {/* Top Navigation Row: Back and Close */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            marginBottom: '24px',
+            marginBottom: '20px',
             minHeight: '28px',
           }}
         >

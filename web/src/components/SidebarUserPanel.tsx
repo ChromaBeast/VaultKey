@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Lock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { pushToast } from '../lib/toast';
-import { Kbd } from './ui';
 
 export const SidebarUserPanel: React.FC = () => {
   const { user, lockVault } = useAuth();
@@ -80,12 +79,11 @@ export const SidebarUserPanel: React.FC = () => {
           color: 'var(--vk-danger)',
           borderColor: 'rgba(255, 107, 122, 0.2)',
         }}
-        title="Zero memory & lock vault immediately"
+        title="Lock the vault and clear active key material"
       >
         <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <Lock size={13} /> Lock Vault
         </span>
-        <Kbd>⌘K</Kbd>
       </button>
     </div>
   );

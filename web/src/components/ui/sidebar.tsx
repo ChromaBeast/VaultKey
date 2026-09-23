@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconMenu2, IconX } from "@tabler/icons-react";
+import { Link } from "react-router-dom";
 
 export interface Links {
   label: string;
@@ -112,7 +113,11 @@ export const MobileSidebar = ({
       )}
       {...props}
     >
-      <div className="flex justify-end z-20 w-full">
+      <Link to="/" className="flex items-center gap-2.5 z-20 min-w-0" aria-label="VaultKey home">
+        <img src="/vaultkey-logo.png" alt="" className="h-7 w-7 object-contain" />
+        <span className="font-bold tracking-tight text-foreground">VaultKey</span>
+      </Link>
+      <div className="flex justify-end z-20">
         <button
           type="button"
           aria-label="Toggle menu"
@@ -136,7 +141,7 @@ export const MobileSidebar = ({
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ duration: 0.25, ease: "easeInOut" }}
+        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               className="fixed h-full w-64 inset-y-0 left-0 bg-card border-r border-border p-6 z-[100] flex flex-col justify-between"
             >
               <button
@@ -169,6 +174,8 @@ export const SidebarLink = ({
     <a
       href={link.href}
       onClick={link.onClick}
+      aria-current={link.isActive ? "page" : undefined}
+      title={!open ? link.label : undefined}
       className={cn(
         "flex items-center justify-start gap-3 group/sidebar py-2 px-2.5 rounded-lg text-sm transition-colors",
         link.isActive

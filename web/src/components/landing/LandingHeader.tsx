@@ -25,7 +25,7 @@ export const LandingHeader: React.FC = () => {
         {/* Brand */}
         <Link to="/" className="flex items-center gap-2.5 group">
           <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/25 flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
-            <img src="/vaultkey-logo.svg" alt="" className="h-6 w-6 object-contain" />
+            <img src="/vaultkey-logo.png" alt="" className="h-6 w-6 object-contain" />
           </div>
           <span className="brand-text text-lg font-extrabold tracking-tight text-foreground">
             VaultKey

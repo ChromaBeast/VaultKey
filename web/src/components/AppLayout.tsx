@@ -25,19 +25,19 @@ export const AppLayout: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-background text-foreground">
+    <div className="app-frame flex flex-col md:flex-row min-h-screen bg-background text-foreground">
       <Sidebar />
-      <main className="flex-1 flex flex-col min-w-0 px-4 py-6 sm:px-8 sm:py-8 lg:px-10 overflow-x-hidden">
-        <div className="flex justify-end mb-4 md:mb-6">
+      <main className="app-main flex-1 flex flex-col min-w-0 px-4 py-6 sm:px-8 sm:py-8 lg:px-10 overflow-x-hidden">
+        <div className="app-toolbar flex justify-end mb-4 md:mb-6">
           <button
             type="button"
             onClick={openCommandPalette}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-card/80 hover:bg-card border border-border text-xs text-muted-foreground hover:text-foreground transition-colors shadow-sm"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-card/80 hover:bg-card border border-border text-xs text-muted-foreground hover:text-foreground transition-colors"
             aria-label="Open command palette"
           >
             <Command size={13} />
             <span>Search or command</span>
-            <kbd className="text-[10px] bg-secondary/80 px-1.5 py-0.5 rounded border border-border/60 font-mono">⌘K</kbd>
+            <kbd className="text-[10px] bg-secondary/80 px-1.5 py-0.5 rounded border border-border/60 font-mono">⌘ / Ctrl K</kbd>
           </button>
         </div>
         <div className="max-w-7xl w-full mx-auto flex-1">
