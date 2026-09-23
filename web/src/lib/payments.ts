@@ -23,6 +23,10 @@ export const fetchPaymentHistory = async () => {
   return apiFetch<import('../types/payment').PaymentRecord[]>('/v1/payments/history');
 };
 
+export const fetchPaymentConfig = async () => {
+  return apiFetch<{ enabled: boolean; key_id: string }>('/v1/payments/config');
+};
+
 export const createRazorpaySubscription = async (plan: string) => {
   return apiFetch<{ subscription_id: string; key_id: string; plan: string }>('/v1/subscriptions/create', {
     method: 'POST',

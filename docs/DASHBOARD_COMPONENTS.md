@@ -57,7 +57,7 @@ App.tsx
   - Circular avatar with 2-letter uppercase initials derived from email (`email.substring(0, 2)`).
   - Truncated user email address.
   - User organization role badge (`admin`, `write`, `read`).
-  - **"Lock Vault"** button: Calls `lockVault()` (`POST /v1/vault/lock`), which wipes cryptographic keys in server RAM, purges `localStorage` (`vk_token`, `vk_user`, `vk_org`), and redirects to `/login`.
+  - **"Lock Vault"** button: Calls `lockVault()` (`POST /v1/vault/lock`), which wipes cryptographic keys in server RAM, purges the session token and saved display data, and redirects to `/login`.
 
 #### 4. `CommandPaletteModal.tsx` (`web/src/components/CommandPaletteModal.tsx`)
 - **What it does**: Spotlight-style command bar triggered anywhere via `Cmd+K` / `Ctrl+K`.
@@ -259,7 +259,7 @@ SettingsPage.tsx
 - **State Stored**:
   - `user: User | null` (`id`, `org_id`, `email`, `role`)
   - `org: Org | null` (`id`, `name`, `slug`, `plan`, `subscription_id`, `subscription_status`, `current_period_end`)
-  - `token: string | null` (Stored in `localStorage.vk_token`)
+  - `token: string | null` (Stored in tab-scoped `sessionStorage.vk_token`; user and org display data remain in local storage)
 - **Core Methods**:
   - `login(email, password)` -> `POST /v1/auth/login`
   - `signup(email, password, orgName)` -> `POST /v1/auth/signup`

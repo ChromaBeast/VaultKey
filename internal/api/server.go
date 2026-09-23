@@ -97,6 +97,7 @@ func (s *Server) setupRoutes() {
 
 	v1.Post("/auth/signup", authLimiter, s.handleSignup)
 	v1.Post("/auth/login", authLimiter, s.handleLogin)
+	v1.Get("/auth/config", s.handleAuthConfig)
 	v1.Post("/auth/forgot-password", authLimiter, s.handleForgotPassword)
 	v1.Post("/auth/verify-otp", authLimiter, s.handleVerifyOTP)
 	v1.Post("/auth/reset-password", authLimiter, s.handleResetPassword)

@@ -54,10 +54,13 @@ func signatureAllowed(s *Server, sig string) bool {
 }
 
 func (s *Server) handleGetRazorpayConfig(c *fiber.Ctx) error {
-	return c.JSON(fiber.Map{"key_id": s.Config.RazorpayKeyID})
+	return c.JSON(fiber.Map{"enabled": s.Config.BillingEnabled(), "key_id": s.Config.RazorpayKeyID})
 }
 
 func (s *Server) handleCreateRazorpayOrder(c *fiber.Ctx) error {
+	if !s.Config.BillingEnabled() {
+		return c.Status(503).JSON(fiber.Map{"error": "billing is not configured"})
+	}
 	orgID := c.Locals("org_id").(string)
 
 	var req CreateOrderRequest
@@ -109,6 +112,9 @@ func (s *Server) handleCreateRazorpayOrder(c *fiber.Ctx) error {
 }
 
 func (s *Server) handleVerifyRazorpayPayment(c *fiber.Ctx) error {
+	if !s.Config.BillingEnabled() {
+		return c.Status(503).JSON(fiber.Map{"error": "billing is not configured"})
+	}
 	orgID := c.Locals("org_id").(string)
 	actor, _ := c.Locals("actor").(string)
 

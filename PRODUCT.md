@@ -21,25 +21,25 @@ They want proof the architecture is sound before onboarding the team.
 
 ## Product Purpose
 
-VaultKey lets engineering teams store, rotate, and inject secrets without those secrets
-ever touching disk in plaintext. The master key is derived fresh in RAM on each unlock
-(Argon2id, 64 MB memory-hard), used to decrypt in memory, then zeroed. There is no
-plaintext on disk at any point — not at rest, not in logs, not in backups.
+VaultKey lets engineering teams store, rotate, and inject secrets with values encrypted
+in the database. The master key is derived in RAM on each unlock (Argon2id, 64 MB
+memory-hard), used to decrypt values in memory, then cleared when the vault locks.
+Explicit CLI export and pull commands write plaintext to user-selected files.
 
-## Positioning Line (the claim a competitor cannot truthfully copy without matching the architecture)
+## Positioning Line
 
-**"Your secrets never touch disk. Not ever. The master key lives only in RAM, derived
-fresh on each unlock, and zeroed the moment the vault locks."**
+**"Secret values are encrypted in storage. The master key is derived in RAM on unlock
+and cleared when the vault locks."**
 
-This is architectural, not a marketing claim. It is verifiable in the source. It rules out
-any competitor that writes secrets to a filesystem, a managed KMS blob, or an encrypted
-database row at rest that is decrypted by a long-lived service key.
+Describe the storage and key lifecycle precisely. Explicit CLI export and pull commands
+write plaintext to user-selected files, so avoid claiming that plaintext never reaches disk.
 
 ## Secondary Differentiators
 
 1. **Immutable HMAC-chained audit ledger.** Every event is chained to the previous
    HMAC hash. Deleting or reordering any row breaks the chain. This is not a log —
-   it is a cryptographic ledger. Suitable for SOC 2 and ISO 27001 evidence.
+   it is a cryptographic ledger. It can support audit evidence but does not establish
+   SOC 2 or ISO 27001 compliance on its own.
 
 2. **India-first pricing via Razorpay.** ₹1,499 / month (~$19) with AutoPay (UPI,
    eNACH, card mandate). No USD billing friction for Indian engineering teams.

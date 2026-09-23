@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { Org, User } from '../lib/api';
 import { AUTH_UNAUTHORIZED_EVENT, apiFetch, safeJsonParse } from '../lib/api';
+import { clearSessionToken, getSessionToken, setSessionToken } from '../lib/session';
 
 interface AuthContextType {
   user: User | null;
@@ -14,7 +15,7 @@ interface AuthContextType {
   lockVault: () => Promise<void>;
 }
 
-const hasStoredToken = (): boolean => Boolean(localStorage.getItem('vk_token'));
+const hasStoredToken = (): boolean => Boolean(getSessionToken());
 
 const readStoredUser = (): User | null => {
   const saved = safeJsonParse<User>(localStorage.getItem('vk_user'));
@@ -27,7 +28,7 @@ const readStoredOrg = (): Org | null => {
 };
 
 const clearStoredSession = () => {
-  localStorage.removeItem('vk_token');
+  clearSessionToken();
   localStorage.removeItem('vk_user');
   localStorage.removeItem('vk_org');
 };
@@ -37,7 +38,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(readStoredUser);
   const [org, setOrg] = useState<Org | null>(readStoredOrg);
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem('vk_token'));
+  const [token, setToken] = useState<string | null>(getSessionToken);
 
   useEffect(() => {
     const handleUnauthorized = () => {
@@ -55,7 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   const login = (newToken: string, newUser: User, newOrg: Org) => {
-    localStorage.setItem('vk_token', newToken);
+    setSessionToken(newToken);
     localStorage.setItem('vk_user', JSON.stringify(newUser));
     localStorage.setItem('vk_org', JSON.stringify(newOrg));
     setToken(newToken);

@@ -61,10 +61,10 @@ export const ArchitectureSection: React.FC = () => {
             marginBottom: '16px',
           }}
         >
-          Memory-only pipeline. Zero plaintext on disk.
+          Encrypted at rest. Decrypted in memory when used.
         </h2>
         <p style={{ color: 'var(--vk-text-muted)', fontSize: 'var(--font-size-base)', lineHeight: 1.65, margin: 0 }}>
-          Secrets remain strictly in process memory during execution and encrypted at rest.
+          Stored values stay encrypted in VaultKey. Runtime injection decrypts them in memory; explicit CLI export and pull commands write plaintext to files you choose.
         </p>
       </div>
 

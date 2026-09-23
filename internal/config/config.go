@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"gopkg.in/yaml.v3"
@@ -12,26 +13,25 @@ import (
 const (
 	envDev        = "dev"
 	testTurnstile = "1x0000000000000000000000000000000AA"
-	demoRzpKey    = "rzp_test_vaultkey_demo"
-	demoRzpSecret = "razorpay_secret_vaultkey_demo"
 	defaultHMAC   = "vaultkey-default-audit-signing-hmac-key-1234567890"
 	prodHMACHint  = "prod-change-me-vaultkey-hmac"
 )
 
 type Config struct {
-	Port                  int    `yaml:"port"`
-	DatabasePath          string `yaml:"database_path"`
-	AutoLockDuration      string `yaml:"auto_lock_duration"`
-	AuditSigningKey       string `yaml:"audit_signing_key"`
-	RazorpayKeyID         string `yaml:"razorpay_key_id"`
-	RazorpayKeySecret     string `yaml:"razorpay_key_secret"`
-	RazorpayWebhookSecret string `yaml:"razorpay_webhook_secret"`
-	RazorpayPlanProID     string `yaml:"razorpay_plan_pro_id"`
-	RazorpayPlanEntID     string `yaml:"razorpay_plan_enterprise_id"`
-	AllowedOrigins        string `yaml:"allowed_origins"`
-	TurnstileSecretKey    string `yaml:"turnstile_secret_key"`
-	TrustedProxies        string `yaml:"trusted_proxies"`
-	StaticDir             string `yaml:"static_dir"`
+	Port                  int         `yaml:"port"`
+	DatabasePath          string      `yaml:"database_path"`
+	AutoLockDuration      string      `yaml:"auto_lock_duration"`
+	AuditSigningKey       string      `yaml:"audit_signing_key"`
+	RazorpayKeyID         string      `yaml:"razorpay_key_id"`
+	RazorpayKeySecret     string      `yaml:"razorpay_key_secret"`
+	RazorpayWebhookSecret string      `yaml:"razorpay_webhook_secret"`
+	RazorpayPlanProID     string      `yaml:"razorpay_plan_pro_id"`
+	RazorpayPlanEntID     string      `yaml:"razorpay_plan_enterprise_id"`
+	AllowedOrigins        string      `yaml:"allowed_origins"`
+	TurnstileSiteKey      string      `yaml:"turnstile_site_key"`
+	TurnstileSecretKey    string      `yaml:"turnstile_secret_key"`
+	TrustedProxies        string      `yaml:"trusted_proxies"`
+	StaticDir             string      `yaml:"static_dir"`
 	MaxLoginAttempts      int         `yaml:"max_login_attempts"`
 	LockoutDuration       string      `yaml:"lockout_duration"`
 	Email                 EmailConfig `yaml:"email"`
@@ -41,21 +41,16 @@ type Config struct {
 
 func Default() *Config {
 	return &Config{
-		Port:               8080,
-		DatabasePath:       "vaultkey.db",
-		AutoLockDuration:   "30m",
-		AuditSigningKey:    defaultHMAC,
-		RazorpayKeyID:      demoRzpKey,
-		RazorpayKeySecret:  demoRzpSecret,
-		RazorpayPlanProID:  "plan_pro_monthly_1499",
-		RazorpayPlanEntID:  "plan_enterprise_monthly_4999",
-		AllowedOrigins:     "http://localhost:8080,http://localhost:3000,http://localhost:5173",
-		TurnstileSecretKey: testTurnstile,
-		StaticDir:          "web/dist",
-		MaxLoginAttempts:   5,
-		LockoutDuration:    "5m",
-		Email:              DefaultEmailConfig(),
-		Environment:        "production",
+		Port:             8080,
+		DatabasePath:     "vaultkey.db",
+		AutoLockDuration: "30m",
+		AuditSigningKey:  defaultHMAC,
+		AllowedOrigins:   "http://localhost:8080,http://localhost:3000,http://localhost:5173",
+		StaticDir:        "web/dist",
+		MaxLoginAttempts: 5,
+		LockoutDuration:  "5m",
+		Email:            DefaultEmailConfig(),
+		Environment:      "production",
 	}
 }
 
@@ -86,7 +81,37 @@ func (c *Config) Validate() error {
 	if c.AuditSigningKey == defaultHMAC || c.AuditSigningKey == prodHMACHint || len(c.AuditSigningKey) < 32 {
 		return fmt.Errorf("refusing to start in production with a default or weak audit signing key; set VAULTKEY_HMAC_KEY (64+ random chars) or audit_signing_key in vaultkey.yaml")
 	}
+	if c.TurnstileSiteKey == "" || c.TurnstileSecretKey == "" || c.TurnstileSecretKey == testTurnstile {
+		return fmt.Errorf("refusing to start in production without real Cloudflare Turnstile site and secret keys")
+	}
+	switch strings.ToLower(strings.TrimSpace(c.Email.Provider)) {
+	case "brevo":
+		if c.Email.BrevoAPIKey == "" || c.Email.FromEmail == "" {
+			return fmt.Errorf("refusing to start in production without a Brevo API key and sender address")
+		}
+	case "smtp":
+		if c.Email.SMTPHost == "" || c.Email.SMTPPort <= 0 || c.Email.SMTPUser == "" || c.Email.SMTPPass == "" || c.Email.FromEmail == "" {
+			return fmt.Errorf("refusing to start in production with incomplete SMTP settings")
+		}
+	default:
+		return fmt.Errorf("refusing to start in production with console or unsupported email provider")
+	}
+	billingValues := []string{c.RazorpayKeyID, c.RazorpayKeySecret, c.RazorpayWebhookSecret, c.RazorpayPlanProID, c.RazorpayPlanEntID}
+	configured := 0
+	for _, value := range billingValues {
+		if value != "" {
+			configured++
+		}
+	}
+	if configured != 0 && configured != len(billingValues) {
+		return fmt.Errorf("Razorpay billing configuration is incomplete; set all credentials and both plan IDs, or leave all unset")
+	}
 	return nil
+}
+
+func (c *Config) BillingEnabled() bool {
+	return c.RazorpayKeyID != "" && c.RazorpayKeySecret != "" && c.RazorpayWebhookSecret != "" &&
+		c.RazorpayPlanProID != "" && c.RazorpayPlanEntID != ""
 }
 
 func Load(path string) (*Config, error) {
@@ -154,6 +179,9 @@ func applyEnv(cfg *Config) error {
 	}
 	if v := os.Getenv("RAZORPAY_PLAN_ENTERPRISE_ID"); v != "" {
 		cfg.RazorpayPlanEntID = v
+	}
+	if v := os.Getenv("VAULTKEY_TURNSTILE_SITE_KEY"); v != "" {
+		cfg.TurnstileSiteKey = v
 	}
 	if v := os.Getenv("VAULTKEY_ALLOWED_ORIGINS"); v != "" {
 		cfg.AllowedOrigins = v

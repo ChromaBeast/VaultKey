@@ -7,19 +7,19 @@ interface FaqItem {
 
 const FAQS: FaqItem[] = [
   {
-    question: 'How does VaultKey prevent secrets from ever touching the disk?',
+    question: 'Where are secrets decrypted?',
     answer:
-      'VaultKey unlocks secrets in RAM and injects them directly into child process memory via execve, never writing plaintext to disk.',
+      'Stored values remain encrypted in the database. VaultKey decrypts them in process memory when they are read or injected. The CLI export and pull commands intentionally write plaintext to files you choose.',
   },
   {
     question: 'Can VaultKey be self-hosted in an air-gapped environment?',
     answer:
-      'Yes, VaultKey is a single static Go binary with an embedded SQLite engine and zero external dependencies.',
+      'Yes. VaultKey can run on infrastructure you control. Its production deployment can use SQLite and Caddy; signup verification and email require the providers configured by the operator.',
   },
   {
     question: 'How is the master encryption key derived and protected?',
     answer:
-      'Keys are derived client-side via Argon2id, held strictly in locked RAM pages, and scrubbed with zeroes on process exit.',
+      'The server derives the master key with Argon2id, keeps it in process memory, and clears it when the vault locks. The operating system is not configured to pin the key in locked memory pages.',
   },
   {
     question: 'How does the tamper-evident HMAC audit ledger work?',

@@ -85,28 +85,59 @@ func (db *DB) RecordWebhookEvent(eventID string) (bool, error) {
 	return n > 0, nil
 }
 
+func (db *DB) DeleteWebhookEvent(eventID string) error {
+	_, err := db.Exec(`DELETE FROM webhook_events WHERE event_id = ?`, eventID)
+	return err
+}
+
 func (db *DB) DowngradeExpiredSubscriptions(now time.Time) ([]string, error) {
-	rows, err := db.Query(`
+	tx, err := db.Begin()
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback()
+
+	rows, err := tx.Query(`
 		UPDATE organizations
 		SET plan = 'free', subscription_status = 'expired'
 		WHERE plan != 'free'
 		  AND current_period_end IS NOT NULL
 		  AND current_period_end < ?
-		  AND subscription_status IN ('active', 'past_due')
-		RETURNING id;
+		  AND subscription_status IN ('active', 'past_due', 'cancelled')
+		RETURNING id, subscription_id;
 	`, now)
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
 
 	var ids []string
+	var subscriptionIDs []string
 	for rows.Next() {
 		var id string
-		if err := rows.Scan(&id); err != nil {
+		var subscriptionID sql.NullString
+		if err := rows.Scan(&id, &subscriptionID); err != nil {
+			rows.Close()
 			return nil, err
 		}
 		ids = append(ids, id)
+		if subscriptionID.Valid && subscriptionID.String != "" {
+			subscriptionIDs = append(subscriptionIDs, subscriptionID.String)
+		}
 	}
-	return ids, rows.Err()
+	if err := rows.Err(); err != nil {
+		rows.Close()
+		return nil, err
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	for _, subscriptionID := range subscriptionIDs {
+		if _, err := tx.Exec(`UPDATE subscriptions SET status = 'expired' WHERE razorpay_sub_id = ?`, subscriptionID); err != nil {
+			return nil, err
+		}
+	}
+	if err := tx.Commit(); err != nil {
+		return nil, err
+	}
+	return ids, nil
 }

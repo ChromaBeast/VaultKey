@@ -60,7 +60,7 @@ export const VaultKeyHeroVisual: React.FC = () => {
             {/* Stats Row */}
             <div className="grid grid-cols-3 gap-3 border-t border-border/80 pt-5 pb-1 text-center">
               {[
-                { label: 'Plaintext on disk', value: 'None', textClass: 'text-emerald-400' },
+                { label: 'Stored values', value: 'Encrypted', textClass: 'text-emerald-400' },
                 { label: 'Encryption', value: 'AES-256-GCM', textClass: 'text-foreground' },
                 { label: 'Secrets', value: 'In memory', textClass: 'text-primary' },
               ].map(({ label, value, textClass }) => (

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -115,6 +116,18 @@ func (c *RazorpayClient) CreateSubscription(planID string, totalCount int) (stri
 		return "", fmt.Errorf("razorpay returned no subscription id")
 	}
 	return out.ID, nil
+}
+
+func (c *RazorpayClient) CancelSubscription(subscriptionID string, atCycleEnd bool) error {
+	var out RazorpaySubscriptionResponse
+	endpoint := "https://api.razorpay.com/v1/subscriptions/" + url.PathEscape(subscriptionID) + "/cancel"
+	if err := doRazorpayJSON(c, endpoint, map[string]bool{"cancel_at_cycle_end": atCycleEnd}, &out); err != nil {
+		return err
+	}
+	if out.ID == "" {
+		return fmt.Errorf("razorpay returned no subscription id after cancellation")
+	}
+	return nil
 }
 
 func (c *RazorpayClient) VerifyPaymentSignature(orderID, paymentID, signature string) bool {

@@ -5,6 +5,7 @@ import { acceptInvite, fetchInviteDetails, errorMessage } from '../lib/api';
 import type { InviteDetails } from '../lib/api';
 import { pushToast } from '../lib/toast';
 import { PasswordField } from '../components/ui/PasswordField';
+import { setSessionToken } from '../lib/session';
 
 export const AcceptInvitePage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -53,7 +54,7 @@ export const AcceptInvitePage: React.FC = () => {
     try {
       const res = await acceptInvite(token, password);
       if (res.token) {
-        localStorage.setItem('vk_token', res.token);
+        setSessionToken(res.token);
         if (res.user) localStorage.setItem('vk_user', JSON.stringify(res.user));
         if (res.org) localStorage.setItem('vk_org', JSON.stringify(res.org));
       }

@@ -33,7 +33,7 @@ export const HeroSection: React.FC = () => {
 
           {/* Subtitle */}
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-8 max-w-lg">
-            Inject secrets into your app at runtime. Plaintext never touches disk.
+            VaultKey stores secrets encrypted and delivers decrypted values to your app in memory when needed.
           </p>
 
           {/* Actions */}

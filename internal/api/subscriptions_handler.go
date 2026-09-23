@@ -30,6 +30,9 @@ func (s *Server) planIDFor(plan string) (string, bool) {
 }
 
 func (s *Server) handleCreateSubscription(c *fiber.Ctx) error {
+	if !s.Config.BillingEnabled() {
+		return c.Status(503).JSON(fiber.Map{"error": "billing is not configured"})
+	}
 	orgID := c.Locals("org_id").(string)
 
 	var req CreateSubscriptionRequest
@@ -44,7 +47,7 @@ func (s *Server) handleCreateSubscription(c *fiber.Ctx) error {
 	}
 
 	client := NewRazorpayClient(s.Config.RazorpayKeyID, s.Config.RazorpayKeySecret, s.Config.RazorpayWebhookSecret)
-	subID, err := client.CreateSubscription(planID, 12)
+	subID, err := client.CreateSubscription(planID, 1200)
 	if err != nil {
 		return c.Status(502).JSON(fiber.Map{"error": "failed to create subscription", "detail": err.Error()})
 	}
@@ -71,6 +74,9 @@ func (s *Server) handleCreateSubscription(c *fiber.Ctx) error {
 }
 
 func (s *Server) handleVerifySubscription(c *fiber.Ctx) error {
+	if !s.Config.BillingEnabled() {
+		return c.Status(503).JSON(fiber.Map{"error": "billing is not configured"})
+	}
 	orgID := c.Locals("org_id").(string)
 	actor, _ := c.Locals("actor").(string)
 
@@ -96,12 +102,21 @@ func (s *Server) handleVerifySubscription(c *fiber.Ctx) error {
 	if record == nil || record.OrgID != orgID {
 		return c.Status(404).JSON(fiber.Map{"error": "subscription not found for this organization"})
 	}
+	if record.Status == "active" {
+		updatedOrg, _ := s.DB.GetOrganizationByID(orgID)
+		return c.JSON(fiber.Map{"message": "subscription is already active", "status": "active", "plan": record.Plan, "org": updatedOrg})
+	}
+	if record.Status != "created" {
+		return c.Status(409).JSON(fiber.Map{"error": "subscription is no longer awaiting activation"})
+	}
 
 	nextPeriod := time.Now().AddDate(0, 1, 0)
 	if err := s.DB.UpdateOrgSubscription(orgID, record.Plan, record.RazorpaySubID, "active", nextPeriod); err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "failed to activate subscription"})
 	}
-	_ = s.DB.SetSubscriptionStatus(record.ID, "active")
+	if err := s.DB.SetSubscriptionStatus(record.ID, "active"); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to update subscription record"})
+	}
 
 	_ = s.LogAuditOrg(orgID, "SUBSCRIPTION_ACTIVATED", &record.RazorpaySubID, &record.Plan, actor, c.IP(), c.Get("User-Agent"))
 
@@ -117,6 +132,22 @@ func (s *Server) handleVerifySubscription(c *fiber.Ctx) error {
 func (s *Server) handleCancelSubscription(c *fiber.Ctx) error {
 	orgID := c.Locals("org_id").(string)
 	actor, _ := c.Locals("actor").(string)
+	if !s.Config.BillingEnabled() {
+		return c.Status(503).JSON(fiber.Map{"error": "billing is not configured"})
+	}
+
+	org, err := s.DB.GetOrganizationByID(orgID)
+	if err != nil || org == nil || org.SubscriptionID == nil || *org.SubscriptionID == "" {
+		return c.Status(404).JSON(fiber.Map{"error": "active subscription not found"})
+	}
+	if org.SubscriptionStatus == "cancelled" || org.SubscriptionStatus == "expired" {
+		return c.JSON(fiber.Map{"message": "subscription is already set to end", "org": org})
+	}
+
+	client := NewRazorpayClient(s.Config.RazorpayKeyID, s.Config.RazorpayKeySecret, s.Config.RazorpayWebhookSecret)
+	if err := client.CancelSubscription(*org.SubscriptionID, true); err != nil {
+		return c.Status(502).JSON(fiber.Map{"error": "failed to cancel subscription with payment provider"})
+	}
 
 	if err := s.DB.UpdateOrgSubscriptionStatus(orgID, "cancelled"); err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "failed to cancel subscription"})

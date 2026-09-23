@@ -44,41 +44,37 @@ func (db *DB) GetSharedSecret(id string) (*SharedSecret, error) {
 	return &s, nil
 }
 
-func (db *DB) ConsumeSharedSecret(id string) error {
+// ClaimSharedSecret atomically reserves one valid view and returns the payload.
+// A competing request cannot claim the same final view.
+func (db *DB) ClaimSharedSecret(id string) (*SharedSecret, error) {
 	tx, err := db.Begin()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer tx.Rollback()
 
-	var viewCount, maxViews int
-	err = tx.QueryRow(`SELECT view_count, max_views FROM shared_secrets WHERE id = ?`, id).Scan(&viewCount, &maxViews)
+	now := time.Now()
+	var s SharedSecret
+	err = tx.QueryRow(`
+		UPDATE shared_secrets
+		SET view_count = view_count + 1
+		WHERE id = ? AND view_count < max_views AND expires_at > ?
+		RETURNING id, org_id, ciphertext, view_count, max_views, expires_at, created_at
+	`, id, now).Scan(&s.ID, &s.OrgID, &s.Ciphertext, &s.ViewCount, &s.MaxViews, &s.ExpiresAt, &s.CreatedAt)
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, nil
+	}
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil
+		return nil, err
+	}
+
+	if s.ViewCount >= s.MaxViews {
+		if _, err := tx.Exec(`DELETE FROM shared_secrets WHERE id = ?`, id); err != nil {
+			return nil, err
 		}
-		return err
 	}
-
-	viewCount++
-	if viewCount >= maxViews {
-		_, _ = tx.Exec("DELETE FROM shared_secrets WHERE id = ?", id)
-	} else {
-		_, _ = tx.Exec("UPDATE shared_secrets SET view_count = ? WHERE id = ?", viewCount, id)
-	}
-
-	return tx.Commit()
-}
-
-func (db *DB) GetAndIncrementSharedSecret(id string) (*SharedSecret, error) {
-	s, err := db.GetSharedSecret(id)
-	if err != nil || s == nil {
+	if err := tx.Commit(); err != nil {
 		return nil, err
 	}
-	if err := db.ConsumeSharedSecret(id); err != nil {
-		return nil, err
-	}
-	s.ViewCount++
-	return s, nil
+	return &s, nil
 }
-

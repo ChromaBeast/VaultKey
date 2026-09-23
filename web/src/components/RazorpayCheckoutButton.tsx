@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Zap } from 'lucide-react';
-import { createRazorpaySubscription, verifyRazorpaySubscription } from '../lib/payments';
+import { createRazorpaySubscription, fetchPaymentConfig, verifyRazorpaySubscription } from '../lib/payments';
 import { errorMessage } from '../lib/api';
 import { openRazorpayCheckout } from '../lib/razorpay';
 import { pushToast } from '../lib/toast';
@@ -23,9 +23,21 @@ export const RazorpayCheckoutButton: React.FC<RazorpayCheckoutButtonProps> = ({
 }) => {
   const { user, org, updateOrg } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [billingEnabled, setBillingEnabled] = useState(false);
+  const [checkingBilling, setCheckingBilling] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    let active = true;
+    fetchPaymentConfig()
+      .then((config) => { if (active) setBillingEnabled(config.enabled); })
+      .catch(() => { if (active) setBillingEnabled(false); })
+      .finally(() => { if (active) setCheckingBilling(false); });
+    return () => { active = false; };
+  }, []);
+
   const handleSubscribe = async () => {
+    if (!billingEnabled) return;
     setLoading(true);
     setError(null);
 
@@ -85,13 +97,18 @@ export const RazorpayCheckoutButton: React.FC<RazorpayCheckoutButtonProps> = ({
           {error}
         </div>
       )}
+      {!checkingBilling && !billingEnabled && (
+        <p role="status" style={{ color: 'var(--vk-text-muted)', fontSize: '0.8rem', marginBottom: '8px', textAlign: 'center' }}>
+          Online billing is not configured for this installation.
+        </p>
+      )}
       <button
         className="btn btn-primary"
         style={{ width: '100%', justifyContent: 'center' }}
-        disabled={isCurrentPlan || loading}
+        disabled={isCurrentPlan || loading || checkingBilling || !billingEnabled}
         onClick={() => void handleSubscribe()}
       >
-        {loading ? 'Setting up AutoPay...' : isCurrentPlan ? 'Active Plan' : (<><Zap size={14} /> Subscribe {amountLabel}/mo</>)}
+        {checkingBilling ? 'Checking checkout…' : loading ? 'Setting up AutoPay...' : isCurrentPlan ? 'Active Plan' : (<><Zap size={14} /> Subscribe {amountLabel}/mo</>)}
       </button>
     </div>
   );

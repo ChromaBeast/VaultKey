@@ -146,14 +146,23 @@ jobs:
   # ─────────────────────────────────────────────
   deploy-to-vps:
     name: VPS Deployment
-    needs: [build-server, build-web]
-    if: always() && (github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))) && (needs.build-server.result == 'success' || needs.build-web.result == 'success')
+    needs: [backend-test, build-server, frontend-test, build-web]
+    if: >-
+      always() &&
+      (github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))) &&
+      (needs.backend-test.result == 'success' || needs.backend-test.result == 'skipped') &&
+      (needs.frontend-test.result == 'success' || needs.frontend-test.result == 'skipped') &&
+      (needs.build-server.result == 'success' || needs.build-server.result == 'skipped') &&
+      (needs.build-web.result == 'success' || needs.build-web.result == 'skipped') &&
+      (needs.build-server.result == 'success' || needs.build-web.result == 'success')
     runs-on: ubuntu-latest
     steps:
       - name: Setup SSH Config
+        id: ssh-config
         run: |
           if [ -z "${{ secrets.VPS_HOST }}" ] || [ -z "${{ secrets.VPS_SSH_KEY }}" ]; then
             echo "SSH secrets not set, relying on Watchtower auto-poll."
+            echo "available=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           mkdir -p ~/.ssh
@@ -162,7 +171,9 @@ jobs:
           printf 'Host vps\n  HostName %s\n  User %s\n  IdentityFile ~/.ssh/id_rsa\n  StrictHostKeyChecking accept-new\n  ConnectTimeout 15\n' \
             "${{ secrets.VPS_HOST }}" "${{ secrets.VPS_USERNAME || 'ubuntu' }}" > ~/.ssh/config
           chmod 600 ~/.ssh/config
+          echo "available=true" >> "$GITHUB_OUTPUT"
 
       - name: SSH Pull & Restart Changed Services
+        if: steps.ssh-config.outputs.available == 'true'
         run: |
-          ssh vps "cd /opt/vaultkey && docker compose pull && docker compose up -d" || true
+          ssh vps 'cd /opt/vaultkey && docker compose pull && docker compose up -d && for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do curl -fsS http://127.0.0.1:8080/healthz && exit 0; sleep 5; done; exit 1'

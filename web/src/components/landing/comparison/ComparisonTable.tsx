@@ -1,7 +1,7 @@
 import React from 'react';
 
 const ROWS = [
-  ['Plaintext on disk', 'Never', 'Stored in a .env file'],
+  ['Secret storage', 'Encrypted at rest', 'Plaintext in a .env file'],
   ['Run secrets', 'Directly in your app', 'Load them yourself'],
   ['Setup', 'Single binary', 'Add a file'],
 ];

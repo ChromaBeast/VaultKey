@@ -32,6 +32,13 @@ type LoginRequest struct {
 	TurnstileToken string `json:"turnstile_token"`
 }
 
+func (s *Server) handleAuthConfig(c *fiber.Ctx) error {
+	return c.JSON(fiber.Map{
+		"turnstile_required": s.Config.TurnstileSecretKey != "" && s.Config.TurnstileSecretKey != testTurnstile,
+		"turnstile_site_key": s.Config.TurnstileSiteKey,
+	})
+}
+
 func roleToPermission(role string) string {
 	switch role {
 	case "owner", "admin":

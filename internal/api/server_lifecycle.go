@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"log"
 	"sync"
 	"time"
 	"vaultkey/internal/crypto"
@@ -20,12 +21,30 @@ func (s *Server) Shutdown() error {
 func (s *Server) autoLockLoop() {
 	ticker := time.NewTicker(30 * time.Second)
 	defer ticker.Stop()
+	subscriptionTicker := time.NewTicker(5 * time.Minute)
+	defer subscriptionTicker.Stop()
+	s.downgradeExpiredSubscriptions()
 	for {
 		select {
 		case <-s.stopAutoLock:
 			return
 		case <-ticker.C:
 			s.lockIdleOrgs()
+		case <-subscriptionTicker.C:
+			s.downgradeExpiredSubscriptions()
+		}
+	}
+}
+
+func (s *Server) downgradeExpiredSubscriptions() {
+	orgIDs, err := s.DB.DowngradeExpiredSubscriptions(time.Now())
+	if err != nil {
+		log.Printf("subscription expiry sweep failed: %v", err)
+		return
+	}
+	for _, orgID := range orgIDs {
+		if err := s.LogAuditOrg(orgID, "SUBSCRIPTION_EXPIRED", nil, nil, "system", "", ""); err != nil {
+			log.Printf("failed to audit subscription expiry for %s: %v", orgID, err)
 		}
 	}
 }

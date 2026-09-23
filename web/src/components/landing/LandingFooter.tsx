@@ -17,7 +17,7 @@ export const LandingFooter: React.FC = () => {
               </span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed max-w-[240px]">
-              Secrets in runtime memory. Never on disk.
+              Encrypted at rest. Decrypted for runtime use.
             </p>
           </div>
 

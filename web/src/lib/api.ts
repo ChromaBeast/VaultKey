@@ -1,3 +1,5 @@
+import { clearSessionToken, getSessionToken } from './session';
+
 export interface Org {
   id: string;
   name: string;
@@ -97,7 +99,7 @@ export const safeJsonParse = <T,>(raw: string | null): T | null => {
 export const AUTH_UNAUTHORIZED_EVENT = 'vk_auth_unauthorized';
 
 export const apiFetch = async <T>(path: string, options: RequestInit = {}): Promise<T> => {
-  const token = localStorage.getItem('vk_token');
+  const token = getSessionToken();
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string>),
@@ -113,7 +115,7 @@ export const apiFetch = async <T>(path: string, options: RequestInit = {}): Prom
   }
 
   if (res.status === 401) {
-    localStorage.removeItem('vk_token');
+    clearSessionToken();
     localStorage.removeItem('vk_user');
     localStorage.removeItem('vk_org');
     window.dispatchEvent(new CustomEvent(AUTH_UNAUTHORIZED_EVENT));
@@ -189,4 +191,3 @@ export const rollbackSecretVersion = (key: string, params: RollbackParams) =>
     { method: 'POST' }
   );
 export * from './api_team';
-

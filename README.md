@@ -1,6 +1,6 @@
 # VaultKey 🗝️
 
-VaultKey is an enterprise-grade, zero-trust secrets manager engineered on a core security principle: **secrets never exist in plaintext on disk, ever.** The master key exists strictly in memory (RAM), derived fresh on each unlock.
+VaultKey stores secret values encrypted in its database and derives the master key in memory when a user unlocks the vault. Decrypted values exist in memory while in use. The explicit `export` and `pull` commands write plaintext to files chosen by the user; see the warning below.
 
 ---
 
@@ -8,7 +8,7 @@ VaultKey is an enterprise-grade, zero-trust secrets manager engineered on a core
 
 ### 1. Zero-Trust In-Memory Master Key
 - **Argon2id Key Derivation**: When you unlock the vault, your password is run through memory-hard `Argon2id` (time=3, memory=64MB, threads=4) with a unique 32-byte salt stored in the database to derive a 32-byte AES-256 master key.
-- **Strict Memory Lock**: The derived master key resides only in RAM. It never touches disk. When the vault locks or the auto-lock timeout triggers, the key bytes in memory are explicitly **zeroed out** (`for i := range key { key[i] = 0 }`) before the pointer is cleared.
+- **Memory key lifecycle**: The server derives the master key in process memory and explicitly zeroes it when the vault locks or the auto-lock timeout triggers. The operating system is not configured to pin key pages against swap or crash dumps.
 
 ### 2. Per-Item AES-256-GCM Encryption
 - Each secret value is encrypted individually using `AES-256-GCM` with a cryptographically secure, random 12-byte nonce prepended to the ciphertext.
@@ -49,8 +49,8 @@ vaultkey audit                   # Lists logs and runs a live cryptographic veri
 ```
 
 > **WARNING - plaintext on disk:** `vaultkey export` and `vaultkey pull`
-> write decrypted secrets as **PLAINTEXT** to disk. This directly contradicts
-> VaultKey's zero-trust posture ("secrets never exist in plaintext on disk").
+> write decrypted secrets as **PLAINTEXT** to disk, outside the encrypted
+> database. Treat those files as sensitive and remove them when finished.
 > Prefer `vaultkey run -- <cmd>` or SDK injection (`inject()`), which keep
 > secrets in memory only. Use `export`/`pull` solely for controlled,
 > one-off migration scenarios and delete the file immediately afterwards.
@@ -98,37 +98,25 @@ import 'package:vaultkey/vaultkey.dart';
 | --- | --- | --- |
 | `VAULTKEY_PORT` | Server | Port override (default `8080`) |
 | `VAULTKEY_HMAC_KEY` | Server | Audit-log HMAC signing key. **Required in production**; the server refuses to boot if it matches any shipped default |
-| `VAULTKEY_ENV` | Server | `dev` or `production` (default `production`). Production rejects demo/mock credentials; dev allows them |
+| `VAULTKEY_ENV` | Server | `dev` or `production` (default `production`). Production requires strong HMAC and real Turnstile keys |
 | `VAULTKEY_DB_PATH` | Server | SQLite database file path |
 | `VAULTKEY_AUTO_LOCK` | Server | Idle auto-lock duration, e.g. `30m` (**ENFORCED**: the server zeroizes the master key after this idle period) |
-| `VAULTKEY_TURNSTILE_SECRET_KEY` | Server | Cloudflare Turnstile secret for bot protection |
-| `RAZORPAY_KEY_ID` / `RAZORPAY_KEY_SECRET` | Server | Razorpay billing credentials (demo/test values rejected in production) |
+| `VAULTKEY_TURNSTILE_SITE_KEY` / `VAULTKEY_TURNSTILE_SECRET_KEY` | Server/Web | Required Cloudflare Turnstile keys for production signup and login |
+| `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`, `RAZORPAY_PLAN_PRO_ID`, `RAZORPAY_PLAN_ENTERPRISE_ID` | Server | Optional billing configuration; set all five values to enable checkout |
 | `VAULTKEY_SERVER` | CLI | VaultKey server URL |
 | `VAULTKEY_TOKEN` | CLI | Session token used by CLI/SDK requests |
 | `VAULTKEY_TIMEOUT` | CLI | Request timeout for CLI commands |
 
-See `.env.example` for a ready-made Docker deployment template.
+See `.env.example` for a Docker deployment template and [Production Operations](docs/PRODUCTION_OPERATIONS.md) for launch setup and recovery steps.
 
 ---
 
 ## 🐳 Docker Deployment
 
-```yaml
-services:
-  vaultkey:
-    image: ghcr.io/chromabeast/vaultkey:latest
-    ports: ["127.0.0.1:8080:8080"]
-    volumes: ["./data:/var/lib/vaultkey"]
-    environment:
-      - VAULTKEY_ENV=production
-      - VAULTKEY_PORT=8080
-      - VAULTKEY_DB_PATH=/var/lib/vaultkey/vaultkey.db
-      - VAULTKEY_AUTO_LOCK=30m
-      # REQUIRED: the container refuses to start without it.
-      # Create a .env file next to docker-compose.yml (see .env.example):
-      #   VAULTKEY_HMAC_KEY=<64+ random chars>
-      - VAULTKEY_HMAC_KEY=${VAULTKEY_HMAC_KEY:?set VAULTKEY_HMAC_KEY in .env}
-    restart: unless-stopped
+Copy `.env.example` to `.env`, set the required HMAC and Turnstile keys, domain, and email settings, then run:
+
+```bash
+docker compose up -d
 ```
 
 The bundled `docker-compose.yml` additionally ships:
@@ -137,6 +125,7 @@ The bundled `docker-compose.yml` additionally ships:
 - **Watchtower** auto-updates, enabled via the
   `com.centurylinklabs.watchtower.enable=true` label on the `vaultkey`
   service. Watchtower polls every 5 minutes and replaces the container when a
-  new image is pushed to `ghcr.io/chromabeast/vaultkey`.
+  new images are pushed to `ghcr.io/chromabeast/vaultkey-server` and
+  `ghcr.io/chromabeast/vaultkey-web`.
 - A container healthcheck against `GET /healthz`; Caddy only starts routing
   once the backend reports healthy.

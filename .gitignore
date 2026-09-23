@@ -36,6 +36,7 @@ web/dist/*
 .env.production.local
 vaultkey.yaml
 data/
+backups/
 *.pem
 *.key
 
