@@ -7,8 +7,7 @@ export const HeroSection: React.FC = () => (
   <section id="hero" className="landing-hero section-shell">
     <div className="grid min-w-0 grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
       <div className="min-w-0 lg:col-span-6 flex flex-col items-start text-left">
-        <p className="text-sm font-medium text-primary mb-5">Secrets for your app</p>
-        <h1 className="max-w-[560px] text-[2.65rem] sm:text-6xl lg:text-[4rem] font-extrabold tracking-[-0.045em] leading-[1.02] mb-6">
+        <h1 className="max-w-[560px] text-[2.65rem] sm:text-6xl lg:text-[4rem] font-extrabold tracking-[-0.035em] leading-[1.02] mb-6">
           Keep app secrets out of your files.
         </h1>
         <p className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-lg">

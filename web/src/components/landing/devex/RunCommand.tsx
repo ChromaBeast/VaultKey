@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const COMMAND = 'vaultkey run -- npm start';
 
-export const DevWorkflowTabs: React.FC = () => {
+export const RunCommand: React.FC = () => {
   const [copied, setCopied] = useState(false);
 
   const copyCommand = async () => {

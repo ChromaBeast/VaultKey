@@ -32,6 +32,22 @@
   padding-bottom: clamp(3.5rem, 5vw, 5rem);
 }
 
+.landing-page ::selection {
+  background: rgba(0, 143, 245, 0.3);
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .landing-page .landing-hero h1 {
+    animation: landing-headline-in 420ms var(--ease-smooth) both;
+  }
+}
+
+@keyframes landing-headline-in {
+  from { opacity: 0.65; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .section-title {
   font-size: clamp(2rem, 4vw, 2.85rem);
   font-weight: 800;

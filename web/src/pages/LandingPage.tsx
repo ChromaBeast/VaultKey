@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { LandingHeader } from '../components/landing/LandingHeader';
 import { HeroSection } from '../components/landing/hero/HeroSection';
 import { DevExperienceSection } from '../components/landing/devex/DevExperienceSection';
-import { WhyNotEnvSection } from '../components/landing/comparison/WhyNotEnvSection';
+import { BenefitsSection } from '../components/landing/comparison/BenefitsSection';
 import { PricingSection } from '../components/landing/pricing/PricingSection';
 import { LandingFooter } from '../components/landing/LandingFooter';
 
@@ -29,7 +29,7 @@ export const LandingPage: React.FC = () => {
       <main>
         <HeroSection />
         <DevExperienceSection />
-        <WhyNotEnvSection />
+        <BenefitsSection />
         <PricingSection />
       </main>
       <LandingFooter />

@@ -1,7 +1,7 @@
 import React from 'react';
-import { ComparisonTable } from './ComparisonTable';
+import { BenefitsList } from './BenefitsList';
 
-export const WhyNotEnvSection: React.FC = () => {
+export const BenefitsSection: React.FC = () => {
   return (
     <section id="comparison" className="section-shell">
       <div className="section-header">
@@ -9,7 +9,7 @@ export const WhyNotEnvSection: React.FC = () => {
         <p className="section-subtitle">Store passwords and keys together. Control who can use them, and see what changed.</p>
       </div>
 
-      <ComparisonTable />
+      <BenefitsList />
     </section>
   );
 };

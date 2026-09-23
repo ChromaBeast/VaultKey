@@ -1,5 +1,5 @@
 import React from 'react';
-import { DevWorkflowTabs } from './DevWorkflowTabs';
+import { RunCommand } from './RunCommand';
 
 export const DevExperienceSection: React.FC = () => {
   return (
@@ -9,7 +9,7 @@ export const DevExperienceSection: React.FC = () => {
         <p className="section-subtitle">VaultKey gives your app the passwords and keys it needs when you start it.</p>
       </div>
 
-      <DevWorkflowTabs />
+      <RunCommand />
     </section>
   );
 };

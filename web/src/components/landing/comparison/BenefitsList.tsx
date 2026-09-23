@@ -6,7 +6,7 @@ const BENEFITS = [
   ['See what changed', 'Review a record of activity in your vault.'],
 ];
 
-export const ComparisonTable: React.FC = () => (
+export const BenefitsList: React.FC = () => (
   <div className="border-t border-border">
     {BENEFITS.map(([title, description]) => (
       <div key={title} className="grid gap-2 border-b border-border py-6 text-left sm:grid-cols-[minmax(180px,1fr)_2fr] sm:gap-8">
