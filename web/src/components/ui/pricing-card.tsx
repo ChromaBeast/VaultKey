@@ -31,7 +31,7 @@ export const PricingCard: React.FC<PricingCardProps> = ({
             {plan.icon}
           </div>
           {plan.recommended && (
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-primary text-primary-foreground shadow-sm shadow-primary/40">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-primary text-primary-foreground shadow-sm shadow-primary/40">
               Recommended
             </span>
           )}
@@ -68,7 +68,7 @@ export const PricingCard: React.FC<PricingCardProps> = ({
 
       {/* Feature List */}
       <div className="border-t border-border/80 pt-6 mt-auto">
-        <div className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground mb-4">
+        <div className="text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground mb-4">
           What&apos;s included
         </div>
         <ul className="space-y-3.5 m-0 p-0 list-none">

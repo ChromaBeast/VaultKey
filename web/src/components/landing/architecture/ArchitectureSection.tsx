@@ -102,7 +102,7 @@ export const ArchitectureSection: React.FC = () => {
                 <span
                   style={{
                     fontFamily: 'var(--font-mono)',
-                    fontSize: 'var(--font-size-2xs)',
+                    fontSize: 'var(--font-size-xs)',
                     padding: '2px 6px',
                     borderRadius: 'var(--radius-sm)',
                     background: 'var(--vk-accent-dim)',

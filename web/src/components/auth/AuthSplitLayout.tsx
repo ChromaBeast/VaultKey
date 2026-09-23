@@ -70,7 +70,7 @@ export const AuthSplitLayout: React.FC<AuthSplitLayoutProps> = ({
               <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--vk-text)', letterSpacing: '-0.02em', display: 'block', lineHeight: 1.1 }}>
                 VaultKey
               </span>
-              <span style={{ fontSize: '0.68rem', fontWeight: 600, color: 'var(--vk-accent)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--vk-accent)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
                 Secrets Manager
               </span>
             </div>

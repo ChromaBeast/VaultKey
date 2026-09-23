@@ -92,7 +92,7 @@ export const ApiKeysPage: React.FC = () => {
         title="API Keys"
         description="Scoped tokens for automation."
         badge={
-          <span className="badge badge-read" style={{ fontSize: '0.72rem' }}>
+          <span className="badge badge-read">
             {org?.plan === 'pro' ? 'Pro Plan: Unlimited' : `Quota: ${activeKeys.length} / 2 active tokens`}
           </span>
         }

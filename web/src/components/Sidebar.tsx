@@ -90,7 +90,7 @@ const SidebarHeader: React.FC<{ org: { plan?: string; name: string } | null }> =
           <div className="flex items-center gap-1.5">
             <span className="font-bold text-foreground text-sm tracking-tight">VaultKey</span>
             {org?.plan === 'pro' && (
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary/20 text-primary border border-primary/30">
+              <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-primary/20 text-primary border border-primary/30">
                 PRO
               </span>
             )}
@@ -123,7 +123,7 @@ const SidebarFooter: React.FC<{
             <span className="text-xs font-medium text-foreground truncate" title={email}>
               {email}
             </span>
-            <span className="text-[10px] text-muted-foreground capitalize">{role} role</span>
+            <span className="text-xs text-muted-foreground capitalize">{role} role</span>
           </div>
         )}
       </div>

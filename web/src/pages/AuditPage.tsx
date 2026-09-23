@@ -150,7 +150,7 @@ export const AuditPage: React.FC = () => {
                   <td className="code-font" style={{ fontWeight: 600, color: 'var(--vk-text)', maxWidth: '170px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={l.secret_key || '-'}>
                     {l.secret_key || '—'}
                   </td>
-                  <td><span className="badge badge-read" style={{ fontSize: '0.68rem' }}>{l.project || 'default'}</span></td>
+                  <td><span className="badge badge-read">{l.project || 'default'}</span></td>
                   <td className="code-font" style={{ fontSize: '0.78rem', color: 'var(--vk-text-secondary)', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={l.actor || ''}>
                     {l.actor || '—'}
                   </td>

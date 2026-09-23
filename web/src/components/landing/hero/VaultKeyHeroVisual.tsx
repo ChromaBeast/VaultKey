@@ -27,7 +27,7 @@ export const VaultKeyHeroVisual: React.FC = () => {
               vaultkey · runtime
             </div>
             {/* RAM badge */}
-            <div className="flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-400">
+            <div className="flex items-center gap-1 text-xs font-mono font-bold text-emerald-400">
               <Lock size={10} />
               MLOCK
             </div>
@@ -65,7 +65,7 @@ export const VaultKeyHeroVisual: React.FC = () => {
                 { label: 'Secrets', value: 'In memory', textClass: 'text-primary' },
               ].map(({ label, value, textClass }) => (
                 <div key={label} className="bg-secondary/80 p-3 rounded-xl border border-border/70">
-                  <div className="text-[10px] uppercase font-mono text-muted-foreground tracking-wider mb-1">{label}</div>
+                  <div className="text-xs uppercase font-mono text-muted-foreground tracking-wider mb-1">{label}</div>
                   <div className={`font-bold text-xs ${textClass}`}>{value}</div>
                 </div>
               ))}

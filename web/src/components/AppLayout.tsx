@@ -37,7 +37,7 @@ export const AppLayout: React.FC = () => {
           >
             <Command size={13} />
             <span>Search or command</span>
-            <kbd className="text-[10px] bg-secondary/80 px-1.5 py-0.5 rounded border border-border/60 font-mono">⌘ / Ctrl K</kbd>
+            <kbd className="text-xs bg-secondary/80 px-1.5 py-0.5 rounded border border-border/60 font-mono">⌘ / Ctrl K</kbd>
           </button>
         </div>
         <div className="max-w-7xl w-full mx-auto flex-1">

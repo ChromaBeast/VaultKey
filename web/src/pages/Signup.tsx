@@ -122,7 +122,7 @@ export const Signup: React.FC = () => {
           {loading ? 'Signing up…' : 'Create your account'}
         </button>
 
-        <p style={{ fontSize: '0.74rem', color: 'var(--vk-text-muted)', lineHeight: 1.4, margin: '6px 0 0', textAlign: 'center' }}>
+        <p style={{ fontSize: '0.75rem', color: 'var(--vk-text-secondary)', lineHeight: 1.5, margin: '6px 0 0', textAlign: 'center' }}>
           By signing up, you agree to our{' '}
           <Link to="/privacy" style={{ color: 'var(--vk-text-secondary)', textDecoration: 'none' }}>Privacy Policy</Link>.
         </p>

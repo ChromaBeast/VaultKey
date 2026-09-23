@@ -63,12 +63,12 @@ export const SecretsTable: React.FC<SecretsTableProps> = ({
                   </div>
                 </td>
                 <td>
-                  <span className="badge badge-read" style={{ fontSize: '0.68rem' }}>{s.project}</span>
+                  <span className="badge badge-read">{s.project}</span>
                 </td>
                 <td>
                   <span className="version-chip code-font" title="Active version">v{s.version}</span>
                 </td>
-                <td style={{ color: 'var(--vk-text-secondary)', fontSize: '0.8rem' }}>
+                <td style={{ color: 'var(--vk-text-secondary)', fontSize: '0.875rem' }}>
                   {new Date(s.updated_at).toLocaleDateString()}
                 </td>
                 <td style={{ textAlign: 'right' }}>

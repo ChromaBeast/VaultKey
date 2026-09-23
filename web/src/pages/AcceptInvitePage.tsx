@@ -100,7 +100,7 @@ export const AcceptInvitePage: React.FC = () => {
         {!loading && !error && invite && (
           <form onSubmit={(e) => void handleSubmit(e)} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ padding: '12px 14px', borderRadius: 'var(--radius-sm)', background: 'var(--vk-surface-2)', border: '1px solid var(--vk-border)' }}>
-              <div style={{ fontSize: '0.72rem', color: 'var(--vk-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Organization</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--vk-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Organization</div>
               <div style={{ color: 'var(--vk-text)', fontWeight: 600, fontSize: '0.95rem', marginTop: '2px' }}>{invite.org_name}</div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px', fontSize: '0.78rem', color: 'var(--vk-text-secondary)' }}>
                 <span>Account: {invite.email}</span>

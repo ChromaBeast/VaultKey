@@ -63,7 +63,7 @@ export const LandingFooter: React.FC = () => {
         {/* Bottom copyright row */}
         <div className="border-t border-border/80 pt-6 flex flex-wrap justify-between items-center text-xs text-muted-foreground gap-4">
           <span>&copy; {new Date().getFullYear()} VaultKey Systems. Released under MIT license.</span>
-          <span className="font-mono text-[11px] text-muted-foreground/70">AES-256-GCM &middot; RAM-Locked</span>
+          <span className="font-mono text-xs text-muted-foreground/70">AES-256-GCM &middot; RAM-Locked</span>
         </div>
       </div>
     </footer>

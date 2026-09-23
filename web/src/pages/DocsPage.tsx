@@ -31,7 +31,7 @@ export const DocsPage: React.FC = () => {
   return (
     <div className="animate-fade" style={{ maxWidth: '980px', margin: '0 auto', padding: '32px 16px' }}>
       <div style={{ marginBottom: '32px' }}>
-        <div style={{ fontSize: '0.72rem', fontFamily: 'JetBrains Mono, monospace', color: 'var(--vk-accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px', fontWeight: 600 }}>
+        <div style={{ fontSize: '0.75rem', fontFamily: 'JetBrains Mono, monospace', color: 'var(--vk-accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px', fontWeight: 600 }}>
           DOCUMENTATION
         </div>
         <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.025em', color: 'var(--vk-text)' }}>

@@ -32,7 +32,7 @@ export const SecretsHeaderBar: React.FC<SecretsHeaderBarProps> = ({
       title="Secrets"
       badge={
         showBadge ? (
-          <span className="badge badge-read" style={{ fontSize: '0.72rem' }}>
+          <span className="badge badge-read">
             {secretCount} secret{secretCount !== 1 ? 's' : ''} in {project}
           </span>
         ) : undefined
@@ -70,7 +70,7 @@ export const SecretsHeaderBar: React.FC<SecretsHeaderBarProps> = ({
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <span style={{ fontSize: '0.8rem', color: 'var(--vk-text-muted)', fontWeight: 600 }}>Environment:</span>
+        <span style={{ fontSize: '0.875rem', color: 'var(--vk-text-secondary)', fontWeight: 600 }}>Environment:</span>
         <div style={{ width: '160px' }}>
           <Select
             value={project}
