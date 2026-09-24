@@ -10,15 +10,15 @@ export const LandingHeader: React.FC = () => (
         <span className="brand-text text-lg font-extrabold tracking-tight text-foreground">VaultKey</span>
       </Link>
 
-      <nav aria-label="Main navigation" className="hidden items-center gap-7 md:flex">
-        <a href="#workflow" className="text-sm text-muted-foreground hover:text-foreground">How it works</a>
-        <a href="#comparison" className="text-sm text-muted-foreground hover:text-foreground">Why VaultKey</a>
-        <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground">Pricing</a>
-        <Link to="/docs" className="text-sm text-muted-foreground hover:text-foreground">Docs</Link>
+      <nav aria-label="Main navigation" className="hidden items-center gap-7 font-[family-name:var(--font-sans)] text-[0.9375rem] font-medium md:flex">
+        <a href="#workflow" className="text-muted-foreground hover:text-foreground">How it works</a>
+        <a href="#comparison" className="text-muted-foreground hover:text-foreground">Why VaultKey</a>
+        <a href="#pricing" className="text-muted-foreground hover:text-foreground">Pricing</a>
+        <Link to="/docs" className="text-muted-foreground hover:text-foreground">Docs</Link>
       </nav>
 
       <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-        <Link to="/login" className="inline-flex px-1 py-2 text-sm font-medium text-muted-foreground hover:text-foreground sm:px-2">Sign in</Link>
+        <Link to="/login" className="inline-flex px-1 py-2 font-[family-name:var(--font-sans)] text-[0.9375rem] font-medium text-muted-foreground hover:text-foreground sm:px-2">Sign in</Link>
         <Button asChild size="sm" className="rounded-lg px-3 sm:px-4">
           <Link to="/signup">Start free</Link>
         </Button>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { DocsCodeBlock } from './DocsCodeBlock';
 
 interface CliDocProps {
   onCopy: (id: string, code: string) => void;
@@ -20,16 +21,15 @@ vaultkey push --project=frontend --file=.env.local
 vaultkey run --project=backend -- npm start`;
 
   return (
-    <div className="glass" style={{ padding: '28px', borderRadius: '16px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-        <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>CLI Integration Guide</h3>
-        <button onClick={() => onCopy('cli', cliCode)} className="btn btn-secondary" style={{ padding: '4px 12px', fontSize: '0.75rem' }}>
-          {copiedSnippet === 'cli' ? 'Copied' : 'Copy Commands'}
-        </button>
-      </div>
-      <pre className="code-font" style={{ background: 'var(--vk-bg)', padding: '18px', borderRadius: '12px', overflowX: 'auto', border: '1px solid var(--vk-border)', color: 'var(--vk-success)', fontSize: '0.85rem', lineHeight: '1.6' }}>
-        {cliCode}
-      </pre>
+    <div className="docs-example">
+      <h3>Typical CLI flow</h3>
+      <DocsCodeBlock
+        id="cli"
+        language="Shell"
+        code={cliCode}
+        copiedSnippet={copiedSnippet}
+        onCopy={onCopy}
+      />
     </div>
   );
 };

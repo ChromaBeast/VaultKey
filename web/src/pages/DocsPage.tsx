@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Package, ShieldCheck, Terminal, Zap } from 'lucide-react';
 import { CliDocSection } from '../components/docs/CliDocSection';
 import { SdkDocSection } from '../components/docs/SdkDocSection';
@@ -6,87 +6,112 @@ import { ApiDocSection } from '../components/docs/ApiDocSection';
 import { SecurityDocSection } from '../components/docs/SecurityDocSection';
 import { copyText } from '../hooks/useClipboard';
 
-type DocTab = 'cli' | 'sdk' | 'api' | 'security';
+const SECTIONS = [
+  { id: 'cli', label: 'CLI tooling', icon: Terminal },
+  { id: 'sdk', label: 'SDK integration', icon: Package },
+  { id: 'api', label: 'REST API', icon: Zap },
+  { id: 'security', label: 'Security model', icon: ShieldCheck },
+] as const;
 
-const TABS: Array<{ id: DocTab; label: string; icon: React.ReactNode }> = [
-  { id: 'cli', label: 'CLI Tooling', icon: <Terminal size={14} /> },
-  { id: 'sdk', label: 'SDK Integration', icon: <Package size={14} /> },
-  { id: 'api', label: 'REST API', icon: <Zap size={14} /> },
-  { id: 'security', label: 'Architecture & Threat Model', icon: <ShieldCheck size={14} /> },
-];
+type DocSection = (typeof SECTIONS)[number]['id'];
 
 export const DocsPage: React.FC = () => {
-  const [activeSection, setActiveSection] = useState<DocTab>('cli');
+  const [activeSection, setActiveSection] = useState<DocSection>('cli');
   const [copiedSnippet, setCopiedSnippet] = useState<string | null>(null);
+
+  useEffect(() => {
+    const updateActiveSection = () => {
+      let current: DocSection = 'cli';
+      for (const section of SECTIONS) {
+        const element = document.getElementById(section.id);
+        if (element && element.getBoundingClientRect().top <= 150) current = section.id;
+      }
+      setActiveSection(current);
+    };
+
+    const hash = window.location.hash.slice(1);
+    const frame = SECTIONS.some((section) => section.id === hash)
+      ? window.requestAnimationFrame(() => document.getElementById(hash)?.scrollIntoView())
+      : 0;
+
+    updateActiveSection();
+    window.addEventListener('scroll', updateActiveSection, { passive: true });
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', updateActiveSection);
+    };
+  }, []);
 
   const handleCopy = (id: string, code: string) => {
     void copyText(code).then((ok) => {
-      if (ok) {
-        setCopiedSnippet(id);
-        window.setTimeout(() => setCopiedSnippet(null), 2000);
-      }
+      if (!ok) return;
+      setCopiedSnippet(id);
+      window.setTimeout(() => setCopiedSnippet(null), 2000);
     });
   };
 
   return (
-    <div className="animate-fade" style={{ maxWidth: '980px', margin: '0 auto', padding: '32px 16px' }}>
-      <div style={{ marginBottom: '32px' }}>
-        <div style={{ fontSize: '0.75rem', fontFamily: 'JetBrains Mono, monospace', color: 'var(--vk-accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px', fontWeight: 600 }}>
-          DOCUMENTATION
+    <div className="docs-page animate-fade">
+      <div className="docs-intro">
+        <h1>Developer docs</h1>
+        <p>Guides for the CLI, SDKs, REST API, and VaultKey security model.</p>
+      </div>
+
+      <div className="docs-layout">
+        <aside className="docs-sidebar">
+          <nav className="docs-nav" aria-label="Documentation sections">
+            <span className="docs-nav-label">Guides</span>
+            {SECTIONS.map((section) => {
+              const Icon = section.icon;
+              return (
+                <a
+                  key={section.id}
+                  href={`#${section.id}`}
+                  className="docs-nav-link"
+                  aria-current={activeSection === section.id ? 'location' : undefined}
+                  onClick={() => setActiveSection(section.id)}
+                >
+                  <Icon size={16} aria-hidden="true" />
+                  <span>{section.label}</span>
+                </a>
+              );
+            })}
+          </nav>
+        </aside>
+
+        <div className="docs-content">
+          <section id="cli" className="docs-section" aria-labelledby="docs-cli-title">
+            <div className="docs-section-heading">
+              <h2 id="docs-cli-title">CLI tooling</h2>
+              <p>Authenticate, sync local variables, and inject secrets into a child process.</p>
+            </div>
+            <CliDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />
+          </section>
+
+          <section id="sdk" className="docs-section" aria-labelledby="docs-sdk-title">
+            <div className="docs-section-heading">
+              <h2 id="docs-sdk-title">SDK integration</h2>
+              <p>Read secrets from Node.js and Python services at runtime.</p>
+            </div>
+            <SdkDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />
+          </section>
+
+          <section id="api" className="docs-section" aria-labelledby="docs-api-title">
+            <div className="docs-section-heading">
+              <h2 id="docs-api-title">REST API</h2>
+              <p>Core endpoints for authentication, encrypted values, and one-time sharing.</p>
+            </div>
+            <ApiDocSection />
+          </section>
+
+          <section id="security" className="docs-section" aria-labelledby="docs-security-title">
+            <div className="docs-section-heading">
+              <h2 id="docs-security-title">Security model</h2>
+              <p>How VaultKey derives keys, encrypts values, and verifies the audit chain.</p>
+            </div>
+            <SecurityDocSection />
+          </section>
         </div>
-        <h1 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-0.025em', color: 'var(--vk-text)' }}>
-          Developer Guides & Technical Docs
-        </h1>
-        <p style={{ color: 'var(--vk-text-secondary)', fontSize: '0.9rem', marginTop: '6px' }}>
-          Integrate zero-trust secrets management with CLI workflows, Node.js, Python, and REST endpoints.
-        </p>
-      </div>
-
-      <div
-        role="tablist"
-        aria-label="Documentation sections"
-        style={{
-          display: 'flex',
-          gap: '6px',
-          marginBottom: '28px',
-          flexWrap: 'wrap',
-          background: 'var(--vk-surface-1)',
-          padding: '4px',
-          borderRadius: 'var(--radius-sm)',
-          border: '1px solid var(--vk-border)',
-          width: 'fit-content',
-        }}
-      >
-        {TABS.map((tab) => {
-          const isActive = activeSection === tab.id;
-          return (
-            <button
-              key={tab.id}
-              role="tab"
-              aria-selected={isActive}
-              onClick={() => setActiveSection(tab.id)}
-              className="btn"
-              style={{
-                padding: '6px 14px',
-                borderRadius: 'calc(var(--radius-sm) - 2px)',
-                fontSize: '0.8rem',
-                fontWeight: isActive ? 600 : 400,
-                background: isActive ? 'var(--vk-surface-2)' : 'transparent',
-                color: isActive ? 'var(--vk-text)' : 'var(--vk-text-muted)',
-                border: `1px solid ${isActive ? 'var(--vk-border-strong)' : 'transparent'}`,
-              }}
-            >
-              {tab.icon} {tab.label}
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="glass" style={{ padding: '28px' }}>
-        {activeSection === 'cli' && <CliDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />}
-        {activeSection === 'sdk' && <SdkDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />}
-        {activeSection === 'api' && <ApiDocSection />}
-        {activeSection === 'security' && <SecurityDocSection />}
       </div>
     </div>
   );

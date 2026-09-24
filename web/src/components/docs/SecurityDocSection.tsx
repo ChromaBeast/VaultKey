@@ -1,28 +1,35 @@
 import React from 'react';
 import { Cpu, KeyRound, Lock, ScrollText } from 'lucide-react';
 
-export const SecurityDocSection: React.FC = () => {
-  return (
-    <div className="glass" style={{ padding: '28px', borderRadius: '16px' }}>
-      <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '12px' }}>Zero-Trust Threat Model Architecture</h3>
-      <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px', color: 'var(--vk-text-secondary)', fontSize: '0.9rem' }}>
-        <li style={{ display: 'flex', gap: '10px' }}>
-          <KeyRound size={16} color="var(--vk-accent)" style={{ flexShrink: 0, marginTop: '3px' }} />
-          <span><strong>Argon2id Key Derivation</strong>: Memory-hard Argon2id (time=3, memory=64MB, threads=4) with a unique 32-byte salt per team.</span>
-        </li>
-        <li style={{ display: 'flex', gap: '10px' }}>
-          <Cpu size={16} color="var(--vk-accent)" style={{ flexShrink: 0, marginTop: '3px' }} />
-          <span><strong>Strict In-Memory Key Lock</strong>: Master key bytes reside only in RAM. On lock/timeout, key bytes are zeroed out (<code className="code-font" style={{ color: 'var(--vk-accent)' }}>for i := range key &#123; key[i] = 0 &#125;</code>).</span>
-        </li>
-        <li style={{ display: 'flex', gap: '10px' }}>
-          <Lock size={16} color="var(--vk-success)" style={{ flexShrink: 0, marginTop: '3px' }} />
-          <span><strong>AES-256-GCM Encryption</strong>: Per-item encryption with cryptographically secure 12-byte random nonces.</span>
-        </li>
-        <li style={{ display: 'flex', gap: '10px' }}>
-          <ScrollText size={16} color="var(--vk-warning)" style={{ flexShrink: 0, marginTop: '3px' }} />
-          <span><strong>Tamper-Evident HMAC Audit Ledger</strong>: Every audit action signs an immutable HMAC-SHA256 signature chain (<code className="code-font" style={{ color: 'var(--vk-accent)' }}>HMAC(id + action + secretKey + prevHMAC)</code>).</span>
-        </li>
-      </ul>
-    </div>
-  );
-};
+export const SecurityDocSection: React.FC = () => (
+  <ul className="docs-security-list">
+    <li className="docs-security-item">
+      <KeyRound className="docs-security-icon" size={18} aria-hidden="true" />
+      <div>
+        <h3>Argon2id key derivation</h3>
+        <p>Memory-hard Argon2id (time=3, memory=64MB, threads=4) with a unique 32-byte salt per team.</p>
+      </div>
+    </li>
+    <li className="docs-security-item">
+      <Cpu className="docs-security-icon" size={18} aria-hidden="true" />
+      <div>
+        <h3>In-memory key lock</h3>
+        <p>Master key bytes reside in RAM and are cleared on lock or timeout: <code>{'for i := range key { key[i] = 0 }'}</code></p>
+      </div>
+    </li>
+    <li className="docs-security-item">
+      <Lock className="docs-security-icon" size={18} aria-hidden="true" />
+      <div>
+        <h3>AES-256-GCM encryption</h3>
+        <p>Each secret is encrypted with a cryptographically secure, random 12-byte nonce.</p>
+      </div>
+    </li>
+    <li className="docs-security-item">
+      <ScrollText className="docs-security-icon" size={18} aria-hidden="true" />
+      <div>
+        <h3>HMAC audit ledger</h3>
+        <p>Each audit action signs the previous entry in a tamper-evident HMAC-SHA256 chain: <code>HMAC(id + action + secretKey + prevHMAC)</code></p>
+      </div>
+    </li>
+  </ul>
+);

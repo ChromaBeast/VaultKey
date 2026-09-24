@@ -1,4 +1,5 @@
 import React from 'react';
+import { DocsCodeBlock } from './DocsCodeBlock';
 
 interface SdkDocProps {
   onCopy: (id: string, code: string) => void;
@@ -30,29 +31,27 @@ vk = Vaultkey(
 vk.inject(project="backend", env="production")`;
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-      <div className="glass" style={{ padding: '24px', borderRadius: '16px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Node.js / TypeScript</h3>
-          <button onClick={() => onCopy('node', nodeCode)} className="btn btn-secondary" style={{ padding: '4px 10px', fontSize: '0.75rem' }}>
-            {copiedSnippet === 'node' ? 'Copied' : 'Copy'}
-          </button>
-        </div>
-        <pre className="code-font" style={{ background: 'var(--vk-bg)', padding: '14px', borderRadius: '10px', overflowX: 'auto', border: '1px solid var(--vk-border)', color: 'var(--vk-accent)', fontSize: '0.8rem', lineHeight: '1.5' }}>
-          {nodeCode}
-        </pre>
+    <div className="docs-examples">
+      <div className="docs-example">
+        <h3>Node.js / TypeScript</h3>
+        <DocsCodeBlock
+          id="node"
+          language="TypeScript"
+          code={nodeCode}
+          copiedSnippet={copiedSnippet}
+          onCopy={onCopy}
+        />
       </div>
 
-      <div className="glass" style={{ padding: '24px', borderRadius: '16px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Python SDK</h3>
-          <button onClick={() => onCopy('py', pythonCode)} className="btn btn-secondary" style={{ padding: '4px 10px', fontSize: '0.75rem' }}>
-            {copiedSnippet === 'py' ? 'Copied' : 'Copy'}
-          </button>
-        </div>
-        <pre className="code-font" style={{ background: 'var(--vk-bg)', padding: '14px', borderRadius: '10px', overflowX: 'auto', border: '1px solid var(--vk-border)', color: 'var(--vk-accent-hover)', fontSize: '0.8rem', lineHeight: '1.5' }}>
-          {pythonCode}
-        </pre>
+      <div className="docs-example">
+        <h3>Python</h3>
+        <DocsCodeBlock
+          id="py"
+          language="Python"
+          code={pythonCode}
+          copiedSnippet={copiedSnippet}
+          onCopy={onCopy}
+        />
       </div>
     </div>
   );

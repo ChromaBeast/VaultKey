@@ -51,7 +51,7 @@ export const SidebarAccountControls: React.FC<SidebarAccountControlsProps> = ({
             <span className="truncate text-xs font-medium text-foreground" title={email}>
               {email}
             </span>
-            <span className="text-[11px] capitalize text-muted-foreground">{role} role</span>
+            <span className="text-xs capitalize text-muted-foreground">{role} role</span>
           </div>
         )}
       </div>

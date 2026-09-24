@@ -10,6 +10,7 @@
 @import './styles/sections.css';
 @import './styles/modals.css';
 @import './styles/responsive.css';
+@import './styles/docs.css';
 
 @theme {
   --color-background: var(--background);

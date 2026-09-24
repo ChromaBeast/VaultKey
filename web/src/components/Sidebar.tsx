@@ -78,7 +78,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ theme, onToggleTheme }) 
 
           <div className="mt-auto border-t border-border/50 pt-4">
             {open && (
-              <div className="px-2.5 pb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+              <div className="px-2.5 pb-2 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                 Workspace
               </div>
             )}
@@ -125,7 +125,7 @@ const SidebarHeader: React.FC<{ org: { plan?: string; name: string } | null }> =
           <div className="flex items-center gap-2">
             <span className="text-sm font-bold tracking-tight text-foreground">VaultKey</span>
             {org?.plan === 'pro' && (
-              <span className="text-[10px] font-semibold uppercase tracking-wide text-primary">Pro</span>
+              <span className="text-xs font-semibold uppercase tracking-wide text-primary">Pro</span>
             )}
           </div>
           {org && <span className="truncate text-xs text-muted-foreground">{org.name}</span>}
