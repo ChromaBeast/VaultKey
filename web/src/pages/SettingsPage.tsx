@@ -12,7 +12,6 @@ export const SettingsPage: React.FC = () => {
   return (
     <div className="animate-fade" style={{ maxWidth: '880px', margin: '0 auto' }}>
       <PageHeader
-        breadcrumb="ORGANIZATION"
         title="Settings & Access"
         description="Account security configuration and team access management."
       />

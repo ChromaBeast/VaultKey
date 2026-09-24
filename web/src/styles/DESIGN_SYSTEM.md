@@ -1,6 +1,6 @@
 # VaultKey Design System — Ink & Signal Specification
 
-The VaultKey Design System enforces a dark-mode-first, high-density, terminal-adjacent aesthetic inspired by high-end developer infrastructure tools (Linear, Tailscale, Fly.io).
+The VaultKey Design System uses a dark-first, high-density, terminal-adjacent aesthetic inspired by developer infrastructure tools (Linear, Tailscale, Fly.io). The dashboard also supports a saved light appearance.
 
 ---
 
@@ -11,6 +11,8 @@ The VaultKey Design System enforces a dark-mode-first, high-density, terminal-ad
 3. **Signal Accents**: `#008FF5` (Vibrant Electric Azure, derived from 21st.dev Classic Blue palette) is the primary accent. Saturated, crisp, and high-contrast against deep black. Used strictly for interactive primary actions, active indicators, and focus rings. Never for large background fills.
 4. **Token Strictness**: No raw hex values in JSX or inline styles. Every component must reference standard CSS variables (`var(--vk-*)`) or Tailwind theme classes.
 5. **Modularity & 200 LoC Rule**: Every file must remain single-responsibility and strictly under 200 Lines of Code.
+6. **Navigation Hierarchy**: Keep Secrets, API Keys, and Audit Ledger first. Place workspace administration at the bottom of the sidebar and documentation in the utility toolbar.
+7. **Badge Restraint**: Use compact, 6px-radius badges for semantic states only. Render counts and supporting metadata as plain text.
 
 ---
 
@@ -80,9 +82,9 @@ All UI components reside in `web/src/components/ui/`:
 2. **`Input`**: Standard text input with optional `icon`, `error`, and `mono` font support.
 3. **`Textarea`**: Multi-line input styled with identical focus and border tokens as `Input`.
 4. **`Select`**: Dropdown select styled with identical tokens as `Input`.
-5. **`StatusBadge`**: Pill badge for environments, roles, and status states (`success`, `warning`, `danger`, `accent`, `neutral`).
+5. **`StatusBadge`**: Compact, square-corner badge for semantic status and permission states (`success`, `warning`, `danger`, `accent`, `neutral`). Avoid pills for counts or supporting metadata.
 6. **`Card`**: Standard surface-1 container with subtle border.
 7. **`Modal`**: Accessible dialog with backdrop blur, focus trap, and Escape key dismissal.
-8. **`PageHeader`**: Consistent breadcrumb + title + description + actions bar across all app screens.
+8. **`PageHeader`**: Title, useful description, and actions. Do not add an eyebrow or breadcrumb above dashboard titles.
 9. **`EmptyState`**: Standard empty list / zero-results presentation.
 10. **`Kbd`**: Keyboard shortcut indicator with monospace styling.

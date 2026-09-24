@@ -28,11 +28,10 @@ export const SecretsHeaderBar: React.FC<SecretsHeaderBarProps> = ({
 }) => (
   <>
     <PageHeader
-      breadcrumb="VAULT SECRETS"
       title="Secrets"
       badge={
         showBadge ? (
-          <span className="badge badge-read">
+          <span className="app-page-meta">
             {secretCount} secret{secretCount !== 1 ? 's' : ''} in {project}
           </span>
         ) : undefined

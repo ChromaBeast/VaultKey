@@ -80,7 +80,6 @@ export const AuditPage: React.FC = () => {
   return (
     <div className="animate-fade">
       <PageHeader
-        breadcrumb="SECURITY OBSERVABILITY"
         title="Audit Ledger"
         actions={
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>

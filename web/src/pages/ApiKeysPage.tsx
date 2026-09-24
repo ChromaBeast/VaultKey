@@ -88,11 +88,10 @@ export const ApiKeysPage: React.FC = () => {
   return (
     <div className="animate-fade">
       <PageHeader
-        breadcrumb="MACHINE ACCESS"
         title="API Keys"
         description="Scoped tokens for automation."
         badge={
-          <span className="badge badge-read">
+          <span className="app-page-meta">
             {org?.plan === 'pro' ? 'Pro Plan: Unlimited' : `Quota: ${activeKeys.length} / 2 active tokens`}
           </span>
         }

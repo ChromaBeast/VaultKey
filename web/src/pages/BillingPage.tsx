@@ -32,7 +32,6 @@ export const BillingPage: React.FC = () => {
   return (
     <div className="animate-fade">
       <PageHeader
-        breadcrumb="BILLING & TIERS"
         title="Team Plans & Subscriptions"
         description="Manage your plan and invoices."
       />

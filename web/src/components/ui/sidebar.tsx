@@ -174,6 +174,8 @@ export const SidebarLink = ({
     <a
       href={link.href}
       onClick={link.onClick}
+      onFocus={() => setOpen(true)}
+      aria-label={link.label}
       aria-current={link.isActive ? "page" : undefined}
       title={!open ? link.label : undefined}
       className={cn(
