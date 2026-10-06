@@ -18,7 +18,7 @@ export const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelectPlan }) 
       <span className="text-4xl font-extrabold tracking-tight text-foreground">
         {plan.id === 'enterprise' ? 'Custom' : plan.priceMonthly === 0 ? '₹0' : `₹${plan.priceMonthly.toLocaleString('en-IN')}`}
       </span>
-      {plan.id !== 'enterprise' && <span className="text-sm text-muted-foreground">{plan.priceMonthly === 0 ? 'forever' : '/ month'}</span>}
+      {plan.id !== 'enterprise' && <span className="text-sm text-muted-foreground">{plan.priceMonthly === 0 ? 'forever' : '/ workspace / month'}</span>}
     </div>
 
     <ul className="mt-7 mb-8 space-y-3 border-t border-border pt-6">

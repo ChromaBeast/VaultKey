@@ -14,8 +14,9 @@ export const LandingFooter: React.FC = () => (
         </div>
 
         <nav aria-label="Footer navigation" className="flex max-w-xl flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground">
-          <a href="#workflow" className="hover:text-foreground">How it works</a>
-          <a href="#pricing" className="hover:text-foreground">Pricing</a>
+          <Link to="/how-it-works" className="hover:text-foreground">How it works</Link>
+          <Link to="/security" className="hover:text-foreground">Why VaultKey</Link>
+          <Link to="/pricing" className="hover:text-foreground">Pricing</Link>
           <Link to="/docs" className="hover:text-foreground">Docs</Link>
           <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
           <a href="https://github.com/ChromaBeast/VaultKey" target="_blank" rel="noreferrer" className="hover:text-foreground">GitHub</a>

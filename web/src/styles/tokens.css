@@ -14,6 +14,8 @@
   --popover-foreground: #f8fafc;
   --primary: #008ff5;
   --primary-hover: #0077e6;
+  --primary-button: #006db8;
+  --primary-button-hover: #005a99;
   --primary-foreground: #ffffff;
   --secondary: #141a26;
   --secondary-foreground: #f8fafc;
@@ -70,7 +72,7 @@
   --vk-border-hover: var(--border-hover);
   --vk-text: var(--foreground);
   --vk-text-secondary: var(--muted-foreground);
-  --vk-text-muted: #64748b;
+  --vk-text-muted: #8593a8;
   --vk-accent: var(--primary);
   --vk-accent-hover: var(--primary-hover);
   --vk-accent-dim: rgba(0, 143, 245, 0.12);

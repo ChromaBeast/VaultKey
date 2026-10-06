@@ -8,7 +8,7 @@ The VaultKey Design System uses a dark-first, high-density, terminal-adjacent ae
 
 1. **Restraint Over Decoration**: Zero unnecessary gradients, 3D shadows, or glowing orbs. Surfaces are matte, borders are crisp, contrast is calculated.
 2. **Typography as Structure**: Cabinet Grotesk for high-contrast headings and brand identity; General Sans for clean geometric body and UI labels; JetBrains Mono for secrets, keys, hashes, CLI commands, and telemetry.
-3. **Signal Accents**: `#008FF5` (Vibrant Electric Azure, derived from 21st.dev Classic Blue palette) is the primary accent. Saturated, crisp, and high-contrast against deep black. Used strictly for interactive primary actions, active indicators, and focus rings. Never for large background fills.
+3. **Signal Accents**: `#008FF5` (Vibrant Electric Azure, derived from 21st.dev Classic Blue palette) is the primary accent. Saturated, crisp, and high-contrast against deep black. Used for active indicators and focus rings. Primary buttons use `--primary-button: #006db8` with `--primary-button-hover: #005a99` for readable white labels. Never for large background fills.
 4. **Token Strictness**: No raw hex values in JSX or inline styles. Every component must reference standard CSS variables (`var(--vk-*)`) or Tailwind theme classes.
 5. **Modularity & 200 LoC Rule**: Every file must remain single-responsibility and strictly under 200 Lines of Code.
 6. **Navigation Hierarchy**: Keep Secrets, API Keys, and Audit Ledger first. Place workspace administration at the bottom of the sidebar and documentation in the utility toolbar.
@@ -39,7 +39,7 @@ The VaultKey Design System uses a dark-first, high-density, terminal-adjacent ae
 |---|---|---|
 | `--vk-text` | `#F0F1F3` | Primary headings, titles, active labels |
 | `--vk-text-secondary` | `#8C909A` | Descriptions, inactive tabs, table data |
-| `--vk-text-muted` | `#55585F` | Placeholders, timestamps, breadcrumbs |
+| `--vk-text-muted` | `#55585F` | Placeholders, timestamps, breadcrumbs; implementation uses #8593a8 in dark mode for readable small text |
 
 ### Signal & Semantic Tokens
 | Role | Token | Tint / Dim Token |
@@ -88,3 +88,9 @@ All UI components reside in `web/src/components/ui/`:
 8. **`PageHeader`**: Title, useful description, and actions. Do not add an eyebrow or breadcrumb above dashboard titles.
 9. **`EmptyState`**: Standard empty list / zero-results presentation.
 10. **`Kbd`**: Keyboard shortcut indicator with monospace styling.
+
+## Public Marketing Pages
+
+The homepage gives a concise product overview. Full workflow, security, and plan details live on `/how-it-works`, `/security`, and `/pricing`. `MarketingLayout` shares navigation, footer, document titles, metadata, and scroll reset across these routes. Keep `/docs` as the technical reference.
+
+Marketing navigation uses route links with an active state and an accessible mobile disclosure. Preserve `/#workflow`, `/#comparison`, and `/#pricing` as redirects to the corresponding pages. Use the existing primitives, product screenshot, typefaces, and tokens; do not duplicate full detail sections on the homepage.

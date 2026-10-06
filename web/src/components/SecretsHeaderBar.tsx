@@ -6,6 +6,7 @@ import { Input, Select } from './ui';
 interface SecretsHeaderBarProps {
   secretCount: number;
   showBadge: boolean;
+  loading: boolean;
   search: string;
   onSearchChange: (value: string) => void;
   project: string;
@@ -18,6 +19,7 @@ interface SecretsHeaderBarProps {
 export const SecretsHeaderBar: React.FC<SecretsHeaderBarProps> = ({
   secretCount,
   showBadge,
+  loading,
   search,
   onSearchChange,
   project,
@@ -32,10 +34,11 @@ export const SecretsHeaderBar: React.FC<SecretsHeaderBarProps> = ({
       badge={
         showBadge ? (
           <span className="app-page-meta">
-            {secretCount} secret{secretCount !== 1 ? 's' : ''} in {project}
+            {project} · {loading ? 'Loading secrets…' : `${secretCount} secret${secretCount !== 1 ? 's' : ''}`}
           </span>
         ) : undefined
       }
+      description="Encrypted values for your applications. Select a project to manage its secrets."
       actions={
         <>
           <button onClick={onOpenGenerator} className="btn btn-secondary">
@@ -69,12 +72,13 @@ export const SecretsHeaderBar: React.FC<SecretsHeaderBarProps> = ({
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <span style={{ fontSize: '0.875rem', color: 'var(--vk-text-secondary)', fontWeight: 600 }}>Environment:</span>
+        <label htmlFor="secrets-project" style={{ fontSize: '0.875rem', color: 'var(--vk-text-secondary)', fontWeight: 600 }}>Project:</label>
         <div style={{ width: '160px' }}>
           <Select
+            id="secrets-project"
             value={project}
             onChange={(e) => onProjectChange(e.target.value)}
-            aria-label="Select environment"
+            aria-label="Select project"
           >
             {projects.map((p) => (
               <option key={p} value={p}>{p}</option>

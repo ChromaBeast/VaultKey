@@ -14,6 +14,7 @@ export const ApiKeysPage: React.FC = () => {
   const { org } = useAuth();
   const [keys, setKeys] = useState<APIKeyItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [creating, setCreating] = useState(false);
   const [createdToken, setCreatedToken] = useState<string | null>(null);
@@ -22,11 +23,12 @@ export const ApiKeysPage: React.FC = () => {
 
   const loadKeys = async () => {
     setLoading(true);
+    setLoadError(null);
     try {
       const list = await apiFetch<APIKeyItem[]>('/v1/api-keys');
       setKeys(list || []);
     } catch (err) {
-      pushToast(errorMessage(err, 'Failed to load API keys'), 'error');
+      setLoadError(errorMessage(err, 'Failed to load API keys'));
     } finally {
       setLoading(false);
     }
@@ -39,7 +41,7 @@ export const ApiKeysPage: React.FC = () => {
         if (active) setKeys(list || []);
       })
       .catch((err) => {
-        if (active) pushToast(errorMessage(err, 'Failed to load API keys'), 'error');
+        if (active) setLoadError(errorMessage(err, 'Failed to load API keys'));
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -102,7 +104,7 @@ export const ApiKeysPage: React.FC = () => {
         }
       />
 
-      <div className="table-wrap glass" style={{ marginTop: '20px' }}>
+      {loadError ? <div className="load-error" role="alert"><div><h2>Could not load API keys</h2><p>{loadError}</p></div><button className="btn btn-secondary" onClick={() => void loadKeys()}>Retry</button></div> : <div className="table-wrap glass" style={{ marginTop: '20px' }}>
         <table>
           <thead>
             <tr>
@@ -147,13 +149,13 @@ export const ApiKeysPage: React.FC = () => {
             {!loading && keys.length === 0 && (
               <tr>
                 <td colSpan={5} style={{ textAlign: 'center', color: 'var(--vk-text-muted)', padding: '48px' }}>
-                  No machine access tokens generated yet.
+                  <h2 className="text-base font-semibold text-foreground">Connect your first application</h2><p className="mt-2 mb-4">Create a scoped API key for your CLI or automation.</p><button className="btn btn-primary" onClick={() => setModalOpen(true)}><Plus size={14} /> Create API Key</button>
                 </td>
               </tr>
             )}
           </tbody>
         </table>
-      </div>
+      </div>}
 
       {modalOpen && (
         <CreateApiKeyModal

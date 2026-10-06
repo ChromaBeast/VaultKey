@@ -23,6 +23,7 @@ export const SecretsPage: React.FC = () => {
   const [project, setProject] = useState('default');
   const [projects, setProjects] = useState<string[]>(['default']);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [modalTarget, setModalTarget] = useState<ModalTarget | null>(null);
   const [genOpen, setGenOpen] = useState(false);
   const [historyItem, setHistoryItem] = useState<{ key: string; version: number } | null>(null);
@@ -43,6 +44,8 @@ export const SecretsPage: React.FC = () => {
     abortRef.current = ctrl;
     let mounted = true;
     const load = async () => {
+      setLoading(true);
+      setLoadError(null);
       try {
         const list = await fetchSecrets(project, ctrl.signal);
         const projList = await fetchProjects(ctrl.signal);
@@ -52,7 +55,7 @@ export const SecretsPage: React.FC = () => {
         setProjects(merged.includes(project) ? merged : [...merged, project]);
       } catch (err) {
         if (isAbortError(err) || !mounted) return;
-        pushToast(errorMessage(err, 'Failed to load secrets'), 'error');
+        setLoadError(errorMessage(err, 'Failed to load secrets'));
       } finally {
         if (mounted && abortRef.current === ctrl) {
           abortRef.current = null;
@@ -72,6 +75,7 @@ export const SecretsPage: React.FC = () => {
     const ctrl = new AbortController();
     abortRef.current = ctrl;
     setLoading(true);
+    setLoadError(null);
     void (async () => {
       try {
         const list = await fetchSecrets(projectRef.current, ctrl.signal);
@@ -82,7 +86,7 @@ export const SecretsPage: React.FC = () => {
           setProjects(merged.includes(projectRef.current) ? merged : [...merged, projectRef.current]);
         }
       } catch (err) {
-        if (!isAbortError(err)) pushToast(errorMessage(err, 'Failed to load secrets'), 'error');
+        if (!isAbortError(err) && abortRef.current === ctrl) setLoadError(errorMessage(err, 'Failed to load secrets'));
       } finally {
         if (abortRef.current === ctrl) {
           abortRef.current = null;
@@ -131,10 +135,11 @@ export const SecretsPage: React.FC = () => {
   };
 
   return (
-    <div className="animate-fade" style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px' }}>
+    <div className="animate-fade">
       <SecretsHeaderBar
         secretCount={secrets.length}
         showBadge={Boolean(org)}
+        loading={loading}
         search={search}
         onSearchChange={setSearch}
         project={project}
@@ -144,7 +149,10 @@ export const SecretsPage: React.FC = () => {
         onCreateSecret={() => setModalTarget({ mode: 'create', initialKey: '', initialValue: '' })}
       />
 
-      <SecretsTable
+      {loadError ? <div className="load-error" role="alert">
+        <div><h2>Could not load secrets</h2><p>{loadError}</p></div>
+        <button className="btn btn-secondary" onClick={refresh}>Retry</button>
+      </div> : <SecretsTable
         secrets={secrets}
         loading={loading}
         search={search}
@@ -156,7 +164,7 @@ export const SecretsPage: React.FC = () => {
         onDelete={setDeleteItem}
         onCreate={() => setModalTarget({ mode: 'create', initialKey: '', initialValue: '' })}
         onClearSearch={() => setSearch('')}
-      />
+      />}
 
       <SecretsModals
         project={project}

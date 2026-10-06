@@ -11,6 +11,8 @@
 @import './styles/modals.css';
 @import './styles/responsive.css';
 @import './styles/docs.css';
+@import './styles/improvements.css';
+@import './styles/marketing.css';
 
 @theme {
   --color-background: var(--background);

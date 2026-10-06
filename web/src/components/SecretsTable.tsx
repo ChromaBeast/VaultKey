@@ -1,7 +1,9 @@
 import React from 'react';
-import { Eye, History, Pencil, Trash2, FolderPlus } from 'lucide-react';
+import { FolderPlus } from 'lucide-react';
 import type { SecretItem } from '../lib/api';
 import { TableSkeleton } from './Skeletons';
+import { SecretActions } from './SecretActions';
+import { Link } from 'react-router-dom';
 
 interface SecretsTableProps {
   secrets: SecretItem[];
@@ -34,13 +36,13 @@ export const SecretsTable: React.FC<SecretsTableProps> = ({
   const searching = search.trim().length > 0;
 
   return (
-    <div className="table-wrap glass">
-      <table style={{ width: '100%', minWidth: '720px' }}>
+    <div className="table-wrap glass secrets-table" aria-busy={loading}>
+      <table style={{ width: '100%' }}>
         <thead>
           <tr>
             <th>KEY NAME</th>
-            <th>ENVIRONMENT</th>
-            <th>VERSION</th>
+            <th className="secret-secondary">ENVIRONMENT</th>
+            <th className="secret-secondary">VERSION</th>
             <th>LAST UPDATED</th>
             <th style={{ textAlign: 'right' }}>ACTIONS</th>
           </tr>
@@ -58,59 +60,22 @@ export const SecretsTable: React.FC<SecretsTableProps> = ({
                   >
                     {s.key}
                   </div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--vk-text-muted)', fontFamily: 'JetBrains Mono, monospace', letterSpacing: '0.12em' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--vk-text-muted)', fontFamily: 'JetBrains Mono, monospace', letterSpacing: '0.12em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     ••••••••••••••••
                   </div>
+                  <details className="secret-mobile-details"><summary>Details</summary><div className="break-all">Key: {s.key}<br />Environment: {s.env || 'default'}<br />Version: v{s.version}</div></details>
                 </td>
-                <td>
-                  <span className="badge badge-read">{s.project}</span>
+                <td className="secret-secondary">
+                  <span className="badge badge-neutral">{s.env || 'default'}</span>
                 </td>
-                <td>
+                <td className="secret-secondary">
                   <span className="version-chip code-font" title="Active version">v{s.version}</span>
                 </td>
                 <td style={{ color: 'var(--vk-text-secondary)', fontSize: '0.875rem' }}>
                   {new Date(s.updated_at).toLocaleDateString()}
                 </td>
                 <td style={{ textAlign: 'right' }}>
-                  <div style={{ display: 'inline-flex', gap: '6px', justifyContent: 'flex-end' }}>
-                    <button
-                      onClick={() => onReveal(s.key)}
-                      disabled={revealPendingKey === s.key}
-                      className="btn btn-secondary"
-                      style={{ padding: '6px 8px', fontSize: '0.75rem' }}
-                      title="Reveal secret"
-                      aria-label="Reveal secret"
-                    >
-                      <Eye size={14} />
-                    </button>
-                    <button
-                      onClick={() => onHistory(s)}
-                      className="btn btn-secondary"
-                      style={{ padding: '6px 8px', fontSize: '0.75rem' }}
-                      title="Version history"
-                      aria-label="Version history"
-                    >
-                      <History size={14} />
-                    </button>
-                    <button
-                      onClick={() => onEdit(s)}
-                      className="btn btn-secondary"
-                      style={{ padding: '6px 8px', fontSize: '0.75rem' }}
-                      title="Edit secret"
-                      aria-label="Edit secret"
-                    >
-                      <Pencil size={14} />
-                    </button>
-                    <button
-                      onClick={() => onDelete(s)}
-                      className="btn btn-danger"
-                      style={{ padding: '6px 8px', fontSize: '0.75rem' }}
-                      title="Delete secret"
-                      aria-label="Delete secret"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
+                  <SecretActions item={s} pending={revealPendingKey === s.key} onReveal={onReveal} onHistory={onHistory} onEdit={onEdit} onDelete={onDelete} />
                 </td>
               </tr>
             ))}
@@ -121,7 +86,7 @@ export const SecretsTable: React.FC<SecretsTableProps> = ({
                   No secrets match "{search}"
                 </h3>
                 <p style={{ color: 'var(--vk-text-muted)', fontSize: '0.85rem', marginBottom: '16px' }}>
-                  Try a different search term or select another environment.
+                  Try a different search term or select another project.
                 </p>
                 <button onClick={onClearSearch} className="btn btn-secondary" style={{ padding: '6px 14px', fontSize: '0.8rem' }}>
                   Clear search
@@ -139,11 +104,12 @@ export const SecretsTable: React.FC<SecretsTableProps> = ({
                   No secrets in "{project}" yet
                 </h3>
                 <p style={{ color: 'var(--vk-text-muted)', fontSize: '0.85rem', maxWidth: '380px', margin: '0 auto 18px' }}>
-                  Create your first encrypted secret for this environment.
+                  Create your first encrypted secret for this project.
                 </p>
                 <button onClick={onCreate} className="btn btn-primary" style={{ padding: '7px 16px', fontSize: '0.85rem' }}>
                   Create First Secret
                 </button>
+                <p className="mt-4"><Link to="/docs#cli" className="text-sm text-primary hover:underline">Then connect your app with the CLI</Link></p>
               </td>
             </tr>
           )}

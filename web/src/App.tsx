@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AppLayout } from './components/AppLayout';
@@ -7,6 +7,10 @@ import { PublicShell } from './components/PublicShell';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ToastHost } from './components/Toast';
 import { LandingPage } from './pages/LandingPage';
+import { MarketingLayout } from './components/landing/MarketingLayout';
+import { HowItWorksPage } from './pages/HowItWorksPage';
+import { SecurityPage } from './pages/SecurityPage';
+import { PricingPage } from './pages/PricingPage';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
@@ -28,14 +32,18 @@ export const App: React.FC = () => {
         <ErrorBoundary>
           <Routes>
             {/* Public Landing & Auth Routes */}
-            <Route path="/" element={<LandingPage />} />
+            <Route element={<MarketingLayout />}>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/how-it-works" element={<HowItWorksPage />} />
+              <Route path="/security" element={<SecurityPage />} />
+              <Route path="/pricing" element={<PricingPage />} />
+            </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ForgotPasswordPage />} />
             <Route path="/accept-invite" element={<AcceptInvitePage />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/pricing" element={<Navigate to="/#pricing" replace />} />
             <Route path="/share/:shareId" element={<SharePageWrapper />} />
             <Route path="/docs" element={<PublicShell><DocsPage /></PublicShell>} />
 

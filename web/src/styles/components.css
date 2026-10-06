@@ -39,13 +39,13 @@
 }
 
 .btn-primary {
-  background: var(--vk-accent);
+  background: var(--primary-button);
   color: #ffffff;
   font-weight: 600;
   border-color: rgba(0, 143, 245, 0.4);
 }
 .btn-primary:hover {
-  background: var(--vk-accent-hover);
+  background: var(--primary-button-hover);
   border-color: rgba(0, 143, 245, 0.8);
 }
 

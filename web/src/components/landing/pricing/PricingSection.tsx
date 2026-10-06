@@ -16,7 +16,7 @@ const VAULTKEY_PLANS: PricingPlan[] = [
   {
     id: 'pro',
     name: 'Team',
-    description: 'For teams working together.',
+    description: 'Monthly billing for your workspace.',
     priceMonthly: 1499,
     recommended: true,
     features: [
@@ -37,11 +37,11 @@ const VAULTKEY_PLANS: PricingPlan[] = [
   },
 ];
 
-export const PricingSection: React.FC = () => {
+export const PricingSection: React.FC<{ showHeading?: boolean }> = ({ showHeading = true }) => {
   return (
     <section id="pricing" className="section-shell">
       <PricingModule
-        title="Start free. Grow with your team."
+        title={showHeading ? 'Start free. Grow with your team.' : ''}
         plans={VAULTKEY_PLANS}
         onSelectPlan={(plan) => {
           if (plan.id === 'enterprise') window.location.href = 'mailto:sheersh@vaultkey.dev?subject=VaultKey%20Enterprise%20inquiry';

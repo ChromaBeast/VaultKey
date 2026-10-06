@@ -59,7 +59,7 @@ export const AuditPaginationBar: React.FC<AuditFiltersBarProps> = ({
       <form onSubmit={(e) => { e.preventDefault(); onProjectSubmit(); }} style={{ flex: '1 1 180px', maxWidth: '240px' }}>
         <Input
           id="audit-project-filter"
-          placeholder="Filter by environment..."
+          placeholder="Filter by project..."
           value={projectInput}
           onChange={(e) => onProjectInputChange(e.target.value)}
           aria-label="Filter by environment"
