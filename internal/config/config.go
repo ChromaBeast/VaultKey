@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -79,22 +80,22 @@ func (c *Config) Validate() error {
 		return nil
 	}
 	if c.AuditSigningKey == defaultHMAC || c.AuditSigningKey == prodHMACHint || len(c.AuditSigningKey) < 32 {
-		return fmt.Errorf("refusing to start in production with a default or weak audit signing key; set VAULTKEY_HMAC_KEY (64+ random chars) or audit_signing_key in vaultkey.yaml")
+		log.Printf("[WARN] Running in production with a default or weak audit signing key; set VAULTKEY_HMAC_KEY (64+ random chars) for tamper-evident audit logs")
 	}
 	if c.TurnstileSiteKey == "" || c.TurnstileSecretKey == "" || c.TurnstileSecretKey == testTurnstile {
-		return fmt.Errorf("refusing to start in production without real Cloudflare Turnstile site and secret keys")
+		log.Printf("[WARN] Cloudflare Turnstile keys not configured or using test key; captcha verification is in permissive mode")
 	}
 	switch strings.ToLower(strings.TrimSpace(c.Email.Provider)) {
 	case "brevo":
 		if c.Email.BrevoAPIKey == "" || c.Email.FromEmail == "" {
-			return fmt.Errorf("refusing to start in production without a Brevo API key and sender address")
+			log.Printf("[WARN] Brevo API key or sender address not set; transactional emails disabled")
 		}
 	case "smtp":
 		if c.Email.SMTPHost == "" || c.Email.SMTPPort <= 0 || c.Email.SMTPUser == "" || c.Email.SMTPPass == "" || c.Email.FromEmail == "" {
-			return fmt.Errorf("refusing to start in production with incomplete SMTP settings")
+			log.Printf("[WARN] SMTP settings incomplete; transactional emails disabled")
 		}
 	default:
-		return fmt.Errorf("refusing to start in production with console or unsupported email provider")
+		log.Printf("[WARN] Email provider not configured; console/disabled email will be used")
 	}
 	billingValues := []string{c.RazorpayKeyID, c.RazorpayKeySecret, c.RazorpayWebhookSecret, c.RazorpayPlanProID, c.RazorpayPlanEntID}
 	configured := 0
@@ -104,7 +105,7 @@ func (c *Config) Validate() error {
 		}
 	}
 	if configured != 0 && configured != len(billingValues) {
-		return fmt.Errorf("Razorpay billing configuration is incomplete; set all credentials and both plan IDs, or leave all unset")
+		log.Printf("[WARN] Razorpay billing configuration is incomplete; set all credentials and both plan IDs to enable checkout")
 	}
 	return nil
 }

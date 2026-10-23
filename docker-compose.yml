@@ -79,8 +79,8 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
-      vaultkey:
-        condition: service_healthy
+      - vaultkey
+      - web
 
 volumes:
   caddy_data:
