@@ -60,6 +60,8 @@ func main() {
 		exit(handleAudit())
 	case "keys":
 		exit(handleKeys())
+	case "mcp":
+		exit(handleMCP())
 	default:
 		fmt.Printf("Unknown subcommand: %s\n\n", subcommand)
 		printAllUsage()
@@ -109,6 +111,7 @@ Commands:
                                               Dumps secrets in .env format to stdout
   audit [--limit=50] [--offset=0] [--json]    Shows recent secure audit logs
   keys <create|list|revoke>                   Manages API authorization keys
+  mcp                                         Start an MCP server over stdio for AI agent integration
 
 Note: flags must come BEFORE positional arguments.
 

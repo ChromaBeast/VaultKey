@@ -46,7 +46,39 @@ vaultkey projects                # List projects / active scope
 vaultkey run -- npm start        # In-memory child process env injection
 vaultkey export > .env           # Export active scope variables to dotenv
 vaultkey audit                   # Lists logs and runs a live cryptographic verify check
+vaultkey mcp                     # Start stdio MCP server for Claude Code, Cursor, Antigravity
 ```
+
+---
+
+## 🤖 Model Context Protocol (MCP) Server
+
+VaultKey includes a built-in MCP server for AI coding agents (`Claude Code`, `Cursor`, `Antigravity`):
+
+```bash
+# Start MCP server over stdio
+vaultkey mcp
+```
+
+### Safety Features
+- **Zero plaintexts in context**: Use `run_with_secrets` to run commands with injected environment variables — only command `stdout`/`stderr` is returned, keeping secrets out of LLM prompts and context windows.
+- **Tamper-evident audit**: Every secret access is cryptographically signed into the HMAC ledger.
+- **Config for Claude Desktop / Cursor**:
+  ```json
+  {
+    "mcpServers": {
+      "vaultkey": {
+        "command": "vaultkey",
+        "args": ["mcp"],
+        "env": {
+          "VAULTKEY_SERVER": "https://your-vaultkey-server.com",
+          "VAULTKEY_TOKEN": "vk_your_machine_key_here"
+        }
+      }
+    }
+  }
+  ```
+See full documentation in [docs/MCP.md](docs/MCP.md) and on the Developer Docs page.
 
 > **WARNING - plaintext on disk:** `vaultkey export` and `vaultkey pull`
 > write decrypted secrets as **PLAINTEXT** to disk, outside the encrypted
