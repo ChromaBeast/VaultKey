@@ -6,6 +6,7 @@ import { AppLayout } from './components/AppLayout';
 import { PublicShell } from './components/PublicShell';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ToastHost } from './components/Toast';
+import { PageLoader } from './components/PageLoader';
 const LandingPage = lazy(() => import('./pages/LandingPage').then((module) => ({ default: module.LandingPage })));
 import { MarketingLayout } from './components/landing/MarketingLayout';
 const HowItWorksPage = lazy(() => import('./pages/HowItWorksPage').then((module) => ({ default: module.HowItWorksPage })));
@@ -30,7 +31,7 @@ export const App: React.FC = () => {
     <AuthProvider>
       <BrowserRouter>
         <ErrorBoundary>
-          <Suspense fallback={<div role="status" className="p-8 text-muted-foreground">Loading page…</div>}>
+          <Suspense fallback={<PageLoader />}>
           <Routes>
             {/* Public Landing & Auth Routes */}
             <Route element={<MarketingLayout />}>
