@@ -1,62 +1,174 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Bot, Package, ShieldCheck, Terminal, Zap } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { DocsHeader } from '../components/docs/DocsHeader';
+import { DOC_TABS, type SearchDocItem } from '../components/docs/docsData';
+import { DocsLeftNav } from '../components/docs/DocsLeftNav';
+import { DocsRightToc, type TocHeading } from '../components/docs/DocsRightToc';
+import { DocsSearchModal } from '../components/docs/DocsSearchModal';
+import { DocsAskAiModal } from '../components/docs/DocsAskAiModal';
+import { DocsCopyPageButton } from '../components/docs/DocsCopyPageButton';
+import { OverviewDocSection } from '../components/docs/OverviewDocSection';
+import { McpDocSection } from '../components/docs/McpDocSection';
 import { CliDocSection } from '../components/docs/CliDocSection';
 import { SdkDocSection } from '../components/docs/SdkDocSection';
 import { ApiDocSection } from '../components/docs/ApiDocSection';
 import { SecurityDocSection } from '../components/docs/SecurityDocSection';
-import { McpDocSection } from '../components/docs/McpDocSection';
 import { copyText } from '../hooks/useClipboard';
 
-const SECTIONS = [
-  { id: 'cli',      label: 'CLI tooling',    icon: Terminal   },
-  { id: 'sdk',      label: 'SDK',            icon: Package    },
-  { id: 'mcp',      label: 'MCP / AI agents',icon: Bot        },
-  { id: 'api',      label: 'REST API',       icon: Zap        },
-  { id: 'security', label: 'Security model', icon: ShieldCheck },
-] as const;
+const TOC_MAP: Record<string, TocHeading[]> = {
+  overview: [
+    { id: 'overview-intro', title: 'Usage', level: 2 },
+    { id: 'overview-quickstart', title: 'Quickstart (30 seconds)', level: 2 },
+    { id: 'overview-arch', title: 'Zero-knowledge architecture', level: 2 },
+    { id: 'overview-compare', title: 'Comparison with Vault & Infisical', level: 2 },
+  ],
+  mcp: [
+    { id: 'mcp-intro', title: 'Usage', level: 2 },
+    { id: 'mcp-usage', title: 'Agent setup flow', level: 2 },
+    { id: 'mcp-tools', title: 'Available MCP tools', level: 2 },
+    { id: 'mcp-safe-exec', title: 'Zero-leak security proof', level: 2 },
+  ],
+  cli: [
+    { id: 'cli-intro', title: 'Overview', level: 2 },
+    { id: 'cli-usage', title: 'CLI workflow', level: 2 },
+  ],
+  sdk: [
+    { id: 'sdk-intro', title: 'Client libraries', level: 2 },
+    { id: 'sdk-examples', title: 'Language examples', level: 2 },
+  ],
+  api: [
+    { id: 'api-intro', title: 'API overview', level: 2 },
+    { id: 'api-endpoints-table', title: 'Core endpoints', level: 2 },
+    { id: 'api-curl', title: 'Example cURL request', level: 2 },
+  ],
+  security: [
+    { id: 'sec-intro', title: 'Security model', level: 2 },
+    { id: 'sec-kdf', title: '1. Argon2id Key Derivation', level: 2 },
+    { id: 'sec-gcm', title: '2. AES-256-GCM Encryption', level: 2 },
+    { id: 'sec-zero', title: '3. In-Memory Key Zeroing', level: 2 },
+    { id: 'sec-audit', title: '4. HMAC Tamper-Proof Ledger', level: 2 },
+  ],
+  architecture: [
+    { id: 'overview-arch', title: 'Architecture components', level: 2 },
+    { id: 'overview-compare', title: 'Comparison matrix', level: 2 },
+  ],
+};
 
-type DocSection = (typeof SECTIONS)[number]['id'];
+const TAB_METADATA: Record<string, { eyebrow: string; title: string; desc: string }> = {
+  overview: {
+    eyebrow: 'Get Started',
+    title: 'Overview & Quickstart',
+    desc: 'Introduction to VaultKey zero-knowledge secrets management and developer workflows.',
+  },
+  mcp: {
+    eyebrow: 'Context management',
+    title: 'Skills & Model Context Protocol (MCP)',
+    desc: 'Connect AI coding agents (Claude Code, Cursor, Antigravity) to secrets with zero LLM context leakage.',
+  },
+  cli: {
+    eyebrow: 'Command Line',
+    title: 'CLI Tooling',
+    desc: 'Authenticate, pull, push, and inject variables into processes without writing to disk.',
+  },
+  sdk: {
+    eyebrow: 'Integration',
+    title: 'SDKs & Client Libraries',
+    desc: 'Read secrets from TypeScript / Node.js, Python, and Go microservices in memory.',
+  },
+  api: {
+    eyebrow: 'Reference',
+    title: 'REST API',
+    desc: 'Core endpoints for organizations, encrypted variables, ephemeral shares, and audit records.',
+  },
+  security: {
+    eyebrow: 'Cryptography',
+    title: 'Security Architecture',
+    desc: 'How VaultKey derives keys, encrypts values, zeros RAM memory, and validates hash chains.',
+  },
+  architecture: {
+    eyebrow: 'System Design',
+    title: 'System Architecture',
+    desc: 'Single-binary Go and SQLite engine with client-side cryptography.',
+  },
+};
 
 export const DocsPage: React.FC = () => {
-  const [activeSection, setActiveSection] = useState<DocSection>(() => {
+  const { user } = useAuth();
+
+  const [activeTab, setActiveTab] = useState<string>(() => {
     const hash = window.location.hash.slice(1);
-    return SECTIONS.some((s) => s.id === hash) ? (hash as DocSection) : 'cli';
+    if (hash && (TOC_MAP[hash] || hash in TAB_METADATA)) return hash;
+    return 'mcp'; // Default to the stellar MCP / Agent view matching user request!
   });
+
+  const [activeNavId, setActiveNavId] = useState<string>('mcp-intro');
+  const [activeTocId, setActiveTocId] = useState<string>('mcp-intro');
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('python');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isAskAiOpen, setIsAskAiOpen] = useState(false);
   const [copiedSnippet, setCopiedSnippet] = useState<string | null>(null);
   const copyTimer = useRef<number | undefined>(undefined);
 
   useEffect(() => {
-    document.title = 'Developer docs | VaultKey';
-    const hash = window.location.hash.slice(1);
-    const frame = window.requestAnimationFrame(() => {
-      if (SECTIONS.some((s) => s.id === hash)) document.getElementById(hash)?.scrollIntoView();
-    });
+    document.title = `${TAB_METADATA[activeTab]?.title || 'Documentation'} | VaultKey`;
+  }, [activeTab]);
 
+  // Handle URL hash changes
+  useEffect(() => {
     const syncHash = () => {
-      const section = window.location.hash.slice(1);
-      if (SECTIONS.some((s) => s.id === section)) setActiveSection(section as DocSection);
+      const hash = window.location.hash.slice(1);
+      if (!hash) return;
+
+      // Check if hash matches a tab
+      if (DOC_TABS.some((t) => t.id === hash)) {
+        setActiveTab(hash);
+      } else {
+        // Check if hash matches an element id on the page
+        const el = document.getElementById(hash);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+          setActiveTocId(hash);
+        }
+      }
     };
+
     window.addEventListener('hashchange', syncHash);
+    return () => window.removeEventListener('hashchange', syncHash);
+  }, []);
+
+  // IntersectionObserver for active TOC heading highlighting
+  useEffect(() => {
+    const headings = TOC_MAP[activeTab] || [];
+    if (headings.length === 0) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries.find((e) => e.isIntersecting);
-        if (visible) setActiveSection(visible.target.id as DocSection);
+        if (visible) {
+          setActiveTocId(visible.target.id);
+        }
       },
-      { rootMargin: '-80px 0px -50% 0px', threshold: 0.1 },
+      { rootMargin: '-70px 0px -60% 0px', threshold: 0.1 }
     );
 
-    SECTIONS.forEach((s) => {
-      const el = document.getElementById(s.id);
+    headings.forEach((h) => {
+      const el = document.getElementById(h.id);
       if (el) observer.observe(el);
     });
 
-    return () => {
-      observer.disconnect();
-      window.cancelAnimationFrame(frame);
-      window.clearTimeout(copyTimer.current);
-      window.removeEventListener('hashchange', syncHash);
+    return () => observer.disconnect();
+  }, [activeTab]);
+
+  // Global shortcut: ⌘K or Ctrl+K to open search
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      }
     };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
   }, []);
 
   const handleCopy = (id: string, code: string) => {
@@ -68,113 +180,129 @@ export const DocsPage: React.FC = () => {
     });
   };
 
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    window.location.hash = tabId;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSelectNavItem = (sectionId: string, itemId: string) => {
+    if (sectionId !== activeTab) {
+      setActiveTab(sectionId);
+    }
+    setActiveNavId(itemId);
+    const targetEl = document.getElementById(itemId);
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleSelectTocHeading = (id: string) => {
+    setActiveTocId(id);
+    const targetEl = document.getElementById(id);
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleSearchSelect = (item: SearchDocItem) => {
+    setActiveTab(item.sectionId);
+    window.location.hash = item.id;
+    setTimeout(() => {
+      const el = document.getElementById(item.id) || document.getElementById(item.sectionId);
+      el?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
+  const meta = TAB_METADATA[activeTab] || TAB_METADATA.mcp;
+  const headings = TOC_MAP[activeTab] || [];
+
   return (
-    <div className="docs-page animate-fade">
-      <div className="docs-intro">
-        <div className="docs-intro-eyebrow">Documentation</div>
-        <h1>Developer docs</h1>
-        <p>
-          Guides for the CLI, SDKs, MCP agent integration, REST API, and VaultKey's
-          security model.
-        </p>
-      </div>
+    <div className="docs-page-root">
+      {/* Top Header & Horizontal Subnavigation */}
+      <DocsHeader
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+        onOpenSearch={() => setIsSearchOpen(true)}
+        onOpenAskAi={() => setIsAskAiOpen(true)}
+        user={user}
+      />
 
-      <div className="docs-layout">
-        <aside className="docs-sidebar">
-          <nav className="docs-nav" aria-label="Documentation sections">
-            <span className="docs-nav-label">Guides</span>
-            {SECTIONS.map((section) => {
-              const Icon = section.icon;
-              return (
-                <a
-                  key={section.id}
-                  href={`#${section.id}`}
-                  className="docs-nav-link"
-                  aria-current={activeSection === section.id ? 'location' : undefined}
-                  onClick={() => setActiveSection(section.id)}
-                >
-                  <Icon size={15} aria-hidden="true" />
-                  <span>{section.label}</span>
-                  {section.id === 'mcp' && (
-                    <span className="docs-nav-badge">New</span>
-                  )}
-                </a>
-              );
-            })}
-          </nav>
-        </aside>
+      {/* 3-Column Documentation Body */}
+      <div className="docs-body-wrapper">
+        <div className="docs-body-container">
+          {/* Left Column: Navigation Sidebar */}
+          <DocsLeftNav
+            activeSection={activeTab}
+            activeItem={activeNavId}
+            onSelectItem={handleSelectNavItem}
+            selectedLanguage={selectedLanguage}
+            onSelectLanguage={setSelectedLanguage}
+          />
 
-        <div className="docs-content">
-          {/* CLI */}
-          <section id="cli" className="docs-section" aria-labelledby="docs-cli-title">
-            <div className="docs-section-heading">
-              <div className="docs-section-eyebrow">
-                <Terminal size={14} aria-hidden="true" />
-                <span>CLI tooling</span>
+          {/* Center Column: Main Reading Article */}
+          <main className="docs-main-article" tabIndex={-1}>
+            {/* Article Top Title & Copy Button */}
+            <div className="docs-article-header">
+              <div className="docs-article-header-left">
+                <div className="docs-eyebrow-tag">{meta.eyebrow}</div>
+                <h1 className="docs-article-title">{meta.title}</h1>
               </div>
-              <h2 id="docs-cli-title">Command-line interface</h2>
-              <p>Authenticate, sync local variables, and inject secrets into a child process.</p>
-            </div>
-            <CliDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />
-          </section>
 
-          {/* SDK */}
-          <section id="sdk" className="docs-section" aria-labelledby="docs-sdk-title">
-            <div className="docs-section-heading">
-              <div className="docs-section-eyebrow">
-                <Package size={14} aria-hidden="true" />
-                <span>SDK integration</span>
+              <div className="docs-article-header-right">
+                <DocsCopyPageButton pageTitle={meta.title} />
               </div>
-              <h2 id="docs-sdk-title">SDKs</h2>
-              <p>Read secrets from Node.js and Python services at runtime.</p>
             </div>
-            <SdkDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />
-          </section>
 
-          {/* MCP */}
-          <section id="mcp" className="docs-section" aria-labelledby="docs-mcp-title">
-            <div className="docs-section-heading">
-              <div className="docs-section-eyebrow docs-section-eyebrow--accent">
-                <Bot size={14} aria-hidden="true" />
-                <span>MCP / AI agents</span>
-                <span className="docs-eyebrow-badge">New</span>
-              </div>
-              <h2 id="docs-mcp-title">MCP agent integration</h2>
-              <p>
-                Give AI coding agents (Claude Code, Cursor, Antigravity) structured access to
-                your secrets — without leaking values into the LLM context window.
-              </p>
+            {/* Content Section by Tab */}
+            <div className="docs-article-content">
+              {activeTab === 'overview' && (
+                <OverviewDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />
+              )}
+              {activeTab === 'mcp' && (
+                <McpDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />
+              )}
+              {activeTab === 'cli' && (
+                <CliDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />
+              )}
+              {activeTab === 'sdk' && (
+                <SdkDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />
+              )}
+              {activeTab === 'api' && (
+                <ApiDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />
+              )}
+              {activeTab === 'security' && (
+                <SecurityDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />
+              )}
+              {activeTab === 'architecture' && (
+                <OverviewDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />
+              )}
             </div>
-            <McpDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />
-          </section>
+          </main>
 
-          {/* REST API */}
-          <section id="api" className="docs-section" aria-labelledby="docs-api-title">
-            <div className="docs-section-heading">
-              <div className="docs-section-eyebrow">
-                <Zap size={14} aria-hidden="true" />
-                <span>REST API</span>
-              </div>
-              <h2 id="docs-api-title">REST API</h2>
-              <p>Core endpoints for authentication, encrypted values, and one-time sharing.</p>
-            </div>
-            <ApiDocSection />
-          </section>
-
-          {/* Security */}
-          <section id="security" className="docs-section" aria-labelledby="docs-security-title">
-            <div className="docs-section-heading">
-              <div className="docs-section-eyebrow">
-                <ShieldCheck size={14} aria-hidden="true" />
-                <span>Security model</span>
-              </div>
-              <h2 id="docs-security-title">Security model</h2>
-              <p>How VaultKey derives keys, encrypts values, and verifies the audit chain.</p>
-            </div>
-            <SecurityDocSection />
-          </section>
+          {/* Right Column: "On this page" Table of Contents */}
+          <DocsRightToc
+            headings={headings}
+            activeId={activeTocId}
+            onSelectHeading={handleSelectTocHeading}
+          />
         </div>
       </div>
+
+      {/* Command Palette Modal */}
+      <DocsSearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onSelect={handleSearchSelect}
+      />
+
+      {/* Ask AI Assistant Modal */}
+      <DocsAskAiModal
+        isOpen={isAskAiOpen}
+        onClose={() => setIsAskAiOpen(false)}
+      />
     </div>
   );
 };
