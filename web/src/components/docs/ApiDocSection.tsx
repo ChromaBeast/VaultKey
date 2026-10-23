@@ -1,110 +1,110 @@
-import React, { useState } from 'react';
-import { DocsCallout } from './DocsCallout';
+import React from 'react';
+import { ArrowRight } from 'lucide-react';
 import { DocsCodeBlock } from './DocsCodeBlock';
 
 interface ApiDocProps {
   onCopy?: (id: string, code: string) => void;
   copiedSnippet?: string | null;
+  onNavigateNext?: () => void;
 }
 
 const ENDPOINTS = [
   {
     method: 'POST',
     path: '/v1/auth/signup',
-    description: 'Create an organization, generate an Argon2id salt, and initialize an admin user.',
+    description: 'Create an organization and admin account',
     auth: 'Public',
-    body: '{ "org_name": "Acme", "email": "admin@acme.com", "password": "..." }',
   },
   {
     method: 'POST',
     path: '/v1/auth/login',
-    description: 'Authenticate user credentials, verify Turnstile token, and return JWT Bearer session.',
+    description: 'Authenticate and derive the team key in memory',
     auth: 'Public',
-    body: '{ "email": "admin@acme.com", "password": "..." }',
-  },
-  {
-    method: 'GET',
-    path: '/v1/secrets',
-    description: 'Retrieve encrypted secrets with cryptographic nonces and metadata for an environment.',
-    auth: 'Bearer Token / Machine Key',
-    body: 'Query: ?project=backend&env=production',
   },
   {
     method: 'POST',
     path: '/v1/secrets',
-    description: 'Create or update an encrypted secret value with an incremented revision nonce.',
-    auth: 'Bearer Token / Machine Key',
-    body: '{ "project": "backend", "env": "production", "key": "DATABASE_URL", "value": "..." }',
+    description: 'Create or update an encrypted secret',
+    auth: 'Bearer token',
+  },
+  {
+    method: 'GET',
+    path: '/v1/secrets/values',
+    description: 'Batch retrieve decrypted key-value pairs',
+    auth: 'Bearer token',
   },
   {
     method: 'POST',
     path: '/v1/shares',
-    description: 'Generate an ephemeral, single-read secret link with auto-expiration (e.g. 1 hour).',
-    auth: 'Bearer Token',
-    body: '{ "secret_text": "temporary-password", "expires_in": "3600s", "max_reads": 1 }',
-  },
-  {
-    method: 'GET',
-    path: '/v1/audit',
-    description: 'Stream tamper-evident audit ledger entries with cryptographic forward hash signatures.',
-    auth: 'Bearer Token (Admin)',
-    body: 'Query: ?limit=50&offset=0',
+    description: 'Create a one-time secret link',
+    auth: 'Bearer token',
   },
 ];
 
-export const ApiDocSection: React.FC<ApiDocProps> = ({ onCopy, copiedSnippet }) => {
-  const [selectedEndpoint, setSelectedEndpoint] = useState(ENDPOINTS[2]);
-
-  const curlExample = `# Retrieve secrets via REST API
-curl -X GET "https://vaultkey.sheershjaiswal.in/v1/secrets?project=backend&env=production" \\
-  -H "Authorization: Bearer vk_mach_your_token_here" \\
+export const ApiDocSection: React.FC<ApiDocProps> = ({ onCopy, copiedSnippet, onNavigateNext }) => {
+  const curlExample = `# Retrieve decrypted key-value pairs via REST API
+curl -s -X GET "https://your-vaultkey-server.com/v1/secrets/values?project=backend&env=production" \\
+  -H "Authorization: Bearer vk_your_token_here" \\
   -H "Accept: application/json"`;
 
   return (
     <div className="docs-api-root">
-      <div id="api-intro" className="docs-subtopic-block">
+      {/* 1. Summary */}
+      <div id="api-overview" className="docs-subtopic-block">
         <p className="docs-lead-text">
-          VaultKey's REST API is served directly by the compiled Go backend binary.
-          All endpoints enforce strict TLS, Bearer token authentication, rate limiting,
-          and tamper-evident HMAC audit verification.
+          Core endpoints for authentication, encrypted values, and one-time sharing.
         </p>
 
-        <DocsCallout type="info" title="Standard Bearer authentication">
-          Include your machine key or personal access token in the standard HTTP header:{' '}
-          <code className="docs-inline-code">Authorization: Bearer vk_...</code>.
-        </DocsCallout>
+        {/* 2. When to use this */}
+        <div id="api-when" className="docs-section-card mt-6">
+          <h4 className="docs-card-heading">When to use this</h4>
+          <ul className="docs-bullet-list">
+            <li>Building custom scripts or internal tooling that interact directly with your VaultKey server.</li>
+            <li>Programmatically generating one-time share links for credentials and sensitive tokens.</li>
+            <li>Integrating third-party identity or deployment systems with VaultKey's backend.</li>
+          </ul>
+        </div>
       </div>
 
-      <div id="api-endpoints-table" className="docs-subtopic-block mt-10">
-        <h3 className="docs-h3">Core endpoints</h3>
+      {/* 3. Authentication */}
+      <div id="api-auth" className="docs-subtopic-block mt-10">
+        <h3 className="docs-h3">Authentication</h3>
+        <p className="docs-lead-text">
+          Protected endpoints require a Bearer token in the <code className="docs-inline-code">Authorization</code> header.
+          You can provide an admin token or an agent machine key:
+        </p>
+        <div className="docs-code-window my-3">
+          <pre className="text-sky-300 font-mono text-sm py-3 px-4"><code>Authorization: Bearer vk_your_token_here</code></pre>
+        </div>
+      </div>
+
+      {/* 4. Endpoints Reference Table */}
+      <div id="api-endpoints" className="docs-subtopic-block mt-12">
+        <h3 className="docs-h3">Reference: REST endpoints</h3>
 
         <div className="docs-table-wrap" role="region" aria-label="REST API endpoints" tabIndex={0}>
-          <table className="docs-api-table">
+          <table className="docs-compare-table">
             <thead>
               <tr>
                 <th scope="col" style={{ width: '15%' }}>Method</th>
                 <th scope="col" style={{ width: '30%' }}>Endpoint</th>
-                <th scope="col" style={{ width: '35%' }}>Description</th>
-                <th scope="col" style={{ width: '20%' }}>Auth Scope</th>
+                <th scope="col" style={{ width: '40%' }}>Description</th>
+                <th scope="col" style={{ width: '15%' }}>Auth</th>
               </tr>
             </thead>
             <tbody>
               {ENDPOINTS.map((endpoint) => (
-                <tr
-                  key={endpoint.path + endpoint.method}
-                  className={`docs-api-row ${selectedEndpoint.path === endpoint.path && selectedEndpoint.method === endpoint.method ? 'is-selected' : ''}`}
-                  onClick={() => setSelectedEndpoint(endpoint)}
-                >
+                <tr key={endpoint.path + endpoint.method}>
                   <td>
                     <span className={`docs-method docs-method-${endpoint.method.toLowerCase()}`}>
                       {endpoint.method}
                     </span>
                   </td>
                   <td>
-                    <code className="docs-api-endpoint">{endpoint.path}</code>
+                    <code className="docs-inline-code">{endpoint.path}</code>
                   </td>
                   <td>{endpoint.description}</td>
-                  <td className="docs-api-auth">
+                  <td>
                     <span className="docs-api-auth-pill">{endpoint.auth}</span>
                   </td>
                 </tr>
@@ -114,8 +114,12 @@ curl -X GET "https://vaultkey.sheershjaiswal.in/v1/secrets?project=backend&env=p
         </div>
       </div>
 
-      <div id="api-curl" className="docs-subtopic-block mt-12">
-        <h3 className="docs-h3">Example cURL request</h3>
+      {/* 5. Verify */}
+      <div id="api-verify" className="docs-subtopic-block mt-10">
+        <h3 className="docs-h3">Verify</h3>
+        <p className="docs-lead-text">
+          Verify API connectivity using <code className="docs-inline-code">curl</code>:
+        </p>
         {onCopy && (
           <DocsCodeBlock
             id="api-curl-example"
@@ -125,6 +129,22 @@ curl -X GET "https://vaultkey.sheershjaiswal.in/v1/secrets?project=backend&env=p
             onCopy={onCopy}
           />
         )}
+        <p className="docs-text-muted mt-2 text-sm">
+          Expected output: A JSON object containing the decrypted key-value pairs for the requested project and environment.
+        </p>
+      </div>
+
+      {/* 6. Next */}
+      <div className="docs-next-box mt-12">
+        <div className="docs-next-label">Next guide</div>
+        <button
+          type="button"
+          className="docs-next-link"
+          onClick={onNavigateNext}
+        >
+          <span>Security model</span>
+          <ArrowRight size={14} />
+        </button>
       </div>
     </div>
   );

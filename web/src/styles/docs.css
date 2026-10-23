@@ -1592,6 +1592,93 @@
     cursor: not-allowed;
   }
 
+  /* ── Content Elements & Next Box ────────────────────────────────────────── */
+  .docs-bullet-list {
+    margin: 10px 0 16px;
+    padding-left: 20px;
+    list-style: disc;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    line-height: 1.7;
+  }
+
+  .docs-bullet-list li {
+    margin-bottom: 6px;
+  }
+
+  .docs-section-card {
+    padding: 16px 18px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 9px;
+    margin: 16px 0;
+  }
+
+  .docs-card-heading {
+    margin: 0 0 10px;
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  .docs-package-box {
+    padding: 12px 14px;
+    background: #040508;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+  }
+
+  .docs-prompt-quote {
+    margin: 12px 0 16px;
+    padding: 12px 16px;
+    background: rgba(0, 143, 245, 0.06);
+    border-left: 3px solid #008ff5;
+    border-radius: 0 8px 8px 0;
+    color: #cbd5e1;
+    font-style: italic;
+    font-size: 0.875rem;
+  }
+
+  .docs-next-box {
+    padding: 20px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .docs-next-label {
+    color: #64748b;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .docs-next-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 7px;
+    background: rgba(0, 143, 245, 0.1);
+    border: 1px solid rgba(0, 143, 245, 0.3);
+    color: #008ff5;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 120ms ease;
+  }
+
+  .docs-next-link:hover {
+    background: #008ff5;
+    color: #ffffff;
+    border-color: #008ff5;
+    transform: translateY(-0.5px);
+  }
+
   /* ── Responsive Behavior ─────────────────────────────────────────────────── */
   @media (max-width: 1200px) {
     .docs-body-container {

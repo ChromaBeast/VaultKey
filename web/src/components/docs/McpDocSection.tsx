@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bot, Terminal, Zap, Laptop } from 'lucide-react';
+import { ArrowRight, Zap } from 'lucide-react';
 import { DocsCodeBlock } from './DocsCodeBlock';
 import { DocsCallout } from './DocsCallout';
 import { DocsStepList } from './DocsStepList';
@@ -7,105 +7,51 @@ import { DocsStepList } from './DocsStepList';
 interface McpDocProps {
   onCopy: (id: string, code: string) => void;
   copiedSnippet: string | null;
+  onNavigateNext?: () => void;
 }
 
-interface ToolItem {
-  name: string;
-  description: string;
-  safe: boolean;
-  crown?: boolean;
-  params: string;
-}
+export const McpDocSection: React.FC<McpDocProps> = ({ onCopy, copiedSnippet, onNavigateNext }) => {
+  const [activeClientTab, setActiveClientTab] = useState<'desktop' | 'code' | 'cursor'>('desktop');
 
-const TOOLS: ToolItem[] = [
-  {
-    name: 'run_with_secrets',
-    description: 'Execute a command in an isolated child process with secrets injected as environment variables. Only exit code, stdout, and stderr are returned to the agent—raw values never enter LLM context.',
-    safe: true,
-    crown: true,
-    params: 'command, project, env, [working_dir]',
-  },
-  {
-    name: 'list_projects',
-    description: 'List all project names visible to the current machine API token.',
-    safe: true,
-    params: 'none',
-  },
-  {
-    name: 'list_secret_names',
-    description: 'List secret keys (metadata only, never plaintext values) for a given project and environment.',
-    safe: true,
-    params: 'project, env',
-  },
-  {
-    name: 'check_missing_secrets',
-    description: 'Diff a list of required variable names against VaultKey—returns which variables are missing without exposing existing values.',
-    safe: true,
-    params: 'project, env, expected_names[]',
-  },
-  {
-    name: 'get_secret_value',
-    description: 'Retrieve a single secret plaintext value directly into the LLM context window. Use with caution.',
-    safe: false,
-    params: 'project, env, key',
-  },
-  {
-    name: 'set_secret_value',
-    description: 'Create or update an encrypted secret value in VaultKey.',
-    safe: true,
-    params: 'project, env, key, value',
-  },
-];
-
-export const McpDocSection: React.FC<McpDocProps> = ({ onCopy, copiedSnippet }) => {
-  const [activeClientTab, setActiveClientTab] = useState<'claude' | 'cursor' | 'antigravity'>('claude');
-
-  const claudeConfig = `// ~/Library/Application Support/Claude/claude_desktop_config.json
-{
-  "mcpServers": {
-    "vaultkey": {
-      "command": "vaultkey",
-      "args": ["mcp"],
-      "env": {
-        "VAULTKEY_SERVER": "https://vaultkey.sheershjaiswal.in",
-        "VAULTKEY_TOKEN": "vk_machine_agent_abc123..."
-      }
-    }
-  }
-}`;
-
-  const cursorConfig = `// .cursor/mcp.json (project-specific) or ~/.cursor/mcp.json (global)
-{
-  "mcpServers": {
-    "vaultkey": {
-      "command": "vaultkey",
-      "args": ["mcp"],
-      "env": {
-        "VAULTKEY_SERVER": "https://vaultkey.sheershjaiswal.in",
-        "VAULTKEY_TOKEN": "vk_machine_agent_abc123..."
-      }
-    }
-  }
-}`;
-
-  const antigravityConfig = `// antigravity.json / windsurf mcp settings
-{
-  "mcpServers": {
-    "vaultkey": {
-      "command": "vaultkey",
-      "args": ["mcp"],
-      "env": {
-        "VAULTKEY_SERVER": "https://vaultkey.sheershjaiswal.in",
-        "VAULTKEY_TOKEN": "vk_machine_agent_abc123..."
-      }
-    }
-  }
-}`;
-
-  const step1Code = `# Create an isolated machine key for your agent
-vaultkey keys create --label "claude-code-agent"
+  const setupKeySnippet = `# Create a dedicated machine key for your agent
+vaultkey keys create --label "claude-code"
 # Output:
 # Token: vk_mach_8f92b7c104e67d2a901e4a52`;
+
+  const claudeDesktopConfig = `// ~/Library/Application Support/Claude/claude_desktop_config.json
+{
+  "mcpServers": {
+    "vaultkey": {
+      "command": "vaultkey",
+      "args": ["mcp"],
+      "env": {
+        "VAULTKEY_SERVER": "https://your-vaultkey-server.com",
+        "VAULTKEY_TOKEN": "vk_your_token_here"
+      }
+    }
+  }
+}`;
+
+  const claudeCodeSetup = `# Configure Claude Code via CLI
+export VAULTKEY_SERVER="https://your-vaultkey-server.com"
+export VAULTKEY_TOKEN="vk_your_token_here"
+
+# Add vaultkey MCP to Claude Code
+claude mcp add vaultkey -- vaultkey mcp`;
+
+  const cursorConfig = `// .cursor/mcp.json (project) or ~/.cursor/mcp.json (global)
+{
+  "mcpServers": {
+    "vaultkey": {
+      "command": "vaultkey",
+      "args": ["mcp"],
+      "env": {
+        "VAULTKEY_SERVER": "https://your-vaultkey-server.com",
+        "VAULTKEY_TOKEN": "vk_your_token_here"
+      }
+    }
+  }
+}`;
 
   const runExample = `// Agent tool call invoking run_with_secrets
 {
@@ -127,49 +73,50 @@ vaultkey keys create --label "claude-code-agent"
 
   return (
     <div className="docs-mcp-root">
-      {/* Lead Text matching screenshot */}
-      <div id="mcp-intro" className="docs-subtopic-block">
+      {/* 1. Summary */}
+      <div id="mcp-overview" className="docs-subtopic-block">
         <p className="docs-lead-text">
-          Skills and MCP tools package domain expertise, such as workflows, best practices, and
-          runtime credentials, into reusable capabilities. The AI agent gets a structured schema
-          of the tools on startup and discovers or injects secrets only when relevant to the task.
+          Give AI coding agents (Claude Code, Cursor, Antigravity) structured access to your secrets—without leaking values into the LLM context window.
         </p>
 
-        <p className="docs-lead-text">
-          Skills help you avoid context bloat and credential theft by loading only summaries at
-          startup. Using <code className="docs-inline-code">run_with_secrets</code>, subcommands receive
-          runtime environment variables in memory, ensuring API keys and passwords never enter the LLM's
-          prompt context.
+        {/* 2. When to use this */}
+        <div id="mcp-when" className="docs-section-card mt-6">
+          <h4 className="docs-card-heading">When to use this</h4>
+          <ul className="docs-bullet-list">
+            <li>When AI coding agents need to run test suites, database migrations, or build commands that require runtime credentials.</li>
+            <li>Checking whether required environment variables are set in a project without printing secret values into the chat window.</li>
+            <li>Restricting agent actions so secrets are injected into local child processes and cannot be exfiltrated through LLM prompts.</li>
+          </ul>
+        </div>
+      </div>
+
+      {/* 3. Why run_with_secrets beats get_secret_value */}
+      <div id="mcp-why" className="docs-subtopic-block mt-10">
+        <h3 className="docs-h3">Why run_with_secrets beats get_secret_value</h3>
+        <p className="docs-lead-text font-medium text-white">
+          Unlike <code className="docs-inline-code">get_secret_value</code>, which returns raw plaintext into the model context where it can leak into chat logs or training data, <code className="docs-inline-code">run_with_secrets</code> executes the command in an isolated child process with secrets injected as environment variables so only stdout and stderr are returned to the agent.
         </p>
 
-        {/* Callout matching the LangChain screenshot */}
-        <DocsCallout type="tip" title="Ready-to-use agent integration">
-          For ready-to-use agent setups that connect directly to VaultKey ecosystem tasks, see the{' '}
-          <a href="#mcp-claude" className="docs-link-accent">Claude Code</a> and{' '}
-          <a href="#mcp-cursor" className="docs-link-accent">Cursor</a> configurations below.
+        <DocsCallout type="warning" title="Security guardrail">
+          Calling <code className="docs-inline-code">get_secret_value</code> puts plaintext directly in the model's context window. We recommend using <code className="docs-inline-code">run_with_secrets</code> and <code className="docs-inline-code">list_secret_names</code> instead for secure agent operations.
         </DocsCallout>
       </div>
 
-      {/* Usage Section with Step List matching screenshot */}
-      <div id="mcp-usage" className="docs-subtopic-block mt-12">
-        <h3 className="docs-h3">Usage</h3>
+      {/* 4. Prerequisites & Setup Steps */}
+      <div id="mcp-steps" className="docs-subtopic-block mt-12">
+        <h3 className="docs-h3">Steps</h3>
 
         <DocsStepList
           steps={[
             {
               number: 1,
-              title: 'Create a dedicated agent machine token',
-              description: (
-                <span>
-                  Generate an isolated machine key scoped strictly to your project or staging environment
-                  using the CLI or Web Dashboard.
-                </span>
-              ),
+              title: 'Create a dedicated machine key per agent',
+              description: 'Create an isolated machine key with least-privilege access so it can be audited or revoked on its own:',
               content: (
                 <DocsCodeBlock
-                  id="mcp-step1"
-                  language="Shell"
-                  code={step1Code}
+                  id="mcp-step-key"
+                  language="Bash"
+                  code={setupKeySnippet}
                   copiedSnippet={copiedSnippet}
                   onCopy={onCopy}
                 />
@@ -177,24 +124,25 @@ vaultkey keys create --label "claude-code-agent"
             },
             {
               number: 2,
-              title: 'Add the VaultKey MCP server to your agent client',
-              description: (
-                <span>
-                  Configure your AI coding assistant (<code className="docs-inline-code">Claude Desktop</code>,{' '}
-                  <code className="docs-inline-code">Cursor</code>, or <code className="docs-inline-code">Antigravity</code>)
-                  to launch <code className="docs-inline-code">vaultkey mcp</code> via standard input/output.
-                </span>
-              ),
+              title: 'Configure your AI agent client',
+              description: 'Add a vaultkey entry to your client MCP configuration:',
               content: (
                 <div className="docs-tabbed-code-box">
                   <div className="docs-tabbed-header">
                     <div className="docs-tabbed-tabs">
                       <button
                         type="button"
-                        className={`docs-tabbed-btn ${activeClientTab === 'claude' ? 'is-active' : ''}`}
-                        onClick={() => setActiveClientTab('claude')}
+                        className={`docs-tabbed-btn ${activeClientTab === 'desktop' ? 'is-active' : ''}`}
+                        onClick={() => setActiveClientTab('desktop')}
                       >
-                        Claude Desktop / Code
+                        Claude Desktop
+                      </button>
+                      <button
+                        type="button"
+                        className={`docs-tabbed-btn ${activeClientTab === 'code' ? 'is-active' : ''}`}
+                        onClick={() => setActiveClientTab('code')}
+                      >
+                        Claude Code
                       </button>
                       <button
                         type="button"
@@ -203,21 +151,23 @@ vaultkey keys create --label "claude-code-agent"
                       >
                         Cursor IDE
                       </button>
-                      <button
-                        type="button"
-                        className={`docs-tabbed-btn ${activeClientTab === 'antigravity' ? 'is-active' : ''}`}
-                        onClick={() => setActiveClientTab('antigravity')}
-                      >
-                        Antigravity / Windsurf
-                      </button>
                     </div>
                   </div>
 
-                  {activeClientTab === 'claude' && (
+                  {activeClientTab === 'desktop' && (
                     <DocsCodeBlock
-                      id="mcp-claude-cfg"
+                      id="mcp-desktop-cfg"
                       language="JSON"
-                      code={claudeConfig}
+                      code={claudeDesktopConfig}
+                      copiedSnippet={copiedSnippet}
+                      onCopy={onCopy}
+                    />
+                  )}
+                  {activeClientTab === 'code' && (
+                    <DocsCodeBlock
+                      id="mcp-code-cfg"
+                      language="Bash"
+                      code={claudeCodeSetup}
                       copiedSnippet={copiedSnippet}
                       onCopy={onCopy}
                     />
@@ -231,28 +181,13 @@ vaultkey keys create --label "claude-code-agent"
                       onCopy={onCopy}
                     />
                   )}
-                  {activeClientTab === 'antigravity' && (
-                    <DocsCodeBlock
-                      id="mcp-antigravity-cfg"
-                      language="JSON"
-                      code={antigravityConfig}
-                      copiedSnippet={copiedSnippet}
-                      onCopy={onCopy}
-                    />
-                  )}
                 </div>
               ),
             },
             {
               number: 3,
-              title: 'Execute tasks safely via run_with_secrets',
-              description: (
-                <span>
-                  When the agent needs to run database migrations, integration tests, or deploy scripts, it calls{' '}
-                  <code className="docs-inline-code">run_with_secrets</code>. The subshell receives decrypted secrets in memory,
-                  and only exit code and stdout/stderr stream back to the model.
-                </span>
-              ),
+              title: 'Execute commands via run_with_secrets',
+              description: 'The agent calls run_with_secrets to execute workloads without reading plaintext values:',
               content: (
                 <DocsCodeBlock
                   id="mcp-run-example"
@@ -267,85 +202,90 @@ vaultkey keys create --label "claude-code-agent"
         />
       </div>
 
-      {/* Available Tools Reference */}
-      <div id="mcp-tools" className="docs-subtopic-block mt-14">
-        <h3 className="docs-h3">Available MCP tools</h3>
-        <p className="docs-text-muted mb-6">
-          Every tool exposed by <code className="docs-inline-code">vaultkey mcp</code> to connected LLMs:
+      {/* 5. Verify */}
+      <div id="mcp-verify" className="docs-subtopic-block mt-10">
+        <h3 className="docs-h3">Verify</h3>
+        <p className="docs-lead-text">
+          Confirm that your agent can connect to the MCP server by prompting it:
+        </p>
+        <blockquote className="docs-prompt-quote">
+          "List the available projects in VaultKey using your list_projects tool."
+        </blockquote>
+        <p className="docs-text-muted mt-2 text-sm">
+          Expected output: The agent invokes <code className="docs-inline-code">list_projects</code> and displays project names visible to your machine key. All access is logged in the tamper-evident audit ledger.
+        </p>
+      </div>
+
+      {/* 6. Reference Table */}
+      <div id="mcp-tools" className="docs-subtopic-block mt-12">
+        <h3 className="docs-h3">Reference: Available tools</h3>
+        <p className="docs-lead-text text-sm mb-4">
+          The <span className="docs-badge docs-badge--safe">Safe</span> badge indicates that the tool <strong>does not return secret values to the model context</strong>. Only <code className="docs-inline-code">get_secret_value</code> reveals plaintext.
         </p>
 
-        <div className="docs-mcp-tools-grid">
-          {TOOLS.map((tool) => (
-            <div
-              key={tool.name}
-              className={`docs-mcp-tool-card ${tool.crown ? 'is-crown' : ''}`}
-            >
-              <div className="docs-mcp-tool-top">
-                <code className="docs-mcp-tool-func">{tool.name}</code>
-                <div className="docs-mcp-tool-badges">
-                  {tool.crown && (
-                    <span className="docs-badge docs-badge--crown">
-                      <Zap size={11} /> Recommended
-                    </span>
-                  )}
-                  <span className={`docs-badge ${tool.safe ? 'docs-badge--safe' : 'docs-badge--warn'}`}>
-                    {tool.safe ? 'Safe (Zero Leak)' : 'Reveals Plaintext'}
+        <div className="docs-table-wrap" role="region" aria-label="MCP tools reference table" tabIndex={0}>
+          <table className="docs-compare-table">
+            <thead>
+              <tr>
+                <th scope="col" style={{ width: '25%' }}>Tool</th>
+                <th scope="col" style={{ width: '22%' }}>Safety</th>
+                <th scope="col" style={{ width: '53%' }}>What it does</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code className="docs-inline-code">list_projects</code></td>
+                <td><span className="docs-badge docs-badge--safe">Safe</span></td>
+                <td>Lists projects visible to the current token</td>
+              </tr>
+              <tr>
+                <td><code className="docs-inline-code">list_secret_names</code></td>
+                <td><span className="docs-badge docs-badge--safe">Safe</span></td>
+                <td>Lists secret names (never values) for a project and environment</td>
+              </tr>
+              <tr>
+                <td><code className="docs-inline-code">check_missing_secrets</code></td>
+                <td><span className="docs-badge docs-badge--safe">Safe</span></td>
+                <td>Compares expected names with VaultKey and returns only the missing ones</td>
+              </tr>
+              <tr>
+                <td><code className="docs-inline-code">get_secret_value</code></td>
+                <td><span className="docs-badge docs-badge--warn">Reveals value</span></td>
+                <td>Returns one secret's plaintext into the LLM context</td>
+              </tr>
+              <tr>
+                <td><code className="docs-inline-code">set_secret_value</code></td>
+                <td><span className="docs-badge docs-badge--safe">Safe</span></td>
+                <td>Creates or updates a secret (does not return secret values to the model)</td>
+              </tr>
+              <tr>
+                <td><code className="docs-inline-code">run_with_secrets</code></td>
+                <td>
+                  <span className="docs-badge docs-badge--crown">
+                    <Zap size={11} /> Safe, recommended
                   </span>
-                </div>
-              </div>
-
-              <p className="docs-mcp-tool-desc">{tool.description}</p>
-
-              <div className="docs-mcp-tool-params">
-                <span className="docs-mcp-param-label">Arguments:</span>
-                <code className="docs-mcp-param-code">{tool.params}</code>
-              </div>
-            </div>
-          ))}
+                </td>
+                <td>
+                  Runs a shell command with secrets as environment variables. Only stdout and stderr return to the agent.
+                  <div className="text-xs text-muted-foreground mt-1">Arguments: <code className="text-sky-300">command, project, env, working_dir</code></div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
-      {/* Zero-Leak Security Guarantee */}
-      <div id="mcp-safe-exec" className="docs-subtopic-block mt-14">
-        <h3 className="docs-h3">Security architecture: how zero-leak execution works</h3>
-        <p className="docs-text-muted mb-4">
-          Most secrets managers force developers or agents to retrieve plaintext strings over the wire.
-          With VaultKey MCP, values never leave the host system:
-        </p>
-
-        <div className="docs-mcp-flow-diagram">
-          <div className="docs-flow-node">
-            <Bot size={20} className="text-sky-400" />
-            <div className="docs-flow-node-title">AI Coding Agent</div>
-            <div className="docs-flow-node-sub">Claude / Cursor</div>
-          </div>
-          <div className="docs-flow-arrow">
-            <span>JSON-RPC</span>
-            <div className="docs-flow-arrow-line" />
-            <span>(tool call)</span>
-          </div>
-          <div className="docs-flow-node">
-            <Terminal size={20} className="text-emerald-400" />
-            <div className="docs-flow-node-title">vaultkey mcp</div>
-            <div className="docs-flow-node-sub">Local Process Subshell</div>
-          </div>
-          <div className="docs-flow-arrow">
-            <span>In-memory inject</span>
-            <div className="docs-flow-arrow-line" />
-            <span>(no disk write)</span>
-          </div>
-          <div className="docs-flow-node">
-            <Laptop size={20} className="text-indigo-400" />
-            <div className="docs-flow-node-title">Target Command</div>
-            <div className="docs-flow-node-sub">npm / python / docker</div>
-          </div>
-        </div>
-
-        <DocsCallout type="security" title="Tamper-evident audit trail">
-          Every agent action—whether listing names or invoking <code className="docs-inline-code">run_with_secrets</code>—is
-          cryptographically recorded in the team's HMAC audit chain. If an unauthorized tool call occurs, it is
-          immediately flaggable in the VaultKey Audit view.
-        </DocsCallout>
+      {/* 7. Next */}
+      <div className="docs-next-box mt-12">
+        <div className="docs-next-label">Next guide</div>
+        <button
+          type="button"
+          className="docs-next-link"
+          onClick={onNavigateNext}
+        >
+          <span>REST API</span>
+          <ArrowRight size={14} />
+        </button>
       </div>
     </div>
   );

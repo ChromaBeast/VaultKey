@@ -7,88 +7,82 @@ import { DocsRightToc, type TocHeading } from '../components/docs/DocsRightToc';
 import { DocsSearchModal } from '../components/docs/DocsSearchModal';
 import { DocsAskAiModal } from '../components/docs/DocsAskAiModal';
 import { DocsCopyPageButton } from '../components/docs/DocsCopyPageButton';
-import { OverviewDocSection } from '../components/docs/OverviewDocSection';
-import { McpDocSection } from '../components/docs/McpDocSection';
 import { CliDocSection } from '../components/docs/CliDocSection';
 import { SdkDocSection } from '../components/docs/SdkDocSection';
+import { McpDocSection } from '../components/docs/McpDocSection';
 import { ApiDocSection } from '../components/docs/ApiDocSection';
 import { SecurityDocSection } from '../components/docs/SecurityDocSection';
 import { copyText } from '../hooks/useClipboard';
 
 const TOC_MAP: Record<string, TocHeading[]> = {
-  overview: [
-    { id: 'overview-intro', title: 'Usage', level: 2 },
-    { id: 'overview-quickstart', title: 'Quickstart (30 seconds)', level: 2 },
-    { id: 'overview-arch', title: 'Zero-knowledge architecture', level: 2 },
-    { id: 'overview-compare', title: 'Comparison with Vault & Infisical', level: 2 },
-  ],
-  mcp: [
-    { id: 'mcp-intro', title: 'Usage', level: 2 },
-    { id: 'mcp-usage', title: 'Agent setup flow', level: 2 },
-    { id: 'mcp-tools', title: 'Available MCP tools', level: 2 },
-    { id: 'mcp-safe-exec', title: 'Zero-leak security proof', level: 2 },
-  ],
   cli: [
-    { id: 'cli-intro', title: 'Overview', level: 2 },
-    { id: 'cli-usage', title: 'CLI workflow', level: 2 },
+    { id: 'cli-overview', title: 'Summary', level: 2 },
+    { id: 'cli-when', title: 'When to use this', level: 2 },
+    { id: 'cli-auth', title: 'Authentication', level: 2 },
+    { id: 'cli-steps', title: 'Steps & workflow', level: 2 },
+    { id: 'cli-verify', title: 'Verify', level: 2 },
+    { id: 'cli-ref', title: 'Command reference', level: 2 },
   ],
   sdk: [
-    { id: 'sdk-intro', title: 'Client libraries', level: 2 },
-    { id: 'sdk-examples', title: 'Language examples', level: 2 },
+    { id: 'sdk-overview', title: 'Summary', level: 2 },
+    { id: 'sdk-when', title: 'When to use this', level: 2 },
+    { id: 'sdk-prereq', title: 'Prerequisites', level: 2 },
+    { id: 'sdk-node', title: 'Node.js / TypeScript', level: 2 },
+    { id: 'sdk-python', title: 'Python', level: 2 },
+    { id: 'sdk-verify', title: 'Verify', level: 2 },
+    { id: 'sdk-ref', title: 'SDK reference', level: 2 },
+  ],
+  mcp: [
+    { id: 'mcp-overview', title: 'Summary', level: 2 },
+    { id: 'mcp-when', title: 'When to use this', level: 2 },
+    { id: 'mcp-why', title: 'Why run_with_secrets', level: 2 },
+    { id: 'mcp-steps', title: 'Configuration steps', level: 2 },
+    { id: 'mcp-verify', title: 'Verify', level: 2 },
+    { id: 'mcp-tools', title: 'Reference: Available tools', level: 2 },
   ],
   api: [
-    { id: 'api-intro', title: 'API overview', level: 2 },
-    { id: 'api-endpoints-table', title: 'Core endpoints', level: 2 },
-    { id: 'api-curl', title: 'Example cURL request', level: 2 },
+    { id: 'api-overview', title: 'Summary', level: 2 },
+    { id: 'api-when', title: 'When to use this', level: 2 },
+    { id: 'api-auth', title: 'Authentication', level: 2 },
+    { id: 'api-endpoints', title: 'Reference: REST endpoints', level: 2 },
+    { id: 'api-verify', title: 'Verify with cURL', level: 2 },
   ],
   security: [
-    { id: 'sec-intro', title: 'Security model', level: 2 },
-    { id: 'sec-kdf', title: '1. Argon2id Key Derivation', level: 2 },
-    { id: 'sec-gcm', title: '2. AES-256-GCM Encryption', level: 2 },
-    { id: 'sec-zero', title: '3. In-Memory Key Zeroing', level: 2 },
-    { id: 'sec-audit', title: '4. HMAC Tamper-Proof Ledger', level: 2 },
-  ],
-  architecture: [
-    { id: 'overview-arch', title: 'Architecture components', level: 2 },
-    { id: 'overview-compare', title: 'Comparison matrix', level: 2 },
+    { id: 'security-overview', title: 'Summary', level: 2 },
+    { id: 'security-when', title: 'When to use this', level: 2 },
+    { id: 'sec-kdf', title: '1. Key derivation (Argon2id)', level: 2 },
+    { id: 'sec-ram', title: '2. Master key in memory zeroing', level: 2 },
+    { id: 'sec-gcm', title: '3. AES-256-GCM encryption', level: 2 },
+    { id: 'sec-audit', title: '4. HMAC-SHA256 audit ledger', level: 2 },
+    { id: 'sec-rbac', title: '5. Role-based access control', level: 2 },
   ],
 };
 
 const TAB_METADATA: Record<string, { eyebrow: string; title: string; desc: string }> = {
-  overview: {
-    eyebrow: 'Get Started',
-    title: 'Overview & Quickstart',
-    desc: 'Introduction to VaultKey zero-knowledge secrets management and developer workflows.',
-  },
-  mcp: {
-    eyebrow: 'Context management',
-    title: 'Skills & Model Context Protocol (MCP)',
-    desc: 'Connect AI coding agents (Claude Code, Cursor, Antigravity) to secrets with zero LLM context leakage.',
-  },
   cli: {
-    eyebrow: 'Command Line',
-    title: 'CLI Tooling',
-    desc: 'Authenticate, pull, push, and inject variables into processes without writing to disk.',
+    eyebrow: 'Guide 1',
+    title: 'CLI tooling',
+    desc: 'Authenticate, sync local variables, and inject secrets into a child process.',
   },
   sdk: {
-    eyebrow: 'Integration',
-    title: 'SDKs & Client Libraries',
-    desc: 'Read secrets from TypeScript / Node.js, Python, and Go microservices in memory.',
+    eyebrow: 'Guide 2',
+    title: 'SDKs',
+    desc: 'Read secrets from Node.js and Python services at runtime.',
+  },
+  mcp: {
+    eyebrow: 'Guide 3',
+    title: 'MCP / AI agents',
+    desc: 'Give AI coding agents (Claude Code, Cursor, Antigravity) structured access to your secrets—without leaking values into the LLM context window.',
   },
   api: {
-    eyebrow: 'Reference',
+    eyebrow: 'Guide 4',
     title: 'REST API',
-    desc: 'Core endpoints for organizations, encrypted variables, ephemeral shares, and audit records.',
+    desc: 'Core endpoints for authentication, encrypted values, and one-time sharing.',
   },
   security: {
-    eyebrow: 'Cryptography',
-    title: 'Security Architecture',
-    desc: 'How VaultKey derives keys, encrypts values, zeros RAM memory, and validates hash chains.',
-  },
-  architecture: {
-    eyebrow: 'System Design',
-    title: 'System Architecture',
-    desc: 'Single-binary Go and SQLite engine with client-side cryptography.',
+    eyebrow: 'Guide 5',
+    title: 'Security model',
+    desc: 'How VaultKey derives keys, encrypts values in memory, and verifies the tamper-evident audit chain.',
   },
 };
 
@@ -98,11 +92,11 @@ export const DocsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>(() => {
     const hash = window.location.hash.slice(1);
     if (hash && (TOC_MAP[hash] || hash in TAB_METADATA)) return hash;
-    return 'mcp'; // Default to the stellar MCP / Agent view matching user request!
+    return 'cli'; // Order: 1. CLI tooling, 2. SDKs, 3. MCP, 4. REST API, 5. Security model
   });
 
-  const [activeNavId, setActiveNavId] = useState<string>('mcp-intro');
-  const [activeTocId, setActiveTocId] = useState<string>('mcp-intro');
+  const [activeNavId, setActiveNavId] = useState<string>('cli-overview');
+  const [activeTocId, setActiveTocId] = useState<string>('cli-overview');
   const [selectedLanguage, setSelectedLanguage] = useState<string>('python');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAskAiOpen, setIsAskAiOpen] = useState(false);
@@ -110,7 +104,7 @@ export const DocsPage: React.FC = () => {
   const copyTimer = useRef<number | undefined>(undefined);
 
   useEffect(() => {
-    document.title = `${TAB_METADATA[activeTab]?.title || 'Documentation'} | VaultKey`;
+    document.title = `${TAB_METADATA[activeTab]?.title || 'Developer Docs'} | VaultKey`;
   }, [activeTab]);
 
   // Handle URL hash changes
@@ -119,11 +113,9 @@ export const DocsPage: React.FC = () => {
       const hash = window.location.hash.slice(1);
       if (!hash) return;
 
-      // Check if hash matches a tab
       if (DOC_TABS.some((t) => t.id === hash)) {
         setActiveTab(hash);
       } else {
-        // Check if hash matches an element id on the page
         const el = document.getElementById(hash);
         if (el) {
           el.scrollIntoView({ behavior: 'smooth' });
@@ -216,7 +208,7 @@ export const DocsPage: React.FC = () => {
     }, 100);
   };
 
-  const meta = TAB_METADATA[activeTab] || TAB_METADATA.mcp;
+  const meta = TAB_METADATA[activeTab] || TAB_METADATA.cli;
   const headings = TOC_MAP[activeTab] || [];
 
   return (
@@ -258,26 +250,40 @@ export const DocsPage: React.FC = () => {
 
             {/* Content Section by Tab */}
             <div className="docs-article-content">
-              {activeTab === 'overview' && (
-                <OverviewDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />
-              )}
-              {activeTab === 'mcp' && (
-                <McpDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />
-              )}
               {activeTab === 'cli' && (
-                <CliDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />
+                <CliDocSection
+                  onCopy={handleCopy}
+                  copiedSnippet={copiedSnippet}
+                  onNavigateNext={() => handleTabChange('sdk')}
+                />
               )}
               {activeTab === 'sdk' && (
-                <SdkDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />
+                <SdkDocSection
+                  onCopy={handleCopy}
+                  copiedSnippet={copiedSnippet}
+                  onNavigateNext={() => handleTabChange('mcp')}
+                />
+              )}
+              {activeTab === 'mcp' && (
+                <McpDocSection
+                  onCopy={handleCopy}
+                  copiedSnippet={copiedSnippet}
+                  onNavigateNext={() => handleTabChange('api')}
+                />
               )}
               {activeTab === 'api' && (
-                <ApiDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />
+                <ApiDocSection
+                  onCopy={handleCopy}
+                  copiedSnippet={copiedSnippet}
+                  onNavigateNext={() => handleTabChange('security')}
+                />
               )}
               {activeTab === 'security' && (
-                <SecurityDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />
-              )}
-              {activeTab === 'architecture' && (
-                <OverviewDocSection onCopy={handleCopy} copiedSnippet={copiedSnippet} />
+                <SecurityDocSection
+                  onCopy={handleCopy}
+                  copiedSnippet={copiedSnippet}
+                  onNavigateNext={() => handleTabChange('cli')}
+                />
               )}
             </div>
           </main>
