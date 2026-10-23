@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Check, Copy } from 'lucide-react';
+import { copyText } from '../../../hooks/useClipboard';
 
 const COMMAND = 'vaultkey run --project=backend -- npm start';
 
@@ -11,7 +13,7 @@ export const RunCommand: React.FC = () => {
   const copyCommand = async () => {
     setCopyError(false);
     try {
-      await navigator.clipboard.writeText(COMMAND);
+      if (!await copyText(COMMAND)) throw new Error("Copy failed");
       setCopied(true);
       if (timer.current) clearTimeout(timer.current);
       timer.current = setTimeout(() => setCopied(false), 1800);
@@ -24,9 +26,15 @@ export const RunCommand: React.FC = () => {
   return (
     <div className="rounded-xl border border-border bg-card p-5 sm:p-6">
       <div className="flex min-w-0 items-center justify-between gap-4">
-        <code className="min-w-0 whitespace-pre-wrap break-words font-mono text-xs text-foreground sm:text-sm"><span className="text-primary">$</span> {COMMAND}</code>
-        <button type="button" onClick={() => void copyCommand()} className="shrink-0 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-secondary" aria-label="Copy VaultKey command">
-          {copied ? 'Copied' : 'Copy'}
+        <code className="min-w-0 whitespace-pre-wrap break-words font-mono text-xs text-foreground sm:text-sm"><span className="text-primary font-bold">$</span> {COMMAND}</code>
+        <button
+          type="button"
+          onClick={() => void copyCommand()}
+          className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border bg-secondary/80 hover:bg-secondary px-3 py-1.5 text-xs font-medium text-foreground transition-colors duration-150 active:scale-[0.98]"
+          aria-label="Copy VaultKey command"
+        >
+          {copied ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} className="text-muted-foreground" />}
+          <span>{copied ? 'Copied' : 'Copy'}</span>
         </button>
       </div>
       <span role="status" className="sr-only">{copied ? 'Command copied' : ''}</span>

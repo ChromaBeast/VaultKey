@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dices, Check, Copy } from 'lucide-react';
+import { RefreshCw, Check, Copy, X } from 'lucide-react';
 import { Modal } from './ui/Modal';
 import { useClipboard } from '../hooks/useClipboard';
 
@@ -40,77 +40,61 @@ export const SecretGeneratorModal: React.FC<GeneratorProps> = ({ isOpen, onClose
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} width={460}>
-      <div style={{ padding: '24px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+    <Modal label="Secret generator" isOpen={isOpen} onClose={onClose} width={460}>
+      <div className="p-6">
+        <div className="flex justify-between items-center mb-4">
           <div>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--vk-text)' }}>High-Entropy Generator</h3>
-            <p style={{ fontSize: '0.75rem', color: 'var(--vk-text-muted)' }}>Cryptographically random client-side generation</p>
+            <h3 className="text-lg font-bold text-foreground">Secret generator</h3>
+            <p className="text-xs text-muted-foreground">Cryptographically random client-side generation</p>
           </div>
-          <button onClick={onClose} aria-label="Close generator" style={{ background: 'none', border: 'none', color: 'var(--vk-text-muted)', cursor: 'pointer' }}>
-            ✕
+          <button onClick={onClose} aria-label="Close generator" className="text-muted-foreground hover:text-foreground cursor-pointer">
+            <X size={18} />
           </button>
         </div>
 
-        <div
-          className="code-font"
-          style={{
-            background: 'var(--vk-bg)',
-            padding: '14px',
-            borderRadius: 'var(--radius-sm)',
-            border: '1px solid var(--vk-border)',
-            wordBreak: 'break-all',
-            minHeight: '60px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'var(--vk-success)',
-            fontSize: '0.9rem',
-            marginBottom: '18px',
-            boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.5)',
-          }}
-        >
+        <div className="font-mono bg-background p-3.5 rounded-lg border border-border break-all min-h-[60px] flex items-center justify-center text-emerald-400 text-sm mb-4 select-all">
           {secret}
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '20px' }}>
+        <div className="flex flex-col gap-3.5 mb-5">
           <div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--vk-text-secondary)', display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+            <div className="text-xs text-muted-foreground flex justify-between mb-1.5 font-medium">
               <span>Length</span>
-              <strong style={{ color: 'var(--vk-accent)', fontFamily: 'monospace' }}>{length} characters</strong>
+              <strong className="text-primary font-mono">{length} characters</strong>
             </div>
             <input
+              aria-label="Secret length"
               type="range"
               min="12"
               max="64"
               value={length}
               onChange={(e) => setLength(Number(e.target.value))}
-              style={{ width: '100%', accentColor: 'var(--vk-accent)' }}
+              className="w-full accent-primary cursor-pointer"
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '0.8rem', color: 'var(--vk-text-secondary)' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
-              <input type="checkbox" checked={useUpper} onChange={(e) => setUseUpper(e.target.checked)} style={{ accentColor: 'var(--vk-accent)' }} /> A–Z (Upper)
+          <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" checked={useUpper} onChange={(e) => setUseUpper(e.target.checked)} className="accent-primary" /> A-Z (Upper)
             </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
-              <input type="checkbox" checked={useLower} onChange={(e) => setUseLower(e.target.checked)} style={{ accentColor: 'var(--vk-accent)' }} /> a–z (Lower)
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" checked={useLower} onChange={(e) => setUseLower(e.target.checked)} className="accent-primary" /> a-z (Lower)
             </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
-              <input type="checkbox" checked={useNumbers} onChange={(e) => setUseNumbers(e.target.checked)} style={{ accentColor: 'var(--vk-accent)' }} /> 0–9 (Numbers)
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" checked={useNumbers} onChange={(e) => setUseNumbers(e.target.checked)} className="accent-primary" /> 0-9 (Numbers)
             </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
-              <input type="checkbox" checked={useSymbols} onChange={(e) => setUseSymbols(e.target.checked)} style={{ accentColor: 'var(--vk-accent)' }} /> Symbols (!@#$)
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" checked={useSymbols} onChange={(e) => setUseSymbols(e.target.checked)} className="accent-primary" /> Symbols (!@#$)
             </label>
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button onClick={generate} className="btn btn-secondary" style={{ flex: 1, justifyContent: 'center' }}>
-            <Dices size={14} /> Regenerate
+        <div className="flex flex-wrap gap-2">
+          <button onClick={generate} className="btn btn-secondary flex-1 justify-center">
+            <RefreshCw size={13} /> Regenerate
           </button>
-          <button onClick={() => copy(secret)} className="btn btn-secondary">
-            {copied ? <Check size={14} color="var(--vk-success)" /> : <Copy size={14} />}
+          <button onClick={() => void copy(secret)} className="btn btn-secondary">
+            {copied ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
             {copied ? 'Copied' : 'Copy'}
           </button>
           <button

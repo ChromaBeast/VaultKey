@@ -1,4 +1,4 @@
-# VaultKey Design System — Ink & Signal Specification
+# VaultKey Design System - Ink & Signal Specification
 
 The VaultKey Design System uses a dark-first, high-density, terminal-adjacent aesthetic inspired by developer infrastructure tools (Linear, Tailscale, Fly.io). The dashboard also supports a saved light appearance.
 

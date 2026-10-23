@@ -82,6 +82,13 @@ func (s *Server) AuthMiddleware() fiber.Handler {
 	}
 }
 
+func adminOnly(c *fiber.Ctx) error {
+	if c.Locals("permissions") != "admin" {
+		return c.Status(403).JSON(fiber.Map{"error": "admin access required"})
+	}
+	return c.Next()
+}
+
 func (s *Server) SecurityHeadersMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		c.Set("X-Frame-Options", "DENY")

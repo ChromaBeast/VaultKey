@@ -65,16 +65,18 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
           type="button"
           onClick={() => setShow(!show)}
           aria-label={show ? 'Hide password' : 'Show password'}
+          aria-pressed={show}
+          disabled={disabled}
           style={{
             position: 'absolute',
-            right: '10px',
+            right: '2px',
             top: '50%',
             transform: 'translateY(-50%)',
             background: 'none',
             border: 'none',
             color: 'var(--vk-text-muted)',
             cursor: 'pointer',
-            padding: '4px',
+            padding: '10px',
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',

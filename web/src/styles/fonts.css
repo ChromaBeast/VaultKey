@@ -1,6 +1,6 @@
 /* Self-hosted web fonts for VaultKey */
 
-/* Cabinet Grotesk — Display / Headings */
+/* Cabinet Grotesk - Display / Headings */
 @font-face {
   font-family: 'Cabinet Grotesk';
   font-style: normal;
@@ -17,7 +17,7 @@
   src: url('/fonts/CabinetGrotesk-800.woff2') format('woff2');
 }
 
-/* General Sans — UI / Body / Labels */
+/* General Sans - UI / Body / Labels */
 @font-face {
   font-family: 'General Sans';
   font-style: normal;
@@ -50,7 +50,7 @@
   src: url('/fonts/GeneralSans-700.woff2') format('woff2');
 }
 
-/* JetBrains Mono — Code / CLI / Hashes */
+/* JetBrains Mono - Code / CLI / Hashes */
 @font-face {
   font-family: 'JetBrains Mono';
   font-style: normal;

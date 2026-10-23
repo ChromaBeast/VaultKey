@@ -2,15 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { CheckCircle2, AlertTriangle } from 'lucide-react';
 import type { AuditItem } from '../lib/api';
 import { apiFetch, buildQuery, errorMessage } from '../lib/api';
+import { isAdminRole } from '../lib/permissions';
+import { useAuth } from '../context/AuthContext';
 import { pushToast } from '../lib/toast';
 import { AuditTable } from '../components/AuditTable';
 import { AuditPaginationBar } from '../components/AuditPaginationBar';
 import { PageHeader } from '../components/ui/PageHeader';
 import { buildAuditCsv, downloadCsv } from '../lib/auditCsv';
 
-type ChainState = 'checking' | 'valid' | 'tampered';
+type ChainState = 'checking' | 'valid' | 'tampered' | 'error';
 
 export const AuditPage: React.FC = () => {
+  const { user } = useAuth();
+  const isAdmin = isAdminRole(user?.role);
   const [logs, setLogs] = useState<AuditItem[]>([]);
   const [chain, setChain] = useState<ChainState>('checking');
   const [verifyError, setVerifyError] = useState<string | null>(null);
@@ -23,6 +27,7 @@ export const AuditPage: React.FC = () => {
   const [offset, setOffset] = useState(0);
 
   useEffect(() => {
+    if (!isAdmin) return;
     let cancelled = false;
     const load = async () => {
       setLoading(true);
@@ -40,9 +45,10 @@ export const AuditPage: React.FC = () => {
     };
     void load();
     return () => { cancelled = true; };
-  }, [actionFilter, projectFilter, limit, offset]);
+  }, [actionFilter, projectFilter, limit, offset, isAdmin]);
 
   useEffect(() => {
+    if (!isAdmin) return;
     let active = true;
     apiFetch<{ verified: boolean }>('/v1/audit/verify')
       .then((res) => {
@@ -50,10 +56,11 @@ export const AuditPage: React.FC = () => {
       })
       .catch((err) => {
         if (!active) return;
+        setChain("error");
         setVerifyError(errorMessage(err, 'Chain verification request failed'));
       });
     return () => { active = false; };
-  }, []);
+  }, [isAdmin]);
 
   const retryVerify = async () => {
     setChain('checking');
@@ -62,6 +69,7 @@ export const AuditPage: React.FC = () => {
       const res = await apiFetch<{ verified: boolean }>('/v1/audit/verify');
       setChain(res.verified ? 'valid' : 'tampered');
     } catch (err) {
+      setChain("error");
       setVerifyError(errorMessage(err, 'Chain verification request failed'));
     }
   };
@@ -77,24 +85,26 @@ export const AuditPage: React.FC = () => {
     );
   };
 
+  if (!isAdmin) return <div><PageHeader title="Audit Ledger" description="An administrator can review and export workspace activity." /></div>;
+
   return (
     <div className="animate-fade">
       <PageHeader
         title="Audit Ledger"
         actions={
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <div className="flex items-center gap-1.5">
             {chain === 'valid' && (
-              <span className="badge badge-write" style={{ padding: '6px 12px', fontSize: '0.75rem' }}>
+              <span className="badge badge-write text-xs px-3 py-1.5">
                 <CheckCircle2 size={13} /> Ledger Integrity Verified
               </span>
             )}
             {chain === 'tampered' && (
-              <span className="badge badge-danger" style={{ padding: '6px 12px', fontSize: '0.75rem' }}>
+              <span className="badge badge-danger text-xs px-3 py-1.5">
                 <AlertTriangle size={13} /> Tamper Detected
               </span>
             )}
             {chain === 'checking' && (
-              <span className="badge badge-neutral" style={{ padding: '6px 12px', fontSize: '0.75rem' }}>
+              <span className="badge badge-neutral text-xs px-3 py-1.5">
                 Verifying Chain...
               </span>
             )}
@@ -103,15 +113,16 @@ export const AuditPage: React.FC = () => {
       />
 
       {verifyError && (
-        <div style={{ background: 'var(--vk-danger-dim)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: 'var(--radius-sm)', padding: '12px 16px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px' }}>
-          <span style={{ color: 'var(--vk-danger)', fontSize: '0.85rem' }}>Verification request failed: {verifyError}</span>
-          <button onClick={() => void retryVerify()} className="btn btn-danger" style={{ padding: '4px 10px', fontSize: '0.75rem' }}>
+        <div role="alert" className="bg-destructive/10 border border-destructive/30 rounded-lg p-3.5 mb-5 flex justify-between items-center gap-2.5">
+          <span className="text-destructive text-xs font-medium">Verification request failed: {verifyError}</span>
+          <button onClick={() => void retryVerify()} className="btn btn-danger text-xs px-2.5 py-1">
             Retry
           </button>
         </div>
       )}
 
       <AuditPaginationBar
+        busy={loading || Boolean(loadError)}
         actionFilter={actionFilter}
         onActionChange={(v) => { setOffset(0); setActionFilter(v); }}
         projectInput={projectInput}
@@ -126,7 +137,7 @@ export const AuditPage: React.FC = () => {
       />
 
       {loadError && (
-        <div style={{ background: 'var(--vk-danger-dim)', border: '1px solid rgba(239, 68, 68, 0.3)', color: 'var(--vk-danger)', borderRadius: 'var(--radius-sm)', padding: '10px 14px', marginBottom: '16px', fontSize: '0.85rem' }}>
+        <div className="bg-destructive/10 border border-destructive/30 text-destructive rounded-lg p-3 mb-4 text-xs font-medium">
           {loadError}
         </div>
       )}

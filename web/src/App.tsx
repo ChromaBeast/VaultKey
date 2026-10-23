@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -6,30 +6,31 @@ import { AppLayout } from './components/AppLayout';
 import { PublicShell } from './components/PublicShell';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ToastHost } from './components/Toast';
-import { LandingPage } from './pages/LandingPage';
+const LandingPage = lazy(() => import('./pages/LandingPage').then((module) => ({ default: module.LandingPage })));
 import { MarketingLayout } from './components/landing/MarketingLayout';
-import { HowItWorksPage } from './pages/HowItWorksPage';
-import { SecurityPage } from './pages/SecurityPage';
-import { PricingPage } from './pages/PricingPage';
-import { Login } from './pages/Login';
-import { Signup } from './pages/Signup';
-import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
-import { SecretsPage } from './pages/SecretsPage';
-import { ApiKeysPage } from './pages/ApiKeysPage';
-import { AuditPage } from './pages/AuditPage';
-import { BillingPage } from './pages/BillingPage';
-import { SettingsPage } from './pages/SettingsPage';
-import { SharePage } from './pages/SharePage';
-import { AcceptInvitePage } from './pages/AcceptInvitePage';
-import { DocsPage } from './pages/DocsPage';
-import { PrivacyPolicy } from './pages/PrivacyPolicy';
-import { NotFoundPage } from './pages/NotFoundPage';
+const HowItWorksPage = lazy(() => import('./pages/HowItWorksPage').then((module) => ({ default: module.HowItWorksPage })));
+const SecurityPage = lazy(() => import('./pages/SecurityPage').then((module) => ({ default: module.SecurityPage })));
+const PricingPage = lazy(() => import('./pages/PricingPage').then((module) => ({ default: module.PricingPage })));
+const Login = lazy(() => import('./pages/Login').then((module) => ({ default: module.Login })));
+const Signup = lazy(() => import('./pages/Signup').then((module) => ({ default: module.Signup })));
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage').then((module) => ({ default: module.ForgotPasswordPage })));
+const SecretsPage = lazy(() => import('./pages/SecretsPage').then((module) => ({ default: module.SecretsPage })));
+const ApiKeysPage = lazy(() => import('./pages/ApiKeysPage').then((module) => ({ default: module.ApiKeysPage })));
+const AuditPage = lazy(() => import('./pages/AuditPage').then((module) => ({ default: module.AuditPage })));
+const BillingPage = lazy(() => import('./pages/BillingPage').then((module) => ({ default: module.BillingPage })));
+const SettingsPage = lazy(() => import('./pages/SettingsPage').then((module) => ({ default: module.SettingsPage })));
+const SharePage = lazy(() => import('./pages/SharePage').then((module) => ({ default: module.SharePage })));
+const AcceptInvitePage = lazy(() => import('./pages/AcceptInvitePage').then((module) => ({ default: module.AcceptInvitePage })));
+const DocsPage = lazy(() => import('./pages/DocsPage').then((module) => ({ default: module.DocsPage })));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy').then((module) => ({ default: module.PrivacyPolicy })));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })));
 
 export const App: React.FC = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
         <ErrorBoundary>
+          <Suspense fallback={<div role="status" className="p-8 text-muted-foreground">Loading page…</div>}>
           <Routes>
             {/* Public Landing & Auth Routes */}
             <Route element={<MarketingLayout />}>
@@ -65,6 +66,7 @@ export const App: React.FC = () => {
             {/* Not Found */}
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
+          </Suspense>
           <ToastHost />
         </ErrorBoundary>
       </BrowserRouter>
@@ -74,11 +76,7 @@ export const App: React.FC = () => {
 
 const SharePageWrapper: React.FC = () => {
   const { shareId = '' } = useParams<{ shareId: string }>();
-  return (
-    <div style={{ minHeight: '100vh', padding: '20px' }}>
-      <SharePage shareId={shareId} />
-    </div>
-  );
+  return <SharePage key={shareId} shareId={shareId} />;
 };
 
 export default App;

@@ -34,7 +34,7 @@ type LoginRequest struct {
 
 func (s *Server) handleAuthConfig(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
-		"turnstile_required": s.Config.TurnstileSecretKey != "" && s.Config.TurnstileSecretKey != testTurnstile,
+		"turnstile_required": !s.Config.IsDev() || (s.Config.TurnstileSecretKey != "" && s.Config.TurnstileSecretKey != turnstileTestSecret),
 		"turnstile_site_key": s.Config.TurnstileSiteKey,
 	})
 }

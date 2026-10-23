@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { History, RotateCcw } from 'lucide-react';
 import type { SecretVersionItem } from '../lib/api';
 import { fetchSecretVersions, rollbackSecretVersion, errorMessage } from '../lib/api';
@@ -7,6 +7,7 @@ import { Modal } from './ui/Modal';
 import { ConfirmDialog } from './ConfirmDialog';
 
 interface SecretVersionHistoryModalProps {
+  canWrite: boolean;
   secretKey: string;
   project: string;
   currentVersion: number;
@@ -15,6 +16,7 @@ interface SecretVersionHistoryModalProps {
 }
 
 export const SecretVersionHistoryModal: React.FC<SecretVersionHistoryModalProps> = ({
+  canWrite,
   secretKey,
   project,
   currentVersion,
@@ -22,6 +24,7 @@ export const SecretVersionHistoryModal: React.FC<SecretVersionHistoryModalProps>
   onRollbackSuccess,
 }) => {
   const [versions, setVersions] = useState<SecretVersionItem[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [rollbackTarget, setRollbackTarget] = useState<number | null>(null);
   const [rollbackLoading, setRollbackLoading] = useState(false);
@@ -32,8 +35,8 @@ export const SecretVersionHistoryModal: React.FC<SecretVersionHistoryModalProps>
       .then((data) => {
         if (!cancelled) setVersions(data || []);
       })
-      .catch(() => {
-        if (!cancelled) setVersions([]);
+      .catch((error) => {
+        if (!cancelled) setLoadError(errorMessage(error, "Could not load version history. Close and reopen to retry."));
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -60,7 +63,7 @@ export const SecretVersionHistoryModal: React.FC<SecretVersionHistoryModalProps>
   };
 
   return (
-    <Modal isOpen onClose={onClose} width={520}>
+    <Modal label="Version history" isOpen onClose={onClose} width={520}>
       <div style={{ padding: '24px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
           <div>
@@ -76,7 +79,7 @@ export const SecretVersionHistoryModal: React.FC<SecretVersionHistoryModalProps>
           </button>
         </div>
 
-        {loading ? (
+        {loadError ? <p role="alert" className="text-sm text-destructive">{loadError}</p> : loading ? (
           <div style={{ textAlign: 'center', padding: '28px', color: 'var(--vk-text-muted)', fontSize: '0.85rem' }}>Loading versions...</div>
         ) : versions.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '28px', color: 'var(--vk-text-muted)', fontSize: '0.85rem' }}>
@@ -97,6 +100,8 @@ export const SecretVersionHistoryModal: React.FC<SecretVersionHistoryModalProps>
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '10px',
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -108,7 +113,7 @@ export const SecretVersionHistoryModal: React.FC<SecretVersionHistoryModalProps>
                       {new Date(item.created_at).toLocaleString()}
                     </span>
                   </div>
-                  {!isCurrent && (
+                  {!isCurrent && canWrite && (
                     <button
                       className="btn btn-secondary"
                       style={{ fontSize: '0.725rem', padding: '4px 8px' }}

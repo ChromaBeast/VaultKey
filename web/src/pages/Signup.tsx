@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import type { Org, User } from '../lib/api';
 import { apiFetch } from '../lib/api';
 import { AuthSplitLayout } from '../components/auth/AuthSplitLayout';
-import { PasswordField, Input } from '../components/ui';
+import { PasswordField, Input, Button } from '../components/ui';
 import { TurnstileWidget, type TurnstileWidgetHandle } from '../components/auth/TurnstileWidget';
 import { useTurnstileConfig } from '../hooks/useTurnstileConfig';
 
@@ -70,25 +70,15 @@ export const Signup: React.FC = () => {
       footer={
         <>
           Already have an account?{' '}
-          <Link
-            to="/login"
-            style={{
-              color: 'var(--vk-accent)',
-              fontWeight: 600,
-              textDecoration: 'none',
-            }}
-          >
+          <Link to="/login" className="text-primary font-semibold hover:text-primary-hover">
             Log in
           </Link>
         </>
       }
     >
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
         <div>
-          <label
-            htmlFor="signup-email"
-            style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'var(--vk-text-secondary)', marginBottom: '5px' }}
-          >
+          <label htmlFor="signup-email" className="block text-xs font-semibold text-muted-foreground mb-1.5">
             Work Email
           </label>
           <Input
@@ -103,10 +93,7 @@ export const Signup: React.FC = () => {
         </div>
 
         <div>
-          <label
-            htmlFor="signup-org"
-            style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'var(--vk-text-secondary)', marginBottom: '5px' }}
-          >
+          <label htmlFor="signup-org" className="block text-xs font-semibold text-muted-foreground mb-1.5">
             Organization / Team Name
           </label>
           <Input
@@ -137,25 +124,20 @@ export const Signup: React.FC = () => {
           />
         )}
 
-        <button
+        <Button
           type="submit"
+          size="lg"
           disabled={loading || turnstile.loading || Boolean(turnstile.error) || (turnstile.required && !turnstileToken)}
-          className="btn btn-primary"
-          style={{
-            marginTop: '6px',
-            width: '100%',
-            justifyContent: 'center',
-            padding: '12px',
-            fontSize: '0.9rem',
-            fontWeight: 600,
-          }}
+          className="w-full mt-1.5 h-11 font-semibold"
         >
           {loading ? 'Signing up…' : 'Create your account'}
-        </button>
+        </Button>
 
-        <p style={{ fontSize: '0.75rem', color: 'var(--vk-text-secondary)', lineHeight: 1.5, margin: '6px 0 0', textAlign: 'center' }}>
+        <p className="text-xs text-muted-foreground text-center mt-2 leading-relaxed">
           By signing up, you acknowledge our{' '}
-          <Link to="/privacy" style={{ color: 'var(--vk-text-secondary)', textDecoration: 'none' }}>Privacy Policy</Link>.
+          <Link to="/privacy" className="text-muted-foreground hover:text-foreground underline-offset-4">
+            Privacy Policy
+          </Link>.
         </p>
       </form>
     </AuthSplitLayout>

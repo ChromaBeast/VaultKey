@@ -1,7 +1,9 @@
 const CSV_HEADERS = ['id', 'action', 'secret_key', 'project', 'actor', 'ip_address', 'created_at', 'hmac'];
 
-const escapeCell = (value: string): string =>
-  /[",\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
+const escapeCell = (value: string): string => {
+  const safe = /^[\s]*[=+@-]|^[\t\r\n]/.test(value) ? `'${value}` : value;
+  return /[",\r\n]/.test(safe) ? `"${safe.replace(/"/g, '""')}"` : safe;
+};
 
 export const buildAuditCsv = (rows: Record<string, unknown>[]): string => {
   const lines = [CSV_HEADERS.join(',')];

@@ -9,6 +9,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type = 'text', icon, error, mono = false, disabled, ...props }, ref) => {
+    const errorId = React.useId();
     return (
       <div className="w-full relative">
         {icon && (
@@ -20,8 +21,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           type={type}
           ref={ref}
           disabled={disabled}
+          aria-invalid={error ? true : props["aria-invalid"]}
+          aria-describedby={[props["aria-describedby"], error ? errorId : undefined].filter(Boolean).join(" ") || undefined}
           className={cn(
-            'w-full bg-[var(--vk-surface-1)] text-[var(--vk-text)] border border-[var(--vk-border)] rounded-[var(--radius-input)] text-sm transition-colors duration-150 ease-out outline-none placeholder:text-[var(--vk-text-muted)]',
+            'w-full bg-[var(--vk-surface-1)] text-[var(--vk-text)] border border-[var(--vk-border)] rounded-[var(--radius-input)] text-sm transition-colors duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--vk-accent)] placeholder:text-[var(--vk-text-muted)]',
             'px-3.5 py-2',
             icon && 'pl-9',
             mono && 'font-mono text-xs',
@@ -33,7 +36,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {error && (
-          <p className="mt-1.5 text-xs text-[var(--vk-danger)]">{error}</p>
+          <p id={errorId} role="alert" className="mt-1.5 text-xs text-[var(--vk-danger)]">{error}</p>
         )}
       </div>
     );

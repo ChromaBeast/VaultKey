@@ -12,29 +12,29 @@ const VARIANT_MAP: Record<StatusVariant, { bg: string; color: string; border: st
   success: {
     bg: 'var(--vk-success-dim)',
     color: 'var(--vk-success)',
-    border: 'rgba(52, 211, 153, 0.25)',
+    border: 'rgba(74, 222, 128, 0.25)',
     dot: 'var(--vk-success)',
   },
   warning: {
     bg: 'var(--vk-warning-dim)',
     color: 'var(--vk-warning)',
-    border: 'rgba(245, 166, 35, 0.25)',
+    border: 'rgba(245, 158, 11, 0.25)',
     dot: 'var(--vk-warning)',
   },
   danger: {
     bg: 'var(--vk-danger-dim)',
     color: 'var(--vk-danger)',
-    border: 'rgba(239, 68, 68, 0.25)',
+    border: 'rgba(248, 113, 113, 0.25)',
     dot: 'var(--vk-danger)',
   },
   accent: {
     bg: 'var(--vk-accent-dim)',
     color: 'var(--vk-accent)',
-    border: 'rgba(91, 141, 239, 0.25)',
+    border: 'var(--vk-border-focus)',
     dot: 'var(--vk-accent)',
   },
   neutral: {
-    bg: 'rgba(255, 255, 255, 0.05)',
+    bg: 'var(--vk-neutral-dim)',
     color: 'var(--vk-text-secondary)',
     border: 'var(--vk-border)',
     dot: 'var(--vk-text-muted)',
@@ -44,7 +44,7 @@ const VARIANT_MAP: Record<StatusVariant, { bg: string; color: string; border: st
 export const StatusBadge: React.FC<StatusBadgeProps> = ({
   label,
   variant = 'neutral',
-  showDot = true,
+  showDot = false,
 }) => {
   const styles = VARIANT_MAP[variant];
 

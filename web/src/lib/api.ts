@@ -100,11 +100,9 @@ export const AUTH_UNAUTHORIZED_EVENT = 'vk_auth_unauthorized';
 
 export const apiFetch = async <T>(path: string, options: RequestInit = {}): Promise<T> => {
   const token = getSessionToken();
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    ...(options.headers as Record<string, string>),
-  };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const headers = new Headers(options.headers);
+  if (!headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
+  if (token) headers.set('Authorization', `Bearer ${token}`);
 
   let res: Response;
   try {
@@ -114,7 +112,7 @@ export const apiFetch = async <T>(path: string, options: RequestInit = {}): Prom
     throw new ApiError('Network request failed. Check your connection and try again.', 0);
   }
 
-  if (res.status === 401) {
+  if (res.status === 401 && token && token === getSessionToken()) {
     clearSessionToken();
     localStorage.removeItem('vk_user');
     localStorage.removeItem('vk_org');

@@ -15,58 +15,41 @@ interface AuthContextType {
   lockVault: () => Promise<void>;
 }
 
-const hasStoredToken = (): boolean => Boolean(getSessionToken());
-
-const readStoredUser = (): User | null => {
-  const saved = safeJsonParse<User>(localStorage.getItem('vk_user'));
-  return hasStoredToken() && saved?.id && saved.email ? saved : null;
-};
-
-const readStoredOrg = (): Org | null => {
-  const saved = safeJsonParse<Org>(localStorage.getItem('vk_org'));
-  return hasStoredToken() && saved?.name ? saved : null;
-};
-
 const clearStoredSession = () => {
   clearSessionToken();
   localStorage.removeItem('vk_user');
   localStorage.removeItem('vk_org');
 };
+interface Session { user: User | null; org: Org | null; token: string | null; }
+const readSession = (): Session => {
+  const token = getSessionToken();
+  const user = safeJsonParse<User>(localStorage.getItem('vk_user'));
+  const org = safeJsonParse<Org>(localStorage.getItem('vk_org'));
+  if (token && user?.id && user.email && org?.id && org.name) return { user, org, token };
+  clearStoredSession();
+  return { user: null, org: null, token: null };
+};
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(readStoredUser);
-  const [org, setOrg] = useState<Org | null>(readStoredOrg);
-  const [token, setToken] = useState<string | null>(getSessionToken);
-
+  const [{ user, org, token }, setSession] = useState<Session>(readSession);
   useEffect(() => {
-    const handleUnauthorized = () => {
-      setUser(null);
-      setOrg(null);
-      setToken(null);
-    };
+    const handleUnauthorized = () => setSession({ user: null, org: null, token: null });
     window.addEventListener(AUTH_UNAUTHORIZED_EVENT, handleUnauthorized);
     return () => window.removeEventListener(AUTH_UNAUTHORIZED_EVENT, handleUnauthorized);
   }, []);
-
-  // Corrupt or partial persisted sessions hydrate as logged-out; drop the stale keys.
-  if (!(user && org && token)) {
-    clearStoredSession();
-  }
 
   const login = (newToken: string, newUser: User, newOrg: Org) => {
     setSessionToken(newToken);
     localStorage.setItem('vk_user', JSON.stringify(newUser));
     localStorage.setItem('vk_org', JSON.stringify(newOrg));
-    setToken(newToken);
-    setUser(newUser);
-    setOrg(newOrg);
+    setSession({ token: newToken, user: newUser, org: newOrg });
   };
 
   const updateOrg = (newOrg: Org) => {
     localStorage.setItem('vk_org', JSON.stringify(newOrg));
-    setOrg(newOrg);
+    setSession((session) => ({ ...session, org: newOrg }));
   };
 
   const logout = async () => {
@@ -76,9 +59,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Locking the vault server-side is best-effort during logout.
     }
     clearStoredSession();
-    setToken(null);
-    setUser(null);
-    setOrg(null);
+    setSession({ token: null, user: null, org: null });
   };
 
   const lockVault = async () => {

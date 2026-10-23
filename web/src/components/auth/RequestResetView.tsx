@@ -1,5 +1,6 @@
 import React from 'react';
 import { AuthCardLayout } from './AuthCardLayout';
+import { Input, Button } from '../ui';
 
 interface RequestResetViewProps {
   email: string;
@@ -21,30 +22,20 @@ export const RequestResetView: React.FC<RequestResetViewProps> = ({
   return (
     <AuthCardLayout
       title="Forgot your password?"
-      subtitle="Enter the email address associated with your vault and we'll send you a 6-digit code to reset your password."
+      subtitle="Enter the email address associated with your vault and we will send you a 6-digit code to reset your password."
       error={error}
       onBack={onBack}
     >
-      <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+      <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <div>
-          <label
-            htmlFor="reset-email"
-            style={{
-              display: 'block',
-              fontSize: '0.78rem',
-              fontWeight: 600,
-              color: 'var(--vk-text-secondary)',
-              marginBottom: '6px',
-            }}
-          >
+          <label htmlFor="reset-email" className="block text-xs font-semibold text-muted-foreground mb-1.5">
             Work Email
           </label>
-          <input
+          <Input
             id="reset-email"
             type="email"
             required
             autoFocus
-            className="input"
             placeholder="name@company.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -52,20 +43,14 @@ export const RequestResetView: React.FC<RequestResetViewProps> = ({
           />
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginTop: '6px' }}>
-          <button
+        <div className="flex items-center gap-3 mt-1.5">
+          <Button
             type="submit"
             disabled={loading || !email}
-            className="btn btn-primary"
-            style={{
-              minWidth: '130px',
-              justifyContent: 'center',
-              padding: '10px 18px',
-              fontSize: '0.875rem',
-            }}
+            className="w-full h-11 font-semibold"
           >
-            {loading ? 'Sending...' : 'Send code'}
-          </button>
+            {loading ? 'Sending...' : 'Send reset code'}
+          </Button>
         </div>
       </form>
     </AuthCardLayout>

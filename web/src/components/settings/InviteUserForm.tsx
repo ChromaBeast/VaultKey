@@ -47,10 +47,10 @@ export const InviteUserForm: React.FC<InviteUserFormProps> = ({ onUserInvited })
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '20px' }}>
-      <form onSubmit={(e) => void handleInvite(e)} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
-        <div style={{ flex: '1 1 240px' }}>
-          <label htmlFor="invite-email" style={labelStyle}>Email Address</label>
+    <div className="flex flex-col gap-4 mb-5">
+      <form onSubmit={(e) => void handleInvite(e)} className="flex gap-2.5 flex-wrap items-end">
+        <div className="flex-1 min-w-[240px]">
+          <label htmlFor="invite-email" className="block text-xs font-semibold text-muted-foreground mb-1.5">Email Address</label>
           <Input
             id="invite-email"
             type="email"
@@ -60,8 +60,8 @@ export const InviteUserForm: React.FC<InviteUserFormProps> = ({ onUserInvited })
             placeholder="teammate@company.com"
           />
         </div>
-        <div style={{ width: '130px' }}>
-          <label htmlFor="invite-role" style={labelStyle}>Role</label>
+        <div className="w-32">
+          <label htmlFor="invite-role" className="block text-xs font-semibold text-muted-foreground mb-1.5">Role</label>
           <Select id="invite-role" value={role} onChange={(e) => setRole(e.target.value)}>
             <option value="read">Read Only</option>
             <option value="write">Read & Write</option>
@@ -74,29 +74,19 @@ export const InviteUserForm: React.FC<InviteUserFormProps> = ({ onUserInvited })
       </form>
 
       {inviteUrl && (
-        <div
-          style={{
-            padding: '12px 16px',
-            background: 'var(--vk-accent-dim)',
-            border: '1px solid rgba(91, 141, 239, 0.3)',
-            borderRadius: 'var(--radius-sm)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '8px',
-          }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--vk-accent)' }}>
+        <div className="p-3.5 bg-primary/10 border border-primary/25 rounded-lg flex flex-col gap-2">
+          <div className="flex justify-between items-center">
+            <span className="text-xs font-semibold text-primary">
               One-Time Invite Link (Valid for 7 Days)
             </span>
             <button
               onClick={() => setInviteUrl(null)}
-              style={{ background: 'none', border: 'none', color: 'var(--vk-text-muted)', cursor: 'pointer', fontSize: '0.75rem' }}
+              className="text-xs text-muted-foreground hover:text-foreground cursor-pointer"
             >
               Dismiss
             </button>
           </div>
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <div className="flex gap-2 items-center">
             <Input
               type="text"
               readOnly
@@ -107,8 +97,7 @@ export const InviteUserForm: React.FC<InviteUserFormProps> = ({ onUserInvited })
             <button
               type="button"
               onClick={() => void handleCopy()}
-              className="btn btn-primary"
-              style={{ padding: '8px 14px', fontSize: '0.78rem', whiteSpace: 'nowrap' }}
+              className="btn btn-primary text-xs px-3.5 py-2 whitespace-nowrap"
             >
               {copied ? <Check size={13} /> : <Copy size={13} />}
               {copied ? 'Copied' : 'Copy'}
@@ -118,12 +107,4 @@ export const InviteUserForm: React.FC<InviteUserFormProps> = ({ onUserInvited })
       )}
     </div>
   );
-};
-
-const labelStyle: React.CSSProperties = {
-  display: 'block',
-  fontSize: '0.75rem',
-  fontWeight: 600,
-  color: 'var(--vk-text-secondary)',
-  marginBottom: '5px',
 };

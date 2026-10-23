@@ -14,10 +14,10 @@ export const HeroSection: React.FC = () => (
           Store API keys and passwords in an encrypted vault. Load them into your app at runtime.
         </p>
         <div className="flex flex-wrap items-center gap-3">
-          <Button asChild size="lg" className="h-12 px-6 rounded-lg font-semibold">
-            <Link to="/signup">Get started free</Link>
+          <Button asChild size="lg" className="h-11 px-6 rounded-lg font-semibold">
+            <Link to="/signup">Start free</Link>
           </Button>
-          <Button asChild variant="secondary" size="lg" className="h-12 px-6 rounded-lg border border-border font-semibold">
+          <Button asChild variant="secondary" size="lg" className="h-11 px-6 rounded-lg border border-border font-semibold">
             <Link to="/how-it-works">How it works</Link>
           </Button>
         </div>

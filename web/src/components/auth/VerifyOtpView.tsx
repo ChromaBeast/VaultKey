@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AuthCardLayout } from './AuthCardLayout';
 import { OtpSegmentedInput } from './OtpSegmentedInput';
+import { Button } from '../ui';
 
 interface VerifyOtpViewProps {
   email: string;
@@ -39,7 +40,7 @@ export const VerifyOtpView: React.FC<VerifyOtpViewProps> = ({
 
   return (
     <AuthCardLayout
-      title="Password reset"
+      title="Verify code"
       subtitle={`We sent a 6-digit verification code to ${email}`}
       error={error}
       onBack={onBack}
@@ -49,7 +50,7 @@ export const VerifyOtpView: React.FC<VerifyOtpViewProps> = ({
           e.preventDefault();
           onSubmit(e);
         }}
-        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}
+        className="flex flex-col items-center w-full"
       >
         <OtpSegmentedInput
           value={otp}
@@ -58,43 +59,28 @@ export const VerifyOtpView: React.FC<VerifyOtpViewProps> = ({
           disabled={loading}
         />
 
-        <div style={{ margin: '8px 0 24px', textAlign: 'center' }}>
-          <span style={{ fontSize: '0.8rem', color: 'var(--vk-text-muted)' }}>
-            Didn&apos;t receive the email?{' '}
-          </span>
+        <div className="my-3 text-center text-xs text-muted-foreground">
+          <span>Didn&apos;t receive the code? </span>
           <button
             type="button"
             onClick={handleResend}
             disabled={cooldown > 0}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: cooldown > 0 ? 'var(--vk-text-muted)' : 'var(--vk-accent)',
-              fontSize: '0.8rem',
-              fontWeight: 600,
-              cursor: cooldown > 0 ? 'default' : 'pointer',
-              padding: 0,
-              textDecoration: 'none',
-            }}
+            className={`font-semibold cursor-pointer ${
+              cooldown > 0 ? 'text-muted-foreground cursor-default' : 'text-primary hover:text-primary-hover'
+            }`}
           >
             {cooldown > 0 ? `Resend in ${cooldown}s` : 'Click to resend'}
           </button>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-          <button
+        <div className="w-full mt-2">
+          <Button
             type="submit"
             disabled={loading || otp.length < 6}
-            className="btn btn-primary"
-            style={{
-              minWidth: '130px',
-              justifyContent: 'center',
-              padding: '10px 18px',
-              fontSize: '0.875rem',
-            }}
+            className="w-full h-11 font-semibold"
           >
-            {loading ? 'Verifying...' : 'Submit'}
-          </button>
+            {loading ? 'Verifying...' : 'Verify & Continue'}
+          </Button>
         </div>
       </form>
     </AuthCardLayout>

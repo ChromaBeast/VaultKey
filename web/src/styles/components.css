@@ -9,14 +9,12 @@
   transition: border-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
 }
 .glass:hover { border-color: var(--vk-border-strong); }
-
 .glass-glow {
   background: var(--vk-surface-1);
   border: 1px solid rgba(0, 143, 245, 0.35);
   border-radius: var(--radius-card);
   box-shadow: var(--vk-shadow-sm);
 }
-
 /* Buttons */
 .btn {
   font-family: inherit;
@@ -33,11 +31,9 @@
   background: transparent;
   color: var(--vk-text);
 }
-
 .btn:active {
   transform: scale(0.98);
 }
-
 .btn-primary {
   background: var(--primary-button);
   color: #ffffff;
@@ -48,7 +44,6 @@
   background: var(--primary-button-hover);
   border-color: rgba(0, 143, 245, 0.8);
 }
-
 .btn-secondary {
   background: var(--vk-surface-2);
   border: 1px solid var(--vk-border);
@@ -58,7 +53,6 @@
   background: var(--vk-surface-3);
   border-color: var(--vk-border-strong);
 }
-
 .btn-danger {
   background: var(--vk-danger-dim);
   border: 1px solid rgba(239, 68, 68, 0.25);
@@ -68,7 +62,6 @@
   background: rgba(239, 68, 68, 0.2);
   border-color: rgba(239, 68, 68, 0.45);
 }
-
 /* Inputs */
 .input {
   width: 100%;
@@ -88,7 +81,6 @@
 .input::placeholder {
   color: var(--vk-text-muted);
 }
-
 /* Badges */
 .badge {
   padding: 3px 8px;
@@ -107,7 +99,6 @@
 .badge-read  { background: var(--vk-accent-dim); color: var(--vk-accent); border: 1px solid rgba(0, 143, 245, 0.25); }
 .badge-neutral { background: var(--vk-neutral-dim); color: var(--vk-text-secondary); border: 1px solid var(--vk-border); }
 .badge-danger { background: var(--vk-danger-dim); color: var(--vk-danger); border: 1px solid rgba(239, 68, 68, 0.25); }
-
 .version-chip {
   padding: 2px 7px;
   border-radius: var(--radius-badge);
@@ -117,7 +108,6 @@
   background: var(--vk-accent-dim);
   border: 1px solid rgba(0, 143, 245, 0.22);
 }
-
 /* Tables */
 table { width: 100%; border-collapse: collapse; }
 tr { transition: background-color var(--duration-fast) ease; }
@@ -130,13 +120,11 @@ th {
   letter-spacing: 0.06em;
 }
 tr:hover td { background: var(--vk-row-hover); }
-
 .table-wrap {
   overflow-x: auto;
   border-radius: var(--radius-card);
   border: 1px solid var(--vk-border);
 }
-
 /* Skeletons */
 .skel-block {
   display: inline-block;
@@ -150,7 +138,6 @@ tr:hover td { background: var(--vk-row-hover); }
   0% { background-position: 100% 0; }
   100% { background-position: -100% 0; }
 }
-
 .auth-visual {
   position: relative; display: grid; place-items: center; width: 100%; min-height: 100%;
   padding: clamp(2rem, 5vw, 4.5rem); overflow: hidden; border-left: 1px solid var(--vk-border);
@@ -160,11 +147,6 @@ tr:hover td { background: var(--vk-row-hover); }
 .auth-form-pane { min-width: min(100%, 460px); }
 .auth-card-brand { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; color: var(--vk-text); font: 700 1rem var(--font-display); letter-spacing: -.03em; }
 .auth-card-brand img { width: 28px; height: 28px; object-fit: contain; }
-.auth-visual-grid {
-  position: absolute; inset: 0; pointer-events: none; opacity: .45;
-  background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-  background-size: 44px 44px; mask-image: radial-gradient(ellipse at center, #000 10%, transparent 72%);
-}
 .auth-visual-content { position: relative; width: min(100%, 440px); animation: auth-enter 650ms var(--ease-smooth) both; }
 .auth-visual-mark {
   width: 100px; height: 100px; display: grid; place-items: center; margin-bottom: 2.5rem;
@@ -172,7 +154,6 @@ tr:hover td { background: var(--vk-row-hover); }
   box-shadow: 0 20px 70px rgba(0,80,150,.18), inset 0 1px rgba(255,255,255,.08);
 }
 .auth-visual-mark img { width: 78px; height: 78px; object-fit: contain; }
-.auth-visual-kicker { margin: 0 0 .7rem; color: var(--vk-accent); font: 600 .75rem var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
 .auth-visual-content h2 { margin: 0; max-width: 12ch; font-size: clamp(2rem, 3.5vw, 3rem); line-height: 1.04; letter-spacing: -.04em; }
 .auth-visual-copy { max-width: 36ch; margin: 1rem 0 2rem; color: var(--vk-text-secondary); font-size: .95rem; line-height: 1.65; }
 .auth-flow { max-width: 390px; border-top: 1px solid var(--vk-border); border-bottom: 1px solid var(--vk-border); padding: .7rem 0; }
@@ -195,8 +176,6 @@ tr:hover td { background: var(--vk-row-hover); }
 .app-page-meta { color: var(--vk-text-muted); font: 500 .75rem var(--font-mono); letter-spacing: 0; }
 .app-page-description { margin: 9px 0 0; max-width: 620px; color: var(--vk-text-secondary); font-size: .9375rem; line-height: 1.55; }
 .app-page-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
-.app-frame { background-image: radial-gradient(ellipse at 88% 0%, rgba(0,143,245,.045), transparent 34%); }
-.app-frame[data-theme="light"] { background-image: none; }
 .app-toolbar { min-height: 36px; }
 .sidebar-account-controls { display: flex; flex-direction: column; gap: 2px; }
 .sidebar-footer-action { width: 100%; min-height: 36px; padding: 8px; display: flex; align-items: center; gap: 10px; border: 1px solid transparent; border-radius: var(--radius-sm); background: transparent; color: var(--vk-text-secondary); text-align: left; cursor: pointer; }

@@ -28,7 +28,7 @@ export const CreateApiKeyModal: React.FC<CreateApiKeyModalProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={submitting ? () => undefined : onClose} width={420}>
+    <Modal label="Create API key" isOpen={isOpen} onClose={submitting ? () => undefined : onClose} width={420}>
       <form
         onSubmit={(e) => {
           void handleSubmit(e);

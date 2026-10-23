@@ -3,6 +3,7 @@ import { Download } from 'lucide-react';
 import { Input, Select } from './ui';
 
 interface AuditFiltersBarProps {
+  busy: boolean;
   actionFilter: string;
   onActionChange: (value: string) => void;
   projectInput: string;
@@ -17,6 +18,7 @@ interface AuditFiltersBarProps {
 }
 
 export const AuditPaginationBar: React.FC<AuditFiltersBarProps> = ({
+  busy,
   actionFilter,
   onActionChange,
   projectInput,
@@ -29,18 +31,9 @@ export const AuditPaginationBar: React.FC<AuditFiltersBarProps> = ({
   rowCount,
   onExport,
 }) => (
-  <div style={{ marginBottom: '20px' }}>
-    <div
-      className="glass"
-      style={{
-        padding: '10px 14px',
-        display: 'flex',
-        gap: '10px',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-      }}
-    >
-      <div style={{ width: '130px' }}>
+  <div className="mb-5">
+    <div className="audit-filter-bar flex items-center gap-2.5 flex-wrap">
+      <div className="w-32">
         <Select
           id="audit-action-filter"
           value={actionFilter}
@@ -56,17 +49,18 @@ export const AuditPaginationBar: React.FC<AuditFiltersBarProps> = ({
         </Select>
       </div>
 
-      <form onSubmit={(e) => { e.preventDefault(); onProjectSubmit(); }} style={{ flex: '1 1 180px', maxWidth: '240px' }}>
+      <form onSubmit={(e) => { e.preventDefault(); onProjectSubmit(); }} className="flex items-center gap-2 flex-1 min-w-0 basis-56 max-w-sm">
         <Input
           id="audit-project-filter"
           placeholder="Filter by project..."
           value={projectInput}
           onChange={(e) => onProjectInputChange(e.target.value)}
-          aria-label="Filter by environment"
+          aria-label="Filter by project"
         />
+        <button type="submit" className="btn btn-secondary">Apply</button>
       </form>
 
-      <div style={{ width: '110px' }}>
+      <div className="w-28">
         <Select
           id="audit-limit-select"
           value={limit}
@@ -79,34 +73,32 @@ export const AuditPaginationBar: React.FC<AuditFiltersBarProps> = ({
         </Select>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: 'auto' }}>
+      <div className="flex items-center gap-2 ml-auto">
         <button
           onClick={onExport}
-          className="btn btn-secondary"
-          style={{ padding: '6px 12px', fontSize: '0.78rem' }}
-          title="Export CSV"
+          className="btn btn-secondary text-xs px-3 py-1.5"
+          title="Export the current page"
+          disabled={busy || rowCount === 0}
         >
           <Download size={13} /> Export CSV
         </button>
       </div>
     </div>
 
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px', fontSize: '0.78rem', color: 'var(--vk-text-muted)' }}>
-      <span>{rowCount === 0 ? '0 events' : `${offset + 1}–${offset + rowCount} events`}</span>
-      <div style={{ display: 'flex', gap: '6px' }}>
+    <div className="flex justify-between items-center mt-2.5 text-xs text-muted-foreground">
+      <span aria-live="polite">{busy ? "Loading events…" : rowCount === 0 ? '0 events' : `${offset + 1} to ${offset + rowCount} events`}</span>
+      <div className="flex gap-1.5">
         <button
-          className="btn btn-secondary"
-          disabled={offset === 0}
+          className="btn btn-secondary text-xs px-2.5 py-1"
+          disabled={busy || offset === 0}
           onClick={() => onOffsetChange(Math.max(0, offset - limit))}
-          style={{ padding: '4px 10px', fontSize: '0.75rem' }}
         >
           Previous
         </button>
         <button
-          className="btn btn-secondary"
-          disabled={rowCount < limit}
+          className="btn btn-secondary text-xs px-2.5 py-1"
+          disabled={busy || rowCount < limit}
           onClick={() => onOffsetChange(offset + limit)}
-          style={{ padding: '4px 10px', fontSize: '0.75rem' }}
         >
           Next
         </button>

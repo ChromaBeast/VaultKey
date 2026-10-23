@@ -8,13 +8,16 @@ export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElemen
 
 export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   ({ className, error, disabled, children, ...props }, ref) => {
+    const errorId = React.useId();
     return (
       <div className="w-full relative">
         <select
           ref={ref}
           disabled={disabled}
+          aria-invalid={error ? true : props["aria-invalid"]}
+          aria-describedby={[props["aria-describedby"], error ? errorId : undefined].filter(Boolean).join(" ") || undefined}
           className={cn(
-            'w-full bg-[var(--vk-surface-1)] text-[var(--vk-text)] border border-[var(--vk-border)] rounded-[var(--radius-input)] text-sm transition-colors duration-150 ease-out outline-none appearance-none cursor-pointer',
+            'w-full bg-[var(--vk-surface-1)] text-[var(--vk-text)] border border-[var(--vk-border)] rounded-[var(--radius-input)] text-sm transition-colors duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--vk-accent)] appearance-none cursor-pointer',
             'px-3.5 py-2 pr-9',
             'focus:border-[var(--vk-border-focus)] focus:ring-1 focus:ring-[var(--vk-border-focus)]',
             error && 'border-[var(--vk-danger)] focus:border-[var(--vk-danger)] focus:ring-[var(--vk-danger)]',
@@ -29,7 +32,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           <ChevronDown className="w-4 h-4" />
         </div>
         {error && (
-          <p className="mt-1.5 text-xs text-[var(--vk-danger)]">{error}</p>
+          <p id={errorId} role="alert" className="mt-1.5 text-xs text-[var(--vk-danger)]">{error}</p>
         )}
       </div>
     );

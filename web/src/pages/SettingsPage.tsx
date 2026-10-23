@@ -3,42 +3,43 @@ import { KeyRound, Users } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { PasswordChangeForm } from '../components/settings/PasswordChangeForm';
 import { TeamAdminSection } from '../components/settings/TeamAdminSection';
+import { isAdminRole } from '../lib/permissions';
 import { PageHeader } from '../components/ui/PageHeader';
 
 export const SettingsPage: React.FC = () => {
   const { user } = useAuth();
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = isAdminRole(user?.role);
 
   return (
-    <div className="animate-fade" style={{ maxWidth: '880px', margin: '0 auto' }}>
+    <div className="animate-fade max-w-4xl mx-auto">
       <PageHeader
-        title="Settings & Access"
+        title="Settings"
         description="Account security configuration and team access management."
       />
 
-      <div className="glass" style={{ padding: '24px', marginBottom: '20px' }}>
-        <h2 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--vk-text)', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <KeyRound size={16} color="var(--vk-accent)" /> Account Security & Password
+      <div className="glass p-6 mb-5 rounded-xl border border-border">
+        <h2 className="text-base font-bold text-foreground mb-1 flex items-center gap-2">
+          <KeyRound size={16} className="text-primary" /> Account security
         </h2>
-        <p style={{ color: 'var(--vk-text-muted)', fontSize: '0.825rem', marginBottom: '18px' }}>
+        <p className="text-xs text-muted-foreground mb-4">
           Other active sessions will be signed out.
         </p>
         <PasswordChangeForm />
       </div>
 
-      <div className="glass" style={{ padding: '24px' }}>
-        <h2 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--vk-text)', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Users size={16} color="var(--vk-accent)" /> Team Members & Roles
+      <div className="glass p-6 rounded-xl border border-border">
+        <h2 className="text-base font-bold text-foreground mb-1 flex items-center gap-2">
+          <Users size={16} className="text-primary" /> Team access
         </h2>
         {isAdmin ? (
           <>
-            <p style={{ color: 'var(--vk-text-muted)', fontSize: '0.825rem', marginBottom: '18px' }}>
+            <p className="text-xs text-muted-foreground mb-4">
               Invite teammates and assign roles.
             </p>
             <TeamAdminSection />
           </>
         ) : (
-          <p style={{ color: 'var(--vk-text-muted)', fontSize: '0.85rem' }}>
+          <p className="text-xs text-muted-foreground">
             Team management requires an administrator account. Contact an organization admin to make modifications.
           </p>
         )}

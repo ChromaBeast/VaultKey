@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Dices } from 'lucide-react';
+import { KeyRound } from 'lucide-react';
 import { Modal } from './ui/Modal';
+import { SecretGeneratorModal } from './SecretGeneratorModal';
 import { Input, Textarea } from './ui';
 
 interface CreateSecretModalProps {
@@ -11,7 +12,6 @@ interface CreateSecretModalProps {
   initialValue?: string;
   onClose: () => void;
   onSubmit: (key: string, value: string) => Promise<void>;
-  onOpenGenerator?: () => void;
 }
 
 export const CreateSecretModal: React.FC<CreateSecretModalProps> = ({
@@ -22,10 +22,10 @@ export const CreateSecretModal: React.FC<CreateSecretModalProps> = ({
   initialValue = '',
   onClose,
   onSubmit,
-  onOpenGenerator,
 }) => {
   const [key, setKey] = useState(initialKey);
   const [value, setValue] = useState(initialValue);
+  const [genOpen, setGenOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const isEdit = mode === 'edit';
@@ -43,51 +43,52 @@ export const CreateSecretModal: React.FC<CreateSecretModalProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={submitting ? () => undefined : onClose} width={460}>
-      <form onSubmit={handleSubmit} style={{ padding: '24px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+    <Modal label={isEdit ? "Edit secret" : "Create secret"} isOpen={isOpen} onClose={submitting ? () => undefined : onClose} width={460}>
+      <form onSubmit={handleSubmit} className="p-6">
+        <div className="flex justify-between items-center mb-4">
           <div>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--vk-text)' }}>
+            <h3 className="text-lg font-bold text-foreground">
               {isEdit ? 'Edit Secret Value' : 'Create Secret'}
             </h3>
-            <span style={{ fontSize: '0.75rem', color: 'var(--vk-text-muted)' }}>
-              Target Environment: <strong style={{ color: 'var(--vk-accent)' }}>{project}</strong>
+            <span className="text-xs text-muted-foreground">
+              Project: <strong className="text-primary">{project}</strong>
             </span>
           </div>
-          {!isEdit && onOpenGenerator && (
+          {!isEdit && (
             <button
               type="button"
-              onClick={onOpenGenerator}
-              className="btn btn-secondary"
-              style={{ padding: '5px 10px', fontSize: '0.75rem' }}
+              onClick={() => setGenOpen(true)}
+              className="btn btn-secondary text-xs px-2.5 py-1"
             >
-              <Dices size={13} /> Generator
+              <KeyRound size={13} /> Generator
             </button>
           )}
         </div>
 
-        <div style={{ marginBottom: '16px' }}>
-          <label htmlFor="secret-key-input" style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'var(--vk-text-secondary)', marginBottom: '5px' }}>
+        <div className="mb-4">
+          <label htmlFor="secret-key-input" className="block text-xs font-semibold text-muted-foreground mb-1.5">
             Secret Name
           </label>
           <Input
             id="secret-key-input"
             mono
-            placeholder="DATABASE_URL / STRIPE_SECRET_KEY"
+            placeholder="DATABASE_URL"
+            maxLength={256}
+            pattern="[A-Za-z0-9_.\-]+"
             value={key}
             onChange={(e) => setKey(e.target.value.toUpperCase().replace(/\s+/g, '_'))}
             readOnly={isEdit}
             required
           />
           {isEdit && (
-            <span style={{ fontSize: '0.7rem', color: 'var(--vk-text-muted)', marginTop: '4px', display: 'block' }}>
+            <span className="text-[11px] text-muted-foreground mt-1 block">
               Secret names are immutable; saving will create an append-only new version.
             </span>
           )}
         </div>
 
-        <div style={{ marginBottom: '22px' }}>
-          <label htmlFor="secret-value-input" style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'var(--vk-text-secondary)', marginBottom: '5px' }}>
+        <div className="mb-5">
+          <label htmlFor="secret-value-input" className="block text-xs font-semibold text-muted-foreground mb-1.5">
             Secret Value
           </label>
           <Textarea
@@ -101,7 +102,7 @@ export const CreateSecretModal: React.FC<CreateSecretModalProps> = ({
           />
         </div>
 
-        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+        <div className="flex gap-2 justify-end">
           <button type="button" onClick={onClose} className="btn btn-secondary" disabled={submitting}>
             Cancel
           </button>
@@ -110,6 +111,7 @@ export const CreateSecretModal: React.FC<CreateSecretModalProps> = ({
           </button>
         </div>
       </form>
+      {genOpen && <SecretGeneratorModal isOpen onClose={() => setGenOpen(false)} onUseSecret={setValue} />}
     </Modal>
   );
 };

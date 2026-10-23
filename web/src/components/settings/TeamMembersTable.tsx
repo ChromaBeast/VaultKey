@@ -1,5 +1,7 @@
-﻿import React from 'react';
+import React from 'react';
 import type { TeamUser } from '../../lib/api';
+import { isAdminRole } from '../../lib/permissions';
+import { useAuth } from '../../context/AuthContext';
 import { TableSkeleton } from '../Skeletons';
 
 interface TeamMembersTableProps {
@@ -13,15 +15,16 @@ export const TeamMembersTable: React.FC<TeamMembersTableProps> = ({
   loading,
   onRemove,
 }) => {
+  const { user } = useAuth();
   return (
-    <div className="table-wrap glass">
-      <table>
+    <div className="table-wrap team-members-table">
+      <table className="w-full">
         <thead>
           <tr>
             <th>EMAIL</th>
             <th>ROLE</th>
             <th>JOINED</th>
-            <th style={{ textAlign: 'right' }}>ACTION</th>
+            <th className="text-right">ACTION</th>
           </tr>
         </thead>
         <tbody>
@@ -29,22 +32,23 @@ export const TeamMembersTable: React.FC<TeamMembersTableProps> = ({
           {!loading &&
             users.map((u) => (
               <tr key={u.id}>
-                <td style={{ color: 'var(--vk-text)', fontSize: '0.875rem', fontWeight: 500 }}>
+                <td className="text-foreground text-sm font-medium">
                   {u.email}
                 </td>
                 <td>
-                  <span className={`badge badge-${u.role === 'write' ? 'write' : u.role === 'admin' ? 'admin' : 'read'}`}>
+                  <span className={`badge badge-${u.role === 'write' ? 'write' : isAdminRole(u.role) ? 'admin' : 'read'}`}>
                     {u.role}
                   </span>
                 </td>
-                <td style={{ color: 'var(--vk-text-secondary)', fontSize: '0.8rem' }}>
-                  {u.created_at ? new Date(u.created_at).toLocaleDateString() : '—'}
+                <td className="text-muted-foreground text-xs">
+                  {u.created_at ? new Date(u.created_at).toLocaleDateString() : '-'}
                 </td>
-                <td style={{ textAlign: 'right' }}>
+                <td className="text-right">
                   <button
+                    disabled={u.id === user?.id || u.role === "owner"}
+                    title={u.role === "owner" ? "The workspace owner cannot be removed" : u.id === user?.id ? "You cannot remove yourself" : undefined}
                     onClick={() => onRemove(u)}
-                    className="btn btn-danger"
-                    style={{ padding: '4px 10px', fontSize: '0.75rem' }}
+                    className="btn btn-danger text-xs px-2.5 py-1"
                   >
                     Remove
                   </button>
@@ -53,7 +57,7 @@ export const TeamMembersTable: React.FC<TeamMembersTableProps> = ({
             ))}
           {!loading && users.length === 0 && (
             <tr>
-              <td colSpan={4} style={{ textAlign: 'center', color: 'var(--vk-text-muted)', padding: '32px', fontSize: '0.85rem' }}>
+              <td colSpan={4} className="text-center text-muted-foreground py-8 text-xs">
                 No team members found.
               </td>
             </tr>

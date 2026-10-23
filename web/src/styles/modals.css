@@ -15,11 +15,18 @@
 }
 .modal-panel {
   padding: 0;
+  max-height: calc(100dvh - 32px);
+  overflow-wrap: anywhere;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   border-radius: var(--radius-xl);
   border: 1px solid var(--vk-border-strong);
   background: var(--vk-surface-1);
   box-shadow: var(--vk-shadow-pop);
 }
+
+.mobile-nav-overlay { justify-content: flex-start; align-items: stretch; padding: 0; }
+.mobile-nav-panel { display: flex; border-radius: 0; padding: 16px; max-height: 100dvh; height: 100dvh; }
 
 /* Toasts */
 .toast-stack {

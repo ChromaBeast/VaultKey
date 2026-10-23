@@ -3,12 +3,10 @@ import { ArrowDown, Check, LockKeyhole } from 'lucide-react';
 
 export const AuthHeroVisual: React.FC = () => (
   <div className="auth-visual">
-    <div className="auth-visual-grid" aria-hidden="true" />
     <div className="auth-visual-content">
       <div className="auth-visual-mark">
         <img src="/vaultkey-logo.png" alt="VaultKey" />
       </div>
-      <p className="auth-visual-kicker">Built for your workflow</p>
       <h2>Your secrets stay yours.</h2>
       <p className="auth-visual-copy">Encrypted at rest. Decrypted only when your app needs them.</p>
 

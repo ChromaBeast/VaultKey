@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   BookOpen,
   CreditCard,
@@ -9,6 +9,8 @@ import {
   ScrollText,
   ShieldAlert,
 } from 'lucide-react';
+import { CREATE_SECRET_EVENT } from '../lib/events';
+import { canWriteSecrets, isAdminRole } from '../lib/permissions';
 import { useAuth } from '../context/AuthContext';
 import { Modal } from './ui/Modal';
 import { Input, Kbd } from './ui';
@@ -36,20 +38,23 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
   const navigate = useNavigate();
-  const { lockVault } = useAuth();
+  const location = useLocation();
+  const { lockVault, user } = useAuth();
 
   const actions: PaletteAction[] = [
-    { id: 'create-secret', icon: Plus, label: 'Create New Secret', category: 'ACTIONS', run: () => { onClose(); onOpenCreateSecret?.(); } },
+    { id: 'create-secret', icon: Plus, label: 'Create New Secret', category: 'ACTIONS', run: () => { onClose(); if (onOpenCreateSecret) onOpenCreateSecret(); else if (location.pathname === '/secrets') window.dispatchEvent(new CustomEvent(CREATE_SECRET_EVENT)); else navigate('/secrets', { state: { createSecret: true } }); } },
     { id: 'nav-secrets', icon: Lock, label: 'Secrets Vault', category: 'NAVIGATION', run: () => { navigate('/secrets'); onClose(); } },
     { id: 'nav-keys', icon: KeyRound, label: 'API Access Keys', category: 'NAVIGATION', run: () => { navigate('/keys'); onClose(); } },
     { id: 'nav-audit', icon: ScrollText, label: 'Audit Ledger', category: 'NAVIGATION', run: () => { navigate('/audit'); onClose(); } },
     { id: 'nav-billing', icon: CreditCard, label: 'Billing & Subscriptions', category: 'NAVIGATION', run: () => { navigate('/billing'); onClose(); } },
     { id: 'nav-settings', icon: Lock, label: 'Settings & Team Access', category: 'NAVIGATION', run: () => { navigate('/settings'); onClose(); } },
     { id: 'nav-docs', icon: BookOpen, label: 'Documentation & API Reference', category: 'NAVIGATION', run: () => { navigate('/docs'); onClose(); } },
-    { id: 'lock-vault', icon: ShieldAlert, label: 'Zero Memory & Lock Vault Immediately', category: 'SECURITY', run: async () => { onClose(); await lockVault(); navigate('/login'); } },
+    { id: 'lock-vault', icon: ShieldAlert, label: 'Log out', category: 'SECURITY', run: async () => { onClose(); await lockVault(); navigate('/login'); } },
   ];
 
-  const filtered = actions.filter(
+  const available = actions.filter((action) => action.id !== "create-secret" || canWriteSecrets(user?.role))
+    .filter((action) => !["nav-keys", "nav-audit"].includes(action.id) || isAdminRole(user?.role));
+  const filtered = available.filter(
     (a) =>
       a.label.toLowerCase().includes(query.toLowerCase()) ||
       a.category.toLowerCase().includes(query.toLowerCase())
@@ -61,7 +66,7 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setActiveIndex(Math.min(clamped + 1, filtered.length - 1));
+        setActiveIndex(Math.max(0, Math.min(clamped + 1, filtered.length - 1)));
         break;
       case 'ArrowUp':
         e.preventDefault();
@@ -79,7 +84,7 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} width={560} align="top">
+    <Modal label="Commands" isOpen={isOpen} onClose={onClose} width={560} align="top">
       <div style={{ padding: '14px' }}>
         <div style={{ marginBottom: '10px' }}>
           <Input

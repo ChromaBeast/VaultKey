@@ -46,7 +46,7 @@ const Switch = ({
             className={cn(
               "peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors",
               /* Focus Visible */
-              "group-data-[focus-visible]:outline-none group-data-[focus-visible]:ring-2 group-data-[focus-visible]:ring-ring group-data-[focus-visible]:ring-offset-2 group-data-[focus-visible]:ring-offset-background",
+              "group-data-[focus-visible]:outline-2 group-data-[focus-visible]:outline-offset-2 group-data-[focus-visible]:outline-ring group-data-[focus-visible]:ring-2 group-data-[focus-visible]:ring-ring group-data-[focus-visible]:ring-offset-2 group-data-[focus-visible]:ring-offset-background",
               /* Disabled */
               "group-data-[disabled]:cursor-not-allowed group-data-[disabled]:opacity-50",
               /* Selected */
@@ -54,7 +54,7 @@ const Switch = ({
               /* Readonly */
               "group-data-[readonly]:cursor-default",
               /* Resets */
-              "focus-visible:outline-none"
+              "focus-visible:outline-2 focus-visible:outline-ring"
             )}
           >
             <div

@@ -49,47 +49,50 @@ export const SharePage: React.FC<{ shareId: string }> = ({ shareId }) => {
   };
 
   return (
-    <div className="animate-fade" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px 16px', background: 'var(--vk-bg)' }}>
-      <div className="glass" style={{ width: '100%', maxWidth: '440px', padding: '36px 28px', textAlign: 'center' }}>
-        <div
-          style={{
-            width: '44px',
-            height: '44px',
-            margin: '0 auto 16px',
-            borderRadius: 'var(--radius-sm)',
-            background: 'var(--vk-accent-dim)',
-            border: '1px solid rgba(91, 141, 239, 0.3)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Lock size={20} color="var(--vk-accent)" />
+    <div className="animate-fade min-h-screen flex items-center justify-center p-4 sm:p-6 bg-background text-foreground">
+      <div className="glass w-full max-w-md p-8 sm:p-9 text-center rounded-xl border border-border">
+        <div className="flex items-center justify-center gap-2 mb-6">
+          <img src="/vaultkey-logo.png" alt="" className="h-6 w-6 object-contain" />
+          <span className="font-extrabold text-foreground text-sm tracking-tight">VaultKey</span>
+        </div>
+
+        <div className="w-11 h-11 mx-auto mb-4 rounded-lg bg-primary/10 border border-primary/25 flex items-center justify-center text-primary">
+          <Lock size={18} />
         </div>
 
         {phase === 'gate' && (
           <div>
-            <h1 style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--vk-text)', marginBottom: '12px' }}>
+            <h1 className="text-xl font-bold text-foreground mb-2">
               One-Time Secret
             </h1>
-            <p style={{ color: 'var(--vk-text-secondary)', fontSize: '0.9rem', marginBottom: '24px' }}>
-              This link can only be viewed once.
+            <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+              This encrypted secret link can only be viewed once. Once revealed, the record is permanently consumed.
             </p>
-            <button onClick={() => void reveal()} className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '11px', fontSize: '0.9rem' }}>
+            <button
+              onClick={() => void reveal()}
+              className="btn btn-primary w-full justify-center h-11 font-semibold"
+            >
               Reveal Secret
             </button>
           </div>
         )}
 
-        {phase === 'loading' && <div style={{ color: 'var(--vk-accent)', fontSize: '0.875rem', padding: '20px 0' }}>Decrypting secret…</div>}
+        {phase === 'loading' && (
+          <div className="text-primary text-sm py-6 font-medium animate-pulse">
+            Decrypting secret from server memory…
+          </div>
+        )}
 
         {phase === 'locked' && (
           <div>
-            <div style={{ background: 'var(--vk-warning-dim)', border: '1px solid rgba(245, 166, 35, 0.3)', color: 'var(--vk-warning)', padding: '12px 14px', borderRadius: 'var(--radius-sm)', fontSize: '0.825rem', marginBottom: '16px', display: 'flex', gap: '8px', textAlign: 'left' }}>
-              <Lock size={15} style={{ flexShrink: 0, marginTop: '2px' }} />
-              <span>The vault is locked. Ask the owner to unlock it.</span>
+            <div className="bg-amber-500/10 border border-amber-500/25 text-amber-400 p-3.5 rounded-lg text-xs mb-4 flex gap-2.5 text-left">
+              <Lock size={15} className="shrink-0 mt-0.5" />
+              <span>The vault is locked. Contact the organization administrator to unlock it.</span>
             </div>
-            <button onClick={() => { startedRef.current = false; void reveal(); }} className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
+            <button
+              onClick={() => { startedRef.current = false; void reveal(); }}
+              className="btn btn-secondary w-full justify-center h-10"
+            >
               Retry
             </button>
           </div>
@@ -97,11 +100,14 @@ export const SharePage: React.FC<{ shareId: string }> = ({ shareId }) => {
 
         {phase === 'error' && (
           <div>
-            <div style={{ background: 'var(--vk-danger-dim)', border: '1px solid rgba(239, 68, 68, 0.3)', color: 'var(--vk-danger)', padding: '12px 14px', borderRadius: 'var(--radius-sm)', fontSize: '0.825rem', marginBottom: '16px', display: 'flex', gap: '8px', textAlign: 'left' }}>
-              <AlertTriangle size={15} style={{ flexShrink: 0, marginTop: '2px' }} />
+            <div className="bg-destructive/10 border border-destructive/25 text-destructive p-3.5 rounded-lg text-xs mb-4 flex gap-2.5 text-left">
+              <AlertTriangle size={15} className="shrink-0 mt-0.5" />
               <span>{errorMsg || EXPIRED_COPY}</span>
             </div>
-            <button onClick={() => { startedRef.current = false; void reveal(); }} className="btn btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
+            <button
+              onClick={() => { startedRef.current = false; void reveal(); }}
+              className="btn btn-secondary w-full justify-center h-10"
+            >
               Try Again
             </button>
           </div>
@@ -109,28 +115,15 @@ export const SharePage: React.FC<{ shareId: string }> = ({ shareId }) => {
 
         {phase === 'ready' && (
           <div>
-            <div
-              className="code-font"
-              style={{
-                background: 'var(--vk-bg)',
-                padding: '14px',
-                borderRadius: 'var(--radius-sm)',
-                border: '1px solid rgba(52, 211, 153, 0.3)',
-                wordBreak: 'break-all',
-                color: 'var(--vk-success)',
-                fontSize: '0.9rem',
-                marginBottom: '18px',
-                textAlign: 'left',
-              }}
-            >
+            <p className="text-xs text-muted-foreground mb-2 text-left font-medium">Decrypted payload:</p>
+            <div className="font-mono bg-background p-3.5 rounded-lg border border-emerald-500/30 break-all text-emerald-400 text-sm mb-4 text-left select-all">
               {secret}
             </div>
             <button
               onClick={() => void copy(secret)}
-              className="btn btn-primary"
-              style={{ width: '100%', justifyContent: 'center', padding: '11px', fontSize: '0.875rem' }}
+              className="btn btn-primary w-full justify-center h-11 gap-2 font-semibold"
             >
-              {copied ? <Check size={14} /> : <Copy size={14} />}
+              {copied ? <Check size={15} /> : <Copy size={15} />}
               {copied ? 'Copied to Clipboard' : 'Copy Secret'}
             </button>
           </div>

@@ -74,7 +74,7 @@ export const OtpSegmentedInput: React.FC<OtpSegmentedInputProps> = ({
                 margin: '0 4px',
               }}
             >
-              —
+              -
             </span>
           )}
           <input

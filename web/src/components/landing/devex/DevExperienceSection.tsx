@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import { RunCommand } from './RunCommand';
 
 export const DevExperienceSection: React.FC = () => {
@@ -16,7 +17,12 @@ export const DevExperienceSection: React.FC = () => {
           <li><h3>Connect the CLI</h3><p>Install the CLI and configure your server URL and a scoped API token.</p></li>
           <li><h3>Run your app</h3><p>Inject your project's secrets into the process without writing a local file.</p></li>
         </ol>
-        <div><RunCommand /><Link to="/docs#cli" className="mt-5 inline-flex text-sm text-primary hover:underline">Read the CLI setup guide →</Link></div>
+        <div>
+          <RunCommand />
+          <Link to="/docs#cli" className="mt-5 inline-flex items-center gap-2 text-sm text-primary hover:text-primary-hover font-medium">
+            Read the CLI setup guide <ArrowRight size={14} aria-hidden="true" />
+          </Link>
+        </div>
       </div>
     </section>
   );

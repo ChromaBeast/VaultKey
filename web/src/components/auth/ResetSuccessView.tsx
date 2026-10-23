@@ -2,6 +2,7 @@ import React from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { AuthCardLayout } from './AuthCardLayout';
+import { Button } from '../ui';
 
 export const ResetSuccessView: React.FC = () => {
   const navigate = useNavigate();
@@ -9,39 +10,21 @@ export const ResetSuccessView: React.FC = () => {
   return (
     <AuthCardLayout
       title="All done"
-      subtitle="Your password has been reset so now you can log in to your account."
+      subtitle="Your password has been reset. You can now sign in to your vault."
       icon={
-        <div
-          style={{
-            width: '56px',
-            height: '56px',
-            borderRadius: 'var(--radius-sm)',
-            background: 'var(--vk-success-dim)',
-            border: '1px solid rgba(67, 211, 158, 0.4)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 0 24px rgba(67, 211, 158, 0.2)',
-          }}
-        >
-          <CheckCircle2 size={28} color="var(--vk-success)" />
+        <div className="w-12 h-12 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+          <CheckCircle2 size={24} />
         </div>
       }
     >
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
-        <button
+      <div className="mt-4">
+        <Button
           type="button"
           onClick={() => navigate('/login')}
-          className="btn btn-primary"
-          style={{
-            width: '100%',
-            justifyContent: 'center',
-            padding: '11px 24px',
-            fontSize: '0.875rem',
-          }}
+          className="w-full h-11 font-semibold"
         >
-          Log in
-        </button>
+          Proceed to Sign In
+        </Button>
       </div>
     </AuthCardLayout>
   );

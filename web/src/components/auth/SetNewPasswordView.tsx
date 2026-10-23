@@ -1,6 +1,7 @@
 import React from 'react';
 import { AuthCardLayout } from './AuthCardLayout';
 import { PasswordField } from '../ui/PasswordField';
+import { Button } from '../ui';
 
 interface SetNewPasswordViewProps {
   password: string;
@@ -26,7 +27,7 @@ export const SetNewPasswordView: React.FC<SetNewPasswordViewProps> = ({
       error={error}
       onBack={onBack}
     >
-      <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <PasswordField
           id="new-password"
           label="New Master Password"
@@ -37,20 +38,14 @@ export const SetNewPasswordView: React.FC<SetNewPasswordViewProps> = ({
           autoComplete="new-password"
         />
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginTop: '6px' }}>
-          <button
+        <div className="mt-1.5">
+          <Button
             type="submit"
             disabled={loading || password.length < 8}
-            className="btn btn-primary"
-            style={{
-              minWidth: '150px',
-              justifyContent: 'center',
-              padding: '10px 18px',
-              fontSize: '0.875rem',
-            }}
+            className="w-full h-11 font-semibold"
           >
             {loading ? 'Updating...' : 'Reset password'}
-          </button>
+          </Button>
         </div>
       </form>
     </AuthCardLayout>

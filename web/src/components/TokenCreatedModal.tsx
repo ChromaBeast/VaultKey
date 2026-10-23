@@ -14,7 +14,7 @@ export const TokenCreatedModal: React.FC<TokenCreatedModalProps> = ({ createdTok
   if (!createdToken) return null;
 
   return (
-    <Modal isOpen onClose={onClose} width={480}>
+    <Modal label="API key created" isOpen onClose={onClose} width={480}>
       <div style={{ padding: '24px' }}>
         <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--vk-text)', marginBottom: '4px' }}>
           API Key Created

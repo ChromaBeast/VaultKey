@@ -1,9 +1,10 @@
 import React from 'react';
-import { Dices, Plus, Search } from 'lucide-react';
+import { KeyRound, Plus, Search } from 'lucide-react';
 import { PageHeader } from './ui/PageHeader';
 import { Input, Select } from './ui';
 
 interface SecretsHeaderBarProps {
+  canWrite: boolean;
   secretCount: number;
   showBadge: boolean;
   loading: boolean;
@@ -17,6 +18,7 @@ interface SecretsHeaderBarProps {
 }
 
 export const SecretsHeaderBar: React.FC<SecretsHeaderBarProps> = ({
+  canWrite,
   secretCount,
   showBadge,
   loading,
@@ -34,34 +36,25 @@ export const SecretsHeaderBar: React.FC<SecretsHeaderBarProps> = ({
       badge={
         showBadge ? (
           <span className="app-page-meta">
-            {project} · {loading ? 'Loading secrets…' : `${secretCount} secret${secretCount !== 1 ? 's' : ''}`}
+            {loading ? 'Loading secrets…' : `${secretCount} secret${secretCount !== 1 ? 's' : ''}`}
           </span>
         ) : undefined
       }
-      description="Encrypted values for your applications. Select a project to manage its secrets."
+      description="Encrypted values for your applications."
       actions={
         <>
-          <button onClick={onOpenGenerator} className="btn btn-secondary">
-            <Dices size={14} /> Generator
+          <button hidden={!canWrite} onClick={onOpenGenerator} className="btn btn-secondary">
+            <KeyRound size={14} /> Generator
           </button>
-          <button onClick={onCreateSecret} className="btn btn-primary">
+          <button hidden={!canWrite} onClick={onCreateSecret} className="btn btn-primary">
             <Plus size={14} /> New Secret
           </button>
         </>
       }
     />
 
-    <div
-      style={{
-        display: 'flex',
-        gap: '12px',
-        marginBottom: '20px',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-      }}
-    >
-      <div style={{ flex: '1 1 300px', maxWidth: '420px' }}>
+    <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+      <div className="flex-1 min-w-0 basis-56 max-w-md">
         <Input
           icon={<Search size={15} />}
           placeholder="Filter secrets…"
@@ -71,9 +64,11 @@ export const SecretsHeaderBar: React.FC<SecretsHeaderBarProps> = ({
         />
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <label htmlFor="secrets-project" style={{ fontSize: '0.875rem', color: 'var(--vk-text-secondary)', fontWeight: 600 }}>Project:</label>
-        <div style={{ width: '160px' }}>
+      <div className="flex items-center gap-2">
+        <label htmlFor="secrets-project" className="text-sm font-semibold text-muted-foreground">
+          Project:
+        </label>
+        <div className="w-40">
           <Select
             id="secrets-project"
             value={project}

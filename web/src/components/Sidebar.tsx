@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { CreditCard, KeyRound, Lock, ScrollText, Settings } from 'lucide-react';
 import { Sidebar, SidebarBody, SidebarLink, useSidebar } from '@/components/ui/sidebar';
 import { useAuth } from '../context/AuthContext';
+import { isAdminRole } from '../lib/permissions';
 import { pushToast } from '../lib/toast';
 import { ConfirmDialog } from './ConfirmDialog';
 import { SidebarAccountControls } from './SidebarAccountControls';
@@ -18,15 +19,8 @@ const WORKSPACE_NAV_ITEMS = [
   { path: '/settings', label: 'Settings', icon: Settings },
 ];
 
-type Theme = 'dark' | 'light';
-
-interface AppSidebarProps {
-  theme: Theme;
-  onToggleTheme: () => void;
-}
-
-export const AppSidebar: React.FC<AppSidebarProps> = ({ theme, onToggleTheme }) => {
-  const [open, setOpen] = useState(false);
+export const AppSidebar: React.FC = () => {
+  const [open, setOpen] = useState(() => window.matchMedia('(min-width: 768px)').matches);
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
   const location = useLocation();
@@ -37,7 +31,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ theme, onToggleTheme }) 
     setLogoutLoading(true);
     try {
       await logout();
-      pushToast('Vault locked and signed out', 'info');
+      pushToast('Signed out', 'info');
       navigate('/login', { replace: true });
     } catch {
       pushToast('Could not clear the session. Please try again.', 'error');
@@ -73,7 +67,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ theme, onToggleTheme }) 
         <div className="flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto">
           <SidebarHeader org={org} />
           <nav className="mt-5 flex flex-col gap-1" aria-label="Primary">
-            {renderLinks(PRIMARY_NAV_ITEMS)}
+            {renderLinks(PRIMARY_NAV_ITEMS.filter((item) => item.path === "/secrets" || isAdminRole(user?.role)))}
           </nav>
 
           <div className="mt-auto border-t border-border/50 pt-4">
@@ -92,8 +86,6 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ theme, onToggleTheme }) 
           <SidebarAccountControls
             email={user.email}
             role={user.role}
-            theme={theme}
-            onToggleTheme={onToggleTheme}
             onRequestLogout={() => setLogoutOpen(true)}
           />
         )}
@@ -101,8 +93,8 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ theme, onToggleTheme }) 
 
       <ConfirmDialog
         isOpen={logoutOpen}
-        title="Log out and lock the vault?"
-        message="This will lock your vault and clear this browser session."
+        title="Log out?"
+        message={isAdminRole(user?.role) ? "This clears your browser session and requests a workspace vault lock." : "This clears your browser session."}
         confirmLabel="Log out"
         danger
         loading={logoutLoading}

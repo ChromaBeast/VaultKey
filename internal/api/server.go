@@ -137,13 +137,13 @@ func (s *Server) setupRoutes() {
 	authGroup.Post("/account/password", s.handleChangePassword)
 
 	authGroup.Get("/payments/config", s.handleGetRazorpayConfig)
-	authGroup.Post("/payments/create-order", s.handleCreateRazorpayOrder)
-	authGroup.Post("/payments/verify", s.handleVerifyRazorpayPayment)
-	authGroup.Get("/payments/history", s.handleListPayments)
+	authGroup.Post("/payments/create-order", adminOnly, s.handleCreateRazorpayOrder)
+	authGroup.Post("/payments/verify", adminOnly, s.handleVerifyRazorpayPayment)
+	authGroup.Get("/payments/history", adminOnly, s.handleListPayments)
 
-	authGroup.Post("/subscriptions/create", s.handleCreateSubscription)
-	authGroup.Post("/subscriptions/verify", s.handleVerifySubscription)
-	authGroup.Post("/subscriptions/cancel", s.handleCancelSubscription)
+	authGroup.Post("/subscriptions/create", adminOnly, s.handleCreateSubscription)
+	authGroup.Post("/subscriptions/verify", adminOnly, s.handleVerifySubscription)
+	authGroup.Post("/subscriptions/cancel", adminOnly, s.handleCancelSubscription)
 
 	// ── Static web UI (optional, served from disk) ──
 	// Served after all API routes so /v1/* always wins. When StaticDir is

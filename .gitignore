@@ -40,6 +40,11 @@ backups/
 *.pem
 *.key
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
 # IDE / OS Files
 .DS_Store
 Thumbs.db

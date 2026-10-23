@@ -30,7 +30,7 @@ export const PasswordChangeForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={(e) => void handleSubmit(e)} style={{ display: 'flex', flexDirection: 'column', gap: '14px', maxWidth: '480px' }}>
+    <form onSubmit={(e) => void handleSubmit(e)} className="flex flex-col gap-3.5 max-w-md">
       <PasswordField
         id="current-password"
         label="Current Password"
@@ -48,12 +48,12 @@ export const PasswordChangeForm: React.FC = () => {
       />
 
       {error && (
-        <div role="alert" style={{ background: 'var(--vk-danger-dim)', border: '1px solid rgba(239, 68, 68, 0.3)', color: 'var(--vk-danger)', padding: '8px 12px', borderRadius: 'var(--radius-sm)', fontSize: '0.8rem' }}>
+        <div role="alert" className="bg-destructive/10 border border-destructive/30 text-destructive p-2.5 rounded-lg text-xs font-medium">
           {error}
         </div>
       )}
 
-      <button type="submit" className="btn btn-primary" disabled={submitting} style={{ alignSelf: 'flex-start', marginTop: '4px' }}>
+      <button type="submit" className="btn btn-primary self-start mt-1" disabled={submitting}>
         {submitting ? 'Updating…' : 'Update Password'}
       </button>
     </form>

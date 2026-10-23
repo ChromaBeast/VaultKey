@@ -5,17 +5,8 @@ import { Sidebar } from './Sidebar';
 import { CommandPaletteModal } from './CommandPaletteModal';
 import { CMD_OPEN_EVENT, openCommandPalette } from '../lib/events';
 
-type AppTheme = 'dark' | 'light';
-
 export const AppLayout: React.FC = () => {
   const [cmdOpen, setCmdOpen] = useState(false);
-  const [theme, setTheme] = useState<AppTheme>(() => {
-    try {
-      return window.localStorage.getItem('vk-dashboard-theme') === 'light' ? 'light' : 'dark';
-    } catch {
-      return 'dark';
-    }
-  });
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -33,19 +24,9 @@ export const AppLayout: React.FC = () => {
     };
   }, []);
 
-  const toggleTheme = () => {
-    const nextTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(nextTheme);
-    try {
-      window.localStorage.setItem('vk-dashboard-theme', nextTheme);
-    } catch {
-      // Keep the in-memory preference for this session if storage is unavailable.
-    }
-  };
-
   return (
-    <div data-theme={theme} className="app-frame flex min-h-screen flex-col bg-background text-foreground md:flex-row">
-      <Sidebar theme={theme} onToggleTheme={toggleTheme} />
+    <div className="app-frame flex min-h-screen flex-col bg-background text-foreground md:flex-row">
+      <Sidebar />
       <main className="app-main flex-1 flex flex-col min-w-0 px-4 py-6 sm:px-8 sm:py-8 lg:px-10 overflow-x-hidden">
         <div className="app-toolbar mb-4 flex flex-wrap items-center justify-end gap-4 md:mb-6">
           <Link

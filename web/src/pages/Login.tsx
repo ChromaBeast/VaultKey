@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import type { Org, User } from '../lib/api';
 import { apiFetch } from '../lib/api';
 import { AuthSplitLayout } from '../components/auth/AuthSplitLayout';
-import { PasswordField, Input } from '../components/ui';
+import { PasswordField, Input, Button } from '../components/ui';
 import { TurnstileWidget, type TurnstileWidgetHandle } from '../components/auth/TurnstileWidget';
 import { useTurnstileConfig } from '../hooks/useTurnstileConfig';
 
@@ -65,25 +65,15 @@ export const Login: React.FC = () => {
       footer={
         <>
           Don&apos;t have an account?{' '}
-          <Link
-            to="/signup"
-            style={{
-              color: 'var(--vk-accent)',
-              fontWeight: 600,
-              textDecoration: 'none',
-            }}
-          >
+          <Link to="/signup" className="text-primary font-semibold hover:text-primary-hover">
             Create your vault
           </Link>
         </>
       }
     >
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
-          <label
-            htmlFor="login-email"
-            style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'var(--vk-text-secondary)', marginBottom: '6px' }}
-          >
+          <label htmlFor="login-email" className="block text-xs font-semibold text-muted-foreground mb-1.5">
             Work Email
           </label>
           <Input
@@ -107,19 +97,11 @@ export const Login: React.FC = () => {
         )}
 
         <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-            <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--vk-text-secondary)' }}>
+          <div className="flex justify-between items-center mb-1.5">
+            <label htmlFor="login-password" className="text-xs font-semibold text-muted-foreground">
               Master Password
-            </span>
-            <Link
-              to="/forgot-password"
-              style={{
-                fontSize: '0.78rem',
-                color: 'var(--vk-accent)',
-                fontWeight: 500,
-                textDecoration: 'none',
-              }}
-            >
+            </label>
+            <Link to="/forgot-password" className="text-xs text-primary hover:text-primary-hover font-medium">
               Forgot password?
             </Link>
           </div>
@@ -132,21 +114,14 @@ export const Login: React.FC = () => {
           />
         </div>
 
-        <button
+        <Button
           type="submit"
+          size="lg"
           disabled={loading || turnstile.loading || Boolean(turnstile.error) || (turnstile.required && !turnstileToken)}
-          className="btn btn-primary"
-          style={{
-            marginTop: '8px',
-            width: '100%',
-            justifyContent: 'center',
-            padding: '12px',
-            fontSize: '0.9rem',
-            fontWeight: 600,
-          }}
+          className="w-full mt-2 h-11 font-semibold"
         >
           {loading ? 'Signing in…' : 'Log in'}
-        </button>
+        </Button>
       </form>
     </AuthSplitLayout>
   );

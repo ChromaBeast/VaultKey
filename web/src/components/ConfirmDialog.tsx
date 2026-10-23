@@ -37,7 +37,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   const confirmed = !confirmWord || typed === confirmWord;
 
   return (
-    <Modal isOpen={isOpen} onClose={loading ? () => undefined : onClose} width={430}>
+    <Modal label={title} isOpen={isOpen} onClose={loading ? () => undefined : onClose} width={430}>
       <div style={{ padding: '28px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
           {danger && <TriangleAlert size={20} color="var(--vk-danger)" />}

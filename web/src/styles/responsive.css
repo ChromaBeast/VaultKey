@@ -1,44 +1,23 @@
-/* Responsive shell and mobile layout */
+/* Responsive application and authentication layouts. */
 @layer components {
-  .app-hamburger { display: none; }
-  .app-backdrop { display: none; }
-
-  @media (max-width: 1023px) {
-    .app-sidebar {
-      position: fixed;
-      inset: 0 auto 0 0;
-      height: 100dvh;
-      width: 240px;
-      margin: 0;
-      border-radius: 0;
-      z-index: 320;
-      transform: translateX(-105%);
-      transition: transform var(--duration-base) var(--ease-smooth);
-      background: var(--vk-surface-1) !important;
-    }
-    .nav-open .app-sidebar { transform: translateX(0); }
-    .app-backdrop {
-      display: block;
-      position: fixed;
-      inset: 0;
-      z-index: 310;
-      background: rgba(4, 6, 10, 0.75);
-      border: none;
-      cursor: pointer;
-    }
-    .app-hamburger { display: inline-flex; }
-    .app-main { padding: 20px 24px 48px !important; }
-  }
-
+  .app-desktop-sidebar { position: sticky; top: 0; height: 100dvh; transition: width var(--duration-base) var(--ease-smooth); }
+  .sidebar-menu-toggle { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; min-height: 40px; border-radius: var(--radius-md); color: var(--vk-text-secondary); cursor: pointer; }
+  .sidebar-menu-toggle:hover { color: var(--vk-text); background: var(--vk-surface-2); }
   @media (max-width: 900px) {
     .auth-hero-pane { display: none !important; }
     .auth-form-pane { flex: 1 1 100% !important; }
   }
-
   @media (max-width: 640px) {
     .app-main { padding: 18px 16px 36px !important; }
     .app-page-header { gap: 14px; margin-bottom: 22px; }
     .app-page-actions { width: 100%; justify-content: flex-start; }
     .app-page-actions > * { max-width: 100%; }
+    .app-toolbar { gap: 8px; }
+    .app-toolbar > a, .app-toolbar > button { min-height: 40px; padding: 10px; }
+    .api-keys-table th, .api-keys-table td, .team-members-table th, .team-members-table td { padding: 12px; }
+    .api-keys-table td:first-child { max-width: 180px; overflow-wrap: anywhere; }
+    .team-members-table td:first-child { overflow-wrap: anywhere; }
+    .audit-filter-bar > form { max-width: none; }
   }
+  @media (prefers-reduced-motion: reduce) { .app-desktop-sidebar { transition: none; } }
 }

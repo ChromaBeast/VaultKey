@@ -9,6 +9,7 @@ import { SecretVersionHistoryModal } from './SecretVersionHistoryModal';
 export type ModalTarget = { mode: 'create' | 'edit'; initialKey?: string; initialValue?: string };
 
 interface SecretsModalsProps {
+  canWrite: boolean;
   project: string;
   genOpen: boolean;
   onCloseGen: () => void;
@@ -16,7 +17,6 @@ interface SecretsModalsProps {
   modalTarget: ModalTarget | null;
   onCloseModalTarget: () => void;
   onSubmitSecret: (key: string, value: string) => Promise<void>;
-  onOpenGenerator: () => void;
   historyItem: { key: string; version: number } | null;
   onCloseHistory: () => void;
   onRollbackSuccess: () => void;
@@ -28,6 +28,7 @@ interface SecretsModalsProps {
 }
 
 export const SecretsModals: React.FC<SecretsModalsProps> = ({
+  canWrite,
   project,
   genOpen,
   onCloseGen,
@@ -35,7 +36,6 @@ export const SecretsModals: React.FC<SecretsModalsProps> = ({
   modalTarget,
   onCloseModalTarget,
   onSubmitSecret,
-  onOpenGenerator,
   historyItem,
   onCloseHistory,
   onRollbackSuccess,
@@ -56,7 +56,7 @@ export const SecretsModals: React.FC<SecretsModalsProps> = ({
       )}
       {modalTarget !== null && (
         <CreateSecretModal
-          key={`${modalTarget.mode}-${modalTarget.initialKey ?? ''}-${modalTarget.initialValue ?? ''}`}
+          key={`${modalTarget.mode}-${modalTarget.initialKey ?? ''}`}
           isOpen
           project={project}
           mode={modalTarget.mode}
@@ -64,11 +64,11 @@ export const SecretsModals: React.FC<SecretsModalsProps> = ({
           initialValue={modalTarget.initialValue}
           onClose={onCloseModalTarget}
           onSubmit={onSubmitSecret}
-          onOpenGenerator={onOpenGenerator}
         />
       )}
       {historyItem && (
         <SecretVersionHistoryModal
+          canWrite={canWrite}
           secretKey={historyItem.key}
           project={project}
           currentVersion={historyItem.version}

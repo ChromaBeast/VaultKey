@@ -57,8 +57,8 @@ export const AuthSplitLayout: React.FC<AuthSplitLayoutProps> = ({
                 width: '38px',
                 height: '38px',
                 borderRadius: 'var(--radius-sm)',
-                background: 'rgba(0, 143, 245, 0.1)',
-                border: '1px solid rgba(0, 143, 245, 0.28)',
+                background: 'var(--vk-accent-dim)',
+                border: '1px solid var(--vk-border)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -86,7 +86,7 @@ export const AuthSplitLayout: React.FC<AuthSplitLayoutProps> = ({
 
           {/* Error Banner */}
           {error && (
-            <div
+            <div role="alert"
               style={{
                 background: 'var(--vk-danger-dim)',
                 border: '1px solid rgba(255, 107, 122, 0.3)',

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Package, ShieldCheck, Terminal, Zap } from 'lucide-react';
 import { CliDocSection } from '../components/docs/CliDocSection';
 import { SdkDocSection } from '../components/docs/SdkDocSection';
@@ -16,29 +16,44 @@ const SECTIONS = [
 type DocSection = (typeof SECTIONS)[number]['id'];
 
 export const DocsPage: React.FC = () => {
-  const [activeSection, setActiveSection] = useState<DocSection>('cli');
+  const [activeSection, setActiveSection] = useState<DocSection>(() => {
+    const hash = window.location.hash.slice(1);
+    return SECTIONS.some((section) => section.id === hash) ? hash as DocSection : 'cli';
+  });
   const [copiedSnippet, setCopiedSnippet] = useState<string | null>(null);
 
+  const copyTimer = useRef<number | undefined>(undefined);
+
   useEffect(() => {
-    const updateActiveSection = () => {
-      let current: DocSection = 'cli';
-      for (const section of SECTIONS) {
-        const element = document.getElementById(section.id);
-        if (element && element.getBoundingClientRect().top <= 150) current = section.id;
-      }
-      setActiveSection(current);
-    };
-
+    document.title = "Developer docs | VaultKey";
     const hash = window.location.hash.slice(1);
-    const frame = SECTIONS.some((section) => section.id === hash)
-      ? window.requestAnimationFrame(() => document.getElementById(hash)?.scrollIntoView())
-      : 0;
+    const frame = window.requestAnimationFrame(() => {
+      if (SECTIONS.some((section) => section.id === hash)) document.getElementById(hash)?.scrollIntoView();
+    });
+    const syncHash = () => {
+      const section = window.location.hash.slice(1);
+      if (SECTIONS.some((item) => item.id === section)) setActiveSection(section as DocSection);
+    };
+    window.addEventListener("hashchange", syncHash);
 
-    updateActiveSection();
-    window.addEventListener('scroll', updateActiveSection, { passive: true });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.find((e) => e.isIntersecting);
+        if (visible) setActiveSection(visible.target.id as DocSection);
+      },
+      { rootMargin: '-80px 0px -50% 0px', threshold: 0.1 }
+    );
+
+    SECTIONS.forEach((section) => {
+      const el = document.getElementById(section.id);
+      if (el) observer.observe(el);
+    });
+
     return () => {
+      observer.disconnect();
       window.cancelAnimationFrame(frame);
-      window.removeEventListener('scroll', updateActiveSection);
+      window.clearTimeout(copyTimer.current);
+      window.removeEventListener("hashchange", syncHash);
     };
   }, []);
 
@@ -46,7 +61,8 @@ export const DocsPage: React.FC = () => {
     void copyText(code).then((ok) => {
       if (!ok) return;
       setCopiedSnippet(id);
-      window.setTimeout(() => setCopiedSnippet(null), 2000);
+      window.clearTimeout(copyTimer.current);
+      copyTimer.current = window.setTimeout(() => setCopiedSnippet(null), 2000);
     });
   };
 

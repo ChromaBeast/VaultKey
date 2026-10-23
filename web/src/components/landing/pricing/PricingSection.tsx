@@ -1,51 +1,63 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PricingModule, type PricingPlan } from '@/components/ui/pricing-module';
 
 const VAULTKEY_PLANS: PricingPlan[] = [
   {
     id: 'oss',
     name: 'Free',
-    description: 'For your own projects.',
+    description: 'For individual developers and small personal services.',
     priceMonthly: 0,
     features: [
-      { label: '25 secrets and 2 access keys', included: true },
-      { label: 'Start apps with stored secrets', included: true },
-      { label: 'Use it in your app or from the command line', included: true },
+      { label: '25 secrets encrypted at rest', included: true },
+      { label: '2 active scoped API tokens', included: true },
+      { label: 'CLI process injection (vaultkey run)', included: true },
+      { label: 'Node.js, Python, and Dart SDKs', included: true },
+      { label: 'Argon2id 64MB key derivation', included: true },
     ],
   },
   {
     id: 'pro',
     name: 'Team',
-    description: 'Monthly billing for your workspace.',
+    description: 'For engineering teams running collaborative workloads.',
     priceMonthly: 1499,
     recommended: true,
     features: [
-      { label: 'Unlimited secrets', included: true },
-      { label: 'Choose who can read or change secrets', included: true },
-      { label: 'Record of vault activity', included: true },
+      { label: 'Unlimited encrypted secrets & projects', included: true },
+      { label: 'Multi-user envelope key wrapping (admin/write/read)', included: true },
+      { label: 'HMAC-SHA256 chained audit ledger with CSV export', included: true },
+      { label: 'Secret version history with 1-click rollback', included: true },
+      { label: 'Self-destructing one-time share links', included: true },
     ],
   },
   {
     id: 'enterprise',
     name: 'Enterprise',
-    description: 'For a custom setup.',
+    description: 'For organizations with custom compliance or isolation requirements.',
     priceMonthly: 0,
     features: [
-      { label: 'Setup for your own systems', included: true },
-      { label: 'Talk through your needs', included: true },
+      { label: 'Self-hosted Docker / air-gapped deployment', included: true },
+      { label: 'Custom audit retention & SIEM webhook dispatching', included: true },
+      { label: 'Architecture security review & SLA guarantees', included: true },
+      { label: 'Priority engineering support', included: true },
     ],
   },
 ];
 
 export const PricingSection: React.FC<{ showHeading?: boolean }> = ({ showHeading = true }) => {
+  const navigate = useNavigate();
+
   return (
     <section id="pricing" className="section-shell">
       <PricingModule
         title={showHeading ? 'Start free. Grow with your team.' : ''}
         plans={VAULTKEY_PLANS}
         onSelectPlan={(plan) => {
-          if (plan.id === 'enterprise') window.location.href = 'mailto:sheersh@vaultkey.dev?subject=VaultKey%20Enterprise%20inquiry';
-          else window.location.href = '/signup';
+          if (plan.id === 'enterprise') {
+            window.location.href = 'mailto:sheersh@vaultkey.dev?subject=VaultKey%20Enterprise%20inquiry';
+          } else {
+            navigate('/signup');
+          }
         }}
       />
     </section>

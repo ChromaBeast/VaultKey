@@ -68,6 +68,11 @@ func TestMockPaymentRejectedInProduction(t *testing.T) {
 	}, "")
 	token := decode(t, signup)["token"].(string)
 
+	server.Config.RazorpayKeyID = "rzp_test_review"
+	server.Config.RazorpayKeySecret = "review-test-secret"
+	server.Config.RazorpayWebhookSecret = "review-webhook-secret"
+	server.Config.RazorpayPlanProID = "plan_pro"
+	server.Config.RazorpayPlanEntID = "plan_enterprise"
 	server.Config.Environment = "production"
 
 	resp := doJSON(t, server.App, "POST", "/v1/subscriptions/verify", map[string]string{
@@ -116,4 +121,3 @@ func TestPasswordChangeRevokesOldSessions(t *testing.T) {
 		t.Fatalf("old session should be revoked after password change, got %d", check1.StatusCode)
 	}
 }
-
