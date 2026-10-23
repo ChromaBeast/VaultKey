@@ -44,7 +44,6 @@
 
   .docs-header-top {
     height: 56px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   .docs-header-container {
@@ -373,22 +372,22 @@
   }
 
   .docs-body-container {
-    max-width: 1536px;
+    max-width: 1240px;
     margin: 0 auto;
     padding: 0 24px;
     display: grid;
-    grid-template-columns: 240px minmax(0, 1fr) 230px;
+    grid-template-columns: 220px minmax(0, 1fr);
     gap: 48px;
-    min-height: calc(100vh - 100px);
+    min-height: calc(100vh - 56px);
   }
 
   /* ── Left Sidebar Navigation ────────────────────────────────────────────── */
   .docs-left-nav {
     position: sticky;
-    top: 100px;
-    height: calc(100vh - 110px);
+    top: 56px;
+    height: calc(100vh - 56px);
     overflow-y: auto;
-    padding: 24px 0 40px;
+    padding: 32px 0 40px;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
   }

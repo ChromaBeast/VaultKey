@@ -52,7 +52,8 @@ export const DocsSearchModal: React.FC<DocsSearchModalProps> = ({
 
   const getCategoryIcon = (category: SearchDocItem['category']) => {
     switch (category) {
-      case 'CLI': return <Terminal size={14} className="text-emerald-400" />;
+      case 'QUICKSTART': return <Terminal size={14} className="text-emerald-400" />;
+      case 'CLI': return <Terminal size={14} className="text-teal-400" />;
       case 'SDK': return <Package size={14} className="text-sky-400" />;
       case 'MCP': return <Bot size={14} className="text-indigo-400" />;
       case 'API': return <Zap size={14} className="text-amber-400" />;

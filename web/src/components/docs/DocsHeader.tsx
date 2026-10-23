@@ -1,76 +1,29 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Search,
-  Sparkles,
-  ChevronDown,
-  Monitor,
-  ArrowUpRight,
-} from 'lucide-react';
-import { DOC_TABS } from './docsData';
+import { Search, ArrowUpRight, Monitor } from 'lucide-react';
 import type { User } from '../../lib/api';
 
 interface DocsHeaderProps {
-  activeTab: string;
-  onTabChange: (tabId: string) => void;
   onOpenSearch: () => void;
-  onOpenAskAi: () => void;
   user: User | null;
 }
 
 export const DocsHeader: React.FC<DocsHeaderProps> = ({
-  activeTab,
-  onTabChange,
   onOpenSearch,
-  onOpenAskAi,
   user,
 }) => {
-  const [versionMenuOpen, setVersionMenuOpen] = useState(false);
-  const [selectedVersion, setSelectedVersion] = useState('v1.4 (Latest)');
-
   return (
     <header className="docs-header-root">
-      {/* Top Navbar */}
       <div className="docs-header-top">
         <div className="docs-header-container">
-          {/* Left: Brand + Context switcher */}
+          {/* Left: Brand */}
           <div className="docs-header-left">
             <Link to="/" className="docs-brand-link" aria-label="VaultKey Docs Home">
               <img src="/vaultkey-logo.png" alt="VaultKey" className="docs-brand-logo" />
-              <span className="docs-brand-name">VaultKey <span className="docs-brand-sub">Docs</span></span>
+              <span className="docs-brand-name">
+                VaultKey <span className="docs-brand-sub">Docs</span>
+              </span>
             </Link>
-
-            <div className="docs-version-wrapper">
-              <button
-                type="button"
-                className="docs-version-badge"
-                onClick={() => setVersionMenuOpen((prev) => !prev)}
-                aria-expanded={versionMenuOpen}
-                aria-haspopup="true"
-              >
-                <span>{selectedVersion}</span>
-                <ChevronDown size={12} className={`docs-chevron ${versionMenuOpen ? 'is-open' : ''}`} />
-              </button>
-
-              {versionMenuOpen && (
-                <div className="docs-version-menu" role="menu">
-                  {['v1.4 (Latest)', 'v1.3 (Stable)', 'v2.0 (Preview)'].map((v) => (
-                    <button
-                      key={v}
-                      type="button"
-                      className={`docs-version-menu-item ${selectedVersion === v ? 'is-active' : ''}`}
-                      role="menuitem"
-                      onClick={() => {
-                        setSelectedVersion(v);
-                        setVersionMenuOpen(false);
-                      }}
-                    >
-                      {v}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
           </div>
 
           {/* Center: Command Palette Trigger */}
@@ -89,16 +42,6 @@ export const DocsHeader: React.FC<DocsHeaderProps> = ({
 
           {/* Right: Actions */}
           <div className="docs-header-right">
-            <button
-              type="button"
-              className="docs-ask-ai-btn"
-              onClick={onOpenAskAi}
-              aria-label="Ask VaultKey AI"
-            >
-              <Sparkles size={14} className="text-sky-400" />
-              <span>Ask AI</span>
-            </button>
-
             <a
               href="https://github.com/ChromaBeast/VaultKey"
               target="_blank"
@@ -135,34 +78,10 @@ export const DocsHeader: React.FC<DocsHeaderProps> = ({
               </Link>
             )}
 
-            <div className="docs-theme-indicator" title="System Dark Theme">
+            <div className="docs-theme-indicator" title="Dark Theme">
               <Monitor size={15} />
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Subnav Tabs Bar */}
-      <div className="docs-subnav-bar">
-        <div className="docs-subnav-container">
-          <nav className="docs-subnav-tabs" aria-label="Documentation Categories">
-            {DOC_TABS.map((tab) => {
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  className={`docs-subnav-tab ${isActive ? 'is-active' : ''}`}
-                  onClick={() => onTabChange(tab.id)}
-                  aria-current={isActive ? 'page' : undefined}
-                >
-                  <span>{tab.label}</span>
-                  {tab.badge && <span className="docs-subnav-badge">{tab.badge}</span>}
-                  {isActive && <span className="docs-subnav-active-bar" />}
-                </button>
-              );
-            })}
-          </nav>
         </div>
       </div>
     </header>

@@ -5,11 +5,12 @@ export interface DocTab {
 }
 
 export const DOC_TABS: DocTab[] = [
-  { id: 'cli', label: 'CLI tooling' },
+  { id: 'quickstart', label: 'Quickstart' },
+  { id: 'cli', label: 'CLI' },
   { id: 'sdk', label: 'SDKs' },
-  { id: 'mcp', label: 'MCP / AI agents', badge: 'New' },
+  { id: 'mcp', label: 'MCP / AI agents' },
   { id: 'api', label: 'REST API' },
-  { id: 'security', label: 'Security model' },
+  { id: 'security', label: 'Security' },
 ];
 
 export interface NavGroup {
@@ -26,57 +27,14 @@ export interface NavGroup {
 
 export const NAV_GROUPS: NavGroup[] = [
   {
-    label: '1. CLI tooling',
+    label: 'Documentation',
     items: [
-      { id: 'cli-overview', label: 'Summary', sectionId: 'cli' },
-      { id: 'cli-when', label: 'When to use this', sectionId: 'cli' },
-      { id: 'cli-auth', label: 'Authentication & tokens', sectionId: 'cli' },
-      { id: 'cli-steps', label: 'Workflow & steps', sectionId: 'cli' },
-      { id: 'cli-verify', label: 'Verify', sectionId: 'cli' },
-      { id: 'cli-ref', label: 'Command reference', sectionId: 'cli' },
-    ],
-  },
-  {
-    label: '2. SDKs',
-    items: [
-      { id: 'sdk-overview', label: 'Summary', sectionId: 'sdk' },
-      { id: 'sdk-when', label: 'When to use this', sectionId: 'sdk' },
-      { id: 'sdk-node', label: 'Node.js / TypeScript', sectionId: 'sdk' },
-      { id: 'sdk-python', label: 'Python', sectionId: 'sdk' },
-      { id: 'sdk-verify', label: 'Verify', sectionId: 'sdk' },
-      { id: 'sdk-ref', label: 'Reference & methods', sectionId: 'sdk' },
-    ],
-  },
-  {
-    label: '3. MCP / AI agents',
-    items: [
-      { id: 'mcp-overview', label: 'Summary', sectionId: 'mcp', badge: 'New' },
-      { id: 'mcp-when', label: 'When to use this', sectionId: 'mcp' },
-      { id: 'mcp-why', label: 'Why run_with_secrets', sectionId: 'mcp' },
-      { id: 'mcp-steps', label: 'Agent configuration', sectionId: 'mcp' },
-      { id: 'mcp-tools', label: 'Tool safety & reference', sectionId: 'mcp' },
-      { id: 'mcp-verify', label: 'Verify', sectionId: 'mcp' },
-    ],
-  },
-  {
-    label: '4. REST API',
-    items: [
-      { id: 'api-overview', label: 'Summary', sectionId: 'api' },
-      { id: 'api-when', label: 'When to use this', sectionId: 'api' },
-      { id: 'api-auth', label: 'Authentication', sectionId: 'api' },
-      { id: 'api-endpoints', label: 'Endpoints table', sectionId: 'api' },
-      { id: 'api-verify', label: 'Verify with cURL', sectionId: 'api' },
-    ],
-  },
-  {
-    label: '5. Security model',
-    items: [
-      { id: 'security-overview', label: 'Summary', sectionId: 'security' },
-      { id: 'sec-kdf', label: 'Argon2id key derivation', sectionId: 'security' },
-      { id: 'sec-ram', label: 'Master key in memory', sectionId: 'security' },
-      { id: 'sec-gcm', label: 'AES-256-GCM encryption', sectionId: 'security' },
-      { id: 'sec-audit', label: 'HMAC-SHA256 audit ledger', sectionId: 'security' },
-      { id: 'sec-rbac', label: 'Role-based access (RBAC)', sectionId: 'security' },
+      { id: 'quickstart', label: '1. Quickstart', sectionId: 'quickstart' },
+      { id: 'cli', label: '2. CLI', sectionId: 'cli' },
+      { id: 'sdk', label: '3. SDKs', sectionId: 'sdk' },
+      { id: 'mcp', label: '4. MCP / AI agents', sectionId: 'mcp' },
+      { id: 'api', label: '5. REST API', sectionId: 'api' },
+      { id: 'security', label: '6. Security', sectionId: 'security' },
     ],
   },
 ];
@@ -84,7 +42,7 @@ export const NAV_GROUPS: NavGroup[] = [
 export interface SearchDocItem {
   id: string;
   sectionId: string;
-  category: 'CLI' | 'SDK' | 'MCP' | 'API' | 'SECURITY';
+  category: 'QUICKSTART' | 'CLI' | 'SDK' | 'MCP' | 'API' | 'SECURITY';
   title: string;
   description: string;
   keywords: string[];
@@ -92,139 +50,243 @@ export interface SearchDocItem {
 
 export const DOC_SEARCH_INDEX: SearchDocItem[] = [
   {
+    id: 'quickstart',
+    sectionId: 'quickstart',
+    category: 'QUICKSTART',
+    title: 'Quickstart',
+    description: 'Set server and token, pull secrets or run your app directly in 3 steps',
+    keywords: ['quickstart', 'start', 'pull', 'run', 'token', 'server', 'setup'],
+  },
+  {
     id: 'cli',
     sectionId: 'cli',
     category: 'CLI',
-    title: 'CLI tooling',
-    description: 'Authenticate, pull, push, and inject secrets into child processes',
-    keywords: ['cli', 'pull', 'push', 'run', 'keys create', 'install', 'token'],
-  },
-  {
-    id: 'cli-pull',
-    sectionId: 'cli',
-    category: 'CLI',
-    title: 'vaultkey pull',
-    description: 'Pull variables into a local .env file',
-    keywords: ['pull', 'env', 'download', 'decrypt'],
-  },
-  {
-    id: 'cli-push',
-    sectionId: 'cli',
-    category: 'CLI',
-    title: 'vaultkey push',
-    description: 'Push variables from a local file to your VaultKey server',
-    keywords: ['push', 'upload', 'sync', 'secrets'],
-  },
-  {
-    id: 'cli-run',
-    sectionId: 'cli',
-    category: 'CLI',
-    title: 'vaultkey run',
-    description: 'Inject secrets into a child process without writing them to disk',
-    keywords: ['run', 'inject', 'exec', 'child process', 'memory'],
-  },
-  {
-    id: 'cli-keys',
-    sectionId: 'cli',
-    category: 'CLI',
-    title: 'vaultkey keys create',
-    description: 'Create a dedicated machine key for a tool or agent',
-    keywords: ['keys', 'machine key', 'create', 'token', 'label'],
+    title: 'CLI',
+    description: 'Authenticate, sync local files, inject secrets into processes, or manage keys',
+    keywords: ['cli', 'pull', 'push', 'run', 'keys create', 'mcp'],
   },
   {
     id: 'sdk',
     sectionId: 'sdk',
     category: 'SDK',
     title: 'SDKs',
-    description: 'Read secrets from Node.js and Python services at runtime',
-    keywords: ['sdk', 'node', 'python', 'typescript', 'vaultkey-js'],
-  },
-  {
-    id: 'sdk-node',
-    sectionId: 'sdk',
-    category: 'SDK',
-    title: 'Node.js / TypeScript SDK (vaultkey-js)',
-    description: 'Class Vaultkey with inject(project, env) and get(name) methods',
-    keywords: ['typescript', 'node', 'vaultkey-js', 'inject', 'get'],
-  },
-  {
-    id: 'sdk-python',
-    sectionId: 'sdk',
-    category: 'SDK',
-    title: 'Python SDK (vaultkey)',
-    description: 'Class Vaultkey with inject(project=..., env=...) method',
-    keywords: ['python', 'vaultkey', 'inject', 'fastapi', 'django'],
+    description: 'Inject secrets into Node.js (vaultkey-js) and Python (vaultkey) at runtime',
+    keywords: ['sdk', 'node', 'typescript', 'python', 'vaultkey-js', 'inject', 'get'],
   },
   {
     id: 'mcp',
     sectionId: 'mcp',
     category: 'MCP',
-    title: 'MCP / AI agents (New)',
-    description: 'Give AI coding agents structured access without leaking values into LLM context',
-    keywords: ['mcp', 'agent', 'claude', 'cursor', 'antigravity', 'run_with_secrets'],
-  },
-  {
-    id: 'mcp-run',
-    sectionId: 'mcp',
-    category: 'MCP',
-    title: 'run_with_secrets MCP Tool',
-    description: 'Runs a shell command with secrets as env vars; only stdout/stderr return to agent',
-    keywords: ['run_with_secrets', 'safe', 'recommended', 'stdout', 'leak'],
-  },
-  {
-    id: 'mcp-tools',
-    sectionId: 'mcp',
-    category: 'MCP',
-    title: 'MCP Tools Table',
-    description: 'list_projects, list_secret_names, check_missing_secrets, get_secret_value, set_secret_value, run_with_secrets',
-    keywords: ['tools', 'list_projects', 'list_secret_names', 'check_missing_secrets', 'get_secret_value', 'set_secret_value'],
+    title: 'MCP / AI agents',
+    description: 'Model Context Protocol server for Claude Code, Cursor, Codex, Gemini, Antigravity',
+    keywords: ['mcp', 'agents', 'claude', 'cursor', 'codex', 'gemini', 'run_with_secrets', 'tools'],
   },
   {
     id: 'api',
     sectionId: 'api',
     category: 'API',
     title: 'REST API',
-    description: 'Core endpoints for authentication, encrypted values, and one-time sharing',
-    keywords: ['rest', 'api', 'endpoints', 'auth', 'signup', 'login', 'secrets', 'shares'],
+    description: 'Interact directly with your VaultKey server over HTTP',
+    keywords: ['api', 'rest', 'endpoints', 'curl', 'auth', 'secrets', 'values', 'shares'],
   },
   {
-    id: 'sec-kdf',
+    id: 'security',
     sectionId: 'security',
     category: 'SECURITY',
-    title: 'Key derivation (Argon2id)',
-    description: 'Argon2id with time=3, memory=64 MB, threads=4, unique 32-byte salt per team',
-    keywords: ['argon2id', 'kdf', 'derivation', 'salt', 'memory', 'threads'],
-  },
-  {
-    id: 'sec-ram',
-    sectionId: 'security',
-    category: 'SECURITY',
-    title: 'Master key in memory zeroing',
-    description: 'Master key bytes live in RAM and are zeroed on lock or timeout',
-    keywords: ['memory', 'ram', 'zeroed', 'lock', 'timeout'],
-  },
-  {
-    id: 'sec-gcm',
-    sectionId: 'security',
-    category: 'SECURITY',
-    title: 'AES-256-GCM encryption',
-    description: 'AES-256-GCM with a random 12-byte nonce for each secret',
-    keywords: ['aes', 'aes-256-gcm', 'nonce', 'encryption'],
-  },
-  {
-    id: 'sec-audit',
-    sectionId: 'security',
-    category: 'SECURITY',
-    title: 'HMAC-SHA256 audit ledger',
-    description: 'Signed with HMAC-SHA256 over id, action, secret key name, and prevHMAC',
-    keywords: ['hmac', 'audit', 'ledger', 'signature', 'tamper'],
-  },
-  {
-    id: 'sec-rbac',
-    sectionId: 'security',
-    category: 'SECURITY',
-    title: 'Role-based access control (RBAC)',
-    description: 'Role-based access control for team members and machine keys',
-    keywords: ['rbac', 'roles', 'admin', 'permissions'],
+    title: 'Security',
+    description: 'AES-256-GCM encryption, Argon2id key derivation, RBAC, HMAC-chained audit log',
+    keywords: ['security', 'argon2id', 'aes-256-gcm', 'rbac', 'hmac', 'audit log'],
   },
 ];
+
+export const VAULTKEY_DOCS_MARKDOWN = `# VaultKey Developer Documentation
+
+VaultKey is a self-hosted secrets manager: store secrets once, give them to apps and AI agents at runtime.
+
+## Quickstart
+
+Set your server and token, then pull secrets or run your app directly.
+
+1. Set your environment variables:
+
+\`\`\`bash
+export VAULTKEY_SERVER="https://your-vaultkey-server.com"
+export VAULTKEY_TOKEN="vk_your_token_here"
+\`\`\`
+
+2. Pull secrets to a local .env file or run your command directly:
+
+\`\`\`bash
+# Option A: Write secrets to local .env
+vaultkey pull --project=backend --env=production
+
+# Option B: Run a command with secrets injected into memory (nothing written to disk)
+vaultkey run --project=backend -- npm start
+\`\`\`
+
+3. Done.
+
+## CLI
+
+Authenticate, sync local files, run commands with injected secrets, or manage keys.
+
+\`\`\`bash
+# Pull secrets to local .env
+vaultkey pull --project=backend --env=production
+
+# Upload a local env file
+vaultkey push --project=backend --file=.env
+
+# Run a command with secrets injected (nothing written to disk)
+vaultkey run --project=backend -- npm start
+
+# Create a machine key
+vaultkey keys create --label "ci-runner"
+
+# Start the MCP server
+vaultkey mcp
+\`\`\`
+
+| Command | Description |
+|---|---|
+| \`vaultkey pull --project=<p> --env=<e>\` | Write secrets to a local .env |
+| \`vaultkey push --project=<p> --file=<path>\` | Upload a local env file |
+| \`vaultkey run --project=<p> -- <cmd>\` | Run a command with secrets injected, nothing written to disk |
+| \`vaultkey keys create --label "<name>"\` | Create a machine key |
+| \`vaultkey mcp\` | Start the MCP server |
+
+## SDKs
+
+Inject secrets into application memory at runtime.
+
+### Node.js / TypeScript (\`vaultkey-js\`)
+
+\`\`\`typescript
+import { Vaultkey } from 'vaultkey-js';
+
+const vk = new Vaultkey({
+  serverUrl: process.env.VAULTKEY_SERVER || 'https://your-vaultkey-server.com',
+  apiKey: process.env.VAULTKEY_TOKEN || 'vk_your_token_here',
+});
+
+// Inject secrets into process.env in memory
+await vk.inject('backend', 'production');
+
+// Or fetch a single secret
+// <!-- TODO: confirm which project and env get(name) reads from -->
+const dbUrl = await vk.get('DATABASE_URL');
+\`\`\`
+
+### Python (\`vaultkey\`)
+
+\`\`\`python
+from vaultkey import Vaultkey
+
+vk = Vaultkey(
+    server_url="https://your-vaultkey-server.com",
+    api_key="vk_your_token_here",
+)
+
+# Inject secrets into os.environ in memory
+vk.inject(project="backend", env="production")
+\`\`\`
+
+| Language | Package | Initialization | Inject into environment | Fetch single secret |
+|---|---|---|---|---|
+| Node.js / TypeScript | \`vaultkey-js\` | \`new Vaultkey({ serverUrl, apiKey })\` | \`await vk.inject(project, env)\` | \`await vk.get(name)\` |
+| Python | \`vaultkey\` | \`Vaultkey(server_url=..., api_key=...)\` | \`vk.inject(project=..., env=...)\` | — |
+
+## MCP / AI agents
+
+\`vaultkey mcp\` is built into the CLI binary, speaks stdio JSON-RPC, and calls the server over REST. Every call is written to the audit log.
+
+### Setup
+
+1. Create a machine key per agent:
+
+\`\`\`bash
+vaultkey keys create --label "<agent>"
+\`\`\`
+
+2. Universal configuration (most clients use this same shape):
+
+\`\`\`json
+{
+  "mcpServers": {
+    "vaultkey": {
+      "command": "vaultkey",
+      "args": ["mcp"],
+      "env": {
+        "VAULTKEY_SERVER": "https://your-vaultkey-server.com",
+        "VAULTKEY_TOKEN": "vk_your_token_here"
+      }
+    }
+  }
+}
+\`\`\`
+
+For Codex CLI (\`~/.codex/config.toml\`):
+
+\`\`\`toml
+[mcp_servers.vaultkey]
+command = "vaultkey"
+args = ["mcp"]
+
+[mcp_servers.vaultkey.env]
+VAULTKEY_SERVER = "https://your-vaultkey-server.com"
+VAULTKEY_TOKEN = "vk_your_token_here"
+\`\`\`
+
+3. Client configuration locations:
+
+| Client | Where the config goes | Format note |
+|---|---|---|
+| Claude Code | \`claude mcp add\` or project \`.mcp.json\` | Universal JSON |
+| Claude Desktop | \`claude_desktop_config.json\` | Universal JSON |
+| Codex CLI | \`~/.codex/config.toml\` | TOML: \`[mcp_servers.vaultkey]\` with \`command\`, \`args\`, \`env\` |
+| Gemini CLI | \`~/.gemini/settings.json\` | Universal JSON |
+| Cursor | \`.cursor/mcp.json\` or \`~/.cursor/mcp.json\` | Universal JSON |
+| Antigravity | MCP settings in the app | Universal JSON |
+| VS Code (Copilot) | \`.vscode/mcp.json\` | Uses \`servers\` instead of \`mcpServers\` |
+| Windsurf | \`~/.codeium/windsurf/mcp_config.json\` | Universal JSON |
+| Any other MCP client | See its docs | Command \`vaultkey\`, args \`["mcp"]\`, two env vars |
+
+*(Verify entries against each client's docs, as config locations change.)*
+
+### Available tools
+
+| Tool | Returns |
+|---|---|
+| \`list_projects\` | Projects the token can see |
+| \`list_secret_names\` | Names only, never values |
+| \`check_missing_secrets\` | Which expected names are missing |
+| \`set_secret_value\` | Creates or updates a secret |
+| \`run_with_secrets\` | stdout and stderr only. Values never reach the model. **Recommended.** |
+| \`get_secret_value\` | Plaintext value into the model context. Use only when unavoidable. |
+
+\`run_with_secrets\` arguments: \`command\`, \`project\`, \`env\`, \`working_dir\`.
+
+> **Tip:** Prefer \`run_with_secrets\` over \`get_secret_value\` so secret values never reach model context, and use one machine key per agent so it can be revoked alone.
+
+## REST API
+
+Interact directly with your VaultKey server over HTTP.
+
+\`\`\`bash
+# Fetch decrypted values
+curl -s -X GET "https://your-vaultkey-server.com/v1/secrets/values?project=backend&env=production" \\
+  -H "Authorization: Bearer vk_your_token_here"
+\`\`\`
+
+| Method | Endpoint | Purpose | Auth |
+|---|---|---|---|
+| POST | \`/v1/auth/signup\` | Create org and admin | Public |
+| POST | \`/v1/auth/login\` | Log in | Public |
+| POST | \`/v1/secrets\` | Create or update a secret | Bearer |
+| GET | \`/v1/secrets/values\` | Fetch decrypted values | Bearer |
+| POST | \`/v1/shares\` | One-time secret link | Bearer |
+
+## Security
+
+Secrets are encrypted with AES-256-GCM, keys derived with Argon2id, access is role-based, and the audit log is HMAC-chained so tampering is detectable.
+`;
