@@ -157,6 +157,7 @@ jobs:
       (needs.build-server.result == 'success' || needs.build-web.result == 'success')
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4.2.2
       - name: Setup SSH Config
         id: ssh-config
         run: |
