@@ -27,6 +27,7 @@ jobs:
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
+      infra: ${{ steps.filter.outputs.infra }}
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: dorny/paths-filter@v3
@@ -42,6 +43,10 @@ jobs:
             frontend:
               - 'web/**'
               - 'web/Dockerfile'
+            infra:
+              - 'docker-compose.yml'
+              - 'Caddyfile'
+              - '.github/workflows/deploy.yml'
 
   # ─────────────────────────────────────────────
   # Backend: test + build/push API image (only when Go changes)
@@ -146,7 +151,7 @@ jobs:
   # ─────────────────────────────────────────────
   deploy-to-vps:
     name: VPS Deployment
-    needs: [backend-test, build-server, frontend-test, build-web]
+    needs: [changes, backend-test, build-server, frontend-test, build-web]
     if: >-
       always() &&
       (github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))) &&
@@ -154,7 +159,7 @@ jobs:
       (needs.frontend-test.result == 'success' || needs.frontend-test.result == 'skipped') &&
       (needs.build-server.result == 'success' || needs.build-server.result == 'skipped') &&
       (needs.build-web.result == 'success' || needs.build-web.result == 'skipped') &&
-      (needs.build-server.result == 'success' || needs.build-web.result == 'success')
+      (needs.build-server.result == 'success' || needs.build-web.result == 'success' || needs.changes.outputs.infra == 'true')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.2.2
