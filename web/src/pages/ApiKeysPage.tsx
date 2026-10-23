@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus } from 'lucide-react';
+import { Bot, Plus } from 'lucide-react';
 import { isAdminRole } from '../lib/permissions';
 import { useAuth } from '../context/AuthContext';
 import type { APIKeyItem } from '../lib/api';
@@ -8,6 +8,7 @@ import { pushToast } from '../lib/toast';
 import { TableSkeleton } from '../components/Skeletons';
 import { CreateApiKeyModal } from '../components/CreateApiKeyModal';
 import { TokenCreatedModal } from '../components/TokenCreatedModal';
+import { ConnectAgentModal } from '../components/ConnectAgentModal';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { PageHeader } from '../components/ui/PageHeader';
 export const ApiKeysPage: React.FC = () => {
@@ -20,6 +21,8 @@ export const ApiKeysPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [creating, setCreating] = useState(false);
   const [createdToken, setCreatedToken] = useState<string | null>(null);
+  const [connectModalOpen, setConnectModalOpen] = useState(false);
+  const [connectToken, setConnectToken] = useState<string | null>(null);
   const [revokeTarget, setRevokeTarget] = useState<APIKeyItem | null>(null);
   const [revokeLoading, setRevokeLoading] = useState(false);
   const loadKeys = async () => {
@@ -98,9 +101,14 @@ export const ApiKeysPage: React.FC = () => {
           </span>
         }
         actions={
-          <button onClick={() => setModalOpen(true)} className="btn btn-primary">
-            <Plus size={14} /> Create API Key
-          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={() => { setConnectToken(null); setConnectModalOpen(true); }} className="btn btn-secondary">
+              <Bot size={14} /> Connect Agent
+            </button>
+            <button onClick={() => setModalOpen(true)} className="btn btn-primary">
+              <Plus size={14} /> Create API Key
+            </button>
+          </div>
         }
       />
       {loadError ? (
@@ -162,9 +170,14 @@ export const ApiKeysPage: React.FC = () => {
                   <td colSpan={5} className="text-center py-12 px-6 text-muted-foreground">
                     <h2 className="text-base font-semibold text-foreground">Connect your first application</h2>
                     <p className="mt-1.5 mb-4 text-xs text-muted-foreground">Create a scoped API key for your CLI or automation.</p>
-                    <button className="btn btn-primary" onClick={() => setModalOpen(true)}>
-                      <Plus size={14} /> Create API Key
-                    </button>
+                    <div className="flex items-center justify-center gap-2">
+                      <button className="btn btn-secondary" onClick={() => { setConnectToken(null); setConnectModalOpen(true); }}>
+                        <Bot size={14} /> Connect Agent
+                      </button>
+                      <button className="btn btn-primary" onClick={() => setModalOpen(true)}>
+                        <Plus size={14} /> Create API Key
+                      </button>
+                    </div>
                   </td>
                 </tr>
               )}
@@ -180,7 +193,21 @@ export const ApiKeysPage: React.FC = () => {
           submitting={creating}
         />
       )}
-      {createdToken && <TokenCreatedModal createdToken={createdToken} onClose={() => setCreatedToken(null)} />}
+      {createdToken && (
+        <TokenCreatedModal
+          createdToken={createdToken}
+          onClose={() => setCreatedToken(null)}
+          onConnectAgent={() => {
+            setConnectToken(createdToken);
+            setConnectModalOpen(true);
+          }}
+        />
+      )}
+      <ConnectAgentModal
+        isOpen={connectModalOpen}
+        onClose={() => setConnectModalOpen(false)}
+        token={connectToken}
+      />
       <ConfirmDialog
         isOpen={revokeTarget !== null}
         title="Revoke API key?"

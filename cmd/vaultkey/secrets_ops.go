@@ -12,9 +12,10 @@ import (
 )
 
 func handleDelete() error {
+	ws := LoadWorkspaceConfig()
 	fs := newFlagSet("delete")
-	proj := fs.String("project", "default", "scoped project name")
-	env := fs.String("env", "production", "scoped environment")
+	proj := fs.String("project", ws.Project, "scoped project name")
+	env := fs.String("env", ws.Env, "scoped environment")
 	if err := fs.Parse(os.Args[2:]); err != nil {
 		return err
 	}
@@ -42,9 +43,10 @@ func handleDelete() error {
 }
 
 func handleVersions() error {
+	ws := LoadWorkspaceConfig()
 	fs := newFlagSet("versions")
-	proj := fs.String("project", "default", "scoped project name")
-	env := fs.String("env", "production", "scoped environment")
+	proj := fs.String("project", ws.Project, "scoped project name")
+	env := fs.String("env", ws.Env, "scoped environment")
 	if err := fs.Parse(os.Args[2:]); err != nil {
 		return err
 	}
@@ -73,9 +75,10 @@ func handleVersions() error {
 }
 
 func handleRollback() error {
+	ws := LoadWorkspaceConfig()
 	fs := newFlagSet("rollback")
-	proj := fs.String("project", "default", "scoped project name")
-	env := fs.String("env", "production", "scoped environment")
+	proj := fs.String("project", ws.Project, "scoped project name")
+	env := fs.String("env", ws.Env, "scoped environment")
 	version := fs.Int("version", 0, "target version to restore (required)")
 	if err := fs.Parse(os.Args[2:]); err != nil {
 		return err

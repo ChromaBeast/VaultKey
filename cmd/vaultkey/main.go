@@ -8,6 +8,10 @@ import (
 )
 
 func main() {
+	// Discover workspace configuration (.vaultkey.yaml or vaultkey.yaml) early
+	// to set default environment variables (e.g., VAULTKEY_SERVER) across all commands.
+	LoadWorkspaceConfig()
+
 	if len(os.Args) < 2 {
 		printAllUsage()
 		os.Exit(1)
@@ -60,8 +64,10 @@ func main() {
 		exit(handleAudit())
 	case "keys":
 		exit(handleKeys())
+	case "init":
+		exit(handleInit())
 	case "mcp":
-		exit(handleMCP())
+		exit(handleMCPCommand())
 	default:
 		fmt.Printf("Unknown subcommand: %s\n\n", subcommand)
 		printAllUsage()
@@ -111,9 +117,13 @@ Commands:
                                               Dumps secrets in .env format to stdout
   audit [--limit=50] [--offset=0] [--json]    Shows recent secure audit logs
   keys <create|list|revoke>                   Manages API authorization keys
-  mcp                                         Start an MCP server over stdio for AI agent integration
+  init [--project=p] [--env=e]                Creates a local .vaultkey.yaml workspace config
+  mcp [setup <agent>|init <agent>]            Starts MCP server or configures AI agents (Claude, Cursor, Codex, Windsurf, Antigravity)
 
 Note: flags must come BEFORE positional arguments.
+Workspace:
+  Discovers .vaultkey.yaml or vaultkey.yaml in current or parent directories
+  to supply default --project and --env values automatically.
 
 Global Environment Variables:
   VAULTKEY_SERVER                             Server address (default: http://localhost:8080)

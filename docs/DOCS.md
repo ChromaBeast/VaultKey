@@ -48,11 +48,13 @@ vaultkey mcp
 
 | Command | Description |
 |---|---|
-| `vaultkey pull --project=<p> --env=<e>` | Write secrets to a local `.env` |
-| `vaultkey push --project=<p> --file=<path>` | Upload a local env file |
-| `vaultkey run --project=<p> -- <cmd>` | Run a command with secrets injected, nothing written to disk |
+| `vaultkey init [--project=<p>] [--env=<e>]` | Initialize a `.vaultkey.yaml` workspace config for default flags |
+| `vaultkey pull [--project=<p>] [--env=<e>]` | Write secrets to a local `.env` (with `.gitignore` safety alert) |
+| `vaultkey push [--project=<p>] [--file=<path>]` | Upload a local env file |
+| `vaultkey run [--project=<p>] -- <cmd>` | Run a command with secrets injected, nothing written to disk |
 | `vaultkey keys create --label "<name>"` | Create a machine key |
-| `vaultkey mcp` | Start the MCP server |
+| `vaultkey mcp` | Start the MCP server over stdio |
+| `vaultkey mcp setup <agent> [--write]` | Configure or install MCP for Claude, Cursor, Codex, Windsurf, Antigravity |
 
 ## SDKs
 
@@ -100,6 +102,17 @@ vk.inject(project="backend", env="production")
 `vaultkey mcp` is built into the CLI binary, speaks stdio JSON-RPC, and calls the server over REST. Every call is written to the audit log.
 
 ### Setup
+
+0. Quick setup via CLI:
+
+```bash
+# Output ready-to-use snippet or install directly into the agent's config file
+vaultkey mcp setup claude --write
+vaultkey mcp setup cursor --write
+vaultkey mcp setup codex --write
+vaultkey mcp setup windsurf --write
+vaultkey mcp setup antigravity --write
+```
 
 1. Create a machine key per agent:
 

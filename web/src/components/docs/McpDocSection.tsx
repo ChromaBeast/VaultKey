@@ -64,7 +64,23 @@ VAULTKEY_TOKEN = "vk_your_token_here"`;
       <div className="space-y-6 mb-8">
         <div className="docs-section-card">
           <div className="text-sm font-semibold text-white mb-2">
-            1. Create a machine key per agent
+            0. 1-Command CLI Setup (Recommended)
+          </div>
+          <p className="text-xs text-muted-foreground mb-3">
+            Auto-configure your AI agent in one command (supports Claude Code, Cursor, Codex, Windsurf, Antigravity):
+          </p>
+          <DocsCodeBlock
+            id="mcp-setup-code"
+            language="bash"
+            code={`vaultkey mcp setup cursor --write\nvaultkey mcp setup claude --write\nvaultkey mcp setup codex --write`}
+            copiedSnippet={copiedSnippet}
+            onCopy={onCopy}
+          />
+        </div>
+
+        <div className="docs-section-card">
+          <div className="text-sm font-semibold text-white mb-2">
+            1. Manual setup: Create a machine key per agent
           </div>
           <DocsCodeBlock
             id="mcp-key-code"

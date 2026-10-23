@@ -7,6 +7,7 @@ import type { SecretItem } from '../lib/api';
 import { createSecret, errorMessage, fetchProjects, fetchSecrets, isAbortError, revealSecretValue, updateSecretValue } from '../lib/api';
 import { pushToast } from '../lib/toast';
 import { SecretsHeaderBar } from '../components/SecretsHeaderBar';
+import { SecretsCommandBar } from '../components/SecretsCommandBar';
 import { SecretsTable } from '../components/SecretsTable';
 import { SecretsModals, type ModalTarget } from '../components/SecretsModals';
 export const SecretsPage: React.FC = () => {
@@ -154,6 +155,7 @@ export const SecretsPage: React.FC = () => {
         onOpenGenerator={() => setGenOpen(true)}
         onCreateSecret={() => setModalTarget({ mode: 'create', initialKey: '', initialValue: '' })}
       />
+      <SecretsCommandBar project={project} />
       {loadError ? <div className="load-error" role="alert">
         <div><h2>Could not load secrets</h2><p>{loadError}</p></div>
         <button className="btn btn-secondary" onClick={refresh}>Retry</button>

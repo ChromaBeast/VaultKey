@@ -61,6 +61,13 @@ var commandUsage = map[string]string{
 	"keys revoke": `Usage: vaultkey keys revoke <id>
   Revokes an API key.
 `,
+	"init": `Usage: vaultkey init [--project=p] [--env=e] [--server=url] [--force]
+  Initializes a .vaultkey.yaml configuration file in the current directory.
+`,
+	"mcp": `Usage: vaultkey mcp [setup <agent>|init <agent>] [options]
+  Starts stdio MCP server, or sets up MCP client configs for AI agents:
+  claude, cursor, codex, windsurf, antigravity.
+`,
 }
 
 func printCommandUsage(name string) {

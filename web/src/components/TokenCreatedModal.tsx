@@ -1,14 +1,15 @@
 import React from 'react';
 import { Modal } from './ui/Modal';
 import { useClipboard } from '../hooks/useClipboard';
-import { Check, Copy, ShieldAlert } from 'lucide-react';
+import { Bot, Check, Copy, ShieldAlert } from 'lucide-react';
 
 interface TokenCreatedModalProps {
   createdToken: string | null;
   onClose: () => void;
+  onConnectAgent?: () => void;
 }
 
-export const TokenCreatedModal: React.FC<TokenCreatedModalProps> = ({ createdToken, onClose }) => {
+export const TokenCreatedModal: React.FC<TokenCreatedModalProps> = ({ createdToken, onClose, onConnectAgent }) => {
   const { copied, copy } = useClipboard();
 
   if (!createdToken) return null;
@@ -59,7 +60,7 @@ export const TokenCreatedModal: React.FC<TokenCreatedModalProps> = ({ createdTok
           <span>After dismissal, this raw token can never be retrieved from the server again.</span>
         </div>
 
-        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
           <button
             onClick={() => void copy(createdToken)}
             className="btn btn-primary"
@@ -68,6 +69,15 @@ export const TokenCreatedModal: React.FC<TokenCreatedModalProps> = ({ createdTok
             {copied ? <Check size={14} /> : <Copy size={14} />}
             {copied ? 'Copied to Clipboard' : 'Copy Token'}
           </button>
+          {onConnectAgent && (
+            <button
+              onClick={onConnectAgent}
+              className="btn btn-secondary"
+              style={{ fontSize: '0.8rem' }}
+            >
+              <Bot size={14} /> Connect Agent
+            </button>
+          )}
           <button onClick={onClose} className="btn btn-secondary" style={{ fontSize: '0.8rem' }}>
             Done
           </button>

@@ -7,9 +7,10 @@ import (
 )
 
 func handlePull() error {
+	ws := LoadWorkspaceConfig()
 	fs := newFlagSet("pull")
-	proj := fs.String("project", "default", "scoped project name")
-	env := fs.String("env", "production", "scoped environment")
+	proj := fs.String("project", ws.Project, "scoped project name")
+	env := fs.String("env", ws.Env, "scoped environment")
 	outFile := fs.String("out", ".env", "output file path")
 	if err := fs.Parse(os.Args[2:]); err != nil {
 		return err
@@ -29,13 +30,19 @@ func handlePull() error {
 	}
 
 	fmt.Printf("Successfully pulled %d secrets into %s!\n", len(secrets), *outFile)
+
+	if ignored, _ := CheckGitIgnore(*outFile); !ignored {
+		PrintGitIgnoreWarning(*outFile)
+	}
+
 	return nil
 }
 
 func handlePush() error {
+	ws := LoadWorkspaceConfig()
 	fs := newFlagSet("push")
-	proj := fs.String("project", "default", "scoped project name")
-	env := fs.String("env", "production", "scoped environment")
+	proj := fs.String("project", ws.Project, "scoped project name")
+	env := fs.String("env", ws.Env, "scoped environment")
 	inFile := fs.String("file", ".env", "input .env file path")
 	dryRun := fs.Bool("dry-run", false, "parse and validate without pushing")
 	if err := fs.Parse(os.Args[2:]); err != nil {

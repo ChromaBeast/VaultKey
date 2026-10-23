@@ -9,9 +9,10 @@ import (
 )
 
 func handleRun() error {
+	ws := LoadWorkspaceConfig()
 	fs := newFlagSet("run")
-	proj := fs.String("project", "default", "scoped project name")
-	env := fs.String("env", "production", "scoped environment")
+	proj := fs.String("project", ws.Project, "scoped project name")
+	env := fs.String("env", ws.Env, "scoped environment")
 	if err := fs.Parse(os.Args[2:]); err != nil {
 		return err
 	}

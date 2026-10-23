@@ -8,11 +8,13 @@ interface CliDocProps {
 }
 
 const CLI_COMMANDS = [
-  { cmd: 'vaultkey pull --project=<p> --env=<e>', desc: 'Write secrets to a local .env' },
-  { cmd: 'vaultkey push --project=<p> --file=<path>', desc: 'Upload a local env file' },
-  { cmd: 'vaultkey run --project=<p> -- <cmd>', desc: 'Run a command with secrets injected, nothing written to disk' },
+  { cmd: 'vaultkey init [--project=<p>] [--env=<e>]', desc: 'Initialize local .vaultkey.yaml workspace config' },
+  { cmd: 'vaultkey pull [--project=<p>] [--env=<e>]', desc: 'Write secrets to a local .env' },
+  { cmd: 'vaultkey push [--project=<p>] [--file=<path>]', desc: 'Upload a local env file' },
+  { cmd: 'vaultkey run [--project=<p>] -- <cmd>', desc: 'Run a command with secrets injected, nothing written to disk' },
   { cmd: 'vaultkey keys create --label "<name>"', desc: 'Create a machine key' },
   { cmd: 'vaultkey mcp', desc: 'Start the MCP server' },
+  { cmd: 'vaultkey mcp setup <agent> [--write]', desc: 'Configure MCP for Claude, Cursor, Codex, Windsurf, Antigravity' },
 ];
 
 export const CliDocSection: React.FC<CliDocProps> = ({ onCopy, copiedSnippet, onNavigateNext }) => {
