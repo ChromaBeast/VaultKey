@@ -56,10 +56,10 @@ export const SecretsTable: React.FC<SecretsTableProps> = ({
               <tr key={s.id}>
                 <td className="max-w-[260px]">
                   <div
-                    className="code-font font-semibold text-foreground text-sm truncate"
+                    className="code-font font-semibold text-foreground text-sm truncate secret-key-name"
                     title={s.key}
                   >
-                    {s.key}
+                    {s.key.split('_').map((part, i, all) => (<React.Fragment key={i}>{part}{i < all.length - 1 && <>_<wbr /></>}</React.Fragment>))}
                   </div>
                   <div className="text-xs text-muted-foreground font-mono tracking-wider truncate">
                     ••••••••••••••••

@@ -32,6 +32,8 @@
     .secret-actions > button:first-child svg { display: none; }
     .secret-action-panel button { min-height: 44px; }
     .audit-table td { white-space: normal !important; }
+    .audit-table .audit-key, .secrets-table .secret-key-name { display: block; overflow-wrap: break-word; white-space: normal; text-overflow: clip; font-size: .8125rem; line-height: 1.35; }
+    .secrets-table td:first-child, .audit-table td:nth-child(2) { max-width: none !important; }
     .load-error { align-items: flex-start; flex-direction: column; }
   }
   @media (prefers-reduced-motion: reduce) { .skel-block, .animate-fade { animation: none; } }
@@ -41,7 +43,9 @@
     .secrets-table .skel-row td:nth-child(2), .secrets-table .skel-row td:nth-child(3),
     .audit-table .skel-row td:nth-child(3), .audit-table .skel-row td:nth-child(4),
     .audit-table .skel-row td:nth-child(5), .audit-table .skel-row td:nth-child(7) { display: none; }
-    .audit-table th:first-child { width: 24%; }
-    .audit-table th:nth-child(2) { width: 40%; }
+    .audit-table th:first-child { width: 27%; }
+    .audit-table .badge { white-space: nowrap; }
+    .audit-table th:nth-child(2) { width: 38%; }
+    .audit-table th:nth-child(6) { width: 35%; }
   }
 }

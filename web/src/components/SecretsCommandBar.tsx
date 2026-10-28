@@ -24,7 +24,7 @@ export const SecretsCommandBar: React.FC<SecretsCommandBarProps> = ({
       role="region"
       aria-label="VaultKey CLI Quick Copy"
     >
-      <div className="flex items-center gap-2 min-w-0 flex-1">
+      <div className="flex items-center gap-2 min-w-0 flex-1 max-sm:basis-full">
         <Terminal size={14} className="text-primary shrink-0" aria-hidden="true" />
         <span className="text-primary font-bold shrink-0">$</span>
         <code className="text-muted-foreground select-all truncate text-xs">
@@ -37,7 +37,7 @@ export const SecretsCommandBar: React.FC<SecretsCommandBarProps> = ({
         </code>
       </div>
 
-      <div className="flex items-center gap-2 shrink-0">
+      <div className="flex flex-wrap items-center gap-2 max-sm:w-full">
         <div
           role="group"
           aria-label="Target Environment"

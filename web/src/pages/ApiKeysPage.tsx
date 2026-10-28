@@ -170,11 +170,11 @@ export const ApiKeysPage: React.FC = () => {
                   <td colSpan={5} className="text-center py-12 px-6 text-muted-foreground">
                     <h2 className="text-base font-semibold text-foreground">Connect your first application</h2>
                     <p className="mt-1.5 mb-4 text-xs text-muted-foreground">Create a scoped API key for your CLI or automation.</p>
-                    <div className="flex items-center justify-center gap-2">
-                      <button className="btn btn-secondary" onClick={() => { setConnectToken(null); setConnectModalOpen(true); }}>
+                    <div className="flex flex-wrap items-center justify-center gap-2">
+                      <button className="btn btn-secondary whitespace-nowrap" onClick={() => { setConnectToken(null); setConnectModalOpen(true); }}>
                         <Bot size={14} /> Connect Agent
                       </button>
-                      <button className="btn btn-primary" onClick={() => setModalOpen(true)}>
+                      <button className="btn btn-primary whitespace-nowrap" onClick={() => setModalOpen(true)}>
                         <Plus size={14} /> Create API Key
                       </button>
                     </div>

@@ -44,7 +44,7 @@ export const AuditTable: React.FC<Props> = ({ logs, loading, loadError }) => {
                   </span>
                 </td>
                 <td className="code-font font-semibold text-foreground max-w-[170px] truncate" title={l.secret_key || '-'}>
-                  {l.secret_key || 'No secret'}
+                  <span className="audit-key">{(l.secret_key || 'No secret').split('_').map((part, i, all) => (<React.Fragment key={i}>{part}{i < all.length - 1 && <>_<wbr /></>}</React.Fragment>))}</span>
                   <details className="secret-mobile-details"><summary>Event details</summary><div>Actor: {l.actor || 'Unavailable'}<br />Project: {l.project || 'default'}<br />IP: {l.ip_address || 'Unavailable'}<br /><span className="break-all">Signature: {l.hmac || 'Unavailable'}</span></div></details>
                 </td>
                 <td className="audit-secondary"><span className="text-xs text-muted-foreground">{l.project || 'default'}</span></td>
@@ -52,7 +52,10 @@ export const AuditTable: React.FC<Props> = ({ logs, loading, loadError }) => {
                   {l.actor || '-'}
                 </td>
                 <td className="code-font audit-secondary text-muted-foreground text-xs">{l.ip_address || '-'}</td>
-                <td className="text-muted-foreground text-xs">{new Date(l.created_at).toLocaleString()}</td>
+                <td className="text-muted-foreground text-xs">
+                  <span className="block">{new Date(l.created_at).toLocaleDateString()}</span>
+                  <span className="block opacity-70">{new Date(l.created_at).toLocaleTimeString()}</span>
+                </td>
                 <td className="code-font audit-secondary text-xs">
                   {l.hmac ? (
                     <button
