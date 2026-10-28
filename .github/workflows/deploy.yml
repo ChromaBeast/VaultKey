@@ -23,7 +23,7 @@ jobs:
   # ─────────────────────────────────────────────
   changes:
     name: Detect Changes
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64]
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
@@ -56,7 +56,7 @@ jobs:
     name: Backend Tests
     needs: changes
     if: needs.changes.outputs.backend == 'true' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64]
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: actions/setup-go@v5.5.0
@@ -73,7 +73,7 @@ jobs:
     name: Build & Push API Image
     needs: backend-test
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64]
     permissions:
       contents: read
       packages: write
@@ -108,7 +108,7 @@ jobs:
     name: Frontend Lint & Build
     needs: changes
     if: needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64]
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: oven-sh/setup-bun@v2
@@ -121,7 +121,7 @@ jobs:
     name: Build & Push Web Image
     needs: frontend-test
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64]
     permissions:
       contents: read
       packages: write
@@ -161,7 +161,7 @@ jobs:
       (needs.build-server.result == 'success' || needs.build-server.result == 'skipped') &&
       (needs.build-web.result == 'success' || needs.build-web.result == 'skipped') &&
       (needs.build-server.result == 'success' || needs.build-web.result == 'success' || needs.changes.outputs.infra == 'true')
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, macOS, ARM64]
     steps:
       - uses: actions/checkout@v4.2.2
       - name: Setup SSH Config
@@ -172,21 +172,22 @@ jobs:
             echo "available=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_SSH_KEY }}" | base64 -d > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          printf 'Host vps\n  HostName %s\n  User %s\n  IdentityFile ~/.ssh/id_rsa\n  StrictHostKeyChecking accept-new\n  ConnectTimeout 15\n' \
-            "${{ secrets.VPS_HOST }}" "${{ secrets.VPS_USERNAME || 'ubuntu' }}" > ~/.ssh/config
-          chmod 600 ~/.ssh/config
+          # Self-hosted runner: keep deploy key/config in the job temp dir, never touch ~/.ssh
+          install -d -m 700 "$RUNNER_TEMP/ssh"
+          echo "${{ secrets.VPS_SSH_KEY }}" | base64 -d > "$RUNNER_TEMP/ssh/id_rsa"
+          chmod 600 "$RUNNER_TEMP/ssh/id_rsa"
+          printf 'Host vps\n  HostName %s\n  User %s\n  IdentityFile %s/ssh/id_rsa\n  StrictHostKeyChecking accept-new\n  ConnectTimeout 15\n' \
+            "${{ secrets.VPS_HOST }}" "${{ secrets.VPS_USERNAME || 'ubuntu' }}" "$RUNNER_TEMP" > "$RUNNER_TEMP/ssh/config"
+          echo "SSH_CONFIG=$RUNNER_TEMP/ssh/config" >> "$GITHUB_ENV"
           echo "available=true" >> "$GITHUB_OUTPUT"
 
       - name: SSH Pull & Restart Changed Services
         if: steps.ssh-config.outputs.available == 'true'
         run: |
-          scp docker-compose.yml Caddyfile litestream.yml vps:/opt/vaultkey/
-          ssh vps 'cd /opt/vaultkey && docker compose pull && docker compose up -d && for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do curl -fsS http://127.0.0.1:8080/healthz && exit 0; sleep 5; done; exit 1'
+          scp -F "$SSH_CONFIG" docker-compose.yml Caddyfile litestream.yml vps:/opt/vaultkey/
+          ssh -F "$SSH_CONFIG" vps 'cd /opt/vaultkey && docker compose pull && docker compose up -d && for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do curl -fsS http://127.0.0.1:8080/healthz && exit 0; sleep 5; done; exit 1'
 
       - name: Show Diagnostics on Failure
         if: steps.ssh-config.outputs.available == 'true' && failure()
         run: |
-          ssh vps 'cd /opt/vaultkey && docker compose ps -a && docker compose logs --tail=100'
+          ssh -F "$SSH_CONFIG" vps 'cd /opt/vaultkey && docker compose ps -a && docker compose logs --tail=100'
