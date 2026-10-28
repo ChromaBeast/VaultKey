@@ -79,10 +79,16 @@ func (s *Server) authenticate(email, password string, c *fiber.Ctx) (*db.User, *
 }
 
 func (s *Server) openVault(org *db.Organization, user *db.User, password string) error {
+	var err error
 	if org.KeyScheme == "envelope" {
-		return s.unlockEnvelope(org, user, password)
+		err = s.unlockEnvelope(org, user, password)
+	} else {
+		err = s.unlockLegacyAndMigrate(org, user, password)
 	}
-	return s.unlockLegacyAndMigrate(org, user, password)
+	if err == nil {
+		_ = s.DB.SetVaultSealed(org.ID, false)
+	}
+	return err
 }
 
 func (s *Server) unlockEnvelope(org *db.Organization, user *db.User, password string) error {

@@ -29,6 +29,9 @@ type Server struct {
 	stopAutoLock chan struct{}
 	auditLocks   map[string]*sync.Mutex
 	auditLocksMu sync.Mutex
+	// requireEmailVerification makes signup a two-step flow (code by email).
+	// On outside dev mode, where the console email provider is rejected.
+	requireEmailVerification bool
 }
 
 // NewServer builds the API server. The frontend is served from cfg.StaticDir
@@ -44,8 +47,13 @@ func NewServer(cfg *config.Config, database *db.DB) *Server {
 		BodyLimit:             1 * 1024 * 1024,
 	}
 	if cfg.TrustedProxies != "" {
+		// Behind Caddy every request arrives from the proxy's address; read the
+		// client IP from X-Forwarded-For (only when the peer is a trusted proxy)
+		// so rate limits, lockouts and audit entries are per real client.
 		fiberCfg.EnableTrustedProxyCheck = true
-		fiberCfg.TrustedProxies = strings.Split(cfg.TrustedProxies, ",")
+		fiberCfg.TrustedProxies = splitTrimmed(cfg.TrustedProxies)
+		fiberCfg.ProxyHeader = fiber.HeaderXForwardedFor
+		fiberCfg.EnableIPValidation = true
 	}
 	app := fiber.New(fiberCfg)
 
@@ -57,6 +65,8 @@ func NewServer(cfg *config.Config, database *db.DB) *Server {
 		lastActivity: map[string]time.Time{},
 		stopAutoLock: make(chan struct{}),
 		auditLocks:   map[string]*sync.Mutex{},
+
+		requireEmailVerification: !cfg.IsDev(),
 	}
 
 	s.setupRoutes()
@@ -96,6 +106,7 @@ func (s *Server) setupRoutes() {
 	})
 
 	v1.Post("/auth/signup", authLimiter, s.handleSignup)
+	v1.Post("/auth/signup/resend", authLimiter, s.handleSignupResend)
 	v1.Post("/auth/login", authLimiter, s.handleLogin)
 	v1.Get("/auth/config", s.handleAuthConfig)
 	v1.Post("/auth/forgot-password", authLimiter, s.handleForgotPassword)
@@ -137,8 +148,6 @@ func (s *Server) setupRoutes() {
 	authGroup.Post("/account/password", s.handleChangePassword)
 
 	authGroup.Get("/payments/config", s.handleGetRazorpayConfig)
-	authGroup.Post("/payments/create-order", adminOnly, s.handleCreateRazorpayOrder)
-	authGroup.Post("/payments/verify", adminOnly, s.handleVerifyRazorpayPayment)
 	authGroup.Get("/payments/history", adminOnly, s.handleListPayments)
 
 	authGroup.Post("/subscriptions/create", adminOnly, s.handleCreateSubscription)
@@ -176,4 +185,14 @@ func (s *Server) serveIndex(c *fiber.Ctx) error {
 		return c.Status(404).SendString("Web UI not deployed (API-only mode)")
 	}
 	return c.Send(indexBytes)
+}
+
+func splitTrimmed(list string) []string {
+	var out []string
+	for _, part := range strings.Split(list, ",") {
+		if p := strings.TrimSpace(part); p != "" {
+			out = append(out, p)
+		}
+	}
+	return out
 }

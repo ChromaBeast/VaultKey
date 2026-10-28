@@ -74,6 +74,11 @@ func (s *Server) handleInviteUser(c *fiber.Ctx) error {
 	if existing, _ := s.DB.GetUserByEmail(req.Email); existing != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "email is already registered"})
 	}
+	if s.orgOnFreePlan(orgID) {
+		if seats, _ := s.DB.CountOrgSeats(orgID); seats >= freeMaxSeats {
+			return tierLimit(c, "free plan limit reached (2 members including pending invites). Upgrade to Team to add more.")
+		}
+	}
 
 	tokenBytes := make([]byte, 16)
 	if _, err := rand.Read(tokenBytes); err != nil {

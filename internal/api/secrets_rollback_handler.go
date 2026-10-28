@@ -32,6 +32,9 @@ func (s *Server) handleRollbackSecret(c *fiber.Ctx) error {
 	if !s.checkAuth(c, "write", project) {
 		return c.Status(403).JSON(fiber.Map{"error": "unauthorized"})
 	}
+	if s.paidFeatureBlocked(c, "Secret rollback") {
+		return nil
+	}
 
 	secret, err := s.DB.GetSecret(orgID, project, env, key)
 	if err != nil {

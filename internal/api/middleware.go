@@ -59,7 +59,11 @@ func (s *Server) AuthMiddleware() fiber.Handler {
 		}
 
 		path := c.Path()
-		if path != "/v1/vault/status" && path != "/v1/vault/lock" && crypto.Global.IsLocked(apiKey.OrgID) {
+		vaultControl := path == "/v1/vault/status" || path == "/v1/vault/lock"
+		if !vaultControl && crypto.Global.IsLocked(apiKey.OrgID) {
+			s.unlockWithToken(apiKey, raw, c)
+		}
+		if !vaultControl && crypto.Global.IsLocked(apiKey.OrgID) {
 			return c.Status(423).JSON(fiber.Map{
 				"error":  "organization vault is locked",
 				"code":   "VAULT_LOCKED",

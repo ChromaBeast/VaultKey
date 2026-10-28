@@ -8,13 +8,25 @@ Recurring billing is disabled when its settings are all blank. To enable it, set
 
 ## SQLite backups
 
-The Compose deployment stores its database in `./data/vaultkey.db`. Create an online, integrity-checked snapshot with Python 3:
+The Compose deployment stores its database in `./data/vaultkey.db`. A single VPS disk is the whole business, so run continuous off-site replication:
+
+1. Create a private S3-compatible bucket (Cloudflare R2, Backblaze B2 or AWS S3) and an access key scoped to it.
+2. Fill in the `LITESTREAM_*` values in `.env` and set `COMPOSE_PROFILES=backup`.
+3. Run `docker compose up -d`. The `litestream` sidecar streams WAL changes within seconds and keeps 30 days of snapshots (`litestream.yml`).
+
+Restore onto a clean host with:
+
+```sh
+docker run --rm -v "$PWD/data:/var/lib/vaultkey" -v "$PWD/litestream.yml:/etc/litestream.yml:ro" --env-file .env litestream/litestream:0.3.13 restore /var/lib/vaultkey/vaultkey.db
+```
+
+For an extra local snapshot (for example before an upgrade), run:
 
 ```sh
 python3 scripts/backup_sqlite.py --database ./data/vaultkey.db --destination ./backups --keep-days 30
 ```
 
-Schedule that command daily and copy snapshots to a separate host or backup service with encryption and restricted access. The script only keeps local snapshots; it does not configure an off-site destination. Keep the HMAC signing key and deployment configuration in a separate, access-controlled recovery store. Do not put either in the database backup directory.
+Keep the HMAC signing key and deployment configuration in a separate, access-controlled recovery store. Do not put either in the database backup bucket.
 
 Before relying on a backup, restore a copy to a clean instance, confirm `/healthz`, log in, retrieve a test secret, and verify the audit chain. Record the tested restore date and the steps needed to recover the HMAC key and provider settings.
 
@@ -25,5 +37,6 @@ When GitHub SSH deployment secrets are configured, the workflow waits for the AP
 ## Launch decisions still owned by the service operator
 
 - Configure and verify the real Turnstile, Razorpay, email, domain, and TLS settings for the production host.
-- Publish reviewed Terms of Service and a complete privacy notice, including the legal service-provider identity, retention/deletion timelines, billing/refund terms, and support/security contact channels.
+- Fill in the legal entity, address and support contact in `web/src/lib/legal.ts` (shown on `/terms`, `/refunds` and `/contact`; Razorpay's website review checks these), and have the Terms, Privacy and Refund pages reviewed.
+- API tokens created before token-unwrap support cannot reopen an idle-locked vault. Ask existing users to rotate CI tokens once after upgrading.
 - Complete a production restore drill and a security review before inviting customers to store production credentials.

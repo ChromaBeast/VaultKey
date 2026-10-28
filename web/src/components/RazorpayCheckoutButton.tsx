@@ -99,7 +99,7 @@ export const RazorpayCheckoutButton: React.FC<RazorpayCheckoutButtonProps> = ({
       )}
       {!checkingBilling && !billingEnabled && (
         <p role="status" style={{ color: 'var(--vk-text-muted)', fontSize: '0.8rem', marginBottom: '8px', textAlign: 'center' }}>
-          Online billing is not configured for this installation.
+          Paid plans are coming soon. Everything on the Free plan keeps working in the meantime.
         </p>
       )}
       <button
@@ -108,7 +108,7 @@ export const RazorpayCheckoutButton: React.FC<RazorpayCheckoutButtonProps> = ({
         disabled={isCurrentPlan || loading || checkingBilling || !billingEnabled}
         onClick={() => void handleSubscribe()}
       >
-        {checkingBilling ? 'Checking checkout…' : loading ? 'Setting up AutoPay...' : isCurrentPlan ? 'Active Plan' : (<><Zap size={14} /> Subscribe {amountLabel}/mo</>)}
+        {checkingBilling ? 'Checking checkout…' : !billingEnabled ? 'Coming soon' : loading ? 'Setting up AutoPay...' : isCurrentPlan ? 'Active Plan' : (<><Zap size={14} /> Subscribe {amountLabel}/mo</>)}
       </button>
     </div>
   );

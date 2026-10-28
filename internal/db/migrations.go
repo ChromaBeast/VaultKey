@@ -11,8 +11,6 @@ type migration struct {
 	fn      func(*sql.DB) error
 }
 
-
-
 var migrations = []migration{
 	{version: 1, fn: ensureLegacyColumns},
 	{version: 2, fn: func(d *sql.DB) error {
@@ -94,6 +92,12 @@ var migrations = []migration{
 			CREATE INDEX IF NOT EXISTS idx_invites_expires ON invites(expires_at);
 		`)
 		return err
+	}},
+	{version: 9, fn: func(d *sql.DB) error {
+		if err := addColumn(d, "api_keys", "wrapped_org_key", "BLOB"); err != nil {
+			return err
+		}
+		return addColumn(d, "organizations", "vault_sealed", "INTEGER NOT NULL DEFAULT 0")
 	}},
 }
 

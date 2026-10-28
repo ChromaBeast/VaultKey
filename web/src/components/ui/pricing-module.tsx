@@ -14,6 +14,8 @@ export interface PricingPlan {
   priceMonthly: number;
   features: PlanFeature[];
   recommended?: boolean;
+  /** Paid plan shown before online billing is switched on. */
+  comingSoon?: boolean;
 }
 
 export interface PricingModuleProps {
