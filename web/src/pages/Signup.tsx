@@ -6,6 +6,7 @@ import { apiFetch } from '../lib/api';
 import { AuthSplitLayout } from '../components/auth/AuthSplitLayout';
 import { PasswordField, Input, Button } from '../components/ui';
 import { TurnstileWidget, type TurnstileWidgetHandle } from '../components/auth/TurnstileWidget';
+import { VerifyOtpView } from '../components/auth/VerifyOtpView';
 import { useTurnstileConfig } from '../hooks/useTurnstileConfig';
 
 export const Signup: React.FC = () => {
@@ -16,6 +17,8 @@ export const Signup: React.FC = () => {
   const [error, setError] = useState('');
   const [turnstileToken, setTurnstileToken] = useState('');
   const [challengeError, setChallengeError] = useState('');
+  const [step, setStep] = useState<'form' | 'verify'>('form');
+  const [code, setCode] = useState('');
   const challengeRef = useRef<TurnstileWidgetHandle>(null);
   const turnstile = useTurnstileConfig();
 
@@ -30,19 +33,13 @@ export const Signup: React.FC = () => {
     setChallengeError('Security verification failed to load. Check your connection and reload this page.');
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Production signup is two-step: the first POST sends an email code (202),
+  // the second POST carries the code and creates the account.
+  const submitSignup = async (verificationCode?: string) => {
     setLoading(true);
     setError('');
-
-    if (turnstile.required && !turnstileToken) {
-      setError('Complete the security check to continue.');
-      setLoading(false);
-      return;
-    }
-
     try {
-      const res = await apiFetch<{ token: string; user: User; org: Org }>('/v1/auth/signup', {
+      const res = await apiFetch<{ status?: string; token: string; user: User; org: Org }>('/v1/auth/signup', {
         method: 'POST',
         body: JSON.stringify({
           org_name: orgName,
@@ -50,17 +47,58 @@ export const Signup: React.FC = () => {
           email,
           password,
           turnstile_token: turnstileToken,
+          verification_code: verificationCode,
         }),
       });
+      if (res.status === 'verification_required') {
+        setStep('verify');
+        return;
+      }
       login(res.token, res.user, res.org);
       navigate('/secrets');
     } catch (err) {
       setError(err instanceof Error && err.message ? err.message : 'Registration failed.');
-      if (turnstile.required) challengeRef.current?.reset();
+      if (turnstile.required && step === 'form') challengeRef.current?.reset();
     } finally {
       setLoading(false);
     }
   };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (turnstile.required && !turnstileToken) {
+      setError('Complete the security check to continue.');
+      return;
+    }
+    void submitSignup();
+  };
+
+  const resendCode = () => {
+    setError('');
+    apiFetch('/v1/auth/signup/resend', { method: 'POST', body: JSON.stringify({ email }) }).catch((err) =>
+      setError(err instanceof Error ? err.message : 'Could not resend the code.')
+    );
+  };
+
+  if (step === 'verify') {
+    return (
+      <VerifyOtpView
+        email={email}
+        otp={code}
+        setOtp={setCode}
+        onSubmit={() => void submitSignup(code)}
+        onResend={resendCode}
+        onBack={() => {
+          setStep('form');
+          setCode('');
+          setTurnstileToken('');
+          challengeRef.current?.reset();
+        }}
+        loading={loading}
+        error={error}
+      />
+    );
+  }
 
   return (
     <AuthSplitLayout
@@ -134,7 +172,11 @@ export const Signup: React.FC = () => {
         </Button>
 
         <p className="text-xs text-muted-foreground text-center mt-2 leading-relaxed">
-          By signing up, you acknowledge our{' '}
+          By signing up, you agree to our{' '}
+          <Link to="/terms" className="text-muted-foreground hover:text-foreground underline-offset-4">
+            Terms of Service
+          </Link>{' '}
+          and{' '}
           <Link to="/privacy" className="text-muted-foreground hover:text-foreground underline-offset-4">
             Privacy Policy
           </Link>.

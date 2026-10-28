@@ -46,6 +46,7 @@ jobs:
             infra:
               - 'docker-compose.yml'
               - 'Caddyfile'
+              - 'litestream.yml'
               - '.github/workflows/deploy.yml'
 
   # ─────────────────────────────────────────────
@@ -182,7 +183,7 @@ jobs:
       - name: SSH Pull & Restart Changed Services
         if: steps.ssh-config.outputs.available == 'true'
         run: |
-          scp docker-compose.yml Caddyfile vps:/opt/vaultkey/
+          scp docker-compose.yml Caddyfile litestream.yml vps:/opt/vaultkey/
           ssh vps 'cd /opt/vaultkey && docker compose pull && docker compose up -d && for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do curl -fsS http://127.0.0.1:8080/healthz && exit 0; sleep 5; done; exit 1'
 
       - name: Show Diagnostics on Failure

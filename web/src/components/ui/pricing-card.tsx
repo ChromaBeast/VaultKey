@@ -11,7 +11,12 @@ interface PricingCardProps {
 
 export const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelectPlan }) => (
   <div className={cn('flex h-full flex-col rounded-xl border bg-card p-6 text-left sm:p-7', plan.recommended ? 'border-primary/60' : 'border-border')}>
-    <h3 className="text-xl font-bold text-foreground">{plan.name}</h3>
+    <div className="flex items-center gap-2">
+      <h3 className="text-xl font-bold text-foreground">{plan.name}</h3>
+      {plan.comingSoon && (
+        <span className="rounded-full border border-border px-2 py-0.5 text-xs font-semibold text-muted-foreground">Coming soon</span>
+      )}
+    </div>
     <p className="mt-2 text-sm text-muted-foreground">{plan.description}</p>
 
     <div className="mt-8 flex items-baseline gap-2">
@@ -31,7 +36,7 @@ export const PricingCard: React.FC<PricingCardProps> = ({ plan, onSelectPlan }) 
     </ul>
 
     <Button type="button" variant={plan.recommended ? 'default' : 'secondary'} onClick={() => onSelectPlan?.(plan)} className="mt-auto h-11 w-full rounded-lg">
-      {plan.id === 'enterprise' ? 'Contact us' : 'Get started'}
+      {plan.id === 'enterprise' ? 'Contact us' : plan.comingSoon ? 'Start free for now' : 'Get started'}
     </Button>
   </div>
 );

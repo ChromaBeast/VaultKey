@@ -30,14 +30,9 @@ func (s *Server) handleCreateAPIKey(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "name is required"})
 	}
 
-	org, err := s.DB.GetOrganizationByID(orgID)
-	if err == nil && org != nil && org.Plan == "free" {
-		count, _ := s.DB.CountAPIKeys(orgID)
-		if count >= 2 {
-			return c.Status(402).JSON(fiber.Map{
-				"error": "free plan limit reached (max 2 API keys). Upgrade to Pro for unlimited keys.",
-				"code":  "TIER_LIMIT_REACHED",
-			})
+	if s.orgOnFreePlan(orgID) {
+		if count, _ := s.DB.CountAPIKeys(orgID); count >= freeMaxAPIKeys {
+			return tierLimit(c, "free plan limit reached (max 2 API keys). Upgrade to Team for unlimited keys.")
 		}
 	}
 
@@ -80,15 +75,16 @@ func (s *Server) handleCreateAPIKey(c *fiber.Ctx) error {
 		proj = nil
 	}
 
-	err = s.DB.CreateAPIKey(db.APIKey{
-		ID:          id,
-		OrgID:       orgID,
-		Name:        req.Name,
-		KeyHash:     string(hashed),
-		Permissions: req.Permissions,
-		Project:     proj,
-		ExpiresAt:   expTime,
-		Active:      true,
+	err := s.DB.CreateAPIKey(db.APIKey{
+		ID:            id,
+		OrgID:         orgID,
+		Name:          req.Name,
+		KeyHash:       string(hashed),
+		Permissions:   req.Permissions,
+		Project:       proj,
+		ExpiresAt:     expTime,
+		Active:        true,
+		WrappedOrgKey: wrapOrgKeyForToken(orgID, rawToken, id),
 	})
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "database failed"})

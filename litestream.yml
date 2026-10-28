@@ -1,0 +1,14 @@
+# Continuous off-site SQLite replication (Litestream). Enabled by the
+# "backup" Compose profile; see docs/PRODUCTION_OPERATIONS.md.
+# Values come from .env. Any S3-compatible store works (AWS S3, Cloudflare R2,
+# Backblaze B2). Credentials: LITESTREAM_ACCESS_KEY_ID / LITESTREAM_SECRET_ACCESS_KEY.
+dbs:
+  - path: /var/lib/vaultkey/vaultkey.db
+    replicas:
+      - type: s3
+        bucket: ${LITESTREAM_BUCKET}
+        path: vaultkey
+        endpoint: ${LITESTREAM_ENDPOINT}
+        region: ${LITESTREAM_REGION}
+        retention: 720h
+        snapshot-interval: 24h

@@ -17,26 +17,29 @@ type APIKey struct {
 	ExpiresAt   *time.Time `json:"expires_at"`
 	CreatedAt   time.Time  `json:"created_at"`
 	Active      bool       `json:"active"`
+	// WrappedOrgKey is the org master key sealed with this token (see
+	// crypto.WrapForToken). Nil for keys created before token unwrap existed.
+	WrappedOrgKey []byte `json:"-"`
 }
 
 func (db *DB) CreateAPIKey(key APIKey) error {
 	query := `
-		INSERT INTO api_keys (id, org_id, name, key_hash, permissions, project, last_used, expires_at, created_at, active)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?)
+		INSERT INTO api_keys (id, org_id, name, key_hash, permissions, project, last_used, expires_at, created_at, active, wrapped_org_key)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)
 	`
-	_, err := db.Exec(query, key.ID, key.OrgID, key.Name, key.KeyHash, key.Permissions, key.Project, key.LastUsed, key.ExpiresAt, key.Active)
+	_, err := db.Exec(query, key.ID, key.OrgID, key.Name, key.KeyHash, key.Permissions, key.Project, key.LastUsed, key.ExpiresAt, key.Active, key.WrappedOrgKey)
 	return err
 }
 
 func (db *DB) FindAPIKeyByID(id string) (*APIKey, error) {
 	var k APIKey
 	query := `
-		SELECT id, org_id, name, key_hash, permissions, project, last_used, expires_at, created_at, active
+		SELECT id, org_id, name, key_hash, permissions, project, last_used, expires_at, created_at, active, wrapped_org_key
 		FROM api_keys
 		WHERE id = ?
 	`
 	err := db.QueryRow(query, id).Scan(
-		&k.ID, &k.OrgID, &k.Name, &k.KeyHash, &k.Permissions, &k.Project, &k.LastUsed, &k.ExpiresAt, &k.CreatedAt, &k.Active,
+		&k.ID, &k.OrgID, &k.Name, &k.KeyHash, &k.Permissions, &k.Project, &k.LastUsed, &k.ExpiresAt, &k.CreatedAt, &k.Active, &k.WrappedOrgKey,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -100,4 +103,3 @@ func (db *DB) RevokeUserSessions(orgID, email, keepKeyID string) error {
 	_, err := db.Exec("UPDATE api_keys SET active = 0 WHERE org_id = ? AND name = ? AND active = 1", orgID, sessionName)
 	return err
 }
-

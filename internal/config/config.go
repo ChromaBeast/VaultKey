@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -75,27 +74,32 @@ func (c *Config) Lockout() time.Duration {
 	return d
 }
 
+// Validate refuses to boot a production server whose configuration would
+// silently weaken it: a forgeable audit chain, no captcha (which also makes
+// login fail closed), no transactional email, or half-configured billing.
+// Set VAULTKEY_ENV=dev to skip these checks locally.
 func (c *Config) Validate() error {
 	if c.IsDev() {
 		return nil
 	}
+	var problems []string
 	if c.AuditSigningKey == defaultHMAC || c.AuditSigningKey == prodHMACHint || len(c.AuditSigningKey) < 32 {
-		log.Printf("[WARN] Running in production with a default or weak audit signing key; set VAULTKEY_HMAC_KEY (64+ random chars) for tamper-evident audit logs")
+		problems = append(problems, "VAULTKEY_HMAC_KEY must be set to 32+ random characters (openssl rand -hex 32)")
 	}
 	if c.TurnstileSiteKey == "" || c.TurnstileSecretKey == "" || c.TurnstileSecretKey == testTurnstile {
-		log.Printf("[WARN] Cloudflare Turnstile keys not configured or using test key; captcha verification is in permissive mode")
+		problems = append(problems, "VAULTKEY_TURNSTILE_SITE_KEY and VAULTKEY_TURNSTILE_SECRET_KEY must be real Cloudflare Turnstile keys")
 	}
 	switch strings.ToLower(strings.TrimSpace(c.Email.Provider)) {
 	case "brevo":
 		if c.Email.BrevoAPIKey == "" || c.Email.FromEmail == "" {
-			log.Printf("[WARN] Brevo API key or sender address not set; transactional emails disabled")
+			problems = append(problems, "BREVO_API_KEY and EMAIL_FROM are required when EMAIL_PROVIDER=brevo")
 		}
 	case "smtp":
 		if c.Email.SMTPHost == "" || c.Email.SMTPPort <= 0 || c.Email.SMTPUser == "" || c.Email.SMTPPass == "" || c.Email.FromEmail == "" {
-			log.Printf("[WARN] SMTP settings incomplete; transactional emails disabled")
+			problems = append(problems, "SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS and EMAIL_FROM are required when EMAIL_PROVIDER=smtp")
 		}
 	default:
-		log.Printf("[WARN] Email provider not configured; console/disabled email will be used")
+		problems = append(problems, "EMAIL_PROVIDER must be brevo or smtp (the console provider logs OTP codes)")
 	}
 	billingValues := []string{c.RazorpayKeyID, c.RazorpayKeySecret, c.RazorpayWebhookSecret, c.RazorpayPlanProID, c.RazorpayPlanEntID}
 	configured := 0
@@ -105,7 +109,10 @@ func (c *Config) Validate() error {
 		}
 	}
 	if configured != 0 && configured != len(billingValues) {
-		log.Printf("[WARN] Razorpay billing configuration is incomplete; set all credentials and both plan IDs to enable checkout")
+		problems = append(problems, "Razorpay billing is partially configured; set all five RAZORPAY_* values or none")
+	}
+	if len(problems) > 0 {
+		return fmt.Errorf("production configuration is incomplete (set VAULTKEY_ENV=dev for local use):\n  - %s", strings.Join(problems, "\n  - "))
 	}
 	return nil
 }

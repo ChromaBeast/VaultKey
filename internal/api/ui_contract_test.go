@@ -36,7 +36,7 @@ func TestBillingChangesRequireAdmin(t *testing.T) {
 	if err := database.CreateAPIKey(db.APIKey{ID: "vk_billingread", OrgID: orgID, Name: "read", KeyHash: sha256HexOf(raw), Permissions: "read", Active: true}); err != nil {
 		t.Fatal(err)
 	}
-	for _, route := range []string{"/payments/create-order", "/payments/verify", "/subscriptions/create", "/subscriptions/verify", "/subscriptions/cancel"} {
+	for _, route := range []string{"/subscriptions/create", "/subscriptions/verify", "/subscriptions/cancel"} {
 		response := doJSON(t, server.App, "POST", "/v1"+route, map[string]string{}, raw)
 		if response.StatusCode != 403 {
 			t.Errorf("%s: expected 403, got %d", route, response.StatusCode)

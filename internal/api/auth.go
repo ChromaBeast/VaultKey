@@ -18,6 +18,10 @@ func (s *Server) handleLock(c *fiber.Ctx) error {
 		return c.Status(403).JSON(fiber.Map{"error": "admin access required to lock the vault"})
 	}
 
+	// Seal first: tokens may reopen idle-locked vaults, but not sealed ones.
+	if err := s.DB.SetVaultSealed(orgID, true); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "failed to seal vault"})
+	}
 	if crypto.Global.IsLocked(orgID) {
 		return c.JSON(fiber.Map{"status": "already locked"})
 	}

@@ -2,9 +2,7 @@ package api
 
 import (
 	"crypto/rand"
-	"crypto/sha256"
 	"encoding/hex"
-	"fmt"
 	"strings"
 	"time"
 	"vaultkey/internal/crypto"
@@ -19,11 +17,12 @@ func nowPlus24h() time.Time {
 }
 
 type SignupRequest struct {
-	OrgName        string `json:"org_name"`
-	OrgSlug        string `json:"org_slug"`
-	Email          string `json:"email"`
-	Password       string `json:"password"`
-	TurnstileToken string `json:"turnstile_token"`
+	OrgName          string `json:"org_name"`
+	OrgSlug          string `json:"org_slug"`
+	Email            string `json:"email"`
+	Password         string `json:"password"`
+	TurnstileToken   string `json:"turnstile_token"`
+	VerificationCode string `json:"verification_code"`
 }
 
 type LoginRequest struct {
@@ -36,6 +35,9 @@ func (s *Server) handleAuthConfig(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"turnstile_required": !s.Config.IsDev() || (s.Config.TurnstileSecretKey != "" && s.Config.TurnstileSecretKey != turnstileTestSecret),
 		"turnstile_site_key": s.Config.TurnstileSiteKey,
+		// Public so the pricing page can show "coming soon" until the five
+		// RAZORPAY_* values are set; checkout turns on with no code change.
+		"billing_enabled": s.Config.BillingEnabled(),
 	})
 }
 
@@ -59,7 +61,12 @@ func (s *Server) handleSignup(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "password must be at least 8 characters"})
 	}
 
-	if !s.VerifyTurnstileToken(req.TurnstileToken, c.IP()) {
+	req.Email = strings.ToLower(strings.TrimSpace(req.Email))
+
+	// Step 2 of a verified signup proves email ownership with the code; the
+	// captcha was already checked in step 1, when the code was sent.
+	verifying := s.requireEmailVerification && req.VerificationCode != ""
+	if !verifying && !s.VerifyTurnstileToken(req.TurnstileToken, c.IP()) {
 		return c.Status(403).JSON(fiber.Map{"error": "security verification failed, please complete the captcha"})
 	}
 
@@ -76,6 +83,18 @@ func (s *Server) handleSignup(c *fiber.Ctx) error {
 	existingUser, _ := s.DB.GetUserByEmail(req.Email)
 	if existingUser != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "email is already registered"})
+	}
+
+	if s.requireEmailVerification {
+		if !verifying {
+			if err := s.sendSignupCode(req.Email); err != nil {
+				return c.Status(502).JSON(fiber.Map{"error": "failed to send verification email"})
+			}
+			return c.Status(202).JSON(fiber.Map{"status": "verification_required"})
+		}
+		if msg := s.checkSignupCode(req.Email, req.VerificationCode); msg != "" {
+			return c.Status(400).JSON(fiber.Map{"error": msg})
+		}
 	}
 
 	idBytes := make([]byte, 64)
@@ -177,37 +196,4 @@ func (s *Server) handleLogin(c *fiber.Ctx) error {
 		"org":    org,
 		"user":   user,
 	})
-}
-
-func (s *Server) createSessionToken(orgID, name, permissions string) (string, error) {
-	keyBytes := make([]byte, 16)
-	secBytes := make([]byte, 24)
-	if _, err := rand.Read(keyBytes); err != nil {
-		return "", fmt.Errorf("failed to generate key bytes: %w", err)
-	}
-	if _, err := rand.Read(secBytes); err != nil {
-		return "", fmt.Errorf("failed to generate secret bytes: %w", err)
-	}
-
-	id := "vk_" + hex.EncodeToString(keyBytes[:6])
-	secret := hex.EncodeToString(secBytes)
-	rawToken := id + "." + secret
-
-	h := sha256.Sum256([]byte(rawToken))
-	hashed := hex.EncodeToString(h[:])
-
-	expiresAt := nowPlus24h()
-	apiKey := db.APIKey{
-		ID:          id,
-		OrgID:       orgID,
-		Name:        name,
-		KeyHash:     hashed,
-		Permissions: permissions,
-		ExpiresAt:   &expiresAt,
-		Active:      true,
-	}
-	if err := s.DB.CreateAPIKey(apiKey); err != nil {
-		return "", err
-	}
-	return rawToken, nil
 }

@@ -18,9 +18,11 @@ export const LandingFooter: React.FC = () => (
           <Link to="/security" className="hover:text-foreground">Why VaultKey</Link>
           <Link to="/pricing" className="hover:text-foreground">Pricing</Link>
           <Link to="/docs" className="hover:text-foreground">Docs</Link>
+          <Link to="/terms" className="hover:text-foreground">Terms</Link>
           <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
+          <Link to="/refunds" className="hover:text-foreground">Refunds</Link>
           <a href="https://github.com/ChromaBeast/VaultKey" target="_blank" rel="noreferrer" className="hover:text-foreground">GitHub</a>
-          <a href="mailto:sheersh@vaultkey.dev" className="hover:text-foreground">Contact</a>
+          <Link to="/contact" className="hover:text-foreground">Contact</Link>
         </nav>
       </div>
       <p className="mt-10 border-t border-border pt-5 text-xs text-muted-foreground">© {new Date().getFullYear()} VaultKey Systems</p>

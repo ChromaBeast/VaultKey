@@ -13,15 +13,15 @@ export const PrivacyPolicy: React.FC = () => {
         </div>
 
         <p className="text-xs text-muted-foreground mb-6">
-          Last Updated: September 2026
+          Last Updated: October 2026
         </p>
 
         <section className="mb-6">
           <h2 className="text-base font-bold text-foreground border-b border-border pb-2">
-            1. Zero-Trust In-Memory Security Model
+            1. In-Memory Key Model
           </h2>
           <p className="text-sm text-muted-foreground leading-relaxed mt-2">
-            Stored secret values are encrypted before they are written to the database. The master key is derived in memory and cleared when the vault locks. While a secret is being used, its plaintext necessarily exists in application memory. The CLI export and pull commands intentionally write plaintext to files you choose; secure and remove those files yourself.
+            Stored secret values are encrypted before they are written to the database. The master key is derived in memory and cleared when the vault locks. While a secret is being used, its plaintext necessarily exists in application memory. API tokens hold their own encrypted copy of the organization key so they can reopen the vault after an idle lock. On the hosted service, the server process holds the key while the vault is open, so the service operator is part of your trust boundary; self-hosting keeps it in your infrastructure. The CLI export and pull commands intentionally write plaintext to files you choose; secure and remove those files yourself.
           </p>
         </section>
 

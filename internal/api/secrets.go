@@ -78,14 +78,9 @@ func (s *Server) handleCreateSecret(c *fiber.Ctx) error {
 		return c.Status(403).JSON(fiber.Map{"error": "unauthorized project or permission"})
 	}
 
-	org, err := s.DB.GetOrganizationByID(orgID)
-	if err == nil && org != nil && org.Plan == "free" {
-		count, _ := s.DB.CountSecrets(orgID)
-		if count >= 25 {
-			return c.Status(402).JSON(fiber.Map{
-				"error": "free plan limit reached (max 25 secrets). Upgrade to Pro for unlimited secrets.",
-				"code":  "TIER_LIMIT_REACHED",
-			})
+	if s.orgOnFreePlan(orgID) {
+		if count, _ := s.DB.CountSecrets(orgID); count >= freeMaxSecrets {
+			return tierLimit(c, "free plan limit reached (max 25 secrets). Upgrade to Team for unlimited secrets.")
 		}
 	}
 

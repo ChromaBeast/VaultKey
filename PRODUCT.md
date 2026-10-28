@@ -75,7 +75,8 @@ write plaintext to user-selected files, so avoid claiming that plaintext never r
 
 ## Evidence on Hand
 
-- Full zero-trust Argon2id + AES-256-GCM + memory-zeroing implementation shipped.
+- Argon2id + AES-256-GCM + memory-zeroing implementation shipped. On the hosted service the
+  operator is inside the trust boundary while a vault is open; self-hosting removes that.
 - Razorpay integration: one-shot orders + subscription lifecycle (create/activate/
   cancel) with signature verification, webhook event processing, and automatic
   period-end downgrade. Production mode refuses demo credentials and mock signatures.

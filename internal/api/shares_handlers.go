@@ -38,6 +38,9 @@ func (s *Server) handleCreateShare(c *fiber.Ctx) error {
 	if p != "admin" && p != "write" && p != "read" {
 		return c.Status(403).JSON(fiber.Map{"error": "insufficient permissions to create share links"})
 	}
+	if s.paidFeatureBlocked(c, "One-time share links") {
+		return nil
+	}
 
 	var req CreateShareReq
 	if err := c.BodyParser(&req); err != nil || req.Secret == "" {

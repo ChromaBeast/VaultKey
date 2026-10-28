@@ -24,6 +24,9 @@ const SharePage = lazy(() => import('./pages/SharePage').then((module) => ({ def
 const AcceptInvitePage = lazy(() => import('./pages/AcceptInvitePage').then((module) => ({ default: module.AcceptInvitePage })));
 const DocsPage = lazy(() => import('./pages/DocsPage').then((module) => ({ default: module.DocsPage })));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy').then((module) => ({ default: module.PrivacyPolicy })));
+const TermsPage = lazy(() => import('./pages/TermsPage').then((module) => ({ default: module.TermsPage })));
+const RefundPolicyPage = lazy(() => import('./pages/RefundPolicyPage').then((module) => ({ default: module.RefundPolicyPage })));
+const ContactPage = lazy(() => import('./pages/ContactPage').then((module) => ({ default: module.ContactPage })));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })));
 
 export const App: React.FC = () => {
@@ -46,6 +49,9 @@ export const App: React.FC = () => {
             <Route path="/reset-password" element={<ForgotPasswordPage />} />
             <Route path="/accept-invite" element={<AcceptInvitePage />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/refunds" element={<RefundPolicyPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="/share/:shareId" element={<SharePageWrapper />} />
             <Route path="/docs" element={<PublicShell><DocsPage /></PublicShell>} />
 

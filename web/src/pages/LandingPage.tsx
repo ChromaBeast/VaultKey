@@ -32,7 +32,7 @@ export function LandingPage() {
           </article>
           <article>
             <h3>Start with your own project.</h3>
-            <p>The free plan includes 25 secrets and two access keys. Compare plans when your team needs more.</p>
+            <p>The free plan includes 25 secrets, two team members and two access keys. Compare plans when your team needs more.</p>
             <Link to="/pricing" className="marketing-text-link">Compare plans <ArrowRight size={16} aria-hidden="true" /></Link>
           </article>
         </div>

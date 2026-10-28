@@ -51,3 +51,14 @@ func (db *DB) DeleteInvite(token string) error {
 	_, err := db.Exec("DELETE FROM invites WHERE token = ?", token)
 	return err
 }
+
+// CountOrgSeats counts members plus unexpired pending invites, so free-plan
+// seat limits can't be bypassed by issuing many invites at once.
+func (db *DB) CountOrgSeats(orgID string) (int, error) {
+	var count int
+	err := db.QueryRow(`
+		SELECT (SELECT COUNT(*) FROM users WHERE org_id = ?)
+		     + (SELECT COUNT(*) FROM invites WHERE org_id = ? AND expires_at > CURRENT_TIMESTAMP)
+	`, orgID, orgID).Scan(&count)
+	return count, err
+}

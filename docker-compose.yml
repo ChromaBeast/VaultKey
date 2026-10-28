@@ -13,7 +13,9 @@ services:
       VAULTKEY_DB_PATH: /var/lib/vaultkey/vaultkey.db
       VAULTKEY_AUTO_LOCK: 30m
       VAULTKEY_HMAC_KEY: "${VAULTKEY_HMAC_KEY:?set VAULTKEY_HMAC_KEY in .env (see .env.example)}"
-      VAULTKEY_TRUSTED_PROXIES: "127.0.0.1"
+      # Caddy reaches the API over the Docker bridge network (private ranges);
+      # the API port is bound to 127.0.0.1, so only Caddy/localhost can connect.
+      VAULTKEY_TRUSTED_PROXIES: "127.0.0.1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
       VAULTKEY_DOMAIN: "${VAULTKEY_DOMAIN:-localhost}"
       VAULTKEY_ALLOWED_ORIGINS: "${VAULTKEY_ALLOWED_ORIGINS:-}"
       VAULTKEY_TURNSTILE_SITE_KEY: "${VAULTKEY_TURNSTILE_SITE_KEY:-}"
@@ -51,6 +53,27 @@ services:
     restart: unless-stopped
     labels:
       com.centurylinklabs.watchtower.enable: "true"
+
+  # Off-site backups. Enable with COMPOSE_PROFILES=backup in .env and the
+  # LITESTREAM_* settings from .env.example.
+  litestream:
+    image: litestream/litestream:0.3.13
+    container_name: vaultkey_litestream
+    profiles: ["backup"]
+    user: "10001:10001"
+    command: replicate
+    environment:
+      LITESTREAM_BUCKET: "${LITESTREAM_BUCKET:-}"
+      LITESTREAM_ENDPOINT: "${LITESTREAM_ENDPOINT:-}"
+      LITESTREAM_REGION: "${LITESTREAM_REGION:-auto}"
+      LITESTREAM_ACCESS_KEY_ID: "${LITESTREAM_ACCESS_KEY_ID:-}"
+      LITESTREAM_SECRET_ACCESS_KEY: "${LITESTREAM_SECRET_ACCESS_KEY:-}"
+    volumes:
+      - ./data:/var/lib/vaultkey
+      - ./litestream.yml:/etc/litestream.yml:ro
+    depends_on:
+      - vaultkey
+    restart: unless-stopped
 
   watchtower:
     image: containrrr/watchtower:1.7.1
