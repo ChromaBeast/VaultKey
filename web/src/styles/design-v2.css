@@ -13,15 +13,16 @@
   .vk-eyebrow { font: 700 .75rem var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--blue-light); }
   .vk-accent-text { color: var(--blue-light); }
 
+  /* Icons are bare by default; .vk-tile adds a tinted container (use sparingly). */
+  .vk-icon { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: fit-content; color: var(--tone-text, var(--blue-light)); }
+  .vk-icon-sm svg { width: 16px; height: 16px; } .vk-icon-md svg { width: 22px; height: 22px; }
+  .vk-icon-lg svg { width: 28px; height: 28px; } .vk-icon-xl svg { width: 36px; height: 36px; }
   .vk-tile {
-    --size: 44px;
-    display: inline-grid; place-items: center; flex-shrink: 0;
-    width: var(--size); height: var(--size); border-radius: calc(var(--size) * .28);
-    color: var(--tone-text, var(--blue-light));
+    --size: 44px; width: var(--size); height: var(--size); border-radius: calc(var(--size) * .28);
     background: color-mix(in srgb, var(--tone, var(--primary)) 14%, transparent);
     border: 1px solid color-mix(in srgb, var(--tone, var(--primary)) 28%, transparent);
   }
-  .vk-tile-sm { --size: 32px; } .vk-tile-lg { --size: 56px; } .vk-tile-xl { --size: 72px; }
+  .vk-tile.vk-icon-sm { --size: 32px; } .vk-tile.vk-icon-lg { --size: 56px; } .vk-tile.vk-icon-xl { --size: 72px; }
 
   .vk-pill {
     display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: var(--radius-full);

@@ -30,12 +30,6 @@
   .hero-terminal-rows code { font: 700 .8125rem var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .hero-terminal-rows em { font: normal .8125rem var(--font-mono); color: var(--vk-text-muted); }
   .hero-terminal-rows .meta code { font-weight: 400; font-size: .75rem; color: var(--vk-text-muted); }
-  .hero-chip { position: absolute; display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; background: var(--popover); border: 1px solid color-mix(in srgb, var(--tone) 40%, transparent); box-shadow: 0 12px 30px rgba(0, 0, 0, .55); }
-  .hero-chip span { display: grid; gap: 1px; }
-  .hero-chip strong { font-size: .8125rem; font-weight: 600; }
-  .hero-chip small { font: 400 .6875rem var(--font-mono); color: var(--vk-text-secondary); }
-  .hero-chip-agent { top: -22px; right: 24px; }
-  .hero-chip-audit { bottom: -40px; left: -28px; }
 
   /* STACK STRIP */
   .stack-strip { display: flex; flex-direction: column; align-items: center; gap: 18px; padding: 34px var(--container-px); background: var(--card); border-block: 1px solid var(--border); }
@@ -68,7 +62,6 @@
   .connect-card:hover { border-color: color-mix(in srgb, var(--tone) 45%, transparent); }
   .connect-card h3 { margin: 0; font-size: 1.15rem; font-weight: 700; }
   .connect-card p { margin: 0; color: var(--vk-text-secondary); font-size: .875rem; line-height: 1.5; flex: 1; }
-  .connect-card > span { display: inline-flex; align-items: center; gap: 6px; font-size: .84rem; font-weight: 600; color: var(--tone-text); }
 
   .security-band-wrap { padding-top: 0; }
   .security-band { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 48px; align-items: center; padding: clamp(28px, 5vw, 56px); border-radius: 24px; background: var(--card); border-color: var(--border-strong); }
@@ -99,8 +92,34 @@
   }
   @media (max-width: 639px) {
     .feature-grid, .steps-grid, .connect-grid { grid-template-columns: 1fr; }
-    .hero-chip-agent { right: 8px; } .hero-chip-audit { left: 8px; bottom: -34px; }
     .hero-v2-cta a { width: 100%; justify-content: center; }
   }
   @media (prefers-reduced-motion: reduce) { .landing-hero * { animation: none !important; } }
+}
+
+/* Tone-down pass: neutral pills, single blue accent, flat CTA, quiet cards */
+@layer components {
+  .stack-strip > p { margin: 0; color: var(--vk-text-muted); font: 500 .75rem var(--font-mono); letter-spacing: .12em; text-transform: uppercase; }
+  .stack-pill { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: var(--radius-full); border: 1px solid var(--border-strong); color: var(--vk-text-secondary); font-size: .8125rem; font-weight: 500; }
+  .vk-pill { color: var(--vk-text-secondary); background: transparent; border-color: var(--border-strong); }
+  .vk-pill svg { color: var(--blue-light); }
+  .hero-v2-trust li { color: var(--vk-text-secondary); }
+  .hero-v2-trust li svg { color: var(--blue-light); }
+  .step-num { font: 600 .8125rem var(--font-mono); color: var(--vk-text-muted); }
+  .step-code > span { color: var(--blue-light); }
+  .connect-card { position: relative; }
+  .connect-arrow { position: absolute; top: 24px; right: 24px; color: var(--vk-text-muted); transition: transform var(--duration-fast) var(--ease-smooth), color var(--duration-fast) ease; }
+  .connect-card:hover .connect-arrow { color: var(--blue-light); transform: translateX(3px); }
+  .connect-card:hover { border-color: var(--border-strong); }
+  .security-band li { border-color: var(--border); background: transparent; }
+  .security-band { box-shadow: none; }
+  .cta-band { background: var(--card); border: 1px solid var(--border-strong); box-shadow: none; }
+  .cta-band-primary { background: var(--primary-button); color: #fff; }
+  .cta-band-primary:hover { background: var(--primary-button-hover); }
+  .cta-band-secondary { color: var(--foreground); background: transparent; border-color: var(--border-strong); }
+  .cta-band-secondary:hover { background: rgba(255, 255, 255, .05); }
+  .cta-band .section-title { color: var(--foreground); }
+  .cta-band p { color: var(--vk-text-secondary); }
+  .home-steps .glass { box-shadow: none; }
+  .vk-glow::before { background: radial-gradient(circle, rgba(0, 143, 245, .12), transparent 62%); }
 }

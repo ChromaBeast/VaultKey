@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Bot, Check, Copy, Lock, ShieldCheck } from 'lucide-react';
+import { Check, Copy, Lock } from 'lucide-react';
 import { copyText } from '../../../hooks/useClipboard';
-import { IconTile } from '@/components/ui';
 
 const ROWS: { key: string; version: string; role: string; tone: string }[] = [
   { key: 'STRIPE_SECRET_KEY', version: 'v4', role: 'write', tone: 'green' },
@@ -52,14 +51,6 @@ export const HeroTerminal: React.FC = () => {
         ))}
       </ul>
     </figure>
-    <div className="hero-chip hero-chip-agent tone-violet">
-      <IconTile tone="violet" size="sm"><Bot size={16} /></IconTile>
-      <span><strong>Claude Code connected</strong><small>keys never enter context</small></span>
-    </div>
-    <div className="hero-chip hero-chip-audit tone-green">
-      <IconTile tone="green" size="sm"><ShieldCheck size={16} /></IconTile>
-      <span><strong>Audit chain verified</strong><small>HMAC-SHA256 · 1,284 entries</small></span>
-    </div>
   </div>
   );
 };

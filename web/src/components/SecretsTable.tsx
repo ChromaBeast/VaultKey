@@ -101,7 +101,7 @@ export const SecretsTable: React.FC<SecretsTableProps> = ({
           {!loading && secrets.length === 0 && !searching && (
             <tr>
               <td colSpan={5} className="text-center py-14 px-6">
-                <IconTile tone="blue" size="lg" className="mb-3"><FolderPlus size={24} /></IconTile>
+                <IconTile tone="blue" size="lg" boxed className="mb-3"><FolderPlus size={24} /></IconTile>
                 <h3 className="text-base text-foreground font-bold mb-1.5">
                   No secrets in "{project}" yet
                 </h3>
