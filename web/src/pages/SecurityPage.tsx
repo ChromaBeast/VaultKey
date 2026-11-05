@@ -5,7 +5,7 @@ import { SecurityDocSection } from '../components/docs/SecurityDocSection';
 
 export function SecurityPage() {
   return <>
-    <PageIntro eyebrow="Security model" tone="green" lead="Understand the vault" accent="before you trust it." linkTo="/docs#security" linkLabel="Read the technical security model">
+    <PageIntro eyebrow="Security model" lead="Understand the vault" accent="before you trust it." linkTo="/docs#security" linkLabel="Read the technical security model">
       How VaultKey stores secrets, controls access, and records activity for your team.
     </PageIntro>
     <BenefitsSection />
