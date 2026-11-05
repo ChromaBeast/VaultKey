@@ -83,8 +83,6 @@
 }
 
 @layer components {
-  .modal-panel { background: var(--popover); border-color: var(--border-strong); border-radius: 18px; box-shadow: var(--vk-shadow-pop), inset 0 1px 0 rgba(255, 255, 255, .06); }
-  .modal-panel h3 { font-family: var(--font-display); letter-spacing: -.02em; }
 }
 
 @layer components {

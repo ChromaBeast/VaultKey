@@ -1,5 +1,6 @@
-import React from 'react';
-import { Bot, Check, Lock, ShieldCheck } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Bot, Check, Copy, Lock, ShieldCheck } from 'lucide-react';
+import { copyText } from '../../../hooks/useClipboard';
 import { IconTile } from '@/components/ui';
 
 const ROWS: { key: string; version: string; role: string; tone: string }[] = [
@@ -9,8 +10,20 @@ const ROWS: { key: string; version: string; role: string; tone: string }[] = [
   { key: 'JWT_SIGNING_SECRET', version: 'v1', role: 'write', tone: 'green' },
 ];
 
+const COMMAND = 'vaultkey run --project=backend -- npm start';
+
 /** Static product preview: a terminal run plus the secrets it injected. Sample data only. */
-export const HeroTerminal: React.FC = () => (
+export const HeroTerminal: React.FC = () => {
+  const [copied, setCopied] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
+  const copy = async () => {
+    if (!await copyText(COMMAND)) return;
+    setCopied(true);
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => setCopied(false), 1800);
+  };
+  return (
   <div className="hero-terminal-wrap">
     <figure className="hero-terminal" aria-label="Example: vaultkey run injecting twelve secrets into a process">
       <div className="hero-terminal-bar" aria-hidden="true">
@@ -18,7 +31,14 @@ export const HeroTerminal: React.FC = () => (
         <span>backend · production</span>
       </div>
       <div className="hero-terminal-body">
-        <p><b className="tone-cyan" style={{ color: 'var(--cyan)' }}>$</b> vaultkey run --project=backend -- npm start</p>
+        <p className="cmd">
+          <span><b style={{ color: 'var(--cyan)' }}>$</b> {COMMAND}</span>
+          <button type="button" onClick={() => void copy()} aria-label="Copy command">
+            {copied ? <Check size={13} aria-hidden="true" /> : <Copy size={13} aria-hidden="true" />}
+            {copied ? 'Copied' : 'Copy'}
+          </button>
+        </p>
+        <span role="status" className="sr-only">{copied ? 'Command copied' : ''}</span>
         <p className="ok"><Check size={15} aria-hidden="true" /> 12 secrets decrypted in memory</p>
         <p className="ok"><Check size={15} aria-hidden="true" /> injected into process env · nothing written to disk</p>
         <p className="muted">&gt; server listening on :3000</p>
@@ -41,4 +61,5 @@ export const HeroTerminal: React.FC = () => (
       <span><strong>Audit chain verified</strong><small>HMAC-SHA256 · 1,284 entries</small></span>
     </div>
   </div>
-);
+  );
+};
