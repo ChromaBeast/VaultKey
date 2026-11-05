@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { TriangleAlert } from 'lucide-react';
+import { IconTile } from './ui/IconTile';
+import { TriangleAlert, Info } from 'lucide-react';
 import { Modal } from './ui/Modal';
 import { Input } from './ui';
 
@@ -40,7 +41,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     <Modal label={title} isOpen={isOpen} onClose={loading ? () => undefined : onClose} width={430}>
       <div style={{ padding: '28px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-          {danger && <TriangleAlert size={20} color="var(--vk-danger)" />}
+          <IconTile tone={danger ? 'red' : 'blue'} size="sm">{danger ? <TriangleAlert size={16} /> : <Info size={16} />}</IconTile>
           <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--vk-text)' }}>{title}</h3>
         </div>
 

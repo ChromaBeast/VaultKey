@@ -40,10 +40,27 @@ One accent family. Do not introduce secondary accents without a documented reaso
 | `--muted-foreground` | `#94a3b8` | Subtext, table labels, descriptions |
 | `--vk-text-muted` | `#8593a8` | Tertiary text (still 6:1 on cards) |
 
+### Accent palette (design v2)
+Logo blue leads; the other accents give each product area its own identity. Tokens live in `web/src/styles/tokens.css`, tones in `design-v2.css` (`.tone-blue|violet|cyan|fuchsia|green|amber|red|rose`).
+
+| Token | Hex | Use |
+|---|---|---|
+| `--blue-light` | `#4db3ff` | Links, eyebrows and headline accents on dark (7.3:1) |
+| `--violet` / `--violet-light` | `#8b5cf6` / `#a78bfa` | AI agents, API keys, version history, premium |
+| `--cyan` | `#22d3ee` | Runtime, audit, informational |
+| `--fuchsia` | `#e879f9` | One-time share links, generator, highlights |
+| `--rose` | `#fb7185` | Production environment |
+| `--inset` | `#05060a` | Terminals and code wells |
+
+Section tones in the app: Secrets blue, API Keys violet, Audit cyan, Billing green, Settings amber.
+Environments: production rose, staging amber, development cyan. Roles: admin amber, write green, read blue.
+
 ### Color Rules
-- One accent family: the logo blue. A blue CTA does not become teal in section 5.
-- No gradients on canvases or panels. The logo is a flat PNG; the pricing Team card may use a subtle blue ramp (`#5eb1ff` → `#008ff5` → `#006db8`) on its border only.
-- Badge backgrounds are always `accentColor + 12` opacity (e.g. `rgba(0, 143, 245, 0.12)`).
+- **No gradients.** Buttons, bands, avatars and borders are flat solid colour. The only soft effect is one blue radial glow (max 20% opacity, `.vk-glow`) behind a hero or auth panel.
+- Headline accents are solid `--blue-light`, never a multi-colour fill.
+- Tinted components (badges, tiles, pills, callouts) use the tone at 12-14% fill and 28-30% border; text uses the tone's light variant.
+- Every text pairing must stay at 4.5:1 or better. `--primary` (#008ff5) is never a button fill under white text; use `--primary-button`.
+- Badge backgrounds are `tone + 12` opacity (e.g. `rgba(0, 143, 245, 0.12)`).
 
 ---
 
@@ -155,7 +172,7 @@ Do not mix radii families. A pill button in a square-card layout is broken desig
 
 **Don't:**
 - Don't add underlines to any link, button, or tab — ever.
-- Don't use gradients on backgrounds — the only allowed ramp is the pricing Team card border.
+- Don't use gradients anywhere. Use flat colour plus the single blue glow.
 - Don't invent customer logos, fake metrics, or made-up case studies.
 - Don't use serif fonts (Fraunces, Instrument Serif, Playfair) — this is a dark-tech B2B tool.
 - Don't add infinite-loop animations to table rows or metric cards.
