@@ -13,3 +13,5 @@ export * from './Modal';
 export * from './PageHeader';
 export * from './StatusBadge';
 export * from './PasswordField';
+export * from './IconTile';
+export * from './StatCard';

@@ -33,6 +33,16 @@
   --input: #121722;
   --ring: #008ff5;
 
+  /* Accent palette (design v2): logo blue leads, others add personality */
+  --blue-light: #4db3ff;
+  --violet: #8b5cf6;
+  --violet-light: #a78bfa;
+  --cyan: #22d3ee;
+  --fuchsia: #e879f9;
+  --rose: #fb7185;
+  --inset: #05060a;
+  --vk-accent-text: var(--blue-light);
+
   /* Semantic Colors */
   --success: #4ade80;
   --warning: #f59e0b;
