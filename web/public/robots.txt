@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Disallow: /secrets
+Disallow: /keys
+Disallow: /audit
+Disallow: /billing
+Disallow: /settings
+Disallow: /share/
+Disallow: /accept-invite
+Disallow: /reset-password
+Disallow: /login
+Disallow: /signup
+
+Sitemap: https://vaultkey.sheershjaiswal.in/sitemap.xml
