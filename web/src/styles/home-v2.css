@@ -14,6 +14,18 @@
   .hero-terminal-head { display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 16px; border-bottom: 1px solid var(--border); background: var(--card); color: var(--vk-text-muted); font: 500 .75rem var(--font-mono); letter-spacing: .04em; }
   .hero-terminal-head button { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 8px; border: 1px solid var(--border-strong); background: transparent; color: var(--vk-text-secondary); font: 500 .75rem var(--font-sans); letter-spacing: 0; cursor: pointer; }
   .hero-terminal-head button:hover { color: var(--foreground); border-color: var(--primary); }
+  .hero-terminal-actions { display: inline-flex; align-items: center; gap: 8px; }
+  .hero-terminal-head button.is-icon { padding: 5px 8px; }
+  .hero-terminal-head button:disabled { opacity: .45; cursor: default; }
+  .hero-terminal-body .reveal { opacity: 0; transform: translateY(5px); }
+  .hero-terminal-body .reveal.is-in { opacity: 1; transform: none; transition: opacity 260ms var(--ease-smooth), transform 260ms var(--ease-smooth); }
+  .hero-terminal-body .untyped { visibility: hidden; }
+  .hero-terminal-body .cursor { display: inline-block; width: .55em; height: 1.05em; margin: 0 1px -.18em; background: var(--blue-light); animation: terminal-blink 900ms steps(2, start) infinite; }
+  @keyframes terminal-blink { to { visibility: hidden; } }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-terminal-body .reveal, .hero-terminal-body .reveal.is-in { opacity: 1; transform: none; transition: none; }
+    .hero-terminal-body .cursor { display: none; }
+  }
   .hero-terminal-body { margin: 0; padding: 22px 24px 24px; overflow-x: auto; font: 400 .8125rem/1.9 var(--font-mono); color: var(--foreground); }
   .hero-terminal-body code { display: grid; font: inherit; }
   .hero-terminal-body .line { display: flex; align-items: center; gap: 10px; white-space: pre; }
