@@ -1,5 +1,5 @@
 import React from 'react';
-import { KeyRound, Users } from 'lucide-react';
+import { KeyRound, Users, Settings } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { PasswordChangeForm } from '../components/settings/PasswordChangeForm';
 import { TeamAdminSection } from '../components/settings/TeamAdminSection';
@@ -13,7 +13,7 @@ export const SettingsPage: React.FC = () => {
   return (
     <div className="animate-fade max-w-4xl mx-auto">
       <PageHeader
-        title="Settings"
+        title="Settings" icon={<Settings size={20} />} tone="amber"
         description="Account security configuration and team access management."
       />
 

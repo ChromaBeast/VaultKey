@@ -1,5 +1,5 @@
 import React from 'react';
-import { KeyRound, Plus, Search } from 'lucide-react';
+import { KeyRound, Plus, Search, Lock } from 'lucide-react';
 import { PageHeader } from './ui/PageHeader';
 import { Input, Select } from './ui';
 
@@ -32,7 +32,7 @@ export const SecretsHeaderBar: React.FC<SecretsHeaderBarProps> = ({
 }) => (
   <>
     <PageHeader
-      title="Secrets"
+      title="Secrets" icon={<Lock size={20} />} tone="blue"
       badge={
         showBadge ? (
           <span className="app-page-meta">

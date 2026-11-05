@@ -6,6 +6,8 @@ import { pushToast } from '../lib/toast';
 
 interface Props { logs: AuditItem[]; loading: boolean; loadError: string | null; }
 
+const AUDIT_TONE: Record<string, string> = { READ: 'blue', WRITE: 'green', DELETE: 'red', ROLLBACK: 'violet', LOGIN: 'cyan', SHARE: 'fuchsia' };
+
 export const AuditTable: React.FC<Props> = ({ logs, loading, loadError }) => {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -39,7 +41,7 @@ export const AuditTable: React.FC<Props> = ({ logs, loading, loadError }) => {
             logs.map((l) => (
               <tr key={l.id}>
                 <td>
-                  <span className={`badge badge-${l.action === 'WRITE' ? 'write' : l.action === 'READ' ? 'read' : 'admin'}`}>
+                  <span className={`badge badge-tone tone-${AUDIT_TONE[l.action] ?? 'amber'}`}>
                     {l.action}
                   </span>
                 </td>

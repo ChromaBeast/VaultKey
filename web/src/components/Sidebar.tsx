@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { CreditCard, KeyRound, Lock, ScrollText, Settings } from 'lucide-react';
+import { CreditCard, KeyRound, Lock, ScrollText, Settings, type LucideIcon } from 'lucide-react';
+import type { Tone } from '@/components/ui/IconTile';
 import { Sidebar, SidebarBody, SidebarLink, useSidebar } from '@/components/ui/sidebar';
 import { useAuth } from '../context/AuthContext';
 import { isAdminRole } from '../lib/permissions';
@@ -8,15 +9,17 @@ import { pushToast } from '../lib/toast';
 import { ConfirmDialog } from './ConfirmDialog';
 import { SidebarAccountControls } from './SidebarAccountControls';
 
-const PRIMARY_NAV_ITEMS = [
-  { path: '/secrets', label: 'Secrets', icon: Lock },
-  { path: '/keys', label: 'API Keys', icon: KeyRound },
-  { path: '/audit', label: 'Audit Ledger', icon: ScrollText },
+interface NavItem { path: string; label: string; icon: LucideIcon; tone: Tone }
+
+const PRIMARY_NAV_ITEMS: NavItem[] = [
+  { tone: 'blue', path: '/secrets', label: 'Secrets', icon: Lock },
+  { tone: 'violet', path: '/keys', label: 'API Keys', icon: KeyRound },
+  { tone: 'cyan', path: '/audit', label: 'Audit Ledger', icon: ScrollText },
 ];
 
-const WORKSPACE_NAV_ITEMS = [
-  { path: '/billing', label: 'Billing', icon: CreditCard },
-  { path: '/settings', label: 'Settings', icon: Settings },
+const WORKSPACE_NAV_ITEMS: NavItem[] = [
+  { tone: 'green', path: '/billing', label: 'Billing', icon: CreditCard },
+  { tone: 'amber', path: '/settings', label: 'Settings', icon: Settings },
 ];
 
 export const AppSidebar: React.FC = () => {
@@ -41,7 +44,7 @@ export const AppSidebar: React.FC = () => {
     }
   };
 
-  const renderLinks = (items: typeof PRIMARY_NAV_ITEMS) => items.map((item) => {
+  const renderLinks = (items: NavItem[]) => items.map((item) => {
     const Icon = item.icon;
     return (
       <SidebarLink
@@ -51,6 +54,7 @@ export const AppSidebar: React.FC = () => {
           href: item.path,
           icon: <Icon className="h-4 w-4 shrink-0" />,
           isActive: location.pathname === item.path,
+          tone: item.tone,
           onClick: (event) => {
             event.preventDefault();
             navigate(item.path);

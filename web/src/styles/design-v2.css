@@ -69,3 +69,15 @@
   }
   .vk-glow-left::before { left: 18%; transform: none; }
 }
+
+@layer components {
+  .vk-nav-active {
+    background: color-mix(in srgb, var(--tone) 13%, transparent);
+    border-color: color-mix(in srgb, var(--tone) 28%, transparent) !important;
+  }
+  .vk-nav-active svg { color: var(--tone-text); }
+  .app-page-title-row h1 { font-family: var(--font-display); }
+  .secret-key-cell { display: flex; align-items: center; gap: 12px; }
+  .secret-key-cell > svg { color: var(--vk-text-muted); flex-shrink: 0; }
+  .secrets-stats { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; }
+}

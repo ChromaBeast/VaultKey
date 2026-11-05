@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CheckCircle2, AlertTriangle } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, ScrollText } from 'lucide-react';
 import type { AuditItem } from '../lib/api';
 import { apiFetch, buildQuery, errorMessage } from '../lib/api';
 import { isAdminRole } from '../lib/permissions';
@@ -85,12 +85,12 @@ export const AuditPage: React.FC = () => {
     );
   };
 
-  if (!isAdmin) return <div><PageHeader title="Audit Ledger" description="An administrator can review and export workspace activity." /></div>;
+  if (!isAdmin) return <div><PageHeader title="Audit Ledger" icon={<ScrollText size={20} />} tone="cyan" description="An administrator can review and export workspace activity." /></div>;
 
   return (
     <div className="animate-fade">
       <PageHeader
-        title="Audit Ledger"
+        title="Audit Ledger" icon={<ScrollText size={20} />} tone="cyan"
         actions={
           <div className="flex items-center gap-1.5">
             {chain === 'valid' && (
