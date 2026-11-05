@@ -49,16 +49,22 @@ export const DesktopSidebar = ({ className, children, ...props }: React.Componen
 };
 export const MobileSidebar = ({ children }: React.ComponentProps<'div'>) => {
   const { open, setOpen } = useSidebar();
-  return <div className="h-14 px-4 flex items-center justify-between bg-card border-b border-border w-full">
+  return <div className="h-[60px] px-4 flex items-center justify-between bg-background border-b border-border w-full">
     <Link to="/secrets" className="flex items-center gap-2.5" aria-label="VaultKey secrets">
       <img src="/vaultkey-logo.png" alt="" className="h-7 w-7 object-contain" />
-      <span className="font-bold tracking-tight">VaultKey</span>
+      <span className="brand-text text-lg font-extrabold">VaultKey</span>
     </Link>
     <button type="button" aria-label="Open navigation" aria-expanded={open} aria-controls="app-mobile-navigation"
       onClick={() => setOpen(true)} className="sidebar-menu-toggle"><Menu size={22} /></button>
     <Modal isOpen={open} onClose={() => setOpen(false)} label="App navigation" width={280} panelClassName="mobile-nav-panel">
       <div id="app-mobile-navigation" className="flex min-h-0 flex-1 flex-col gap-4">
-        <button type="button" aria-label="Close navigation" onClick={() => setOpen(false)} className="sidebar-menu-toggle self-end"><X size={20} /></button>
+        <div className="mobile-nav-head">
+          <Link to="/secrets" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
+            <img src="/vaultkey-logo.png" alt="" className="h-7 w-7 object-contain" />
+            <span className="brand-text text-lg font-extrabold">VaultKey</span>
+          </Link>
+          <button type="button" aria-label="Close navigation" onClick={() => setOpen(false)} className="sidebar-menu-toggle"><X size={20} /></button>
+        </div>
         {children}
       </div>
     </Modal>

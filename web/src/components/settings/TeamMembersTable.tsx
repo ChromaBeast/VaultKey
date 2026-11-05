@@ -33,7 +33,7 @@ export const TeamMembersTable: React.FC<TeamMembersTableProps> = ({
             users.map((u) => (
               <tr key={u.id}>
                 <td className="text-foreground text-sm font-medium">
-                  {u.email}
+                  <span className="member-cell"><span className="member-avatar" aria-hidden="true">{u.email.charAt(0).toUpperCase()}</span>{u.email}</span>
                 </td>
                 <td>
                   <span className={`badge badge-${u.role === 'write' ? 'write' : isAdminRole(u.role) ? 'admin' : 'read'}`}>
