@@ -81,11 +81,6 @@ a, button, input, select, textarea {
   animation: fadeIn var(--duration-base) var(--ease-smooth) forwards;
 }
 
-.icon-spin {
-  animation: iconSpin 0.9s linear infinite;
-  display: inline-flex;
-}
-
 @keyframes iconSpin {
   to { transform: rotate(360deg); }
 }

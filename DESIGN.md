@@ -75,7 +75,7 @@ Environments: production rose, staging amber, development cyan. Roles: admin amb
 
 ### Underline Rule (absolute)
 `text-decoration: none !important` on all `a`, `button`, `nav a`, `.btn`.
-No exceptions. Link intent is communicated by color and hover state, never underline.
+One exception, for accessibility (WCAG 1.4.1): links inside running paragraphs (legal text, notes, FAQ answers) are underlined, because colour alone is not enough to tell them from surrounding text. Navigation, buttons, tabs and standalone links stay underline-free; their intent is communicated by colour and hover state.
 
 ### Scale
 - Page title (h1): `clamp(2.5rem, 5.5vw, 4.25rem)`, weight 800

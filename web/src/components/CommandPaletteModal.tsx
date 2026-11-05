@@ -85,8 +85,8 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
 
   return (
     <Modal label="Commands" isOpen={isOpen} onClose={onClose} width={560} align="top">
-      <div style={{ padding: '14px' }}>
-        <div style={{ marginBottom: '10px' }}>
+      <div className="palette">
+        <div className="palette-search">
           <Input
             autoFocus
             placeholder="Type a command or search... (Esc to close)"
@@ -104,7 +104,7 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
           />
         </div>
 
-        <ul role="listbox" id="command-palette-listbox" aria-label="Commands" style={{ maxHeight: '340px', overflowY: 'auto' }}>
+        <ul role="listbox" id="command-palette-listbox" aria-label="Commands" className="palette-list">
           {filtered.map((item, i) => {
             const Icon = item.icon;
             const isDanger = item.category === 'SECURITY';
@@ -118,51 +118,33 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
                 onMouseEnter={() => setActiveIndex(i)}
                 onClick={() => item.run()}
               >
-                <span style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span className="palette-item">
                   <Icon size={15} color={isDanger ? 'var(--vk-danger)' : 'var(--vk-accent)'} />
-                  <span style={{ color: isDanger ? 'var(--vk-danger)' : 'var(--vk-text)', fontSize: '0.85rem', fontWeight: 500 }}>
+                  <span className={`palette-label${isDanger ? ' is-danger' : ''}`}>
                     {item.label}
                   </span>
                 </span>
-                <span
-                  style={{
-                    fontSize: '0.65rem',
-                    fontFamily: 'monospace',
-                    color: 'var(--vk-text-muted)',
-                    textTransform: 'uppercase',
-                  }}
-                >
+                <span className="palette-cat">
                   {item.category}
                 </span>
               </li>
             );
           })}
           {filtered.length === 0 && (
-            <li style={{ textAlign: 'center', padding: '24px', color: 'var(--vk-text-muted)', fontSize: '0.85rem', listStyle: 'none' }}>
+            <li className="palette-empty">
               No commands matching "{query}"
             </li>
           )}
         </ul>
 
-        <div
-          style={{
-            borderTop: '1px solid var(--vk-border)',
-            paddingTop: '8px',
-            marginTop: '8px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            fontSize: '0.72rem',
-            color: 'var(--vk-text-muted)',
-          }}
-        >
-          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <div className="palette-foot">
+          <span className="palette-hint">
             <Kbd>↑</Kbd><Kbd>↓</Kbd> navigate
           </span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <span className="palette-hint">
             <Kbd>↵</Kbd> select
           </span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <span className="palette-hint">
             <Kbd>esc</Kbd> close
           </span>
         </div>

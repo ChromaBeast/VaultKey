@@ -1,0 +1,231 @@
+/* Docs header bar and page shell */
+@layer components {
+  /* ── Canvas & Root Shell ─────────────────────────────────────────────────── */
+  .docs-shell {
+    min-height: 100vh;
+    background: #08090d;
+    color: #e2e8f0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  .docs-page-root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #08090d;
+  }
+
+  .docs-skip-link {
+    position: fixed;
+    top: -48px;
+    left: 16px;
+    z-index: 100;
+    padding: 8px 14px;
+    border-radius: 6px;
+    background: #008ff5;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    transition: top 150ms ease;
+  }
+  .docs-skip-link:focus {
+    top: 12px;
+  }
+
+  /* ── Header Top Bar ──────────────────────────────────────────────────────── */
+  .docs-header-root {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(8, 9, 13, 0.88);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .docs-header-top {
+    height: 56px;
+  }
+
+  .docs-header-container {
+    max-width: 1536px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  /* Header Left */
+  .docs-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .docs-brand-link {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+    color: #ffffff;
+  }
+
+  .docs-brand-logo {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+  }
+
+  .docs-brand-name {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .docs-brand-sub {
+    color: #94a3b8;
+    font-weight: 500;
+  }
+
+  /* Version Badge Dropdown */
+
+  /* Header Center: Command Search Trigger */
+  .docs-header-center {
+    flex: 1;
+    max-width: 440px;
+  }
+
+  .docs-search-trigger {
+    width: 100%;
+    height: 36px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: #94a3b8;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    transition: all 140ms ease;
+  }
+
+  .docs-search-trigger:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.16);
+    color: #cbd5e1;
+  }
+
+  .docs-search-trigger-icon {
+    color: #8593a8;
+    flex-shrink: 0;
+  }
+
+  .docs-search-trigger-text {
+    flex: 1;
+    text-align: left;
+  }
+
+  .docs-search-trigger-kbd {
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  /* Header Right */
+  .docs-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .docs-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 10px;
+    border-radius: 7px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #94a3b8;
+    font-size: 0.8125rem;
+    text-decoration: none;
+    transition: all 120ms ease;
+  }
+
+  .docs-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.16);
+  }
+
+  .docs-github-label {
+    font-weight: 500;
+  }
+
+  .docs-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 13px;
+    border-radius: 7px;
+    background: var(--primary-button);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0, 109, 184, 0.35);
+    transition: all 120ms ease;
+  }
+
+  .docs-cta-btn:hover {
+    background: var(--primary-button-hover);
+    box-shadow: 0 4px 14px rgba(0, 143, 245, 0.45);
+    transform: translateY(-0.5px);
+  }
+
+  .docs-theme-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 7px;
+    color: #8593a8;
+  }
+
+  /* ── 3-Column Body Layout ───────────────────────────────────────────────── */
+  .docs-body-wrapper {
+    flex: 1;
+    width: 100%;
+  }
+
+  .docs-body-container {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 48px;
+    min-height: calc(100vh - 56px);
+  }
+}
