@@ -26,7 +26,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         className
       )}
     >
-      {icon && <IconTile tone={tone} size="lg" className="mb-4">{icon}</IconTile>}
+      {icon && <IconTile tone={tone} size="lg" boxed className="mb-4">{icon}</IconTile>}
       <h3 className="text-base font-semibold text-[var(--vk-text)] mb-1">
         {title}
       </h3>
