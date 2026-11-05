@@ -1,30 +1,31 @@
 import React from 'react';
-import { ArrowDown, Check, LockKeyhole } from 'lucide-react';
+import { LockKeyhole, ScrollText, Zap } from 'lucide-react';
+import { IconTile, type Tone } from '@/components/ui';
+
+const STEPS: { icon: React.ReactNode; tone: Tone; title: string; text: string }[] = [
+  { icon: <LockKeyhole size={18} />, tone: 'blue', title: 'Encrypted vault', text: 'Your secrets stay protected' },
+  { icon: <Zap size={18} />, tone: 'cyan', title: 'Runtime access', text: 'Injected into app memory' },
+  { icon: <ScrollText size={18} />, tone: 'green', title: 'Audit ledger', text: 'Every access is signed' },
+];
 
 export const AuthHeroVisual: React.FC = () => (
-  <div className="auth-visual">
+  <div className="auth-visual vk-glow">
     <div className="auth-visual-content">
-      <div className="auth-visual-mark">
-        <img src="/vaultkey-logo.png" alt="VaultKey" />
-      </div>
+      <div className="auth-visual-mark"><img src="/vaultkey-logo.png" alt="VaultKey" /></div>
       <h2>Your secrets stay yours.</h2>
       <p className="auth-visual-copy">Encrypted at rest. Decrypted only when your app needs them.</p>
-
-      <div className="auth-flow" aria-label="How VaultKey protects secrets">
-        <div className="auth-flow-step">
-          <span className="auth-flow-icon"><LockKeyhole size={16} /></span>
-          <span><strong>Encrypted vault</strong><small>Your secrets stay protected</small></span>
-          <Check size={15} className="auth-flow-check" />
-        </div>
-        <div className="auth-flow-connector"><ArrowDown size={14} /></div>
-        <div className="auth-flow-step">
-          <span className="auth-flow-icon"><img src="/vaultkey-logo.png" alt="" /></span>
-          <span><strong>Runtime access</strong><small>Injected into app memory</small></span>
-          <Check size={15} className="auth-flow-check" />
-        </div>
+      <ul className="auth-flow" aria-label="How VaultKey protects secrets">
+        {STEPS.map((s) => (
+          <li key={s.title} className={`tone-${s.tone}`}>
+            <IconTile tone={s.tone}>{s.icon}</IconTile>
+            <span><strong>{s.title}</strong><small>{s.text}</small></span>
+          </li>
+        ))}
+      </ul>
+      <div className="auth-visual-footer">
+        <span className="badge badge-tone tone-blue">AES-256-GCM</span>
+        <span className="badge badge-tone tone-violet">RAM-only keys</span>
       </div>
-
-      <div className="auth-visual-footer"><span /> AES-256-GCM <i /> RAM-only keys</div>
     </div>
   </div>
 );

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Lock, AlertTriangle, Copy, Check } from 'lucide-react';
+import { Lock, AlertTriangle, Copy, Check, Link2 } from 'lucide-react';
+import { IconTile } from '../components/ui/IconTile';
 import { ApiError, errorMessage, fetchSharedSecret, isAbortError } from '../lib/api';
 import { useClipboard } from '../hooks/useClipboard';
 
@@ -56,9 +57,9 @@ export const SharePage: React.FC<{ shareId: string }> = ({ shareId }) => {
           <span className="font-extrabold text-foreground text-sm tracking-tight">VaultKey</span>
         </div>
 
-        <div className="w-11 h-11 mx-auto mb-4 rounded-lg bg-primary/10 border border-primary/25 flex items-center justify-center text-primary">
-          <Lock size={18} />
-        </div>
+        <IconTile tone={phase === 'error' ? 'red' : phase === 'locked' ? 'amber' : 'fuchsia'} size="lg" className="mx-auto mb-4">
+          {phase === 'error' ? <AlertTriangle size={24} /> : phase === 'ready' ? <Link2 size={24} /> : <Lock size={24} />}
+        </IconTile>
 
         {phase === 'gate' && (
           <div>
