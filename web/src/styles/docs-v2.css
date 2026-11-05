@@ -1,0 +1,29 @@
+/* Design v2 docs: tinted nav pill, round-cornered cards, numbered steps as tiles, coloured callouts. */
+@layer components {
+  .docs-left-nav-link { border-radius: 8px; border: 1px solid transparent; }
+  .docs-left-nav-link.is-active {
+    color: var(--foreground); font-weight: 600;
+    background: color-mix(in srgb, var(--primary) 13%, transparent);
+    border-color: color-mix(in srgb, var(--primary) 28%, transparent);
+  }
+  .docs-nav-group-title { font-family: var(--font-mono); font-size: .625rem; letter-spacing: .12em; }
+  .docs-right-toc-link.is-active { color: var(--blue-light); }
+
+  .docs-section-card, .docs-arch-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05);
+  }
+  .docs-arch-card { padding: 20px; }
+  .docs-arch-card-icon {
+    display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 11px;
+    background: color-mix(in srgb, currentColor 14%, transparent); border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+  }
+  .docs-step-badge {
+    width: 36px; height: 36px; border-radius: 10px; font-family: var(--font-mono);
+    color: var(--blue-light); background: color-mix(in srgb, var(--primary) 14%, transparent); border-color: color-mix(in srgb, var(--primary) 28%, transparent);
+  }
+  .docs-callout { border-radius: 14px; }
+  .docs-code-window { border-radius: 12px; background: var(--inset); border: 1px solid var(--border); }
+  .docs-code-toolbar { background: var(--card); }
+  .docs-h2 { font-family: var(--font-display); letter-spacing: -.03em; }
+}

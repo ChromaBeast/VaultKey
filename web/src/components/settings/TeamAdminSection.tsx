@@ -2,7 +2,9 @@
 import type { TeamUser } from '../../lib/api';
 import { deleteUser, errorMessage, fetchUsers } from '../../lib/api';
 import { pushToast } from '../../lib/toast';
+import { Mail } from 'lucide-react';
 import { ConfirmDialog } from '../ConfirmDialog';
+import { IconTile } from '../ui/IconTile';
 import { InviteUserForm } from './InviteUserForm';
 import { TeamMembersTable } from './TeamMembersTable';
 
@@ -57,9 +59,22 @@ export const TeamAdminSection: React.FC = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <InviteUserForm onUserInvited={() => void loadUsers()} />
-      <TeamMembersTable users={users} loading={loading} onRemove={setRemoveTarget} />
+    <>
+      <section className="glass settings-card" aria-labelledby="invite-title">
+        <header>
+          <IconTile tone="violet"><Mail size={20} /></IconTile>
+          <div>
+            <h2 id="invite-title">Invite a teammate</h2>
+            <p>Create a one-time invite link with a role.</p>
+          </div>
+        </header>
+        <InviteUserForm onUserInvited={() => void loadUsers()} />
+      </section>
+
+      <section className="settings-members" aria-labelledby="members-title">
+        <h2 id="members-title">Team members</h2>
+        <TeamMembersTable users={users} loading={loading} onRemove={setRemoveTarget} />
+      </section>
 
       <ConfirmDialog
         isOpen={removeTarget !== null}
@@ -71,6 +86,6 @@ export const TeamAdminSection: React.FC = () => {
         onConfirm={() => void handleRemove()}
         onClose={() => setRemoveTarget(null)}
       />
-    </div>
+    </>
   );
 };

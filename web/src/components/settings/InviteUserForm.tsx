@@ -47,7 +47,7 @@ export const InviteUserForm: React.FC<InviteUserFormProps> = ({ onUserInvited })
   };
 
   return (
-    <div className="flex flex-col gap-4 mb-5">
+    <div className="flex flex-col gap-4">
       <form onSubmit={(e) => void handleInvite(e)} className="flex gap-2.5 flex-wrap items-end">
         <div className="flex-1 min-w-[240px]">
           <label htmlFor="invite-email" className="block text-xs font-semibold text-muted-foreground mb-1.5">Email Address</label>
@@ -60,7 +60,7 @@ export const InviteUserForm: React.FC<InviteUserFormProps> = ({ onUserInvited })
             placeholder="teammate@company.com"
           />
         </div>
-        <div className="w-32">
+        <div className="w-40">
           <label htmlFor="invite-role" className="block text-xs font-semibold text-muted-foreground mb-1.5">Role</label>
           <Select id="invite-role" value={role} onChange={(e) => setRole(e.target.value)}>
             <option value="read">Read Only</option>
@@ -72,6 +72,12 @@ export const InviteUserForm: React.FC<InviteUserFormProps> = ({ onUserInvited })
           <UserPlus size={14} /> {inviting ? 'Generating...' : 'Create Invite Link'}
         </button>
       </form>
+
+      <ul className="role-legend" aria-label="Role permissions">
+        <li><span className="badge badge-admin">Admin</span> Manage members, keys and billing</li>
+        <li><span className="badge badge-write">Read &amp; Write</span> Create and edit secrets</li>
+        <li><span className="badge badge-read">Read only</span> Fetch secrets only</li>
+      </ul>
 
       {inviteUrl && (
         <div className="p-3.5 bg-primary/10 border border-primary/25 rounded-lg flex flex-col gap-2">

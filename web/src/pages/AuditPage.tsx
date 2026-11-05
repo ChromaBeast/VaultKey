@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CheckCircle2, AlertTriangle, ScrollText } from 'lucide-react';
+import { ScrollText } from 'lucide-react';
 import type { AuditItem } from '../lib/api';
 import { apiFetch, buildQuery, errorMessage } from '../lib/api';
 import { isAdminRole } from '../lib/permissions';
@@ -8,9 +8,9 @@ import { pushToast } from '../lib/toast';
 import { AuditTable } from '../components/AuditTable';
 import { AuditPaginationBar } from '../components/AuditPaginationBar';
 import { PageHeader } from '../components/ui/PageHeader';
+import { AuditChainBanner, type ChainState } from '../components/AuditChainBanner';
 import { buildAuditCsv, downloadCsv } from '../lib/auditCsv';
 
-type ChainState = 'checking' | 'valid' | 'tampered' | 'error';
 
 export const AuditPage: React.FC = () => {
   const { user } = useAuth();
@@ -91,35 +91,9 @@ export const AuditPage: React.FC = () => {
     <div className="animate-fade">
       <PageHeader
         title="Audit Ledger" icon={<ScrollText size={20} />} tone="cyan"
-        actions={
-          <div className="flex items-center gap-1.5">
-            {chain === 'valid' && (
-              <span className="badge badge-write text-xs px-3 py-1.5">
-                <CheckCircle2 size={13} /> Ledger Integrity Verified
-              </span>
-            )}
-            {chain === 'tampered' && (
-              <span className="badge badge-danger text-xs px-3 py-1.5">
-                <AlertTriangle size={13} /> Tamper Detected
-              </span>
-            )}
-            {chain === 'checking' && (
-              <span className="badge badge-neutral text-xs px-3 py-1.5">
-                Verifying Chain...
-              </span>
-            )}
-          </div>
-        }
       />
 
-      {verifyError && (
-        <div role="alert" className="bg-destructive/10 border border-destructive/30 rounded-lg p-3.5 mb-5 flex justify-between items-center gap-2.5">
-          <span className="text-destructive text-xs font-medium">Verification request failed: {verifyError}</span>
-          <button onClick={() => void retryVerify()} className="btn btn-danger text-xs px-2.5 py-1">
-            Retry
-          </button>
-        </div>
-      )}
+      <AuditChainBanner chain={chain} error={verifyError} onRetry={() => void retryVerify()} />
 
       <AuditPaginationBar
         busy={loading || Boolean(loadError)}

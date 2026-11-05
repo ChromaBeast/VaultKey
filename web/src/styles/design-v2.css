@@ -86,3 +86,51 @@
   .modal-panel { background: var(--popover); border-color: var(--border-strong); border-radius: 18px; box-shadow: var(--vk-shadow-pop), inset 0 1px 0 rgba(255, 255, 255, .06); }
   .modal-panel h3 { font-family: var(--font-display); letter-spacing: -.02em; }
 }
+
+@layer components {
+  .audit-chain-banner { display: flex; align-items: center; gap: 14px; padding: 16px 20px; margin-bottom: 20px; border-radius: 14px; background: color-mix(in srgb, var(--tone) 8%, transparent); border: 1px solid color-mix(in srgb, var(--tone) 30%, transparent); }
+  .audit-chain-copy { display: grid; gap: 2px; flex: 1; min-width: 0; }
+  .audit-chain-copy strong { font: 700 1.05rem var(--font-display); letter-spacing: -.02em; }
+  .audit-chain-copy span { color: var(--vk-text-secondary); font-size: .8125rem; }
+  @media (max-width: 639px) { .audit-chain-banner { flex-wrap: wrap; } }
+}
+
+@layer components {
+  .settings-layout { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 24px; align-items: start; }
+  .settings-card { display: grid; gap: 18px; padding: 26px 28px; }
+  .settings-card > header { display: flex; align-items: center; gap: 12px; }
+  .settings-card h2 { margin: 0; font: 700 1.15rem var(--font-display); letter-spacing: -.02em; }
+  .settings-card header p { margin: 2px 0 0; color: var(--vk-text-secondary); font-size: .8125rem; }
+  .settings-members { grid-column: 1 / -1; display: grid; gap: 14px; }
+  .settings-members h2 { margin: 8px 0 0; font: 700 1.35rem var(--font-display); letter-spacing: -.02em; }
+  .role-legend { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; color: var(--vk-text-secondary); font-size: .8125rem; }
+  .role-legend li { display: flex; align-items: center; gap: 12px; }
+  .member-cell { display: inline-flex; align-items: center; gap: 12px; }
+  .member-avatar { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; font: 700 .75rem var(--font-sans); color: #fff; background: var(--primary-button); }
+  @media (max-width: 899px) { .settings-layout { grid-template-columns: 1fr; } }
+}
+
+@layer components {
+  .mobile-nav-panel { background: var(--card); border-right: 1px solid var(--border-strong); border-radius: 0; box-shadow: 0 0 40px rgba(0, 0, 0, .7); }
+  .mobile-nav-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; }
+  .mobile-nav-overlay { background: rgba(5, 6, 10, .75); }
+
+  .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding-bottom: 96px; }
+  .contact-card { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; padding: 28px; }
+  .contact-card h2 { margin: 0; font: 700 1.35rem var(--font-display); letter-spacing: -.02em; }
+  .contact-card > p { margin: 0; color: var(--vk-text-secondary); font-size: .9375rem; line-height: 1.55; }
+  .contact-body { width: 100%; display: grid; gap: 8px; color: var(--vk-text-secondary); font-size: .9375rem; }
+  .contact-body p { margin: 0; }
+  .contact-entity { color: var(--foreground); font-weight: 600; }
+  .contact-mail { display: block; padding: 12px 14px; border-radius: 10px; background: var(--inset); border: 1px solid var(--border); font: 500 .8125rem var(--font-mono); color: var(--blue-light); overflow-wrap: anywhere; }
+  .contact-mail:hover { border-color: var(--border-strong); }
+  .contact-card small { color: var(--vk-text-muted); font-size: .8125rem; line-height: 1.5; }
+}
+
+@layer components {
+  .current-plan-banner { display: flex; align-items: center; gap: 18px; padding: 24px 28px; margin-bottom: 24px; border-radius: 16px; background: var(--card); border: 1.5px solid var(--primary); box-shadow: 0 16px 40px rgba(0, 143, 245, .12), inset 0 1px 0 rgba(255, 255, 255, .05); }
+  .current-plan-banner h2 { margin: 0; font: 800 1.6rem var(--font-display); letter-spacing: -.03em; }
+  .current-plan-banner p { margin: 4px 0 0; color: var(--vk-text-secondary); font-size: .9rem; }
+  .plan-active { border-color: color-mix(in srgb, var(--success) 50%, transparent) !important; }
+  .perk-check { color: var(--success); flex-shrink: 0; }
+}
