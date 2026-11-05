@@ -39,26 +39,18 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
   return (
     <Modal label={title} isOpen={isOpen} onClose={loading ? () => undefined : onClose} width={430}>
-      <div style={{ padding: '28px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+      <div className="dlg dlg-lg">
+        <div className="dlg-head">
           <IconTile tone={danger ? 'red' : 'blue'} size="sm">{danger ? <TriangleAlert size={16} /> : <Info size={16} />}</IconTile>
-          <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--vk-text)' }}>{title}</h3>
+          <h3>{title}</h3>
         </div>
 
-        {message && (
-          <div style={{ color: 'var(--vk-text-secondary)', fontSize: '0.875rem', marginBottom: '16px', lineHeight: 1.55 }}>
-            {message}
-          </div>
-        )}
+        {message && <div className="dlg-message">{message}</div>}
 
         {confirmWord && (
-          <div style={{ marginBottom: '20px' }}>
-            <label
-              htmlFor="confirm-word-input"
-              className="code-font"
-              style={{ display: 'block', fontSize: '0.78rem', color: 'var(--vk-text-secondary)', marginBottom: '6px' }}
-            >
-              Type <span style={{ color: 'var(--vk-danger)' }}>{confirmWord}</span> to confirm
+          <div className="dlg-field">
+            <label htmlFor="confirm-word-input" className="code-font">
+              Type <span>{confirmWord}</span> to confirm
             </label>
             <Input
               id="confirm-word-input"
@@ -71,7 +63,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           </div>
         )}
 
-        <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+        <div className="dlg-actions">
           <button type="button" className="btn btn-secondary" onClick={onClose} disabled={loading}>
             Cancel
           </button>

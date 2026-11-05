@@ -1,0 +1,253 @@
+/* Docs article column, callouts and step lists */
+@layer components {
+  /* ── Center Article Column ──────────────────────────────────────────────── */
+  .docs-main-article {
+    min-width: 0;
+    padding: 32px 0 96px;
+    max-width: 800px;
+  }
+
+  .docs-article-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 24px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .docs-eyebrow-tag {
+    color: #008ff5;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .docs-article-title {
+    margin: 0;
+    color: #ffffff;
+    font-size: clamp(2rem, 3.2vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.15;
+  }
+
+  /* Copy Page Button & Dropdown */
+  .docs-copy-page-wrapper {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .docs-copy-page-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 11px;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 120ms ease;
+  }
+
+  .docs-copy-page-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  .docs-copy-page-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 60;
+    min-width: 190px;
+    background: #0f121a;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 4px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+  }
+
+  .docs-copy-page-menu-item {
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    border: 0;
+    background: transparent;
+    color: #cbd5e1;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 120ms ease;
+  }
+
+  .docs-copy-page-menu-item:hover {
+    background: rgba(0, 143, 245, 0.12);
+    color: #008ff5;
+  }
+
+  /* Lead Typography */
+  .docs-lead-text {
+    margin: 0 0 18px;
+    color: #94a3b8;
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .docs-inline-code {
+    padding: 2px 6px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #cbd5e1;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.8125rem;
+  }
+
+  .docs-h3 {
+    margin: 0 0 12px;
+    color: #ffffff;
+    font-size: 1.375rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+
+  /* ── Callout Box (Admonition) ───────────────────────────────────────────── */
+  .docs-callout {
+    display: flex;
+    gap: 14px;
+    padding: 16px 18px;
+    border-radius: 10px;
+    margin: 24px 0 32px;
+    border: 1px solid;
+  }
+
+  .docs-callout--tip {
+    background: rgba(16, 185, 129, 0.05);
+    border-color: rgba(16, 185, 129, 0.22);
+  }
+
+  .docs-callout--info {
+    background: rgba(0, 143, 245, 0.05);
+    border-color: rgba(0, 143, 245, 0.22);
+  }
+
+  .docs-callout--warning {
+    background: rgba(245, 158, 11, 0.06);
+    border-color: rgba(245, 158, 11, 0.25);
+  }
+
+  .docs-callout--security {
+    background: rgba(168, 85, 247, 0.05);
+    border-color: rgba(168, 85, 247, 0.22);
+  }
+
+  .docs-callout-aside {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .docs-callout-icon--tip { color: #34d399; }
+  .docs-callout-icon--info { color: #38bdf8; }
+  .docs-callout-icon--warning { color: #fbbf24; }
+  .docs-callout-icon--security { color: #c084fc; }
+
+  .docs-callout-title {
+    margin: 0 0 4px;
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .docs-callout-content {
+    color: #94a3b8;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  /* ── Step List (Numbered Walkthrough) ────────────────────────────────────── */
+  .docs-step-list {
+    display: flex;
+    flex-direction: column;
+    margin: 20px 0 32px;
+  }
+
+  .docs-step-item {
+    display: flex;
+    gap: 16px;
+    position: relative;
+    padding-bottom: 28px;
+  }
+
+  .docs-step-item:last-child {
+    padding-bottom: 0;
+  }
+
+  .docs-step-badge-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .docs-step-badge {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .docs-step-line {
+    flex: 1;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    margin-top: 6px;
+  }
+
+  .docs-step-item:last-child .docs-step-line {
+    display: none;
+  }
+
+  .docs-step-body {
+    flex: 1;
+    min-width: 0;
+    padding-top: 2px;
+  }
+
+  .docs-step-title {
+    margin: 0 0 6px;
+    color: #ffffff;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+
+  .docs-step-desc {
+    color: #94a3b8;
+    font-size: 0.875rem;
+    line-height: 1.65;
+    margin-bottom: 12px;
+  }
+
+  .docs-step-content {
+    margin-top: 8px;
+  }
+}

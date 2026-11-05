@@ -17,72 +17,33 @@ export const TokenCreatedModal: React.FC<TokenCreatedModalProps> = ({ createdTok
 
   return (
     <Modal label="API key created" isOpen onClose={onClose} width={480}>
-      <div style={{ padding: '24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+      <div className="dlg">
+        <div className="dlg-head">
           <IconTile tone="green"><CircleCheck size={20} /></IconTile>
-          <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--vk-text)' }}>API Key Created</h3>
+          <h3>API Key Created</h3>
         </div>
-        <p style={{ fontSize: '0.825rem', color: 'var(--vk-text-muted)', marginBottom: '14px' }}>
+        <p className="dlg-sub">
           This token will only be shown once. Store it in your CI/CD environment or secret manager before closing.
         </p>
 
-        <div
-          className="code-font"
-          style={{
-            background: 'var(--vk-bg)',
-            padding: '12px 14px',
-            borderRadius: 'var(--radius-sm)',
-            border: '1px solid rgba(52, 211, 153, 0.3)',
-            wordBreak: 'break-all',
-            marginBottom: '16px',
-            color: 'var(--vk-success)',
-            fontSize: '0.85rem',
-            lineHeight: 1.4,
-            boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.5)',
-          }}
-        >
-          {createdToken}
-        </div>
+        <div className="code-font dlg-token">{createdToken}</div>
 
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            background: 'var(--vk-warning-dim)',
-            border: '1px solid rgba(245, 166, 35, 0.25)',
-            padding: '8px 12px',
-            borderRadius: 'var(--radius-sm)',
-            marginBottom: '20px',
-            fontSize: '0.75rem',
-            color: 'var(--vk-warning)',
-          }}
-        >
-          <ShieldAlert size={14} style={{ flexShrink: 0 }} />
+        <div className="dlg-note dlg-note-warn">
+          <ShieldAlert size={14} />
           <span>After dismissal, this raw token can never be retrieved from the server again.</span>
         </div>
 
-        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-          <button
-            onClick={() => void copy(createdToken)}
-            className="btn btn-primary"
-            style={{ fontSize: '0.8rem' }}
-          >
+        <div className="dlg-actions">
+          <button onClick={() => void copy(createdToken)} className="btn btn-primary">
             {copied ? <Check size={14} /> : <Copy size={14} />}
             {copied ? 'Copied to Clipboard' : 'Copy Token'}
           </button>
           {onConnectAgent && (
-            <button
-              onClick={onConnectAgent}
-              className="btn btn-secondary"
-              style={{ fontSize: '0.8rem' }}
-            >
+            <button onClick={onConnectAgent} className="btn btn-secondary">
               <Bot size={14} /> Connect Agent
             </button>
           )}
-          <button onClick={onClose} className="btn btn-secondary" style={{ fontSize: '0.8rem' }}>
-            Done
-          </button>
+          <button onClick={onClose} className="btn btn-secondary">Done</button>
         </div>
       </div>
     </Modal>

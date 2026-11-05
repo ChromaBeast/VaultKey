@@ -1,4 +1,5 @@
 /* Modal, Toast, and Command Palette Overlays */
+@layer components {
 
 /* Modal */
 .modal-overlay {
@@ -76,4 +77,5 @@
 .cmd-item-active, .cmd-item:hover {
   background: var(--vk-surface-2);
   border-color: var(--vk-border-strong);
+}
 }

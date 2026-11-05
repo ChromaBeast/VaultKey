@@ -10,13 +10,21 @@
 @import './styles/sections.css';
 @import './styles/modals.css';
 @import './styles/responsive.css';
-@import './styles/docs.css';
+@import './styles/docs-header.css';
+@import './styles/docs-nav.css';
+@import './styles/docs-article.css';
+@import './styles/docs-code.css';
+@import './styles/docs-toc.css';
+@import './styles/docs-search.css';
+@import './styles/docs-ask-ai.css';
+@import './styles/docs-content.css';
 @import './styles/improvements.css';
 @import './styles/marketing.css';
 @import './styles/design-v2.css';
 @import './styles/home-v2.css';
 @import './styles/marketing-v2.css';
 @import './styles/auth-v2.css';
+@import './styles/dialogs-v2.css';
 @import './styles/docs-v2.css';
 
 @theme {

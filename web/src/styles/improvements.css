@@ -14,9 +14,6 @@
   .workflow-steps { list-style: none; display: grid; gap: 24px; }
   .workflow-steps h3 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
   .workflow-steps p { color: var(--vk-text-secondary); max-width: 40ch; line-height: 1.6; font-size: .9375rem; }
-  .hero-product { width: 100%; padding: 20px; background: var(--vk-surface-1); border: 1px solid var(--vk-border); border-radius: var(--radius-card); }
-  .hero-product img { width: 100%; border-radius: var(--radius-md); }
-  .hero-product figcaption { margin-top: 14px; color: var(--vk-text-secondary); font-size: .8125rem; }
   @media (max-width: 767px) {
     .workflow-layout { grid-template-columns: 1fr; gap: 28px; }
     .secret-secondary, .audit-secondary { display: none; }

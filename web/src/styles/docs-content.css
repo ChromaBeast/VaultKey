@@ -1,0 +1,65 @@
+/* Docs content elements and responsive rules */
+@layer components {
+  /* ── Content Elements & Next Box ────────────────────────────────────────── */
+
+  .docs-section-card {
+    padding: 16px 18px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 9px;
+    margin: 16px 0;
+  }
+
+  /* ── Responsive Behavior ─────────────────────────────────────────────────── */
+  @media (max-width: 1200px) {
+    .docs-body-container {
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 36px;
+    }
+    .docs-right-toc {
+      display: none;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .docs-body-container {
+      display: block;
+      padding: 0 16px;
+    }
+    .docs-left-nav {
+      position: static;
+      height: auto;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 24px;
+    }
+    .docs-left-nav-groups {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .docs-header-center {
+      max-width: 260px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .docs-header-container {
+      padding: 0 14px;
+    }
+    .docs-github-label, .docs-theme-indicator {
+      display: none;
+    }
+    .docs-header-center {
+      display: none;
+    }
+    .docs-article-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .docs-article-title {
+      font-size: 1.75rem;
+    }
+  }
+}

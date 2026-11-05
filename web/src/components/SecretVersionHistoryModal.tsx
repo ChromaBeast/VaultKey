@@ -64,61 +64,32 @@ export const SecretVersionHistoryModal: React.FC<SecretVersionHistoryModalProps>
 
   return (
     <Modal label="Version history" isOpen onClose={onClose} width={520}>
-      <div style={{ padding: '24px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+      <div className="dlg">
+        <div className="history-head">
           <div>
-            <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--vk-text)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <History size={16} color="var(--vk-accent)" /> Version History & Rollback
-            </h3>
-            <p style={{ color: 'var(--vk-text-muted)', fontSize: '0.8rem', marginTop: '2px' }}>
-              Key: <code style={{ color: 'var(--vk-accent)' }}>{secretKey}</code> (Active: v{currentVersion})
-            </p>
+            <h3><History size={16} /> Version History &amp; Rollback</h3>
+            <p>Key: <code>{secretKey}</code> (Active: v{currentVersion})</p>
           </div>
-          <button className="btn btn-secondary" onClick={onClose} aria-label="Close history" style={{ padding: '3px 8px', fontSize: '0.75rem' }}>
-            ✕
-          </button>
+          <button className="btn btn-secondary btn-sm" onClick={onClose} aria-label="Close history">✕</button>
         </div>
 
         {loadError ? <p role="alert" className="text-sm text-destructive">{loadError}</p> : loading ? (
-          <div style={{ textAlign: 'center', padding: '28px', color: 'var(--vk-text-muted)', fontSize: '0.85rem' }}>Loading versions...</div>
+          <div className="history-empty">Loading versions...</div>
         ) : versions.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '28px', color: 'var(--vk-text-muted)', fontSize: '0.85rem' }}>
-            No previous version history recorded yet.
-          </div>
+          <div className="history-empty">No previous version history recorded yet.</div>
         ) : (
-          <div style={{ maxHeight: '280px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div className="history-list">
             {versions.map((item) => {
               const isCurrent = item.version === currentVersion;
               return (
-                <div
-                  key={item.id || `ver-${item.version}`}
-                  style={{
-                    padding: '10px 14px',
-                    borderRadius: 'var(--radius-sm)',
-                    background: isCurrent ? 'var(--vk-surface-2)' : 'var(--vk-surface-1)',
-                    border: `1px solid ${isCurrent ? 'var(--vk-border-strong)' : 'var(--vk-border)'}`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    flexWrap: 'wrap',
-                    gap: '10px',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <span className="code-font" style={{ color: isCurrent ? 'var(--vk-accent)' : 'var(--vk-text-secondary)', fontWeight: 700, fontSize: '0.85rem' }}>
-                      v{item.version}
-                    </span>
-                    {isCurrent && <span className="badge badge-write" style={{ fontSize: '0.625rem' }}>CURRENT</span>}
-                    <span style={{ color: 'var(--vk-text-muted)', fontSize: '0.775rem' }}>
-                      {new Date(item.created_at).toLocaleString()}
-                    </span>
+                <div key={item.id || `ver-${item.version}`} className={`history-row${isCurrent ? ' is-current' : ''}`}>
+                  <div className="history-meta">
+                    <span className="code-font history-version">v{item.version}</span>
+                    {isCurrent && <span className="badge badge-write">CURRENT</span>}
+                    <span className="history-date">{new Date(item.created_at).toLocaleString()}</span>
                   </div>
                   {!isCurrent && canWrite && (
-                    <button
-                      className="btn btn-secondary"
-                      style={{ fontSize: '0.725rem', padding: '4px 8px' }}
-                      onClick={() => setRollbackTarget(item.version)}
-                    >
+                    <button className="btn btn-secondary btn-sm" onClick={() => setRollbackTarget(item.version)}>
                       <RotateCcw size={12} /> Restore v{item.version}
                     </button>
                   )}

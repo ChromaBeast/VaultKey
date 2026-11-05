@@ -1,0 +1,76 @@
+/* Docs right-hand table of contents */
+@layer components {
+  /* ── Right TOC Column ("On this page") ───────────────────────────────────── */
+  .docs-right-toc {
+    min-width: 0;
+  }
+
+  .docs-right-toc-sticky {
+    position: sticky;
+    top: 100px;
+    padding: 32px 0 40px;
+  }
+
+  .docs-right-toc-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffffff;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+
+  .docs-right-toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .docs-right-toc-item {
+    padding-left: 14px;
+    position: relative;
+  }
+
+  .docs-right-toc-item--level-3 {
+    padding-left: 26px;
+  }
+
+  .docs-right-toc-link {
+    width: 100%;
+    text-align: left;
+    border: 0;
+    background: transparent;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: color 120ms ease;
+    padding: 3px 0;
+  }
+
+  .docs-right-toc-link:hover {
+    color: #ffffff;
+  }
+
+  .docs-right-toc-link.is-active {
+    color: #008ff5;
+    font-weight: 600;
+  }
+
+  .docs-right-toc-item:has(.is-active)::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 3px;
+    bottom: 3px;
+    width: 2px;
+    background: #008ff5;
+    border-radius: 2px;
+    box-shadow: 0 0 8px rgba(0, 143, 245, 0.8);
+  }
+}

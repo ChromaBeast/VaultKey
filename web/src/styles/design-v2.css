@@ -55,8 +55,6 @@
   .btn-lg { min-height: 48px; padding: 0 24px; font-size: .9375rem; }
   .btn-primary { box-shadow: 0 6px 18px rgba(0, 143, 245, .22), inset 0 1px 0 rgba(255, 255, 255, .12); }
   .btn-primary:hover { box-shadow: 0 8px 22px rgba(0, 143, 245, .3), inset 0 1px 0 rgba(255, 255, 255, .14); }
-  .btn-danger-solid { background: var(--danger); color: #05060a; font-weight: 600; border-color: transparent; }
-  .btn-danger-solid:hover { background: var(--rose); }
 
   /* Tables */
   th { background: color-mix(in srgb, var(--muted) 35%, transparent); font-family: var(--font-mono); font-size: .6875rem; letter-spacing: .08em; }
@@ -78,8 +76,6 @@
   }
   .vk-nav-active svg { color: var(--tone-text); }
   .app-page-title-row h1 { font-family: var(--font-display); }
-  .secret-key-cell { display: flex; align-items: center; gap: 12px; }
-  .secret-key-cell > svg { color: var(--vk-text-muted); flex-shrink: 0; }
   .secrets-stats { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; }
 }
 
@@ -132,4 +128,9 @@
   .current-plan-banner p { margin: 4px 0 0; color: var(--vk-text-secondary); font-size: .9rem; }
   .plan-active { border-color: color-mix(in srgb, var(--success) 50%, transparent) !important; }
   .perk-check { color: var(--success); flex-shrink: 0; }
+}
+
+/* Inline links inside running text need a non-colour cue (WCAG 1.4.1). Navigation and button links stay underline-free. */
+@layer components {
+  .legal-card a, .marketing-note a, .marketing-faq a, .contact-body p a { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 }

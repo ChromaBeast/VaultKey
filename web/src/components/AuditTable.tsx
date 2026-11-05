@@ -56,7 +56,7 @@ export const AuditTable: React.FC<Props> = ({ logs, loading, loadError }) => {
                 <td className="code-font audit-secondary text-muted-foreground text-xs">{l.ip_address || '-'}</td>
                 <td className="text-muted-foreground text-xs">
                   <span className="block">{new Date(l.created_at).toLocaleDateString()}</span>
-                  <span className="block opacity-70">{new Date(l.created_at).toLocaleTimeString()}</span>
+                  <span className="block">{new Date(l.created_at).toLocaleTimeString()}</span>
                 </td>
                 <td className="code-font audit-secondary text-xs">
                   {l.hmac ? (

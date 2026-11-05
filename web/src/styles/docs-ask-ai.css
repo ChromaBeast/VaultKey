@@ -1,0 +1,195 @@
+/* Docs Ask AI dialog */
+@layer components {
+  /* ── Ask AI Modal Dialog ─────────────────────────────────────────────────── */
+  .docs-ask-ai-dialog {
+    width: 100%;
+    max-width: 620px;
+    background: #0d1017;
+    border: 1px solid rgba(0, 143, 245, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 143, 245, 0.15);
+    overflow: hidden;
+  }
+
+  .docs-ask-ai-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .docs-ask-ai-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .docs-ask-ai-icon-bubble {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: rgba(0, 143, 245, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .docs-ask-ai-title {
+    margin: 0;
+    color: #ffffff;
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+
+  .docs-ask-ai-subtitle {
+    margin: 0;
+    color: #8593a8;
+    font-size: 0.6875rem;
+  }
+
+  .docs-ask-ai-close {
+    border: 0;
+    background: transparent;
+    color: #8593a8;
+    cursor: pointer;
+  }
+
+  .docs-ask-ai-body {
+    padding: 16px 18px;
+  }
+
+  .docs-ask-ai-chips {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .docs-ask-ai-chips-label {
+    color: #8593a8;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .docs-ask-ai-chip {
+    padding: 4px 9px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #94a3b8;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 120ms ease;
+  }
+
+  .docs-ask-ai-chip:hover,
+  .docs-ask-ai-chip.is-active {
+    background: rgba(0, 143, 245, 0.15);
+    color: #38bdf8;
+    border-color: rgba(0, 143, 245, 0.35);
+  }
+
+  .docs-ask-ai-card {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 9px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+
+  .docs-ask-ai-q {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .docs-ask-ai-answer p {
+    margin: 0 0 10px;
+    color: #94a3b8;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  .docs-ask-ai-code {
+    border-radius: 6px;
+    overflow: hidden;
+    background: #040508;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .docs-ask-ai-code-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    color: #8593a8;
+    font-size: 0.6875rem;
+    font-family: var(--font-mono, monospace);
+  }
+
+  .docs-ask-ai-copy-btn {
+    border: 0;
+    background: transparent;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.6875rem;
+    cursor: pointer;
+  }
+
+  .docs-ask-ai-code pre {
+    margin: 0;
+    padding: 10px 12px;
+    color: #e2e8f0;
+    font-size: 0.75rem;
+    line-height: 1.6;
+    overflow-x: auto;
+  }
+
+  .docs-ask-ai-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0 8px 0 12px;
+    height: 42px;
+  }
+
+  .docs-ask-ai-input {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    color: #ffffff;
+    font-size: 0.8125rem;
+    outline: none;
+  }
+
+  .docs-ask-ai-submit {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 0;
+    background: #008ff5;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .docs-ask-ai-submit:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
