@@ -138,7 +138,7 @@ Duration: `0.15s–0.2s`. Never `linear`. Never `ease-in` alone.
 | Modal open | `opacity 0→1, scale 0.97→1`, 0.2s spring |
 | Toast entry | `opacity 0→1, translateY 6px→0`, fixed bottom-right |
 
-No infinite-loop animations on data surfaces. The terminal hero block is static.
+No infinite-loop animations on data surfaces. The terminal hero block plays once (command types out, output lines appear in sequence, about 4 seconds), never loops, keeps a fixed height so nothing shifts, and renders its finished state immediately under `prefers-reduced-motion`.
 The command palette entry uses the standard page-entry spring.
 
 ---

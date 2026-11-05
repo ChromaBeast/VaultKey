@@ -13,7 +13,8 @@ const PAGES: [string, RegExp][] = [
   ['/signup', /Create your account/i],
 ];
 
-test.beforeEach(async ({ page }) => { await mockApi(page); });
+// Axe contrast checks must not run mid-animation, so scans use the reduced-motion (final) state.
+test.beforeEach(async ({ page }) => { await mockApi(page); await page.emulateMedia({ reducedMotion: 'reduce' }); });
 
 for (const [path, heading] of PAGES) {
   test(`${path} renders and has no serious accessibility violations`, async ({ page }) => {
@@ -40,4 +41,22 @@ test('unknown routes show the 404 page', async ({ page }) => {
 test('robots.txt and sitemap.xml are served', async ({ request }) => {
   expect((await request.get('/robots.txt')).ok()).toBeTruthy();
   expect(await (await request.get('/sitemap.xml')).text()).toContain('<urlset');
+});
+
+test('hero terminal plays once and ends in the full state', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/');
+  const terminal = page.getByLabel(/Example: vaultkey run/);
+  const heightBefore = (await terminal.boundingBox())?.height;
+  await expect(terminal.locator('.reveal.is-in')).toHaveCount(7, { timeout: 10_000 });
+  await expect(terminal.getByText('Server listening on :3000')).toBeVisible();
+  await expect(terminal.getByRole('button', { name: 'Replay animation' })).toBeEnabled();
+  expect((await terminal.boundingBox())?.height).toBe(heightBefore); // no layout shift while playing
+});
+
+test('hero terminal shows its final state immediately with reduced motion', async ({ page }) => {
+  await page.goto('/');
+  const terminal = page.getByLabel(/Example: vaultkey run/);
+  await expect(terminal.locator('.reveal.is-in')).toHaveCount(7);
+  await expect(terminal.getByRole('button', { name: 'Replay animation' })).toHaveCount(0);
 });
