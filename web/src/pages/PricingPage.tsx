@@ -1,17 +1,20 @@
 import { Link } from 'react-router-dom';
+import { PageIntro } from '../components/landing/PageIntro';
 import { PricingSection } from '../components/landing/pricing/PricingSection';
+import { PlanCompare } from '../components/landing/pricing/PlanCompare';
+
 export function PricingPage() {
   return <>
-    <section className="marketing-page-intro section-shell">
-      <h1>Start free.<br />Grow with your team.</h1>
-      <p>Try VaultKey on your own project, choose a team workspace, or discuss a custom setup.</p>
-    </section>
+    <PageIntro eyebrow="Pricing" lead="Start free." accent="Grow with your team.">
+      Try VaultKey on your own project, choose a team workspace, or discuss a custom setup.
+    </PageIntro>
     <h2 className="sr-only">Compare plans</h2>
     <PricingSection showHeading={false} />
+    <PlanCompare />
     <section className="marketing-reading-section section-shell" aria-labelledby="pricing-questions-title">
       <h2 id="pricing-questions-title" className="section-title">Before you choose.</h2>
       <div className="marketing-faq">
-        <details><summary>What does the free plan include?</summary><p>25 secrets, two team members and two access keys, with CLI and SDK access to run your applications.</p></details>
+        <details open><summary>What does the free plan include?</summary><p>25 secrets, two team members and two access keys, with CLI and SDK access to run your applications.</p></details>
         <details><summary>Is Team priced per person?</summary><p>The listed ₹1,499 monthly price applies to your workspace. It is not a per-seat price.</p></details>
         <details><summary>What if I need a custom deployment?</summary><p><a href="mailto:sheersh@vaultkey.dev?subject=VaultKey%20Enterprise%20inquiry">Contact us</a> to discuss your infrastructure and requirements.</p></details>
       </div>

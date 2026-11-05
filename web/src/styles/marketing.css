@@ -42,7 +42,7 @@
   .landing-page .marketing-page-intro { padding-bottom: 32px; }
   .marketing-reading-section { border-top: 1px solid var(--vk-border); }
   .marketing-connect-list { margin-top: 40px; }
-  .marketing-connect-list > a { display: grid; grid-template-columns: minmax(120px, .6fr) minmax(0, 2fr) auto; align-items: center; gap: 24px; padding: 24px 0; border-bottom: 1px solid var(--vk-border); }
+  .marketing-connect-list > a { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 24px; padding: 24px 0; border-bottom: 1px solid var(--vk-border); }
   .marketing-connect-list > a:hover h3 { color: var(--vk-accent); }
   .marketing-connect-list h3 { font-size: 1.125rem; }
   .marketing-connect-list p { color: var(--vk-text-secondary); font-size: .9375rem; }

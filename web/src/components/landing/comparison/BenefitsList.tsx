@@ -1,22 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Lock, ScrollText, Server, Users } from 'lucide-react';
+import { IconTile, type Tone } from '@/components/ui';
 
-const BENEFITS = [
-  ['Memory-Derivation & AES-256-GCM', 'Secrets are encrypted at rest with AES-256-GCM using random 12-byte nonces. The master key derives in RAM upon unlock and clears when the vault locks.'],
-  ['Scoped RBAC & Runtime Injection', 'Issue scoped machine tokens (admin, write, read) for services and pipelines. Secrets inject directly into process memory without touching disk.'],
-  ['HMAC-Chained Audit Ledger', 'Every secret mutation and read event chains cryptographically to the previous entry with HMAC-SHA256, enabling live tamper verification.'],
+const PILLARS: { icon: React.ReactNode; tone: Tone; title: string; text: string }[] = [
+  { icon: <Lock size={22} />, tone: 'blue', title: 'Encrypted at rest', text: 'AES-256-GCM with random 12-byte nonces. The master key derives in RAM on unlock and clears when the vault locks.' },
+  { icon: <Users size={22} />, tone: 'violet', title: 'Scoped access', text: 'Scoped machine tokens (admin, write, read) for services and pipelines. Secrets inject into process memory without touching disk.' },
+  { icon: <ScrollText size={22} />, tone: 'green', title: 'Tamper-evident audit', text: 'Every secret mutation and read chains to the previous entry with HMAC-SHA256, enabling live tamper verification.' },
+  { icon: <Server size={22} />, tone: 'cyan', title: 'RAM-only keys', text: 'Unwrapped keys live in server memory. They are never written to disk or logged.' },
 ];
 
 export const BenefitsList: React.FC = () => (
-  <div className="border-t border-border">
-    {BENEFITS.map(([title, description]) => (
-      <div key={title} className="grid gap-2 border-b border-border py-6 text-left sm:grid-cols-[minmax(240px,1fr)_2fr] sm:gap-8">
-        <h3 className="text-base font-semibold text-foreground">{title}</h3>
-        <div><p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">{description}</p></div>
-      </div>
-    ))}
-    <Link to="/docs#security" className="mt-6 inline-flex items-center gap-2 text-sm text-primary hover:text-primary-hover font-medium">
+  <div>
+    <div className="security-pillars">
+      {PILLARS.map((p) => (
+        <article key={p.title} className="glass">
+          <IconTile tone={p.tone} size="lg">{p.icon}</IconTile>
+          <h3>{p.title}</h3>
+          <p>{p.text}</p>
+        </article>
+      ))}
+    </div>
+    <Link to="/docs#security" className="mt-8 inline-flex items-center gap-2 text-sm text-primary hover:text-primary-hover font-medium">
       Explore encryption and the audit ledger <ArrowRight size={14} aria-hidden="true" />
     </Link>
   </div>

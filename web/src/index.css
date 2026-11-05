@@ -15,6 +15,7 @@
 @import './styles/marketing.css';
 @import './styles/design-v2.css';
 @import './styles/home-v2.css';
+@import './styles/marketing-v2.css';
 
 @theme {
   --color-background: var(--background);

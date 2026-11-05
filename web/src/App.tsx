@@ -42,16 +42,16 @@ export const App: React.FC = () => {
               <Route path="/how-it-works" element={<HowItWorksPage />} />
               <Route path="/security" element={<SecurityPage />} />
               <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/refunds" element={<RefundPolicyPage />} />
+              <Route path="/contact" element={<ContactPage />} />
             </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ForgotPasswordPage />} />
             <Route path="/accept-invite" element={<AcceptInvitePage />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<TermsPage />} />
-            <Route path="/refunds" element={<RefundPolicyPage />} />
-            <Route path="/contact" element={<ContactPage />} />
             <Route path="/share/:shareId" element={<SharePageWrapper />} />
             <Route path="/docs" element={<PublicShell><DocsPage /></PublicShell>} />
 
