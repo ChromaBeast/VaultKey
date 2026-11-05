@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Link2 } from 'lucide-react';
+import { IconTile } from './ui/IconTile';
+import { Link2, Eye } from 'lucide-react';
 import { createShareLink, errorMessage } from '../lib/api';
 import { pushToast } from '../lib/toast';
 import { Modal } from './ui/Modal';
@@ -33,9 +34,12 @@ export const RevealSecretModal: React.FC<RevealSecretModalProps> = ({ secretKey,
     <Modal label="Reveal secret" isOpen onClose={onClose} width={480}>
       <div className="p-6">
         <div className="flex justify-between items-center mb-3.5">
-          <h3 className="font-mono text-base font-bold text-foreground">
-            {secretKey}
-          </h3>
+          <div className="flex min-w-0 items-center gap-3">
+            <IconTile tone="amber"><Eye size={20} /></IconTile>
+            <h3 className="font-mono text-base font-bold text-foreground">
+              {secretKey}
+            </h3>
+          </div>
           <span className="badge badge-write">DECRYPTED</span>
         </div>
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { KeyRound } from 'lucide-react';
+import { IconTile } from './ui/IconTile';
+import { KeyRound, Lock } from 'lucide-react';
 import { Modal } from './ui/Modal';
 import { SecretGeneratorModal } from './SecretGeneratorModal';
 import { Input, Textarea } from './ui';
@@ -46,13 +47,16 @@ export const CreateSecretModal: React.FC<CreateSecretModalProps> = ({
     <Modal label={isEdit ? "Edit secret" : "Create secret"} isOpen={isOpen} onClose={submitting ? () => undefined : onClose} width={460}>
       <form onSubmit={handleSubmit} className="p-6">
         <div className="flex justify-between items-center mb-4">
-          <div>
+          <div className="flex items-center gap-3">
+            <IconTile tone="blue"><Lock size={20} /></IconTile>
+            <div>
             <h3 className="text-lg font-bold text-foreground">
               {isEdit ? 'Edit Secret Value' : 'Create Secret'}
             </h3>
             <span className="text-xs text-muted-foreground">
               Project: <strong className="text-primary">{project}</strong>
             </span>
+            </div>
           </div>
           {!isEdit && (
             <button

@@ -115,7 +115,7 @@ vaultkey mcp`;
           </div>
 
           <div className="docs-arch-card">
-            <div className="docs-arch-card-icon text-indigo-400">
+            <div className="docs-arch-card-icon text-sky-400">
               <Bot size={20} />
             </div>
             <h4>MCP Agent Boundary</h4>

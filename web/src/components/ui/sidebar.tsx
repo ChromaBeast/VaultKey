@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import type { Tone } from './IconTile';
 import { cn } from '@/lib/utils';
 import { Modal } from './Modal';
 
@@ -10,6 +11,7 @@ export interface Links {
   icon: React.ReactNode;
   onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
   isActive?: boolean;
+  tone?: Tone;
 }
 interface SidebarContextProps {
   open: boolean;
@@ -66,8 +68,8 @@ export const SidebarLink = ({ link, className }: { link: Links; className?: stri
   const { open, setOpen, animate } = useSidebar();
   return <a href={link.href} onClick={link.onClick} onFocus={() => setOpen(true)} aria-label={link.label}
     aria-current={link.isActive ? 'page' : undefined} title={!open ? link.label : undefined}
-    className={cn('flex items-center gap-3 py-2.5 px-2.5 rounded-lg text-sm transition-colors',
-      link.isActive ? 'bg-accent/60 text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground hover:bg-accent/30', className)}>
+    className={cn('flex items-center gap-3 py-2.5 px-2.5 rounded-[10px] border border-transparent text-sm transition-colors', link.tone && `tone-${link.tone}`,
+      link.isActive ? 'vk-nav-active text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground hover:bg-accent/30', className)}>
     <span className="shrink-0">{link.icon}</span>
     {(!animate || open) && <span className="truncate">{link.label}</span>}
   </a>;

@@ -1,0 +1,17 @@
+/* Design v2 auth: visual pane with one soft blue glow and tinted flow items */
+@layer components {
+  .auth-visual { position: relative; display: grid; place-items: center; width: 100%; min-height: 100%; padding: clamp(2rem, 5vw, 4.5rem); border-left: 1px solid var(--border); background: var(--card); }
+  .auth-visual-content { position: relative; display: grid; justify-items: center; gap: 22px; width: min(100%, 440px); text-align: center; animation: auth-enter 650ms var(--ease-smooth) both; }
+  .auth-visual-mark { display: grid; place-items: center; width: 96px; height: 96px; border-radius: 28px; border: 1px solid color-mix(in srgb, var(--primary) 35%, transparent); background: color-mix(in srgb, var(--background) 70%, transparent); box-shadow: 0 0 40px rgba(0, 143, 245, .3), inset 0 1px 0 rgba(255, 255, 255, .08); }
+  .auth-visual-mark img { width: 56px; height: 56px; object-fit: contain; }
+  .auth-visual-content h2 { margin: 0; font-size: clamp(2rem, 3.4vw, 2.75rem); line-height: 1.1; letter-spacing: -.04em; font-weight: 800; }
+  .auth-visual-copy { max-width: 30ch; margin: 0; color: var(--vk-text-secondary); font-size: 1.03rem; line-height: 1.55; }
+  .auth-flow { display: grid; gap: 10px; width: 100%; margin: 6px 0 0; padding: 0; list-style: none; text-align: left; }
+  .auth-flow li { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 14px; background: color-mix(in srgb, var(--background) 55%, transparent); border: 1px solid color-mix(in srgb, var(--tone) 25%, transparent); }
+  .auth-flow li span:last-child { display: grid; gap: 2px; }
+  .auth-flow strong { font-size: .9rem; font-weight: 600; }
+  .auth-flow small { color: var(--vk-text-secondary); font-size: .78rem; }
+  .auth-visual-footer { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  @keyframes auth-enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @media (prefers-reduced-motion: reduce) { .auth-visual-content { animation: none; } }
+}

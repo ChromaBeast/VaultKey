@@ -7,6 +7,10 @@ const PAGE_TITLES: Record<string, string> = {
   '/how-it-works': 'How it works | VaultKey',
   '/security': 'Why VaultKey | Security and access',
   '/pricing': 'Pricing | VaultKey',
+  '/terms': 'Terms of Service | VaultKey',
+  '/privacy': 'Privacy Policy | VaultKey',
+  '/refunds': 'Refunds and Cancellation | VaultKey',
+  '/contact': 'Contact | VaultKey',
 };
 const PAGE_DESCRIPTIONS: Record<string, string> = {
   '/': 'Store API keys and passwords in an encrypted vault. Load them into your app at runtime.',

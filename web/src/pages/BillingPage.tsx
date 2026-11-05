@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { CreditCard } from 'lucide-react';
 import { isAdminRole } from '../lib/permissions';
 import { errorMessage } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
@@ -40,7 +41,7 @@ export const BillingPage: React.FC = () => {
   return (
     <div className="animate-fade">
       <PageHeader
-        title="Billing"
+        title="Billing" icon={<CreditCard size={20} />} tone="green"
         description={isAdmin ? "Manage your plan and payment history." : "View workspace plans. An administrator manages billing."}
       />
 

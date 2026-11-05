@@ -52,28 +52,8 @@ export const AuthSplitLayout: React.FC<AuthSplitLayoutProps> = ({
               marginBottom: '36px',
             }}
           >
-            <div
-              style={{
-                width: '38px',
-                height: '38px',
-                borderRadius: 'var(--radius-sm)',
-                background: 'var(--vk-accent-dim)',
-                border: '1px solid var(--vk-border)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <img src="/vaultkey-logo.png" alt="" width="32" height="32" />
-            </div>
-            <div>
-              <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--vk-text)', letterSpacing: '-0.02em', display: 'block', lineHeight: 1.1 }}>
-                VaultKey
-              </span>
-              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--vk-accent)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                Secrets Manager
-              </span>
-            </div>
+            <img src="/vaultkey-logo.png" alt="" width="34" height="34" />
+            <span className="brand-text" style={{ fontSize: '1.375rem', fontWeight: 800, color: 'var(--vk-text)' }}>VaultKey</span>
           </Link>
 
           {/* Heading */}

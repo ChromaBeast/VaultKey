@@ -1,7 +1,8 @@
 import React from 'react';
+import { IconTile } from './ui/IconTile';
 import { Modal } from './ui/Modal';
 import { useClipboard } from '../hooks/useClipboard';
-import { Bot, Check, Copy, ShieldAlert } from 'lucide-react';
+import { Bot, Check, CircleCheck, Copy, ShieldAlert } from 'lucide-react';
 
 interface TokenCreatedModalProps {
   createdToken: string | null;
@@ -17,9 +18,10 @@ export const TokenCreatedModal: React.FC<TokenCreatedModalProps> = ({ createdTok
   return (
     <Modal label="API key created" isOpen onClose={onClose} width={480}>
       <div style={{ padding: '24px' }}>
-        <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--vk-text)', marginBottom: '4px' }}>
-          API Key Created
-        </h3>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+          <IconTile tone="green"><CircleCheck size={20} /></IconTile>
+          <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--vk-text)' }}>API Key Created</h3>
+        </div>
         <p style={{ fontSize: '0.825rem', color: 'var(--vk-text-muted)', marginBottom: '14px' }}>
           This token will only be shown once. Store it in your CI/CD environment or secret manager before closing.
         </p>

@@ -1,31 +1,42 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export const LandingFooter: React.FC = () => (
-  <footer className="w-full border-t border-border bg-background">
-    <div className="mx-auto max-w-[var(--container-max)] px-4 py-10 sm:px-6 lg:px-8">
-      <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <div className="flex items-center gap-2">
-            <img src="/vaultkey-logo.png" alt="" className="h-7 w-7 object-contain" />
-            <span className="brand-text font-extrabold text-foreground">VaultKey</span>
-          </div>
-          <p className="mt-3 max-w-xs text-sm text-muted-foreground">A safer home for the passwords and keys your app uses.</p>
-        </div>
+const COLUMNS: { title: string; links: { to?: string; href?: string; label: string }[] }[] = [
+  { title: 'Product', links: [{ to: '/how-it-works', label: 'How it works' }, { to: '/security', label: 'Why VaultKey' }, { to: '/pricing', label: 'Pricing' }, { to: '/docs', label: 'Docs' }] },
+  { title: 'Company', links: [{ to: '/contact', label: 'Contact' }, { href: 'https://github.com/ChromaBeast/VaultKey', label: 'GitHub' }] },
+  { title: 'Legal', links: [{ to: '/terms', label: 'Terms' }, { to: '/privacy', label: 'Privacy' }, { to: '/refunds', label: 'Refunds' }] },
+];
 
-        <nav aria-label="Footer navigation" className="flex max-w-xl flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground">
-          <Link to="/how-it-works" className="hover:text-foreground">How it works</Link>
-          <Link to="/security" className="hover:text-foreground">Why VaultKey</Link>
-          <Link to="/pricing" className="hover:text-foreground">Pricing</Link>
-          <Link to="/docs" className="hover:text-foreground">Docs</Link>
-          <Link to="/terms" className="hover:text-foreground">Terms</Link>
-          <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
-          <Link to="/refunds" className="hover:text-foreground">Refunds</Link>
-          <a href="https://github.com/ChromaBeast/VaultKey" target="_blank" rel="noreferrer" className="hover:text-foreground">GitHub</a>
-          <Link to="/contact" className="hover:text-foreground">Contact</Link>
+export const LandingFooter: React.FC = () => (
+  <footer className="marketing-footer">
+    <div className="mx-auto max-w-[var(--container-max)] px-[var(--container-px)] pt-14 pb-8">
+      <div className="marketing-footer-grid">
+        <div>
+          <div className="flex items-center gap-2.5">
+            <img src="/vaultkey-logo.png" alt="" className="h-[30px] w-[30px] object-contain" />
+            <span className="brand-text text-lg font-extrabold text-foreground">VaultKey</span>
+          </div>
+          <p className="mt-3.5 max-w-xs text-sm leading-relaxed text-muted-foreground">An encrypted vault for your app secrets. Load them at runtime, without files or leaks.</p>
+        </div>
+        <nav aria-label="Footer navigation" className="marketing-footer-cols">
+          {COLUMNS.map((col) => (
+            <div key={col.title}>
+              <h2>{col.title}</h2>
+              <ul>
+                {col.links.map((l) => (
+                  <li key={l.label}>
+                    {l.to ? <Link to={l.to}>{l.label}</Link> : <a href={l.href} target="_blank" rel="noreferrer">{l.label}</a>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </nav>
       </div>
-      <p className="mt-10 border-t border-border pt-5 text-xs text-muted-foreground">© {new Date().getFullYear()} VaultKey Systems</p>
+      <div className="marketing-footer-bottom">
+        <p>© {new Date().getFullYear()} VaultKey Systems. All rights reserved.</p>
+        <p className="status"><span aria-hidden="true" />All systems operational</p>
+      </div>
     </div>
   </footer>
 );

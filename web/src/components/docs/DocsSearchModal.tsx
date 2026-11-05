@@ -55,7 +55,7 @@ export const DocsSearchModal: React.FC<DocsSearchModalProps> = ({
       case 'QUICKSTART': return <Terminal size={14} className="text-emerald-400" />;
       case 'CLI': return <Terminal size={14} className="text-teal-400" />;
       case 'SDK': return <Package size={14} className="text-sky-400" />;
-      case 'MCP': return <Bot size={14} className="text-indigo-400" />;
+      case 'MCP': return <Bot size={14} className="text-sky-400" />;
       case 'API': return <Zap size={14} className="text-amber-400" />;
       case 'SECURITY': return <ShieldCheck size={14} className="text-purple-400" />;
       default: return <Search size={14} className="text-zinc-400" />;

@@ -1,0 +1,88 @@
+/* Design v2: accent tones, tiles, tinted badges, flat buttons, soft blue glow.
+   Gradients are not used; heroes carry one soft blue glow only. */
+@layer components {
+  .tone-blue    { --tone: var(--primary);  --tone-text: var(--blue-light); }
+  .tone-violet  { --tone: var(--violet);   --tone-text: var(--violet-light); }
+  .tone-cyan    { --tone: var(--cyan);     --tone-text: var(--cyan); }
+  .tone-fuchsia { --tone: var(--fuchsia);  --tone-text: var(--fuchsia); }
+  .tone-green   { --tone: var(--success);  --tone-text: var(--success); }
+  .tone-amber   { --tone: var(--warning);  --tone-text: var(--warning); }
+  .tone-red     { --tone: var(--danger);   --tone-text: var(--danger); }
+  .tone-rose    { --tone: var(--rose);     --tone-text: var(--rose); }
+
+  .vk-eyebrow { font: 700 .75rem var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--blue-light); }
+  .vk-accent-text { color: var(--blue-light); }
+
+  .vk-tile {
+    --size: 44px;
+    display: inline-grid; place-items: center; flex-shrink: 0;
+    width: var(--size); height: var(--size); border-radius: calc(var(--size) * .28);
+    color: var(--tone-text, var(--blue-light));
+    background: color-mix(in srgb, var(--tone, var(--primary)) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tone, var(--primary)) 28%, transparent);
+  }
+  .vk-tile-sm { --size: 32px; } .vk-tile-lg { --size: 56px; } .vk-tile-xl { --size: 72px; }
+
+  .vk-pill {
+    display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: var(--radius-full);
+    font-size: .8125rem; font-weight: 500; color: var(--tone-text, var(--blue-light));
+    background: color-mix(in srgb, var(--tone, var(--primary)) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tone, var(--primary)) 30%, transparent);
+  }
+
+  /* Tinted badge: pair with .tone-* (roles, environments, statuses) */
+  .badge-tone {
+    color: var(--tone-text);
+    background: color-mix(in srgb, var(--tone) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tone) 30%, transparent);
+  }
+  .badge-dot::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--tone, currentColor); }
+  .badge-production { --tone: var(--rose); --tone-text: var(--rose); }
+  .badge-staging { --tone: var(--warning); --tone-text: var(--warning); }
+  .badge-development { --tone: var(--cyan); --tone-text: var(--cyan); }
+  .badge-production, .badge-staging, .badge-development {
+    color: var(--tone-text); background: color-mix(in srgb, var(--tone) 12%, transparent); border: 1px solid color-mix(in srgb, var(--tone) 30%, transparent);
+  }
+
+  /* Surfaces: top sheen on every panel */
+  .glass, .glass-glow { box-shadow: var(--vk-shadow-sm), inset 0 1px 0 rgba(255, 255, 255, .06); }
+  .input { background: var(--popover); }
+
+  /* Buttons: flat, 10px radius, soft blue lift on primary */
+  .btn { border-radius: 10px; min-height: 40px; padding: 0 16px; justify-content: center; }
+  .btn-sm { min-height: 34px; padding: 0 12px; font-size: .8125rem; }
+  .btn-lg { min-height: 48px; padding: 0 24px; font-size: .9375rem; }
+  .btn-primary { box-shadow: 0 6px 18px rgba(0, 143, 245, .22), inset 0 1px 0 rgba(255, 255, 255, .12); }
+  .btn-primary:hover { box-shadow: 0 8px 22px rgba(0, 143, 245, .3), inset 0 1px 0 rgba(255, 255, 255, .14); }
+  .btn-danger-solid { background: var(--danger); color: #05060a; font-weight: 600; border-color: transparent; }
+  .btn-danger-solid:hover { background: var(--rose); }
+
+  /* Tables */
+  th { background: color-mix(in srgb, var(--muted) 35%, transparent); font-family: var(--font-mono); font-size: .6875rem; letter-spacing: .08em; }
+
+  /* One soft blue glow behind a hero or auth panel */
+  .vk-glow { position: relative; isolation: isolate; overflow: hidden; }
+  .vk-glow::before {
+    content: ""; position: absolute; z-index: -1; pointer-events: none;
+    width: min(720px, 90%); aspect-ratio: 1; top: -35%; left: 50%; transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(0, 143, 245, .2), transparent 62%);
+  }
+  .vk-glow-left::before { left: 18%; transform: none; }
+}
+
+@layer components {
+  .vk-nav-active {
+    background: color-mix(in srgb, var(--tone) 13%, transparent);
+    border-color: color-mix(in srgb, var(--tone) 28%, transparent) !important;
+  }
+  .vk-nav-active svg { color: var(--tone-text); }
+  .app-page-title-row h1 { font-family: var(--font-display); }
+  .secret-key-cell { display: flex; align-items: center; gap: 12px; }
+  .secret-key-cell > svg { color: var(--vk-text-muted); flex-shrink: 0; }
+  .secrets-stats { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; }
+}
+
+@layer components {
+  .modal-panel { background: var(--popover); border-color: var(--border-strong); border-radius: 18px; box-shadow: var(--vk-shadow-pop), inset 0 1px 0 rgba(255, 255, 255, .06); }
+  .modal-panel h3 { font-family: var(--font-display); letter-spacing: -.02em; }
+}

@@ -1,9 +1,12 @@
 import React from 'react';
 import { FolderPlus } from 'lucide-react';
+import { IconTile } from './ui/IconTile';
 import type { SecretItem } from '../lib/api';
 import { TableSkeleton } from './Skeletons';
 import { SecretActions } from './SecretActions';
 import { Link } from 'react-router-dom';
+
+const ENV_BADGE: Record<string, string> = { production: 'badge-production', prod: 'badge-production', staging: 'badge-staging', development: 'badge-development', dev: 'badge-development' };
 
 interface SecretsTableProps {
   canWrite: boolean;
@@ -67,10 +70,10 @@ export const SecretsTable: React.FC<SecretsTableProps> = ({
                   <details className="secret-mobile-details"><summary>Details</summary><div className="break-all">Key: {s.key}<br />Environment: {s.env || 'default'}<br />Version: v{s.version}</div></details>
                 </td>
                 <td className="secret-secondary">
-                  <span className="text-xs text-muted-foreground">{s.env || 'default'}</span>
+                  <span className={`badge badge-dot ${ENV_BADGE[(s.env || '').toLowerCase()] ?? 'badge-neutral'}`}>{s.env || 'default'}</span>
                 </td>
                 <td className="secret-secondary">
-                  <span className="code-font text-xs text-muted-foreground" title="Active version">v{s.version}</span>
+                  <span className="code-font text-xs" style={{ color: 'var(--violet-light)' }} title="Active version">v{s.version}</span>
                 </td>
                 <td className="text-muted-foreground text-sm">
                   {new Date(s.updated_at).toLocaleDateString()}
@@ -98,9 +101,7 @@ export const SecretsTable: React.FC<SecretsTableProps> = ({
           {!loading && secrets.length === 0 && !searching && (
             <tr>
               <td colSpan={5} className="text-center py-14 px-6">
-                <div className="w-10 h-10 rounded-full bg-surface-2 inline-flex items-center justify-center mb-3 border border-border">
-                  <FolderPlus size={18} className="text-primary" />
-                </div>
+                <IconTile tone="blue" size="lg" className="mb-3"><FolderPlus size={24} /></IconTile>
                 <h3 className="text-base text-foreground font-bold mb-1.5">
                   No secrets in "{project}" yet
                 </h3>

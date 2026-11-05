@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { RefreshCw, Check, Copy, X } from 'lucide-react';
+import { IconTile } from './ui/IconTile';
+import { RefreshCw, Check, Copy, X, Sparkles } from 'lucide-react';
 import { Modal } from './ui/Modal';
 import { useClipboard } from '../hooks/useClipboard';
 
@@ -43,9 +44,12 @@ export const SecretGeneratorModal: React.FC<GeneratorProps> = ({ isOpen, onClose
     <Modal label="Secret generator" isOpen={isOpen} onClose={onClose} width={460}>
       <div className="p-6">
         <div className="flex justify-between items-center mb-4">
-          <div>
-            <h3 className="text-lg font-bold text-foreground">Secret generator</h3>
-            <p className="text-xs text-muted-foreground">Cryptographically random client-side generation</p>
+          <div className="flex items-center gap-3">
+            <IconTile tone="fuchsia"><Sparkles size={20} /></IconTile>
+            <div>
+              <h3 className="text-lg font-bold text-foreground">Secret generator</h3>
+              <p className="text-xs text-muted-foreground">Cryptographically random client-side generation</p>
+            </div>
           </div>
           <button onClick={onClose} aria-label="Close generator" className="text-muted-foreground hover:text-foreground cursor-pointer">
             <X size={18} />

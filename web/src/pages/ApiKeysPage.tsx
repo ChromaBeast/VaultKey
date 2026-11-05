@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bot, Plus } from 'lucide-react';
+import { Bot, Plus, KeyRound } from 'lucide-react';
 import { isAdminRole } from '../lib/permissions';
 import { useAuth } from '../context/AuthContext';
 import type { APIKeyItem } from '../lib/api';
@@ -89,11 +89,11 @@ export const ApiKeysPage: React.FC = () => {
   };
   const activeKeys = keys.filter((k) => k.active && !k.name.startsWith("Session: ") && (!k.expires_at || Date.parse(k.expires_at) > checkedAt));
   const automationKeys = keys.filter((k) => !k.name.startsWith("Session: "));
-  if (!isAdmin) return <div><PageHeader title="API Keys" description="An administrator manages automation keys for this workspace." /></div>;
+  if (!isAdmin) return <div><PageHeader title="API Keys" icon={<KeyRound size={20} />} tone="violet" description="An administrator manages automation keys for this workspace." /></div>;
   return (
     <div className="animate-fade">
       <PageHeader
-        title="API Keys"
+        title="API Keys" icon={<KeyRound size={20} />} tone="violet"
         description="Scoped tokens for automation."
         badge={
           <span className="app-page-meta">

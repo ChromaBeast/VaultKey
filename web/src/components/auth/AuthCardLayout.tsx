@@ -23,7 +23,7 @@ export const AuthCardLayout: React.FC<AuthCardLayoutProps> = ({
 }) => {
   return (
     <div
-      className="animate-fade"
+      className="animate-fade vk-glow"
       style={{
         minHeight: '100vh',
         display: 'flex',
@@ -42,7 +42,7 @@ export const AuthCardLayout: React.FC<AuthCardLayoutProps> = ({
           padding: '36px 32px',
           background: 'var(--vk-surface-1)',
           border: '1px solid var(--vk-border-strong)',
-          borderRadius: 'var(--radius-lg)',
+          borderRadius: '24px',
           boxShadow: 'var(--vk-shadow-pop)',
           position: 'relative',
         }}
