@@ -10,15 +10,16 @@ All surfaces sit on the same obsidian canvas. Tint shifts within the same dark f
 
 | Layer | Value | Notes |
 |---|---|---|
-| Base canvas | `#0b0e14` | Page background. Deep obsidian. |
-| Panel surface | `#121824` | Glass cards, modals, table wrappers. |
-| Hover surface | `#182030` | Card hover state. |
-| Input background | `#090c14` | Darker than panel to create inset depth. |
+| Base canvas | `#08090d` (`--background`) | Page background. Deep obsidian. |
+| Panel surface | `#0f131a` (`--card`) | Glass cards, modals, table wrappers. |
+| Popover / input | `#121722` (`--popover`, `--input`) | Menus, dialogs, form fields. |
+| Hover / muted surface | `#182030` (`--muted`) | Card hover state. |
+
+Source of truth: `web/src/styles/tokens.css`. If this file and the tokens disagree, the tokens win.
 
 ### Surface Borders
-- Default border: `1px solid rgba(255, 255, 255, 0.08)`
-- Hover border: `rgba(255, 255, 255, 0.16)`
-- Focus ring: `#6366f1` with `box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25)`
+- Default border: `#1e2638` (`--border`); strong/hover: `#2d3850` (`--border-strong`)
+- Focus ring: `#008ff5` with `box-shadow: 0 0 0 2px rgba(0, 143, 245, 0.6)`
 - Top sheen (mandatory on all `.glass` and `.glass-glow`): `inset 0 1px 0 rgba(255, 255, 255, 0.08)`
   — this is the edge-refraction highlight that separates cheap glassmorphism from premium.
 
@@ -30,20 +31,19 @@ One accent family. Do not introduce secondary accents without a documented reaso
 
 | Token | Hex | Use |
 |---|---|---|
-| `--accent-primary` | `#6366f1` | Buttons, focus rings, active states |
-| `--accent-glow` | `linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%)` | Hero logo, billing pro card highlight |
-| `--accent-emerald` | `#10b981` | Success states, "write" badges, encryption confirmed |
-| `--accent-amber` | `#f59e0b` | Warning, admin badges, "pending" states |
-| `--accent-red` | `#ef4444` | Danger buttons, error toasts |
-| `--text-main` | `#f8fafc` | Primary body text, headings |
-| `--text-muted` | `#94a3b8` | Subtext, table labels, descriptions |
-| `--text-label` | `#cbd5e1` | Form labels, secondary body |
+| `--primary` | `#008ff5` | Focus rings, active states, links (5.5:1 on cards). Matches the logo blue. |
+| `--primary-button` | `#006db8` (hover `#005a99`) | Primary button fill. White label is 5.4:1; white on `#008ff5` is only 3.4:1, so never use `--primary` as a button fill. |
+| `--success` | `#4ade80` | Success states, "write" badges, encryption confirmed |
+| `--warning` | `#f59e0b` | Warning, admin badges, "pending" states |
+| `--danger` | `#f87171` | Danger buttons, error toasts |
+| `--foreground` | `#f8fafc` | Primary body text, headings |
+| `--muted-foreground` | `#94a3b8` | Subtext, table labels, descriptions |
+| `--vk-text-muted` | `#8593a8` | Tertiary text (still 6:1 on cards) |
 
 ### Color Rules
-- Accent is locked per-page. A purple CTA does not become teal in section 5.
-- No random neon gradients on background canvases. The gradient is reserved for
-  the hero logo icon and the billing pro card's border treatment only.
-- Badge backgrounds are always `accentColor + 12` opacity (e.g. `rgba(99, 102, 241, 0.12)`).
+- One accent family: the logo blue. A blue CTA does not become teal in section 5.
+- No gradients on canvases or panels. The logo is a flat PNG; the pricing Team card may use a subtle blue ramp (`#5eb1ff` → `#008ff5` → `#006db8`) on its border only.
+- Badge backgrounds are always `accentColor + 12` opacity (e.g. `rgba(0, 143, 245, 0.12)`).
 
 ---
 
@@ -74,7 +74,7 @@ No exceptions. Link intent is communicated by color and hover state, never under
 ### Buttons
 ```
 .btn             — base: Inter 500, 9px/16px padding, radius 8px, spring transition
-.btn-primary     — bg: #6366f1, hover: #4f46e5, shadow: 0 2px 8px rgba(99,102,241,0.3)
+.btn-primary     — bg: #006db8, hover: #005a99, shadow: 0 2px 8px rgba(0,143,245,0.3)
 .btn-secondary   — bg: rgba(255,255,255,0.05), border: rgba(255,255,255,0.08)
 .btn-danger      — bg: rgba(239,68,68,0.1), border: rgba(239,68,68,0.25), text: #f87171
 active state     — transform: scale(0.97) on all .btn
@@ -82,9 +82,9 @@ active state     — transform: scale(0.97) on all .btn
 
 ### Inputs
 ```
-background: #090c14
-border: 1px solid rgba(255,255,255,0.08)
-focus: border #6366f1, box-shadow 0 0 0 2px rgba(99,102,241,0.25)
+background: #121722
+border: 1px solid #1e2638
+focus: border #008ff5, box-shadow 0 0 0 2px rgba(0,143,245,0.6)
 radius: 8px
 padding: 10px 14px
 ```
@@ -95,7 +95,7 @@ padding: 3px 10px, radius 6px
 font: JetBrains Mono 600, 0.725rem, uppercase, tracking 0.04em
 badge-admin: amber bg/border/text
 badge-write: emerald bg/border/text
-badge-read:  indigo bg/border/text
+badge-read:  blue (#008ff5) bg/border/text
 ```
 
 ### Tables
@@ -155,7 +155,7 @@ Do not mix radii families. A pill button in a square-card layout is broken desig
 
 **Don't:**
 - Don't add underlines to any link, button, or tab — ever.
-- Don't use the gradient accent on backgrounds — only on the logo icon and pro card border.
+- Don't use gradients on backgrounds — the only allowed ramp is the pricing Team card border.
 - Don't invent customer logos, fake metrics, or made-up case studies.
 - Don't use serif fonts (Fraunces, Instrument Serif, Playfair) — this is a dark-tech B2B tool.
 - Don't add infinite-loop animations to table rows or metric cards.
